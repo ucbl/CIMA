@@ -1,7 +1,5 @@
-
 <div ng-hide='loading'>
-
-	<div ng-repeat="device in devices">
+	<!--<div ng-repeat="device in devices">
 	<h1>{{device.id}}</h1>
 	
 	{{device.name}}<br>
@@ -9,7 +7,36 @@
 	{{device.connection_mode}}
 
 	<p>
-	<a href="#/device/{{device.id}}">Configurer {{device.name}}.</a>
-	</div>
+	<a href="#/device/{{device.id}}"> Configurer {{device.name}}.</a>
+	</div>-->
+    <h1> <Strong>Devices</Strong> </h1><br>
+    <th colspan="5"><input st-search="" class="form-control" placeholder="id device search ..." type="text"  style="width: 40%"
+                           ng-model = "device.id" /></th>
+<!--| filter:device.id  |orderBy:device.id "--->
+    <table st-table="devices" class="table table-striped" style="width: 40%">
+        <thead>
+        <tr>
+            <th>ID Device</th>
+            <th>Name</th>
+            <th>Last date connection </th>
+            <th> Mode Connection</th>
+        </tr>
+        </thead>
+        <tbody ng-repeat="device in devices">
+        <tr>
+            <td>{{device.id}}</td>
+            <td>{{device.name}}</td>
+            <td>{{device.last_connection_date}}</td>
+            <td>{{device.connection_mode}}</td>
+            <td>
+                <button type="button" ng-click="go('/device/{{device.id}}')" class="btn btn-sm btn-success">
+                    <i class="glyphicon glyphicon-remove-circle">
+                    </i> Add
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="#/device/{{device.id}}"> Configurer {{device.name}}</a>
 
 </div>
