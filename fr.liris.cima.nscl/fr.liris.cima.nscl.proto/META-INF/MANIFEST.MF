@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Avatart builder
+Bundle-SymbolicName: fr.liris.cima.nscl.proto
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: fr.liris.cima.nscl.proto.Activator
+Require-Bundle: org.eclipse.om2m.core.service,
+ org.eclipse.om2m.commons,
+ org.eclipse.osgi,
+ org.apache.commons.logging,
+ org.eclipse.om2m.ipu.service
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-package: fr.liris.cima.nscl.proto

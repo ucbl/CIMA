@@ -1,0 +1,11 @@
+syntax: glob
+.metadata/
+.settings/
+.project
+.classpath
+.hgignore~
+target/
+*~
+images/*
+*.png
+fr.liris.cima.gscl
