@@ -1,0 +1,30 @@
+<a href="#/">Go to devices</a>
+	
+<div ng-hide='loading'>
+
+	<h1>{{id}}</h1>
+
+	<p>
+	<strong>{{name}}</strong>
+	{{date}}
+	</p>
+
+	<strong>Liste des capacitées de ce device : </strong>
+	<div ng-repeat="capability in capabilities | orderBy:order">
+		<p>
+			<strong>{{capability.id}}</strong><br>
+			{{capability.protocol}}<br>
+			{{capability.uri}}
+		</p>
+	</div>
+
+	<form ng-submit="addCapability()">
+		<input type="text" placeholder="id" ng-model="newCapability.id"/>
+		<br>
+		<input type="text" placeholder="protocol" ng-model="newCapability.protocol"/>
+		<br>
+		<input type="text" placeholder="uri" ng-model="newCapability.uri"/>
+		<br>
+		<input type="submit" value="Envoyer"/>
+	</form>
+</div>

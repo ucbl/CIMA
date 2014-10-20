@@ -1,0 +1,15 @@
+
+<div ng-hide='loading'>
+
+	<div ng-repeat="device in devices">
+	<h1>{{device.id}}</h1>
+	
+	{{device.name}}<br>
+	{{device.last_connection_date}}<br>
+	{{device.connection_mode}}
+
+	<p>
+	<a href="#/device/{{device.id}}">Configurer {{device.name}}.</a>
+	</div>
+
+</div>
