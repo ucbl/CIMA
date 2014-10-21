@@ -16,7 +16,7 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 					factory.devices = data;
 					 $timeout(function(){
 						deferred.resolve(factory.devices);
-					}, 2000);
+					}, 1000);
 				}).error(function(data, status){
 					deferred.reject('Impossible de récuperer les devices')
 				})
