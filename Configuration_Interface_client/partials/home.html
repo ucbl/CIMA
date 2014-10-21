@@ -28,15 +28,15 @@
             <td>{{device.name}}</td>
             <td>{{device.last_connection_date}}</td>
             <td>{{device.connection_mode}}</td>
+
             <td>
                 <button type="button" ng-click="go('/device/{{device.id}}')" class="btn btn-sm btn-success">
                     <i class="glyphicon glyphicon-remove-circle">
-                    </i> Add
+                    </i> Configure
                 </button>
             </td>
         </tr>
         </tbody>
     </table>
-    <a href="#/device/{{device.id}}"> Configurer {{device.name}}</a>
 
 </div>
