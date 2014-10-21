@@ -1,8 +1,10 @@
 <div ng-hide='loading'>
 
     <h1> <Strong>Not recognized devices</Strong> </h1><br>
-    <th colspan="5"><input st-search="" class="form-control" placeholder="id device search ..." type="text"  style="width: 40%"
-                           ng-model = "device.id" /></th>
+    <th colspan="5">
+        <input ng-model="query" class="form-control" placeholder="Search a device..." type="text"  style="width: 40%" />
+    </th>
+
     <table st-table="devices" class="table table-striped" style="width: 40%">
         <thead>
         <tr>
@@ -12,7 +14,7 @@
             <th> Mode Connection</th>
         </tr>
         </thead>
-        <tbody ng-repeat="device in devices">
+        <tbody ng-repeat="device in devices | filter:query ">
         <tr>
             <td>{{device.id}}</td>
             <td>{{device.name}}</td>
@@ -25,7 +27,7 @@
                     </i> Configure
 
                 </button>-->
-                <a href="#/device/{{device.id}}"> Configure</a>
+                <a class="btn btn-sm btn-success" href="#/device/{{device.id}}"> Configure</a>
             </td>
         </tr>
         </tbody>

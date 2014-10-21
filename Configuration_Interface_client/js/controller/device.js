@@ -14,9 +14,10 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, $route
 	}, function(msg){
 		alert(msg);
 	})
+	
 	$scope.addCapability = function(){
 		$scope.capabilities.push($scope.newCapability);
-		Device.add($scope.newCapability).then(function(){
+		DeviceFactory.add($scope.newCapability).then(function(){
 
 		}, function(){
 			alert('Votre capability n\'a pas pu être sauvegardé');

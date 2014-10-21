@@ -8,8 +8,4 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory)
 	}, function(msg){
 		alert(msg);
 	});
-    
-    $scope.go = function ( path ) {
-        $location.path(path);
-    }
 });
