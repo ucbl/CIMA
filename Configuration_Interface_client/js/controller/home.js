@@ -1,5 +1,5 @@
 /* Controlleur home (devices) */
-app.controller('HomeCtrl', function($scope, $rootScope, DeviceFactory){
+app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory){
 	/*Promesses*/
 	$rootScope.loading = true;
 	$scope.devices = DeviceFactory.find().then(function(devices){
@@ -8,4 +8,7 @@ app.controller('HomeCtrl', function($scope, $rootScope, DeviceFactory){
 	}, function(msg){
 		alert(msg);
 	});
+    $scope.go = function ( path ) {
+        $location.path( path );
+    }
 });

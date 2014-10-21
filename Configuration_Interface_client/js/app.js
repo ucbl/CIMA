@@ -8,3 +8,5 @@ app.config(function($routeProvider){
   .when('/device/:id', {templateUrl: 'partials/device.html', controller: 'DeviceCtrl'})
   .otherwise({redirectTo : '/'});
 });
+
+
