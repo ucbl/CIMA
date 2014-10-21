@@ -14,7 +14,7 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 				$http.get('posts.json')
 				.success(function(data, status){
 					factory.devices = data;
-					$timeout(function(){
+					 $timeout(function(){
 						deferred.resolve(factory.devices);
 					}, 2000);
 				}).error(function(data, status){

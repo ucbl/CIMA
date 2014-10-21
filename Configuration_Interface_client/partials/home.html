@@ -30,10 +30,11 @@
             <td>{{device.connection_mode}}</td>
 
             <td>
-                <button type="button" ng-click="go('/device/{{device.id}}')" class="btn btn-sm btn-success">
+                <!--<button type="button" ng-click="go('/device/{{device.id}}')" class="btn btn-sm btn-success">
                     <i class="glyphicon glyphicon-remove-circle">
                     </i> Configure
-                </button>
+                </button>-->
+                <a href="#/device/{{device.id}}"> Configurer {{device.name}}</a>
             </td>
         </tr>
         </tbody>

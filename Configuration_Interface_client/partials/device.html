@@ -9,22 +9,45 @@
 	{{date}}
 	</p>
 
-	<strong>Liste des capacitées de ce device : </strong>
-	<div ng-repeat="capability in capabilities | orderBy:order">
+	<h1><strong>Liste des capacitées de ce device  </strong></h1>
+	<!--<div ng-repeat="capability in capabilities | orderBy:order">
 		<p>
 			<strong>{{capability.id}}</strong><br>
 			{{capability.protocol}}<br>
 			{{capability.uri}}
 		</p>
-	</div>
+	</div>-->
+    <table st-table="devices" class="table table-striped" style="width: 40%">
+        <thead>
+        <tr>
+            <th>ID </th>
+            <th>Protocol</th>
+            <th> URI </th>
+        </tr>
+        </thead>
+        <tbody ng-repeat="capability in capabilities | orderBy:order">
+        <tr>
+            <td>{{capability.id}}</td>
+            <td>{{capability.protocol}}</td>
+            <td>{{capability.uri}}</td>
+
+           <!-- <td>
+                <button type="button" ng-click="go('/device/{{device.id}}')" class="btn btn-sm btn-success">
+                    <i class="glyphicon glyphicon-remove-circle">
+                    </i> Configure
+                </button>
+            </td>-->
+        </tr>
+        </tbody>
+    </table>
 
 	<form ng-submit="addCapability()">
-		<input type="text" placeholder="id" ng-model="newCapability.id"/>
+		<input st-search="" class="form-control" style="width: 40%" type="text" placeholder="id" ng-model="newCapability.id"/>
 		<br>
-		<input type="text" placeholder="protocol" ng-model="newCapability.protocol"/>
+		<input st-search="" class="form-control" style="width: 40%" type="text" placeholder="protocol" ng-model="newCapability.protocol"/>
 		<br>
-		<input type="text" placeholder="uri" ng-model="newCapability.uri"/>
+		<input st-search="" class="form-control"  style="width: 40%" type="text" placeholder="uri" ng-model="newCapability.uri"/>
 		<br>
-		<input type="submit" value="Envoyer"/>
+		<input  type="submit" value="Envoyer"/>
 	</form>
 </div>
