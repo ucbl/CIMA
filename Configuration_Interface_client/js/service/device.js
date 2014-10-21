@@ -11,7 +11,7 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 			if( factory.devices !== false){
 				deferred.resolve(factory.devices);
 			}else{
-				$http.get('posts.json')
+				$http.get('devices.json')
 				.success(function(data, status){
 					factory.devices = data;
 					 $timeout(function(){
@@ -24,7 +24,7 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 			
 			return deferred.promise;
 		},
-		//Retourne 
+		//Retourne un device avec son id
 		get : function(id){
 
 			/* Promesses */

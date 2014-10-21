@@ -1,0 +1,40 @@
+[
+    {
+        "protocolName": "HTTP",
+        "parameters": [
+            {
+                "name": "URI",
+                "value": ""
+            }
+        ]
+    },
+    {
+        "protocolName": "Wifi",
+        "parameters": [{
+                "name": "URI",
+                "value": ""
+            },
+            {
+                "name": "Mac Adress",
+                "value": ""
+            },
+            {
+                "name": "Code",
+                "value": ""
+            }
+        ]
+    },
+    {
+        "protocolName": "Bluetooth",
+        "parameters": [
+            {
+                "name": "URI",
+                "value": ""
+            },
+            {
+                "name": "Device name",
+                "value": ""
+            }
+        ]
+    }
+]

@@ -10,16 +10,16 @@
         <tr>
             <th>ID Device</th>
             <th>Name</th>
-            <th>Last date connection </th>
-            <th> Mode Connection</th>
+            <th>Last connection date</th>
+            <th>Connection mode</th>
         </tr>
         </thead>
         <tbody ng-repeat="device in devices | filter:query ">
         <tr>
             <td>{{device.id}}</td>
             <td>{{device.name}}</td>
-            <td>{{device.last_connection_date}}</td>
-            <td>{{device.connection_mode}}</td>
+            <td>{{device.lastConnectionDate}}</td>
+            <td>{{device.connectionMode}}</td>
 
             <td>
                 <!--<button type="button" ng-click="go('/device/{{device.id}}')" class="btn btn-sm btn-success">

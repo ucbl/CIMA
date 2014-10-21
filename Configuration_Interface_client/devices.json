@@ -1,0 +1,55 @@
+[
+    {
+        "id": "000",
+        "name": "EV3",
+        "lastConnectionDate" : "01/10/2014",
+        "connectionMode":"HTTP",
+        "capabilities": [
+            {
+                "id": "000",
+                "protocol": 
+                    {
+                        "protocolName":"HTTP",
+                        "parameters": [{
+                            "name": "URI",
+                            "value": ""
+                        }
+                        ]            
+                    }
+            }
+        ]
+    },
+    {
+        "id": "001",
+        "name": "IPhone",
+        "lastConnectionDate" : "21/09/2014",
+        "connectionMode":"USB",
+
+        "capabilities": [
+            {
+                "id": "HBFV",
+                "protocol": 
+                    {
+                        "protocolName":"HTTP",
+                        "parameters": [{
+                            "name": "URI",
+                            "value": "/mass.com"
+                        }
+                        ]            
+                    }
+            },
+            {
+                "id": "HORUS",
+                "protocol": 
+                    {
+                        "protocolName":"HTTP",
+                        "parameters": [{
+                            "name": "URI",
+                            "value": "/mass2DINGUE.com"
+                        }
+                        ]            
+                    }
+            }
+        ]
+    }
+]

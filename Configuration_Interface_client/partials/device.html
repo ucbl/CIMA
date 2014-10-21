@@ -19,25 +19,30 @@
         <tr>
             <th>ID </th>
             <th>Protocol</th>
-            <th> URI </th>
         </tr>
         </thead>
         <tbody ng-repeat="capability in capabilities | orderBy:order">
         <tr>
             <td>{{capability.id}}</td>
-            <td>{{capability.protocol}}</td>
-            <td>{{capability.uri}}</td>
+            <td>{{capability.protocol.protocolName}}</td>
 
         </tr>
         </tbody>
     </table>
 	<hr>
+	<br>
 	<form ng-submit="addCapability()">
-		<input st-search="" class="form-control" style="width: 40%" type="text" placeholder="id" ng-model="newCapability.id"/>
-		<br>
-		<input st-search="" class="form-control" style="width: 40%" type="text" placeholder="protocol" ng-model="newCapability.protocol"/>
-		<br>
-		<input st-search="" class="form-control"  style="width: 40%" type="text" placeholder="uri" ng-model="newCapability.uri"/>
+		<strong>ID </strong> <input st-search="" class="form-control" style="width: 40%" type="text" placeholder="id" ng-model="newCapability.id"/>
+		<strong>Protocol </strong><select ng-model="newCapability.protocol" 
+			ng-options="protocol.protocolName for protocol in protocols">
+      		<option value="">-- choose protocol --</option>
+    	</select>
+    	
+    	<hr>
+    	<li ng-repeat="parameter in newCapability.protocol.parameters">
+      		{{parameter.name}}: <input class="form-control" style="width: 40%" type="text" ng-model="parameter.value">
+    	</li>
+
 		<br>
 		<input  type="submit" value="Envoyer"/>
 	</form>
