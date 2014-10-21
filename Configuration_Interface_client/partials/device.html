@@ -25,30 +25,54 @@
 	        <tr>
 	            <td>{{capability.id}}</td>
 	            <td>{{capability.protocol.protocolName}}</td>
+	            <td>
+		            <input class="btn btn-sm btn btn-info" type="submit" value="Edit"  ng-click="editme=true"/>
+		            <!-- DIV POUR EDITER CAPACITE -->
+		             <div class="check-element animate-show" ng-show="editme">
+	                    <form ng-submit="modifyCapability()">
 
+	                        <pre>{{capability.id}} </pre>
+	                        <pre> {{capability.protocol}} </pre>
+	                        <!-- <Strong> {{capability.id}} </Strong>
+	                         <Strong> {{capability.protocol}} </Strong>-->
+	                        <input st-search="" class="form-control"  style="width: 40%" type="text" placeholder="uri" ng-model="modifyCapability.uri"/>
+	                        <br>
+	                        <input  type="submit" value="Ok"  ng-click="editme=false"/>
+	                    </form>
+	                </div>
+            	</td>
 	        </tr>
 	        </tbody>
 	    </table>
 		<hr>
-		<h2><b>Add capability  </b></h2>
-		<form ng-submit="addCapability()">
-			<strong>ID </strong> 
-			<input class="form-control" style="width: 40%" type="text" placeholder="Choose an ID" ng-model="newCapability.id"/>
-			
-			<strong>Protocol </strong>
-			<select class="form-control" ng-model="newCapability.protocol" 
-				ng-options="protocol.protocolName for protocol in protocols">
-	      		<option value="">-- choose protocol --</option>
-	    	</select>
-	    	
-	    	<hr>
-	    	<li ng-repeat="parameter in newCapability.protocol.parameters">
-	      		{{parameter.name}}: 
-	      		<input class="form-control" style="width: 40%" type="text" ng-model="parameter.value">
-	    	</li>
 
-	    	<hr>
-			<input class="btn btn-success" type="submit" value="Apply"/>
-		</form>
+	    <button type="button"  ng-click="showme=true" class="btn btn-default btn btn-primary">Add capability</button>
+    	<button ng-click="showme=false" class="btn btn-default btn-danger">Undo</button><br>
+		
+		<!-- DIV POUR AJOUT DE CAPACITE -->
+        <div class="check-element animate-show" ng-show="showme">
+			<form ng-submit="addCapability()">
+				<strong>ID </strong> 
+				<input class="form-control" style="width: 40%" type="text" placeholder="Choose an ID" ng-model="newCapability.id"/>
+				
+				<strong>Protocol </strong>
+				<select class="form-control" ng-model="newCapability.protocol" 
+					ng-options="protocol.protocolName for protocol in protocols">
+		      		<option value="">-- choose protocol --</option>
+		    	</select>
+		    	
+		    	<li ng-repeat="parameter in newCapability.protocol.parameters">
+		      		{{parameter.name}}: 
+		      		<input class="form-control" style="width: 40%" type="text" ng-model="parameter.value">
+		    	</li>
+		    	<br>
+				<input ng-click="showme=false" class="btn btn-success pull-right"  type="submit" value="Add"/>
+			</form>
+		</div>
+	<br>
+	<hr>
+
+	<!-- Bouton pour valider tous les changements -->
+    <button class="btn btn-success"ng-click="showme=false" class="btn btn-default pull-center">Apply</button>
 	</div>
 </div>
