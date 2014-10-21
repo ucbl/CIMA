@@ -11,14 +11,14 @@ app.factory('ProtocolsFactory', function($http, $q, $timeout){
 			if( factory.protocols !== false){
 				deferred.resolve(factory.protocols);
 			}else{
-				$http.get('protocols.json')
+				$http.get('json/protocols.json')
 				.success(function(data, status){
 					factory.protocols = data;
 					 $timeout(function(){
 						deferred.resolve(factory.protocols);
 					}, 1000);
 				}).error(function(data, status){
-					deferred.reject('Impossible de récuperer les protocols')
+					deferred.reject('Unable to get protocols')
 				})
 			}
 			
@@ -26,7 +26,6 @@ app.factory('ProtocolsFactory', function($http, $q, $timeout){
 		},
 		//Retourne un protocol avec son id
 		get : function(id){
-
 			/* Promesses */
 			var deferred = $q.defer();
 			var protocol = {};

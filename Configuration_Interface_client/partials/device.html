@@ -1,49 +1,54 @@
-<a href="#/">Go to devices</a>
+<a class="btn btn-warning" href="#/"> < Devices list</a>
 	
 <div ng-hide='loading'>
+	<div class="col-xs-6" >
 
-	<h1><b>{{id}}</b></h1>
-	<i>Last connection on {{date}}</i>
-	<hr>
+		<h1><b>Device ID : {{id}}</b></h1>
+		<i>Last connection on {{date}}</i>
+		<p>
+		<strong>Name</strong>
+		<input class="control" type="text"  ng-disabled="!isEditable" ng-model="name"/> 
+		<input class="control" type="checkbox" ng-model="isEditable">  Edit
+		</p>
+		<hr>
 
-	<p>
-	<strong>Name</strong>
-	<input type="text" value="{{name}}" ng-disabled="!isEditable"/> 
-	<input type="checkbox" ng-model="isEditable">  Edit
-	</p>
+		<h2><b>Capabilities  </b></h2>
 
-	<h1><strong>Capabilities  </strong></h1>
+	    <table st-table="devices" class="table table-striped" style="width: 40%">
+	        <thead>
+	        <tr>
+	            <th>ID </th>
+	            <th>Protocol</th>
+	        </tr>
+	        </thead>
+	        <tbody ng-repeat="capability in capabilities | orderBy:order">
+	        <tr>
+	            <td>{{capability.id}}</td>
+	            <td>{{capability.protocol.protocolName}}</td>
 
-    <table st-table="devices" class="table table-striped" style="width: 40%">
-        <thead>
-        <tr>
-            <th>ID </th>
-            <th>Protocol</th>
-        </tr>
-        </thead>
-        <tbody ng-repeat="capability in capabilities | orderBy:order">
-        <tr>
-            <td>{{capability.id}}</td>
-            <td>{{capability.protocol.protocolName}}</td>
+	        </tr>
+	        </tbody>
+	    </table>
+		<hr>
+		<h2><b>Add capability  </b></h2>
+		<form ng-submit="addCapability()">
+			<strong>ID </strong> 
+			<input class="form-control" style="width: 40%" type="text" placeholder="Choose an ID" ng-model="newCapability.id"/>
+			
+			<strong>Protocol </strong>
+			<select class="form-control" ng-model="newCapability.protocol" 
+				ng-options="protocol.protocolName for protocol in protocols">
+	      		<option value="">-- choose protocol --</option>
+	    	</select>
+	    	
+	    	<hr>
+	    	<li ng-repeat="parameter in newCapability.protocol.parameters">
+	      		{{parameter.name}}: 
+	      		<input class="form-control" style="width: 40%" type="text" ng-model="parameter.value">
+	    	</li>
 
-        </tr>
-        </tbody>
-    </table>
-	<hr>
-	<br>
-	<form ng-submit="addCapability()">
-		<strong>ID </strong> <input st-search="" class="form-control" style="width: 40%" type="text" placeholder="id" ng-model="newCapability.id"/>
-		<strong>Protocol </strong><select ng-model="newCapability.protocol" 
-			ng-options="protocol.protocolName for protocol in protocols">
-      		<option value="">-- choose protocol --</option>
-    	</select>
-    	
-    	<hr>
-    	<li ng-repeat="parameter in newCapability.protocol.parameters">
-      		{{parameter.name}}: <input class="form-control" style="width: 40%" type="text" ng-model="parameter.value">
-    	</li>
-
-		<br>
-		<input  type="submit" value="Envoyer"/>
-	</form>
+	    	<hr>
+			<input class="btn btn-success" type="submit" value="Apply"/>
+		</form>
+	</div>
 </div>

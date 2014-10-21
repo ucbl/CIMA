@@ -11,14 +11,14 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 			if( factory.devices !== false){
 				deferred.resolve(factory.devices);
 			}else{
-				$http.get('devices.json')
+				$http.get('json/devices.json')
 				.success(function(data, status){
 					factory.devices = data;
 					 $timeout(function(){
 						deferred.resolve(factory.devices);
 					}, 1000);
 				}).error(function(data, status){
-					deferred.reject('Impossible de récuperer les devices')
+					deferred.reject('Unable to get devices')
 				})
 			}
 			
@@ -44,8 +44,8 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 			
 			return deferred.promise;
 		},
-		//Ajoute un commentaire à un device (coté serveur)
-		add : function(comment){
+		//Ajoute/modifie un device (coté serveur)
+		add : function(device){
 			var deferred = $q.defer();
 			//...
 			deferred.resolve();

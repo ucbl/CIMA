@@ -28,7 +28,6 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 		cap.protocol.protocolName = $scope.newCapability.protocol.protocolName;
 		cap.protocol.parameters = $scope.newCapability.protocol.parameters;
 
-
 		$scope.capabilities.push(cap);
 		//$scope.capabilities.push($scope.newCapability);
 		//DeviceFactory.add($scope.newCapability).then(function(){

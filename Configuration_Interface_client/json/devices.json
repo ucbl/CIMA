@@ -42,7 +42,7 @@
                 "id": "HORUS",
                 "protocol": 
                     {
-                        "protocolName":"HTTP",
+                        "protocolName":"USB",
                         "parameters": [{
                             "name": "URI",
                             "value": "/mass2DINGUE.com"
