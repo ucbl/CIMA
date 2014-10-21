@@ -9,3 +9,5 @@ target/
 images/*
 *.png
  fr.liris.cima.gscl/fr.liris.cima.server/*
+.gitignore
+org.eclipse.om2m/org.eclipse*

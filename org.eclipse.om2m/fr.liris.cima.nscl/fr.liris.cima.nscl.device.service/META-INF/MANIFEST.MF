@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: DeviceService
+Bundle-SymbolicName: fr.liris.cima.nscl.device.service
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.eclipse.om2m.commons,
+ fr.liris.cima.nscl.commons
+Export-package: fr.liris.cima.nscl.device.service
+
