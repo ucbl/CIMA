@@ -2,21 +2,18 @@
 	
 <div ng-hide='loading'>
 
-	<h1>{{id}}</h1>
+	<h1><b>{{id}}</b></h1>
+	<i>Last connection on {{date}}</i>
+	<hr>
 
 	<p>
-	<strong>{{name}}</strong>
-	{{date}}
+	<strong>Name</strong>
+	<input type="text" value="{{name}}" ng-disabled="!isEditable"/> 
+	<input type="checkbox" ng-model="isEditable">  Edit
 	</p>
 
-	<h1><strong>Liste des capacitées de ce device  </strong></h1>
-	<!--<div ng-repeat="capability in capabilities | orderBy:order">
-		<p>
-			<strong>{{capability.id}}</strong><br>
-			{{capability.protocol}}<br>
-			{{capability.uri}}
-		</p>
-	</div>-->
+	<h1><strong>Capabilities  </strong></h1>
+
     <table st-table="devices" class="table table-striped" style="width: 40%">
         <thead>
         <tr>
@@ -31,16 +28,10 @@
             <td>{{capability.protocol}}</td>
             <td>{{capability.uri}}</td>
 
-           <!-- <td>
-                <button type="button" ng-click="go('/device/{{device.id}}')" class="btn btn-sm btn-success">
-                    <i class="glyphicon glyphicon-remove-circle">
-                    </i> Configure
-                </button>
-            </td>-->
         </tr>
         </tbody>
     </table>
-
+	<hr>
 	<form ng-submit="addCapability()">
 		<input st-search="" class="form-control" style="width: 40%" type="text" placeholder="id" ng-model="newCapability.id"/>
 		<br>
