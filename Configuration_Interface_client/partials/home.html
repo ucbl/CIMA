@@ -1,18 +1,8 @@
 <div ng-hide='loading'>
-	<!--<div ng-repeat="device in devices">
-	<h1>{{device.id}}</h1>
-	
-	{{device.name}}<br>
-	{{device.last_connection_date}}<br>
-	{{device.connection_mode}}
 
-	<p>
-	<a href="#/device/{{device.id}}"> Configurer {{device.name}}.</a>
-	</div>-->
-    <h1> <Strong>Devices</Strong> </h1><br>
+    <h1> <Strong>Not recognized devices</Strong> </h1><br>
     <th colspan="5"><input st-search="" class="form-control" placeholder="id device search ..." type="text"  style="width: 40%"
                            ng-model = "device.id" /></th>
-<!--| filter:device.id  |orderBy:device.id "--->
     <table st-table="devices" class="table table-striped" style="width: 40%">
         <thead>
         <tr>
@@ -30,10 +20,11 @@
             <td>{{device.connection_mode}}</td>
 
             <td>
-                <button type="button" ng-click="go('/device/{{device.id}}')" class="btn btn-sm btn-success">
+                <!--<button type="button" ng-click="go('/device/{{device.id}}')" class="btn btn-sm btn-success">
                     <i class="glyphicon glyphicon-remove-circle">
                     </i> Configure
-                </button>
+                </button>-->
+                <a href="#/device/{{device.id}}"> Configure</a>
             </td>
         </tr>
         </tbody>
