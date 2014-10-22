@@ -1,7 +1,10 @@
 package fr.liris.cima.gscl.commons.parser;
 
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 import obix.Obj;
@@ -14,6 +17,7 @@ import org.jdom2.*;
 import org.jdom2.input.SAXBuilder;
 
 import fr.liris.cima.gscl.commons.*;
+import fr.liris.cima.gscl.commons.util.Utils;
 
 /**
  * This class represent a parser for parsing exchanging data
@@ -85,6 +89,9 @@ public class Parser {
 			String uri ="";
 			String modeConnection="";
 			String name = "";
+			
+			Date dateConnection = null;
+			
 
 			List<Element> childrenElement = root.getChildren();
 			for(Element element : childrenElement) {
@@ -97,15 +104,27 @@ public class Parser {
 				if(element.getName().equals("name")) {
 					name = element.getText();
 				}
+				
+				if(element.getName().equals("dateConnection")) {
+					dateConnection = Utils.StrToDate(element.getText());
+				}
 			}
 			device.setUri(uri);
 			device.setModeConnection(modeConnection);
 			device.setName(name);
+			device.setDateConnection(dateConnection);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 
+		return device;
+	}
+	
+	public static Device ParseJsonToDevice(String jsonFormat) {
+		Device device = new Device("ev3", "http://192.168.0.2", "http");
+		device.setId("ev3");
+		
 		return device;
 	}
 	
@@ -168,10 +187,12 @@ public class Parser {
 				"<uri>192.168.43.34</uri> "+
 				"<server>http://127.0.0.1:8282</server>"+
 				"</device>";
-//		System.out.println(parseSimpleXmlToObix(representation));
-//		System.out.println(parseSimpleXmlToObix(representation, "id", "EV3"));
-		System.out.println(parseXmlDevice(representation));
-		//System.out.println(parseXmlDeviceGateway(representation));
+		
+		Device device = new Device("ev3", "localhost", "http");
+		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
+		System.out.println(device.toObixFormat());
+		System.out.println(formatter.format(new Date()));
+		
 
 	}
 }

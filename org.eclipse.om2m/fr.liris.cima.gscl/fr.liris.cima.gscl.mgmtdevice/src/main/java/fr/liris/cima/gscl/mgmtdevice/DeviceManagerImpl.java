@@ -94,6 +94,7 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 	@Override
 	public void start() {
 		LOGGER.info("Devices waiting for attachement..");
+		populate();
 		createManagerResources("CIMA", "devices");
 	//	createManagerResources("manualconfig", "manual");
 	}
@@ -168,6 +169,22 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 				return device;
 		}
 		return null;
+	}
+
+	@Override
+	public boolean switchUnknownToKnownDevice(Device device) {
+		LOGGER.info("******"+unknownDevices);
+		if(!unknownDevices.contains(device)) 
+			return false;
+		unknownDevices.remove(device);
+		return devices.add(device);
+	}
+	
+	private void populate() {
+		Device device = new Device("ev3", "http://192.168.0.2", "http");
+		device.setId("ev3");
+		unknownDevices.add(device);
+
 	}
 
 }

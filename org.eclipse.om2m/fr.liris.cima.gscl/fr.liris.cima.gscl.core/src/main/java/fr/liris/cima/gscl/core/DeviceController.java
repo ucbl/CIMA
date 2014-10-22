@@ -24,13 +24,13 @@ public class DeviceController implements IpuService{
 
 	/** Logger */
 	private static Log LOGGER = LogFactory.getLog(DeviceController.class);
-	
+
 	/** managed device service*/
 	private  ManagedDeviceService managerImpl;
 	/** rest client service*/
 	public static RestClientService restClientService;
-	
-	
+
+
 	public DeviceController(ManagedDeviceService deviceManagerImpl) {
 		this.managerImpl = deviceManagerImpl;
 	}
@@ -41,11 +41,11 @@ public class DeviceController implements IpuService{
 		return Device.APOCPATH;
 	}
 
-	 /**
-     * Executes a resource on devices.
-     * @param requestIndication - The generic request to handle.
-     * @return The generic returned response.
-     */
+	/**
+	 * Executes a resource on devices.
+	 * @param requestIndication - The generic request to handle.
+	 * @return The generic returned response.
+	 */
 	@Override
 	public ResponseConfirm doExecute(RequestIndication requestIndication) {
 		LOGGER.info("*********Execute in DEVICE CONTROLLER ****");
@@ -65,11 +65,11 @@ public class DeviceController implements IpuService{
 				if(device != null) {
 					requestIndication.setBase(device.getUri());
 					requestIndication.setTargetID("");
-				//	requestIndication.setTargetID("/"+Constants.PATH_CAPABILITIES+"/"+Constants.PATH_INVOKE+"/"+capabilityName);
+					//	requestIndication.setTargetID("/"+Constants.PATH_CAPABILITIES+"/"+Constants.PATH_INVOKE+"/"+capabilityName);
 					requestIndication.setProtocol(device.getModeConnection());
 					LOGGER.info("send request for executing capabilities");
 					ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
-				//	ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
+					//	ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
 					return responseConfirm;
 				}
 			}
@@ -81,10 +81,10 @@ public class DeviceController implements IpuService{
 	}
 
 	/**
-     * Retrieves a resource on devices.
-     * @param requestIndication - The generic request to handle.
-     * @return The generic returned response.
-     */
+	 * Retrieves a resource on devices.
+	 * @param requestIndication - The generic request to handle.
+	 * @return The generic returned response.
+	 */
 	@Override
 	public ResponseConfirm doRetrieve(RequestIndication requestIndication) {
 
@@ -93,13 +93,13 @@ public class DeviceController implements IpuService{
 		String []infos = requestIndication.getTargetID().split("/");
 		String lastInfo = infos[infos.length - 1];
 
-		
+
 
 		if(lastInfo.equals(Constants.PATH_CAPABILITIES)){
 			String deviceId = infos[infos.length - 2];
 			Device device = managerImpl.getDevice(deviceId);
 			LOGGER.info("*********LAST INFO ****"+deviceId);
-			
+
 
 			if(device != null) {
 				LOGGER.info("*********Constant INFO = = = ****"+Constants.PATH_CAPABILITIES);
@@ -115,44 +115,65 @@ public class DeviceController implements IpuService{
 				return responseConfirm;
 			}
 		}
-		if(infos[infos.length - 2].equals(Constants.PATH_UNKNOWN_DEVICES)){
-			LOGGER.info("*********PATH_UNKNOWN_DEVICES ****");
-		}
 
-			
+
+
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_IMPLEMENTED,requestIndication.getMethod()+" Method not Implemented"));
 	}
 
 	/**
-     * Updates a resource on devices.
-     * @param requestIndication - The generic request to handle.
-     * @return The generic returned response.
-     */
+	 * Updates a resource on devices.
+	 * @param requestIndication - The generic request to handle.
+	 * @return The generic returned response.
+	 */
 	@Override
 	public ResponseConfirm doUpdate(RequestIndication requestIndication) {
-		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_IMPLEMENTED,requestIndication.getMethod()+" Method not Implemented"));
+		String[] infos = requestIndication.getTargetID().split("/");
+		int length = infos.length;
+		
+		ResponseConfirm confirm = new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST, ""));
+
+		if(infos[infos.length - 1].equals(Constants.PATH_UNKNOWN_DEVICES)){
+
+			LOGGER.info("*********PATH_UNKNOWN_DEVICES ****");
+
+			String representation = requestIndication.getRepresentation();
+			Device device = Parser.ParseJsonToDevice(representation);
+			if(device == null) {
+				return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND, "No device with this information"));
+			}
+			boolean validate = managerImpl.switchUnknownToKnownDevice(device);
+			if(validate == true) {
+				confirm = new ResponseConfirm(StatusCode.STATUS_OK, "Device is now known ");
+			}
+			else {
+				confirm = new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_INTERNAL_SERVER_ERROR, ""));
+			}
+
+		}
+		return confirm;
 	}
 
 	/**
-     * Deletes a resource on devices.
-     * @param requestIndication - The generic request to handle.
-     * @return The generic returned response.
-     */
+	 * Deletes a resource on devices.
+	 * @param requestIndication - The generic request to handle.
+	 * @return The generic returned response.
+	 */
 	@Override
 	public ResponseConfirm doDelete(RequestIndication requestIndication) {
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_IMPLEMENTED,requestIndication.getMethod()+" Method not Implemented"));
 	}
 
 	/**
-     * Create a resource on devices.
-     * @param requestIndication - The generic request to handle.
-     * @return The generic returned response.
-     */
+	 * Create a resource on devices.
+	 * @param requestIndication - The generic request to handle.
+	 * @return The generic returned response.
+	 */
 	@Override
 	public ResponseConfirm doCreate(RequestIndication requestIndication) {
 		String representation = requestIndication.getRepresentation();
 		Device device = Parser.parseXmlDevice(representation);
-		
+
 		if(device != null) {
 			LOGGER.info("***DEVICE TO OBIX FORMAT***");
 			LOGGER.info(device.toObixFormat());

@@ -3,6 +3,9 @@ package fr.liris.cima.gscl.commons.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +28,21 @@ public class Utils {
 		else{
 			return "0.0.0.0";
 		}
+	}
+	
+	public static Date StrToDate(String dateFormat) {
+		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
+		try {
+			return formatter.parse(dateFormat);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static String dateToStr(Date date) {
+		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
+		return formatter.format(date);
 	}
 
 

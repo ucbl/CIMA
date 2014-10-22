@@ -1,5 +1,6 @@
 package fr.liris.cima.gscl.commons;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import obix.Obj;
@@ -10,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import fr.liris.cima.gscl.commons.port.PortGenerator;
+import fr.liris.cima.gscl.commons.util.Utils;
 
 public class Device {
 
@@ -47,23 +49,28 @@ public class Device {
 	}
 	
 	public Device(String name, String uri, String modeConnection) {
+		this.id = new UID().getUid();
 		this.name = name;
 		this.uri = uri;
 		this.modeConnection = modeConnection;
-		this.dateConnection = new Date();
+		this.dateConnection = Utils.StrToDate("mercredi, oct. 22, 2014 13:52:20 PM");
 		
 		contactInfo = new ContactInfo(this.id, PortGenerator.generatePort());
 
 	}
 
 	public String toObixFormat() {
-		// oBIX
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
+
 		Obj objDevice = new Obj("device");
 		Obj obj = new Obj();
+		
 		objDevice.add(new Str("id",id));
 		objDevice.add(new Str("name", name));
 		objDevice.add(new Str("modeConnection", modeConnection));
 		objDevice.add(new Str("url",uri));
+		objDevice.add(new Str("dateConnection", formatter.format(dateConnection)));
 		
 		obj.add(objDevice);
 		obj.add(contactInfo.toBix());
@@ -72,10 +79,13 @@ public class Device {
 	}
 	
 	public String toXmlFormat() {
+		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
+
 		return  "<device>"+
 				"<id>"+id+"</id>"+
 				"<name>"+name+"</name>"+
 				"<modeConnection>"+modeConnection+"</modeConnection>"+
+				"<dateConnection>"+dateConnection+"</dateConnection>"+
 				"<uri>"+uri+"</uri> "+
 				"<server>"+serverUri+"</server>"+
 				"</device>";
@@ -156,5 +166,11 @@ public class Device {
 
 	public void setModeConnection(String modeConnection) {
 		this.modeConnection = modeConnection;
+	}
+	
+	public boolean equals(Object other) {
+		Device device = (Device)other;
+		
+		return this.id.equals(device.id);
 	}
 }

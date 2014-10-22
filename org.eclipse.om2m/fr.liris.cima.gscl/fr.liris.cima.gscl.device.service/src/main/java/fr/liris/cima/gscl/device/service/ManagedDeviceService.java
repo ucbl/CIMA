@@ -58,5 +58,7 @@ public interface ManagedDeviceService {
 	public void removeUnknownDeviceById(String id);
 	
 	
+	public boolean switchUnknownToKnownDevice(Device device);
+	
 
 }
