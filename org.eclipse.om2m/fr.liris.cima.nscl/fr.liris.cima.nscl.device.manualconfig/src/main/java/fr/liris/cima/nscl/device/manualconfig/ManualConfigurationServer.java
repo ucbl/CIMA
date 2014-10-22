@@ -27,6 +27,8 @@ import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 import org.eclipse.om2m.ipu.service.IpuService;
 
+import fr.liris.cima.nscl.commons.constants.*;
+
 public class ManualConfigurationServer implements IpuService{
 	private static Log LOGGER = LogFactory.getLog(ManualConfigurationServer.class);
 	
@@ -43,31 +45,49 @@ public class ManualConfigurationServer implements IpuService{
 	@Override
 	// GET
 	public ResponseConfirm doRetrieve(RequestIndication requestIndication) {
-		LOGGER.info("Base : " + requestIndication.getBase());
-		LOGGER.info("Method : " + requestIndication.getMethod());
-		LOGGER.info("Protocol : " + requestIndication.getProtocol());
-		LOGGER.info("Representation : " + requestIndication.getRepresentation());
-		LOGGER.info("RequestingEntity : " + requestIndication.getRequestingEntity());
-		LOGGER.info("TargetID : " + requestIndication.getTargetID());
-		LOGGER.info("Url : " + requestIndication.getUrl());
-		
+//		LOGGER.info("Base : " + requestIndication.getBase());
+//		LOGGER.info("Method : " + requestIndication.getMethod());
+//		LOGGER.info("Protocol : " + requestIndication.getProtocol());
+//		LOGGER.info("Representation : " + requestIndication.getRepresentation());
+//		LOGGER.info("RequestingEntity : " + requestIndication.getRequestingEntity());
+//		LOGGER.info("TargetID : " + requestIndication.getTargetID());
+//		LOGGER.info("Url : " + requestIndication.getUrl());
+		ResponseConfirm resp = null;
+		RequestIndication request = new RequestIndication();
 		String [] tID = requestIndication.getTargetID().split("/");
+
+		request.setBase("");
+		request.setMethod("RETRIEVE");
+		request.setProtocol("http");
+		request.setRequestingEntity(Constants.REQENTITY);
+		request.setRepresentation("");
+		
 		if(tID.length == 5){
 			// nscl/applications/configuration/manualconfiguration/device return the list of unrecognized devices
 			// nscl/applications/configuration/manualconfiguration/protocol return the spported protocol list
 			switch(tID[4]){
-			case "device" : return new ResponseConfirm(StatusCode.STATUS_OK, "{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}");
-			case "protocol" : return new ResponseConfirm(StatusCode.STATUS_OK, "");
+			case "device" :
+				request.setTargetID("gscl/applications/CIMA/devices/unknown");
+				resp = restClientService.sendRequest(requestIndication);
+				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
+			case "protocol" : return new ResponseConfirm(StatusCode.STATUS_OK, "{\"protocoleName\" : \"http\",\"parameters\" : [{\"name\" : \"method\",\"value\" : \"\" },{\"name\" : \"port\",\"value\" : \"\"},{\"name\" : \"uri\",\"value\" : \"\" },{\"name\" : \"body\",\"value\" : \"\"}]}");
 			}
 			
 		} else if(tID.length == 6){
-			// nscl/applications/configuration/manualconfiguration/device/<device id>/ 
-			
+			// nscl/applications/configuration/manualconfiguration/device/<device id>/
+			request.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5]);
+			resp = restClientService.sendRequest(request);
+			return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
 		} else if(tID.length == 7){
-			// nscl/applications/configuration/manualconfiguration/device/<device id>/test
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability
+			request.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5] + "/capability");
+			resp = restClientService.sendRequest(request);
+			return new ResponseConfirm(StatusCode.STATUS_OK, "");
 		} else if(tID.length == 8){
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability/<capability id>
+			request.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5] + "/capability/" + tID[7]);
+			resp = restClientService.sendRequest(request);
+			return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" capability not found"));
 		}
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" ressource not found"));
 	}
@@ -75,22 +95,72 @@ public class ManualConfigurationServer implements IpuService{
 	@Override
 	// PUT
 	public ResponseConfirm doUpdate(RequestIndication requestIndication) {
-		// TODO Auto-generated method stub
-		return null;
+		String [] tID = requestIndication.getTargetID().split("/");
+		String body = requestIndication.getRepresentation();
+		ResponseConfirm resp = null;
+		RequestIndication request = new RequestIndication();
+		
+		request.setBase("");
+		request.setMethod("RETRIEVE");
+		request.setProtocol("http");
+		request.setRequestingEntity(Constants.REQENTITY);
+		if(tID.length == 6){
+			// nscl/applications/configuration/manualconfiguration/device/<device id>/
+			request.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5]);
+			request.setRepresentation("");
+			resp = restClientService.sendRequest(request);
+			return new ResponseConfirm(StatusCode.STATUS_OK, body);
+		} else if(tID.length == 8){
+			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability/<capability id>
+			request.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5] + "capability/" + tID[7]);
+			request.setRepresentation("");
+			resp = restClientService.sendRequest(request);
+			return new ResponseConfirm(StatusCode.STATUS_OK, body);
+		}
+		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" ressource not found"));
 	}
 
 	@Override
 	// DELETE
 	public ResponseConfirm doDelete(RequestIndication requestIndication) {
-		// TODO Auto-generated method stub
-		return null;
+		String [] tID = requestIndication.getTargetID().split("/");
+		
+		ResponseConfirm resp = null;
+		RequestIndication request = new RequestIndication();
+		
+		request.setBase("");
+		request.setMethod("RETRIEVE");
+		request.setProtocol("http");
+		request.setRequestingEntity(Constants.REQENTITY);
+		if(tID.length == 8){
+			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability/<capability id>
+			request.setTargetID("gscl/applications/CIMA/devices/unknown" + tID[5] + "capability/" + tID[7]);
+			resp = restClientService.sendRequest(request);
+			return new ResponseConfirm(StatusCode.STATUS_OK, "ressource " + tID[7] + " deleted");
+		}
+		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" ressource not found"));
 	}
 
 	@Override
 	// POST with body
 	public ResponseConfirm doCreate(RequestIndication requestIndication) {
-		// TODO Auto-generated method stub
-		return null;
+		String [] tID = requestIndication.getTargetID().split("/");
+		
+		ResponseConfirm resp = null;
+		RequestIndication request = new RequestIndication();
+		
+		request.setBase("");
+		request.setMethod("RETRIEVE");
+		request.setProtocol("http");
+		request.setRequestingEntity(Constants.REQENTITY);
+		if(tID.length == 6){
+			// nscl/applications/configuration/manualconfiguration/device/<device id>/test
+			request.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5] + "/test");
+			request.setRepresentation("");
+			resp = restClientService.sendRequest(request);
+			return new ResponseConfirm(StatusCode.STATUS_OK, "blablabla");
+		}
+		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" ressource not found"));
 	}
 
 	@Override

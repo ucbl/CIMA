@@ -145,27 +145,22 @@ public class DeviceDiscovery implements DiscoveryService{
 
 					Device device =  Parser.parseXmlDevice(representation);
 					deviceService.addDevice(device);
-					deviceService.sendDeviceToNSCL(device, clientService);
 					mapConnectedAddresses.put(address, device.getId());
 
-//					requestIndication.setRepresentation(device.toObixFormat());
-//
-//					requestIndication.setMethod(Constants.METHOD_CREATE);
-//					requestIndication.setBase("http://127.0.0.1:8080/om2m");
-//					requestIndication.setTargetID("/nscl/applications/CIMANSCL/devices");
-//					requestIndication.setRequestingEntity(ADMIN_REQUESTING_ENTITY);
-//
-//					
-//					// Envoi des infos du device au controleur du nscl
-//					 
-//					responseConfirm = clientService.sendRequest(requestIndication);
+					requestIndication.setRepresentation(device.toObixFormat());
+
+					requestIndication.setMethod(Constants.METHOD_CREATE);
+					requestIndication.setBase("http://127.0.0.1:8080/om2m");
+					requestIndication.setTargetID("/nscl/applications/CIMANSCL/devices");
+					requestIndication.setRequestingEntity(ADMIN_REQUESTING_ENTITY);
+
+					/**
+					 * Envoi des infos du device au controleur du nscl
+					 */
+					responseConfirm = clientService.sendRequest(requestIndication);
 
 					
-				//	new CIMAInternalCommunication().sendInfos(device.getContactInfo().getCloud_port()+"-8080-192.168.0.2");
-				}
-				else {
-					Device device = new Device(address, Constants.MOD_IP);
-					deviceService.addUnknownDevice(device);
+					new CIMAInternalCommunication().sendInfos(device.getContactInfo().getCloud_port()+"-8080-192.168.0.2");
 				}
 				LOGGER.info(responseConfirm);
 			}catch(Exception e) {

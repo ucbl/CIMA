@@ -71,7 +71,25 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 			//...
 			deferred.resolve();
 			return deferred.promise;
+		},
+
+		//modifie une capacité
+		modifyCapability : function(idDevice, capacity){
+			var deferred = $q.defer();
+			alert('PUT /manualconfiguration/device/'+idDevice+'/capability/'+capacity.id+"/"+ capacity);
+			//...
+			deferred.resolve();
+			return deferred.promise;
+		},
+
+		removeCapacity : function(idDevice, idCapacity){
+			var deferred = $q.defer();
+			alert('DELETE /manualconfiguration/device/'+idDevice+'/capability/'+idCapacity+"/");
+			//...
+			deferred.resolve();
+			return deferred.promise;
 		}
+
 	};
 return factory;
 

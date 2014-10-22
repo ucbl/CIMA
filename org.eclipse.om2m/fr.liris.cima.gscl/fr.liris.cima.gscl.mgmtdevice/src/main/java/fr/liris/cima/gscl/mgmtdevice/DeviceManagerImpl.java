@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.om2m.comm.service.RestClientService;
 import org.eclipse.om2m.commons.resource.Application;
 import org.eclipse.om2m.commons.resource.Container;
 import org.eclipse.om2m.commons.resource.ContentInstance;
@@ -186,22 +185,6 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 		device.setId("ev3");
 		unknownDevices.add(device);
 
-	}
-
-	@Override
-	public void sendDeviceToNSCL(Device device, RestClientService clientService) {
-		RequestIndication requestIndication = new RequestIndication();
-		requestIndication.setRepresentation(device.toObixFormat());
-
-		requestIndication.setMethod(Constants.METHOD_CREATE);
-		requestIndication.setBase("http://127.0.0.1:8080/om2m");
-		requestIndication.setTargetID("/nscl/applications/CIMANSCL/devices");
-		requestIndication.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);
-		
-		/**
-		 * Envoi des infos du device au controleur du nscl
-		 */
-		clientService.sendRequest(requestIndication);
 	}
 
 }

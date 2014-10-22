@@ -121,50 +121,6 @@ public class Parser {
 		return device;
 	}
 	
-	public static Device parseObixToDevice(String obixFormat) {
-		
-		Device device = null;
-		try {
-			XParser parser = XParser.make(obixFormat.trim());
-			XElem root = parser.parse();
-			XElem deviceElem = root.elem(0);
-			//XElem capabilitiesElem = deviceElem.get(arg0)
-			
-			for(XElem xElem : deviceElem.elems()){
-				if(xElem.attrValue(0).equals("id")) {
-				//	System.out.println( xElem.attrValue(1));
-				}
-				if(xElem.attrValue(0).equals("protocol")) {
-					//System.out.println( xElem.attrValue(1));
-				}
-				if(xElem.attrValue(0).equals("url")) {
-				//	System.out.println( xElem.attrValue(1));
-				}
-				
-				if(xElem.get("name").equals("capabilities")) {
-					for(XElem child : xElem.elems()) {
-						String capabilityId = child.elem(0).attrValue(1);
-						System.out.println("capabilityId = "+capabilityId );
-						if(child.elem(1).get("name").equals("protocol")) {
-							System.out.println( child.elem(1).elem(0).attrValue(1));
-						}
-
-						// System.out.println( child.elem(1).attrValue(1));
-
-					}
-					
-					System.out.println( "OKKKKKKKKK");
-				}
-
-			}
-
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		return device;
-	}
-	
 	public static Device ParseJsonToDevice(String jsonFormat) {
 		Device device = new Device("ev3", "http://192.168.0.2", "http");
 		device.setId("ev3");
@@ -193,7 +149,7 @@ public class Parser {
 			
 	}
 	
-	public static Device parseObixToDevice1(String obixFormat) throws Exception {
+	public static Device parseObixToDevice(String obixFormat) throws Exception {
 
 		try {
 			XParser parser = XParser.make(obixFormat);
@@ -228,34 +184,14 @@ public class Parser {
 		String representation = "<device>"+
 				"<name>ev3</name>"+
 				"<modeConnection>http</modeConnection>"+
-				"<dateConnection>mercredi, oct. 22, 2014 13:52:20 PM</dateConnection>"+
 				"<uri>192.168.43.34</uri> "+
 				"<server>http://127.0.0.1:8282</server>"+
 				"</device>";
 		
 		Device device = new Device("ev3", "localhost", "http");
 		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
-		System.out.println(Parser.parseXmlDevice(representation));
+		System.out.println(device.toObixFormat());
 		System.out.println(formatter.format(new Date()));
-		
-		
-		String obixFormat = "<obj>"+
-                "<obj name=\"device\">" +
-                    "<str name=\"id\" val=\"DEVICE_0\"/>"+
-                    "<str name=\"protocol\" val=\"http\"/>"+
-                    "<str name=\"url\" val=\"192.168.43.34:/device/capabilities/\"/>"+
-                     "<list name=\"capabilities\">"+
-                        "<obj>"+
-                          "<str name=\"id\" val=\"ev3Back\"/>"+
-	                        "<obj name=\"protocol\">"+
-	                        	"<str name=\"protocoleName\" val=\"http\"/>"+
-	                        "</obj>"+
-	                     "</obj>"+
-                      "</list>"+                
-                "</obj>"+
-				"</obj>";
-		
-		parseObixToDevice(obixFormat);
 		
 
 	}
