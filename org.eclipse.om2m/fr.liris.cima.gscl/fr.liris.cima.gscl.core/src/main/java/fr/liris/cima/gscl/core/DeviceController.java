@@ -66,7 +66,7 @@ public class DeviceController implements IpuService{
 					requestIndication.setBase(device.getUri());
 					requestIndication.setTargetID("");
 				//	requestIndication.setTargetID("/"+Constants.PATH_CAPABILITIES+"/"+Constants.PATH_INVOKE+"/"+capabilityName);
-					requestIndication.setProtocol(device.getProtocol());
+					requestIndication.setProtocol(device.getModeConnection());
 					LOGGER.info("send request for executing capabilities");
 					ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
 				//	ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
@@ -108,13 +108,18 @@ public class DeviceController implements IpuService{
 				requestIndication.setTargetID("capabilities");
 				//requestIndication.setTargetID("/"+Constants.PATH_CAPABILITIES);
 				requestIndication.setMethod(Constants.METHOD_RETRIEVE);
-				requestIndication.setProtocol(device.getProtocol());
+				requestIndication.setProtocol(device.getModeConnection());
 				LOGGER.info("send request for getting capabilities");
 				ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
 				responseConfirm.getRepresentation();
 				return responseConfirm;
 			}
 		}
+		if(infos[infos.length - 2].equals(Constants.PATH_UNKNOWN_DEVICES)){
+			LOGGER.info("*********PATH_UNKNOWN_DEVICES ****");
+		}
+
+			
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_IMPLEMENTED,requestIndication.getMethod()+" Method not Implemented"));
 	}
 
