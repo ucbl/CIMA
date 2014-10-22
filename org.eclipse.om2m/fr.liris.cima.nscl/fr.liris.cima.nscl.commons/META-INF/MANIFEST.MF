@@ -19,5 +19,5 @@ Bundle-ClassPath: .,
 Export-package: fr.liris.cima.nscl.commons,
  fr.liris.cima.nscl.commons.constants,
  fr.liris.cima.nscl.commons.encoder,
- fr.liris.cima.nscl.commons.subscriber,
- fr.liris.cima.nscl.commons.parser
+ fr.liris.cima.nscl.commons.parser,
+ fr.liris.cima.nscl.commons.subscriber
