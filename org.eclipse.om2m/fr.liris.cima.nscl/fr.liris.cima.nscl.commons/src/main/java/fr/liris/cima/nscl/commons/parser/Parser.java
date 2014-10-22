@@ -11,13 +11,90 @@ import org.jdom2.input.SAXBuilder;
 
 import obix.xml.XElem;
 import obix.xml.XParser;
+import java.io.FileReader;
+import java.util.Iterator;
+import obix.Obj;
+import obix.Str;
+import obix.io.ObixEncoder;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import fr.liris.cima.nscl.commons.Device;
 import fr.liris.cima.nscl.commons.ContactInfo;
 import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
+import java.util.Iterator;
 
 public class Parser {
-
+    public static Obj parseJSON_To_Obix_Device(JSONObject jsonObject) {
+         // oBIX
+			Obj obj_Device = new Obj("Device");
+         
+         obj_Device.add(new Str("id", (String) jsonObject.get("id")));
+         obj_Device.add(new Str("name", (String) jsonObject.get("name")));
+         obj_Device.add(new Str("uri", (String) jsonObject.get("uri")));
+         obj_Device.add(new Str("dateConnection", (String) jsonObject.get("dateConnection")));
+         obj_Device.add(new Str("modeConnection", (String) jsonObject.get("modeConnection")));
+         obix.List list = new obix.List("Capabilities");
+        
+		try {
+			JSONArray capabilities= (JSONArray) jsonObject.get("capabilities");
+			Iterator capacity = capabilities.iterator();
+                           int i=0;
+			
+			while (capacity.hasNext()) {
+                                JSONObject capacity_tmp = (JSONObject) capacity.next();
+                                list.add(parseJSON_To_Obix_Capacity(capacity_tmp));
+                                        
+			
+		} }
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+                  obj_Device.add(list);
+		return obj_Device;
+	}
+    
+     public static Obj parseJSON_To_Obix_Capacity(JSONObject capacity) {
+                     Obj obj_capacity = new Obj();
+        
+		try {
+                                obj_capacity.add(new Str("id",(String)capacity.get("id")));
+                                obj_capacity.add(parseJSON_To_Obix_Protocol((JSONObject) capacity.get("protocol")));
+			
+		} 
+     
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return obj_capacity;
+	}
+      public static Obj parseJSON_To_Obix_Protocol(JSONObject protocol_info) {
+        
+                Obj obj_Protocol = new Obj();
+        
+		try {           
+                                obj_Protocol.setName("protocol");
+                                obj_Protocol.add(new Str("protocoleName",(String)protocol_info.get("protocoleName")));
+                                JSONArray parameters=(JSONArray)protocol_info.get("parameters");
+                                
+                                    Iterator parameter = parameters.iterator();
+                                        while (parameter.hasNext()) {
+                                            JSONObject parameter_tmp = (JSONObject) parameter.next();
+                                            String nam = (String)parameter_tmp.get("name");
+                                            String value = (String)parameter_tmp.get("value");
+                                            obj_Protocol.add(new Str(nam,value));
+                                           }
+                                        
+			
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return obj_Protocol;
+	}
+           
 	public static Device parseObixToDevice(String obixFormat)  {
 
 		Device device = null;
