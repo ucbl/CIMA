@@ -115,8 +115,32 @@ public class DeviceController implements IpuService{
 				return responseConfirm;
 			}
 		}
+		else if(infos[infos.length - 1].equals(Constants.PATH_UNKNOWN_DEVICES)){
+				LOGGER.info("******** /manualconfiguration/device/ ***********");
+		}
 
+		else if(infos[infos.length - 2].equals(Constants.PATH_UNKNOWN_DEVICES)){
+			//if(lastInfo.equals("capability")) {
+			LOGGER.info("******** /manualconfiguration/device/<id d'un device>***********");
+			//}
 
+		}
+		
+		else if(infos[infos.length - 3].equals(Constants.PATH_UNKNOWN_DEVICES)){
+			if(lastInfo.equals("capability")) {
+			LOGGER.info("******** /manualconfiguration/device/<id d'un device>/capability***********");
+			}
+
+		}
+
+		else if(infos[infos.length - 4].equals(Constants.PATH_UNKNOWN_DEVICES )){
+			if(infos[infos.length - 2].equals("capability")) {
+				LOGGER.info("********  /manualconfiguration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
+			}
+		}
+		else if(lastInfo.equals("protocol")) {
+			LOGGER.info("********  /manualconfiguration/protocol  ***********");
+		}
 
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_IMPLEMENTED,requestIndication.getMethod()+" Method not Implemented"));
 	}
@@ -130,7 +154,7 @@ public class DeviceController implements IpuService{
 	public ResponseConfirm doUpdate(RequestIndication requestIndication) {
 		String[] infos = requestIndication.getTargetID().split("/");
 		int length = infos.length;
-		
+
 		ResponseConfirm confirm = new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST, ""));
 
 		if(infos[infos.length - 1].equals(Constants.PATH_UNKNOWN_DEVICES)){
@@ -171,15 +195,27 @@ public class DeviceController implements IpuService{
 	 */
 	@Override
 	public ResponseConfirm doCreate(RequestIndication requestIndication) {
-		String representation = requestIndication.getRepresentation();
-		Device device = Parser.parseXmlDevice(representation);
 
-		if(device != null) {
-			LOGGER.info("***DEVICE TO OBIX FORMAT***");
-			LOGGER.info(device.toObixFormat());
-			managerImpl.addDevice(device);
+		String []infos = requestIndication.getTargetID().split("/");
+		String lastInfo = infos[infos.length - 1];
+
+		String representation = requestIndication.getRepresentation();
+		
+		if(lastInfo.equals(Device.APOCPATH)) {
+			Device device = Parser.parseXmlDevice(representation);
+
+			if(device != null) {
+				LOGGER.info("***DEVICE TO OBIX FORMAT***");
+				LOGGER.info(device.toObixFormat());
+				managerImpl.addDevice(device);
+			}
 		}
-		LOGGER.info(requestIndication);
+		else if(infos[infos.length - 3].equals(Constants.PATH_UNKNOWN_DEVICES)){
+			if(lastInfo.equals("test")) {
+				LOGGER.info("********  /manualconfiguration/device/<id d'un device>/test  ***********");
+			}
+		}
+
 		ResponseConfirm confirm = new ResponseConfirm(StatusCode.STATUS_OK,"Device created successfully");
 		LOGGER.info("confirm *** "+ confirm);
 		LOGGER.info("url ***"+requestIndication.getUrl());

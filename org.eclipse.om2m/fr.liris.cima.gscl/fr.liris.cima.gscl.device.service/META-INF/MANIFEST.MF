@@ -5,6 +5,7 @@ Bundle-SymbolicName: fr.liris.cima.gscl.device.service
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.om2m.commons,
- fr.liris.cima.gscl.commons
+ fr.liris.cima.gscl.commons,
+ org.eclipse.om2m.comm.service
 Export-package: fr.liris.cima.gscl.device.service,
  fr.liris.cima.gscl.device.service.discovery
