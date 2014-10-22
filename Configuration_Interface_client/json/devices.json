@@ -13,7 +13,7 @@
                         "protocolName":"HTTP",
                         "parameters": [{
                             "name": "URI",
-                            "value": ""
+                            "value": "/HUHUHUH"
                         }
                         ]            
                     }
@@ -35,6 +35,10 @@
                         "parameters": [{
                             "name": "URI",
                             "value": "/mass.com"
+                        },
+                        {
+                            "name": "URL",
+                            "value": "www./mass.com"
                         }
                         ]            
                     }
