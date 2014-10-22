@@ -58,6 +58,14 @@
       <plugin id="org.eclipse.om2m.webapp.resourcesbrowser"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="fr.liris.cima.nscl.controller"/>
+      <plugin id="fr.liris.cima.nscl.avatarbuilder"/>
+      <plugin id="fr.liris.cima.nscl.proto"/>
+      <plugin id="fr.liris.cima.nscl.commons"/>
+      <plugin id="fr.liris.cima.nscl.device.service"/>
+      <plugin id="fr.liris.cima.nscl.mgmtdevice"/>
+      <plugin id="fr.liris.cima.comm.http"/>
+      <plugin id="fr.liris.cima.nscl.core"/>
    </plugins>
 
    <configurations>
@@ -70,6 +78,12 @@
       <plugin id="org.eclipse.om2m.comm.http" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.om2m.core" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.om2m.webapp.resourcesbrowser" autoStart="true" startLevel="3" />
+      <plugin id="fr.liris.cima.nscl.avatarbuilder" autoStart="true" startLevel="4" />
+      <plugin id="fr.liris.cima.nscl.proto" autoStart="false" startLevel="4" />
+      <plugin id="fr.liris.cima.nscl.controller" autoStart="false" startLevel="5" />
+      <plugin id="fr.liris.cima.nscl.mgmtdevice" autoStart="true" startLevel="4" />
+      <plugin id="fr.liris.cima.comm.http" autoStart="true" startLevel="4" />
+      <plugin id="fr.liris.cima.nscl.core" autoStart="true" startLevel="5" />
       <property name="org.eclipse.equinox.http.jetty.http.port" value="8080" />
       <property name="org.eclipse.om2m.adminRequestingEntity" value="admin:admin" />
       <property name="org.eclipse.om2m.dbFile" value="nscl.db4o" />
