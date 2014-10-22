@@ -85,5 +85,9 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 		});
 	}
 
+	$scope.editCapacity = function(capacity){
+		$scope.editme= true;
+		$scope.capability = capacity;
+	}
 
 });

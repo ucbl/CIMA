@@ -13,7 +13,7 @@
 		<p>
 		<strong>Name</strong>
 		<input class="control" type="text"  ng-disabled="!isEditable" ng-model="name"/> 
-		<input class="control" type="checkbox" ng-model="isEditable">  Edit.
+		<input class="control" type="checkbox" ng-model="isEditable">  Edit
 		<br>
 		<i ng-show="isEditable">Note : changes will be effective after apply changes.</i>
 		</p>
@@ -34,24 +34,27 @@
 	            <td>{{capability.id}}</td>
 	            <td>{{capability.protocol.protocolName}}</td>
 	            <td>
-		            <input class="btn btn-sm btn btn-info" type="submit" value="Edit"  ng-click="editme=!editme"/>
-		            <!-- DIV POUR EDITER CAPACITE -->
-			        <div class="check-element animate-show" ng-show="editme">
-			            <form ng-submit="modifyCapability()">
-			                <pre>{{capability.id}} </pre>
-			                <pre> {{capability.protocol}} </pre>
-			                <!-- <Strong> {{capability.id}} </Strong>
-			                 <Strong> {{capability.protocol}} </Strong>-->
-			                <input st-search="" class="form-control"  style="width: 40%" type="text" placeholder="uri" ng-model="modifyCapability.uri"/>
-			                <br>
-			                <input  type="submit" value="Ok"  ng-click="editme=false"/>
-			            </form>
-			        </div>
+		            <input class="btn btn-sm btn btn-info" type="submit" value="Edit"  ng-click="editCapacity(capability)"/>
             	</td>
 	        </tr>
 	        </tbody>
 	    </table>
-		<hr>
+
+		<!-- DIV POUR EDITER CAPACITE -->
+        <div class="check-element animate-show" ng-show="editme">
+        <hr>
+            <form ng-submit="modifyCapability()">
+                <strong>ID : {{capability.id}} </strong>
+                <br>
+                Protocol type : {{capability.protocol.protocolName}}
+                <input st-search="" class="form-control"  style="width: 40%" type="text" placeholder="uri" ng-model="modifyCapability.uri"/>
+                <br>
+                <input class="btn btn-success pull-right" type="submit" value="Apply changes"  ng-click="editme=false"/>
+                <br>
+            </form>
+        </div>
+
+        <hr>
 
 	    <button type="button"  ng-click="showme=!showme" class="btn btn-default btn btn-primary">Create new capability</button>
     	<button ng-click="showme=false" ng-show="showme" class="btn btn-default btn-danger">Undo</button><br>
