@@ -46,10 +46,18 @@ public class M2MPocDAO extends DAO<M2MPoc> {
     public void create(M2MPoc resource) {
         // Store the created resource
         DB.store(resource);
+     // Create the query based on the uri constraint
+        Query query = DB.query();
+        query.constrain(M2MPocs.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getId())[0]);
+        // Store all the founded resources
+        ObjectSet<M2MPocs> result = query.execute();
+        
         // Update the lastModifiedTime attribute of the parent
-        M2MPocs m2mPocs = DAOFactory.getM2MPocsDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
-        m2mPocs.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(m2mPocs.getLastModifiedTime());
+        M2MPocs m2mPocs = result.get(0);
+        // Update the lastModifiedTime attribute of the parent
+        m2mPocs.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(m2mPocs);
         // Validate the current transaction
         commit();
     }
@@ -91,10 +99,18 @@ public class M2MPocDAO extends DAO<M2MPoc> {
         // Store the updated resource
         DB.store(resource);
 
+     // Create the query based on the uri constraint
+        Query query = DB.query();
+        query.constrain(M2MPocs.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getId())[0]);
+        // Store all the founded resources
+        ObjectSet<M2MPocs> result = query.execute();
+        
         // Update the lastModifiedTime attribute of the parent
-        M2MPocs m2mPocs = DAOFactory.getM2MPocsDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
-        m2mPocs.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(m2mPocs.getLastModifiedTime());
+        M2MPocs m2mPocs = result.get(0);
+        // Update the lastModifiedTime attribute of the parent
+        m2mPocs.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(m2mPocs);
         // Validate the current transaction
         commit();
     }
@@ -118,9 +134,17 @@ public class M2MPocDAO extends DAO<M2MPoc> {
         // Delete the resource
         DB.delete(resource);
 
+     // Create the query based on the uri constraint
+        Query query = DB.query();
+        query.constrain(M2MPocs.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getId())[0]);
+        // Store all the founded resources
+        ObjectSet<M2MPocs> result = query.execute();
+        
         // Update the lastModifiedTime attribute of the parent
-        M2MPocs m2mPocs = DAOFactory.getM2MPocsDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
-        m2mPocs.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(m2mPocs.getLastModifiedTime());
+        M2MPocs m2mPocs = result.get(0);
+        // Update the lastModifiedTime attribute of the parent
+        m2mPocs.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(m2mPocs);
     }
 }

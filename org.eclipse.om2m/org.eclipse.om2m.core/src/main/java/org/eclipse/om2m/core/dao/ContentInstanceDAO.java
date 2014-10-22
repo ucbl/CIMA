@@ -1,21 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2013-2014 LAAS-CNRS (www.laas.fr) 
+ * Copyright (c) 2013-2014 LAAS-CNRS (www.laas.fr)
  * 7 Colonel Roche 31077 Toulouse - France
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
- *     Thierry Monteil (Project co-founder) - Management and initial specification, 
- * 		conception and documentation.
- *     Mahdi Ben Alaya (Project co-founder) - Management and initial specification, 
- * 		conception, implementation, test and documentation.
+ *     Thierry Monteil (Project co-founder) - Management and initial specification,
+ *         conception and documentation.
+ *     Mahdi Ben Alaya (Project co-founder) - Management and initial specification,
+ *         conception, implementation, test and documentation.
  *     Christophe Chassot - Management and initial specification.
  *     Khalil Drira - Management and initial specification.
- *     Yassine Banouar - Initial specification, conception, implementation, test 
- * 		and documentation.
+ *     Yassine Banouar - Initial specification, conception, implementation, test
+ *         and documentation.
  ******************************************************************************/
 package org.eclipse.om2m.core.dao;
 
@@ -33,7 +33,7 @@ import com.db4o.query.Query;
  *
  * @author <ul>
  *         <li>Yessine Feki < yfeki@laas.fr > < yessine.feki@ieee.org ></li>
- *         <li>Mahdi Ben Alaya < ben.alaya@laas.fr > < benalaya.mahdi@gmail.com ></li>  
+ *         <li>Mahdi Ben Alaya < ben.alaya@laas.fr > < benalaya.mahdi@gmail.com ></li>
  *         <li>Yassine Banouar < ybanouar@laas.fr > < yassine.banouar@gmail.com ></li>
  *         </ul>
  */
@@ -44,21 +44,28 @@ public class ContentInstanceDAO extends DAO<ContentInstance> {
      * @param resource - The {@link ContentInstance} resource to create
      */
     public void create(ContentInstance resource) {
-        // Store the created resource
+    	 // Store the created resource
         DB.store(resource);
         // Update the lastModifiedTime attribute of the parent
-        ContentInstances contentInstances = DAOFactory.getContentInstancesDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
+        Query query = DB.query();
+        query.constrain(ContentInstances.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getId())[0]);
+        // Store all the founded resources
+        ObjectSet<ContentInstances> result = query.execute();
+		// Retrieve the first element corresponding to the researched resource
+		// if result is not empty
+		ContentInstances contentInstances = result.get(0);
 
-        contentInstances.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        // Add ContentSize to currentSize of the ContentInstances
-        contentInstances.setCurrentByteSize(contentInstances.getCurrentByteSize()+resource.getContentSize());
-        // Increment the currentInstances
-        contentInstances.setCurrentNrOfInstances(contentInstances.getCurrentNrOfInstances()+1);
-        // Update
-        DB.store(contentInstances);
-        // Validate the current transaction
-        commit();
+		contentInstances.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+		// Add ContentSize to currentSize of the ContentInstances
+		contentInstances.setCurrentByteSize(contentInstances.getCurrentByteSize() + resource.getContentSize());
+		// Increment the currentInstances
+		contentInstances.setCurrentNrOfInstances(contentInstances.getCurrentNrOfInstances() + 1);
+		// Update
+		DB.store(contentInstances);
 
+		// Validate the current transaction
+		commit();    
     }
 
     /**
@@ -116,9 +123,16 @@ public class ContentInstanceDAO extends DAO<ContentInstance> {
         // Store the updated resource
         DB.store(resource);
         // Update the lastModifiedTime attribute of the parent
-        ContentInstances contentInstances = DAOFactory.getContentInstancesDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
-        contentInstances.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(contentInstances.getLastModifiedTime());
+        Query query = DB.query();
+        query.constrain(ContentInstances.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getId())[0]);
+        // Store all the founded resources
+        ObjectSet<ContentInstances> result = query.execute();
+		// Retrieve the first element corresponding to the researched resource
+		// if result is not empty
+		ContentInstances contentInstances = result.get(0);
+        contentInstances.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(contentInstances);
         // Validate the current transaction
         commit();
     }
@@ -139,10 +153,16 @@ public class ContentInstanceDAO extends DAO<ContentInstance> {
      * @param resource - The {@link ContentInstance} resource to delete
      */
     public void lazyDelete(ContentInstance resource){
+    	// Update the lastModifiedTime attribute of the parent
+        Query query = DB.query();
+        query.constrain(ContentInstances.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getId())[0]);
+        // Store all the founded resources
+        ObjectSet<ContentInstances> result = query.execute();
         // Update Parent
-        ContentInstances contentInstances = DAOFactory.getContentInstancesDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
+        ContentInstances contentInstances = result.get(0);
         // Update the lastModifiedTime attribute of the parent
-        contentInstances.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
+        contentInstances.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
         //subtract ContentSize to currentSize of the ContentInstances
         contentInstances.setCurrentByteSize(contentInstances.getCurrentByteSize()-resource.getContentSize());
         //Decrement the currentInstances

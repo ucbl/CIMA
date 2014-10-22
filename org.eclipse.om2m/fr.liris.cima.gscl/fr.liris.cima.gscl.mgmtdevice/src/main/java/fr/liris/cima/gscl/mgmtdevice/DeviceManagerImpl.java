@@ -35,9 +35,7 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 
 	
 	static List<Device> devices;
-	
-	static List<Device> unknownDevices;
-	
+
 	public DeviceManagerImpl() {
 		
 	}
@@ -45,13 +43,11 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 	public DeviceManagerImpl(SclService scl){
 		SCL = scl;
 		devices = new ArrayList<>();
-		unknownDevices = new ArrayList<>();
 	}
 	
 	public static void init(SclService scl) {
 		SCL = scl;
 		devices = new ArrayList<>();
-		unknownDevices = new ArrayList<>();
 	}
 
 	@Override
@@ -126,44 +122,38 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 
 	@Override
 	public void addKnownDevice(Device device) {
-		devices.add(device);
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void removeKnownDevice(Device device) {
-		devices.remove(device);		
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public Device getKnownDevice(String deviceId) {
-		for(Device device: devices) {
-			if(device.getId().equals(deviceId))
-				return device;
-		}
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void removeUnknownDevice(Device device) {
-		unknownDevices.remove(device);				
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void addUnknownDevice(Device device) {
-		unknownDevices.add(device);		
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public void removeUnknownDeviceById(String deviceId) {
+	public void removeUnknownDeviceById(String id) {
+		// TODO Auto-generated method stub
 		
-	}
-	
-	public Device getUnknownDevice(String deviceId) {
-		for(Device device: unknownDevices) {
-			if(device.getId().equals(deviceId))
-				return device;
-		}
-		return null;
 	}
 
 }

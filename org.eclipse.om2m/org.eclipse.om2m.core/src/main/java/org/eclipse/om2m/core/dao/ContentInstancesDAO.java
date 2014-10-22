@@ -23,6 +23,7 @@ import org.eclipse.om2m.commons.resource.ContentInstance;
 import org.eclipse.om2m.commons.resource.ContentInstances;
 import org.eclipse.om2m.commons.resource.Subscriptions;
 
+import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import com.db4o.query.Query;
 
@@ -42,6 +43,7 @@ public class ContentInstancesDAO extends DAO<ContentInstances> {
      * @param resource - The {@link ContentInstances} collection resource to create
      */
     public void create(ContentInstances resource) {
+    	
         //Set subscriptions reference
         resource.setSubscriptionsReference(resource.getUri()+"/subscriptions");
         // Store the created resource
@@ -62,8 +64,9 @@ public class ContentInstancesDAO extends DAO<ContentInstances> {
         ContentInstances contentInstances = lazyFind(uri);
 
         if(contentInstances != null){
+        	ObjectContainer session = DB.ext().openSession();
             // Find contentInstance sub-resources and add their references
-            Query query = DB.query();
+            Query query = session.query();
             query.constrain(ContentInstance.class);
             query.descend("uri").constrain(uri).startsWith(true);
             ObjectSet<ContentInstance> result = query.execute();
@@ -73,6 +76,8 @@ public class ContentInstancesDAO extends DAO<ContentInstances> {
             }
         }
         return contentInstances;
+
+        
     }
 
     /**
@@ -81,8 +86,11 @@ public class ContentInstancesDAO extends DAO<ContentInstances> {
      * @return The requested {@link ContentInstances} collection resource otherwise null
      */
     public ContentInstances lazyFind(String uri) {
+
+    	ObjectContainer session = DB.ext().openSession();
+
         // Create the query based on the uri constraint
-        Query query = DB.query();
+        Query query = session.query();
         query.constrain(ContentInstances.class);
         query.descend("uri").constrain(uri);
         // Store all the founded resources
@@ -91,8 +99,10 @@ public class ContentInstancesDAO extends DAO<ContentInstances> {
         if (!result.isEmpty()) {
             return result.get(0);
         }
+
         // Return null if the resource is not found
         return null;
+        
     }
 
     /**

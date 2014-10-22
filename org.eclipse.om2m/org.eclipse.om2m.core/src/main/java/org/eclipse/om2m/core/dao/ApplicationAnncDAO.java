@@ -53,29 +53,36 @@ public class ApplicationAnncDAO extends DAO<ApplicationAnnc> {
         // Containers
         Containers containers = new Containers();
         containers.setUri(resource.getContainersReference());
-        containers.setCreationTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        containers.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
+        containers.setCreationTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        containers.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
         containers.setAccessRightID(resource.getAccessRightID());
         DAOFactory.getContainersDAO().create(containers);
         // AccessRights
         AccessRights accessRights = new AccessRights();
         accessRights.setUri(resource.getAccessRightsReference());
-        accessRights.setCreationTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        accessRights.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
+        accessRights.setCreationTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        accessRights.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
         accessRights.setAccessRightID(resource.getAccessRightID());
         DAOFactory.getAccessRightsDAO().create(accessRights);
         // Groups
         Groups groups = new Groups();
         groups.setUri(resource.getGroupsReference());
-        groups.setCreationTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        groups.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
+        groups.setCreationTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        groups.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
         groups.setAccessRightID(resource.getAccessRightID());
         DAOFactory.getGroupsDAO().create(groups);
+     // Create the query based on the uri constraint
+        Query query = DB.query();
+        query.constrain(Applications.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getId())[0]);
+        // Store all the founded resources
+        ObjectSet<Applications> result = query.execute();
+        
         // Update the lastModifiedTime attribute of the parent
-        Applications applications = DAOFactory.getApplicationsDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
-        applications.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(applications.getLastModifiedTime());
-        // Validate the current transaction
+        Applications applications = result.get(0);
+        // Update the lastModifiedTime attribute of the parent
+        applications.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(applications);
         commit();
     }
 
@@ -115,11 +122,18 @@ public class ApplicationAnncDAO extends DAO<ApplicationAnnc> {
     public void update(ApplicationAnnc resource) {
         // Store the updated resource
         DB.store(resource);
+        // Create the query based on the uri constraint
+        Query query = DB.query();
+        query.constrain(Applications.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getId())[0]);
+        // Store all the founded resources
+        ObjectSet<Applications> result = query.execute();
+        
         // Update the lastModifiedTime attribute of the parent
-        Applications applications = DAOFactory.getApplicationsDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
-        applications.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(applications.getLastModifiedTime());
-        // Validate the current transaction
+        Applications applications = result.get(0);
+        // Update the lastModifiedTime attribute of the parent
+        applications.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(applications);
         commit();
     }
 
@@ -147,10 +161,18 @@ public class ApplicationAnncDAO extends DAO<ApplicationAnnc> {
         DAOFactory.getGroupsDAO().lazyDelete(DAOFactory.getGroupsDAO().lazyFind(resource.getGroupsReference()));
         // Delete the resource
         DB.delete(resource);
+        // Create the query based on the uri constraint
+        Query query = DB.query();
+        query.constrain(Applications.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getId())[0]);
+        // Store all the founded resources
+        ObjectSet<Applications> result = query.execute();
+        
         // Update the lastModifiedTime attribute of the parent
-        Applications applications = DAOFactory.getApplicationsDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
-        applications.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(applications.getLastModifiedTime());
+        Applications applications = result.get(0);
+        // Update the lastModifiedTime attribute of the parent
+        applications.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(applications);
 
     }
 }

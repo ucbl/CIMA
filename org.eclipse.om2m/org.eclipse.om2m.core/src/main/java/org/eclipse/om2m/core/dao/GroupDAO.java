@@ -45,6 +45,8 @@ public class GroupDAO extends DAO<Group>{
      * @param resource - The {@link Group} resource to create
      */
     public void create(Group resource) {
+    	synchronized(lock) {
+
         //Set subscriptions reference
         resource.setSubscriptionsReference(resource.getUri()+"/subscriptions");
         // Store the created resource
@@ -57,10 +59,10 @@ public class GroupDAO extends DAO<Group>{
 
         // Update the lastModifiedTime attribute of the parent
         Groups groups = DAOFactory.getGroupsDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
-        groups.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(groups.getLastModifiedTime());
-        // Validate the current transaction
-        commit();
+        groups.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(groups);
+        // Validat
+    	}
     }
 
     /**
@@ -69,6 +71,9 @@ public class GroupDAO extends DAO<Group>{
      * @return The requested {@link Group} resource otherwise null
      */
     public Group find(String uri) {
+    	
+    	synchronized(lock) {
+
         // Create the query based on the uri constraint
         Query query=DB.query();
         query.constrain(Group.class);
@@ -81,6 +86,7 @@ public class GroupDAO extends DAO<Group>{
         }
         // Return null if the resource is not found
         return null;
+    	}
     }
 
     /**
@@ -89,7 +95,10 @@ public class GroupDAO extends DAO<Group>{
      * @return The requested {@link Group} resource otherwise null
      */
     public Group lazyFind(String uri) {
+    	synchronized(lock) {
+
         return find(uri);
+    	}
     }
 
     /**
@@ -97,14 +106,17 @@ public class GroupDAO extends DAO<Group>{
      * @param resource - The {@link Group} the updated resource
      */
     public void update(Group resource) {
+    	synchronized(lock) {
+
         // Store the updated resource
         DB.store(resource);
         // Update the lastModifiedTime attribute of the parent
         Groups groups = DAOFactory.getGroupsDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
-        groups.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(groups.getLastModifiedTime());
+        groups.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(groups);
         // Validate the current transaction
         commit();
+    	}
     }
 
     /**
@@ -123,13 +135,16 @@ public class GroupDAO extends DAO<Group>{
      * @param resource - The {@link Group} resource to delete
      */
     public void lazyDelete(Group resource) {
+    	synchronized(lock) {
+
         // Delete subscriptions
         DAOFactory.getSubscriptionsDAO().lazyDelete(DAOFactory.getSubscriptionsDAO().lazyFind(resource.getSubscriptionsReference()));
         // Delete the resource
         DB.delete(resource);
         // Update the lastModifiedTime attribute of the parent
         Groups groups = DAOFactory.getGroupsDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
-        groups.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(groups.getLastModifiedTime());
+        groups.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(groups);
+    	}
     }
 }
