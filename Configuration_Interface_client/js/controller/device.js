@@ -94,13 +94,10 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 			alert('Votre device n\'a pas pu être sauvegardé');
 		});
 	}
-<<<<<<< local
-=======
 
 	$scope.editCapacity = function(capacity){
 		$scope.editme= true;
 		$scope.capability = capacity;
 	}
 
->>>>>>> other
 });
