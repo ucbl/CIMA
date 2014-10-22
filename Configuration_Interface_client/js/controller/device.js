@@ -50,6 +50,16 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 		
 		$scope.newCapability = {};
 	}
+        $scope.removeCapability = function removeCapability(row) {
+        var index = $scope.capabilities.indexOf(row);
+        if (index !== -1) {
+            $scope.capabilities.splice(index, 1);
+        }
+    }
+    $scope.verify =  function verify(){
+
+    }
+        $scope.editme = true;
 
 	//Fonction pour tester une capacité
 	$scope.testCapacity = function(){
@@ -84,10 +94,13 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 			alert('Votre device n\'a pas pu être sauvegardé');
 		});
 	}
+<<<<<<< local
+=======
 
 	$scope.editCapacity = function(capacity){
 		$scope.editme= true;
 		$scope.capability = capacity;
 	}
 
+>>>>>>> other
 });
