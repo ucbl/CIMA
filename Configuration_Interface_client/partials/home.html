@@ -1,36 +1,34 @@
 <div ng-hide='loading'>
+    <div class="col-xs-6" >
 
     <h1> <Strong>Unrecognized devices list</Strong> </h1><br>
     <th colspan="5">
-        <input ng-model="query" class="form-control" placeholder="Search a device..." type="text"  style="width: 40%" />
+        <input ng-model="query" class="form-control" placeholder="Search a device..." type="text"/>
     </th>
 
-    <table st-table="devices" class="table table-striped" style="width: 40%">
+    <table st-table="devices" class="table table-striped">
         <thead>
         <tr>
             <th>ID Device</th>
             <th>Name</th>
             <th>Last connection date</th>
             <th>Connection mode</th>
+            <th>URI</th>
         </tr>
         </thead>
+        <!-- Tableau de devices -->
         <tbody ng-repeat="device in devices | filter:query ">
         <tr>
             <td>{{device.id}}</td>
             <td>{{device.name}}</td>
             <td>{{device.lastConnectionDate}}</td>
             <td>{{device.connectionMode}}</td>
-
+            <td>{{device.uri}}</td>
             <td>
-                <!--<button type="button" ng-click="go('/device/{{device.id}}')" class="btn btn-sm btn-success">
-                    <i class="glyphicon glyphicon-remove-circle">
-                    </i> Configure
-
-                </button>-->
                 <a class="btn btn-sm btn-success" href="#/device/{{device.id}}"> Configure</a>
             </td>
         </tr>
         </tbody>
     </table>
-
+    </div>
 </div>
