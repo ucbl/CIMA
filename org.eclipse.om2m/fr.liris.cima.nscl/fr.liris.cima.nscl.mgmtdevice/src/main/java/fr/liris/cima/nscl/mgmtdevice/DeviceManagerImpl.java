@@ -93,6 +93,7 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 	public void start() {
 		LOGGER.info("Devices waiting for attachement..");
 		createManagerResources("CIMANSCL", "devices");
+		createManagerResources("configuration", "manualconfiguration");
 	}
 	
 	@Override

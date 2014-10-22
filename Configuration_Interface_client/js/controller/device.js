@@ -8,7 +8,10 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 		$rootScope.loading = false;
 		$scope.id = device.id;
 		$scope.name = device.name;
-		$scope.date = device.lastConnectionDate;
+		$scope.lastConnectionDate = device.lastConnectionDate;
+		$scope.connectionMode = device.connectionMode;
+		$scope.uri = device.uri;
+
 		$scope.capabilities = device.capabilities;
 
 	}, function(msg){
@@ -20,8 +23,16 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 	}, function(msg){
 		alert(msg);
 	})
+
+	//Fonction pour valider le formulaire et cacher ou on
+	$scope.check = function(){
+		if($scope.newCapability.id !=null && $scope.newCapability.protocol.protocolName != null && $scope.newCapability.protocol.parameters!= null){
+			$scope.showme = false;
+		}
+	}
 	
-	$scope.addCapability = function(){
+	//Fonction pour ajouter une capacité à l'objet
+	$scope.addCapacity = function(){
 		var cap = {};
 		cap.id = $scope.newCapability.id;
 		cap.protocol = {};
@@ -29,16 +40,67 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 		cap.protocol.parameters = $scope.newCapability.protocol.parameters;
 
 		$scope.capabilities.push(cap);
-		//$scope.capabilities.push($scope.newCapability);
-		//DeviceFactory.add($scope.newCapability).then(function(){
-		DeviceFactory.add(cap).then(function(){
+
+		DeviceFactory.addCapacity($scope.id,cap).then(function(){
 
 
 		}, function(){
-			alert('Votre capability n\'a pas pu être sauvegardé');
+			alert('Votre capacity n\'a pas pu être sauvegardé');
 		});
+		
 		$scope.newCapability = {};
 	}
+        $scope.removeCapability = function removeCapability(row) {
+        var index = $scope.capabilities.indexOf(row);
+        if (index !== -1) {
+            $scope.capabilities.splice(index, 1);
+        }
+    }
+    $scope.verify =  function verify(){
+
+    }
+        $scope.editme = true;
+
+	//Fonction pour tester une capacité
+	$scope.testCapacity = function(){
+		var cap = {};
+		cap.id = $scope.newCapability.id;
+		cap.protocol = {};
+		cap.protocol.protocolName = $scope.newCapability.protocol.protocolName;
+		cap.protocol.parameters = $scope.newCapability.protocol.parameters;
+		DeviceFactory.testCapacity($scope.id, cap).then(function(){
 
 
+		}, function(){
+			alert('Votre capacity n\'a pas pu être testé');
+		});
+	}
+
+	//Fonction pour sauvgarder le device
+	$scope.saveDevice = function(){
+		var device = {};
+
+		device.id = $scope.id;
+		device.name = $scope.name;
+		device.lastConnectionDate = $scope.lastConnectionDate;
+		device.connectionMode = $scope.connectionMode;
+		device.uri = $scope.uri;
+		device.capabilities = {};
+		device.capabilities = $scope.capabilities;
+
+		DeviceFactory.saveDevice(device).then(function(){
+
+		}, function(){
+			alert('Votre device n\'a pas pu être sauvegardé');
+		});
+	}
+<<<<<<< local
+=======
+
+	$scope.editCapacity = function(capacity){
+		$scope.editme= true;
+		$scope.capability = capacity;
+	}
+
+>>>>>>> other
 });

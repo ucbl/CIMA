@@ -44,9 +44,30 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 			
 			return deferred.promise;
 		},
-		//Ajoute/modifie un device (coté serveur)
-		add : function(device){
+
+		//test une capacité
+		testCapacity : function(idDevice, capacity){
 			var deferred = $q.defer();
+			alert('POST /manualconfiguration/device/'+ idDevice+'/test'+ capacity);
+			//...
+			deferred.resolve();
+			return deferred.promise;
+		},
+
+		//ajout d' une capacité
+		addCapacity : function(idDevice, capacity){
+			var deferred = $q.defer();
+			alert('PUT /manualconfiguration/device/'+idDevice+'/capability/'+capacity.id+"/"+ capacity);
+			//...
+			deferred.resolve();
+			return deferred.promise;
+		},
+
+
+		//Ajoute/modifie un device (coté serveur)
+		saveDevice : function(device){
+			var deferred = $q.defer();
+			alert('PUT /manualconfiguration/device/'+device.id+'/'+ device);
 			//...
 			deferred.resolve();
 			return deferred.promise;
