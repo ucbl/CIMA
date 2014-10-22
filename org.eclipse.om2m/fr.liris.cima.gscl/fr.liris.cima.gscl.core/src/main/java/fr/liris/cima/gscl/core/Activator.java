@@ -9,6 +9,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
+import fr.liris.cima.gscl.device.service.ConfigManager;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
 import fr.liris.cima.gscl.device.service.discovery.DiscoveryService;
 
@@ -23,6 +24,9 @@ public class Activator implements BundleActivator {
 	private ServiceTracker<Object, Object> mgmtDeviceServiceTracker;
 	private ServiceTracker<Object, Object> restServiceClientTracker;
 	private ServiceTracker<Object, Object> discoverytServiceTracker;
+	
+	private ServiceTracker<Object, Object> configManualServiceTracker;
+
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -36,15 +40,17 @@ public class Activator implements BundleActivator {
 
 			public Object addingService(ServiceReference<Object> reference) {
 				logger.info("ManagedDevice discovered in cima gscl core");
-				final ManagedDeviceService managedDeviceService = (ManagedDeviceService) this.context.getService(reference);
+				final ManagedDeviceService managedDeviceService = (ManagedDeviceService) this.context.getService(reference);				
 				this.context.registerService(IpuService.class.getName(), new DeviceController(managedDeviceService), null);
+
+				managedDeviceService.start();
 
 				new Thread(){
 					public void run(){
 						try {
 							managedDeviceService.start();
 						} catch (Exception e) {
-							logger.error("IpuMonitor Sample error", e);
+							logger.error("ManagedDeviceService error", e);
 						}
 					}
 				}.start();
@@ -52,6 +58,32 @@ public class Activator implements BundleActivator {
 			}
 		};
 		mgmtDeviceServiceTracker.open();
+		
+//		configManualServiceTracker = new ServiceTracker<Object, Object>(bundleContext, ManagedDeviceService.class.getName(), null) {
+//			public void removedService(ServiceReference<Object> reference, Object service) {
+//				logger.info("ConfigManager removed");
+//			}
+//
+//			public Object addingService(ServiceReference<Object> reference) {
+//				logger.info("ConfigManager discovered in cima gscl core");
+//				final ConfigManager configManager = (ConfigManager)this.context.getService(reference);
+//				this.context.registerService(IpuService.class.getName(), new ConfigController(configManager), null);
+//
+//				configManager.start();
+////				new Thread(){
+////					public void run(){
+////						try {
+////							configManager.start();
+////						} catch (Exception e) {
+////							logger.error("ConfigManager error", e);
+////						}
+////					}
+////				}.start();
+//				return configManager;
+//			}
+//		};
+//		configManualServiceTracker.open();
+
 
 		restServiceClientTracker = new ServiceTracker<Object, Object>(bundleContext, RestClientService.class.getName(), null) {
 			public void removedService(ServiceReference<Object> reference, Object service) {
@@ -62,6 +94,7 @@ public class Activator implements BundleActivator {
 				logger.info("RestClientService discovered in cima gscl core");
 				final RestClientService restClientService = (RestClientService) this.context.getService(reference);
 				DeviceController.restClientService = restClientService;
+				ConfigController.restClientService = restClientService;
 				return restClientService;
 			}
 		};

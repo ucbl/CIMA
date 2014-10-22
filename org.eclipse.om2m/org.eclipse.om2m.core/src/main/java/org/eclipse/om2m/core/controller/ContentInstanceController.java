@@ -1,21 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2013-2014 LAAS-CNRS (www.laas.fr) 
+ * Copyright (c) 2013-2014 LAAS-CNRS (www.laas.fr)
  * 7 Colonel Roche 31077 Toulouse - France
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
- *     Thierry Monteil (Project co-founder) - Management and initial specification, 
- * 		conception and documentation.
- *     Mahdi Ben Alaya (Project co-founder) - Management and initial specification, 
- * 		conception, implementation, test and documentation.
+ *     Thierry Monteil (Project co-founder) - Management and initial specification,
+ *         conception and documentation.
+ *     Mahdi Ben Alaya (Project co-founder) - Management and initial specification,
+ *         conception, implementation, test and documentation.
  *     Christophe Chassot - Management and initial specification.
  *     Khalil Drira - Management and initial specification.
- *     Yassine Banouar - Initial specification, conception, implementation, test 
- * 		and documentation.
+ *     Yassine Banouar - Initial specification, conception, implementation, test
+ *         and documentation.
  ******************************************************************************/
 package org.eclipse.om2m.core.controller;
 
@@ -32,8 +32,10 @@ import org.eclipse.om2m.commons.rest.ResponseConfirm;
 import org.eclipse.om2m.commons.utils.DateConverter;
 import org.eclipse.om2m.commons.utils.XmlMapper;
 import org.eclipse.om2m.core.constants.Constants;
+import org.eclipse.om2m.core.dao.DAO;
 import org.eclipse.om2m.core.dao.DAOFactory;
 import org.eclipse.om2m.core.notifier.Notifier;
+import org.eclipse.om2m.core.router.Router;
 
 /**
  * Implements Create, Retrieve, Update, Delete and Execute methods to handle
@@ -46,14 +48,14 @@ import org.eclipse.om2m.core.notifier.Notifier;
  */
 
 public class ContentInstanceController extends Controller {
-
+	public static Object lock = new Object();
     /**
      * Creates {@link ContentInstance} resource.
      * @param requestIndication - The generic request to handle.
      * @return The generic returned response.
      */
     public ResponseConfirm doCreate (RequestIndication requestIndication) {
-
+    	
         // id:                  (createReq O)  (response M*)
         // href:                (createReq NP) (response O)
         // contentTypes:        (createReq O)  (response O)
@@ -128,9 +130,9 @@ public class ContentInstanceController extends Controller {
         }
 
         // Set CreationTime
-        contentInstance.setCreationTime(DateConverter.toXMLGregorianCalendar(new Date()));
+        contentInstance.setCreationTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
         // Set LastModifiedTime
-        contentInstance.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
+        contentInstance.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
 
         // Notify the subscribers
         Notifier.notify(StatusCode.STATUS_CREATED, contentInstance);
@@ -138,18 +140,19 @@ public class ContentInstanceController extends Controller {
         //Store contentInstance
         DAOFactory.getContentInstanceDAO().create(contentInstance);
      // delete the oldest contentInstance if the CurrentNrOfInstances reaches MaxNrOfInstances
-        if (contentInstances.getCurrentNrOfInstances() > container.getMaxNrOfInstances()) {
+        if (contentInstances.getCurrentNrOfInstances() > container.getMaxNrOfInstances()-1) {
             final String oldestCI = requestIndication.getTargetID()+"/oldest";
             new Thread(){
                 public void run(){
-                    // Retrieve the oldest contentInstance
-                    ContentInstance contentInstanceOldest = DAOFactory.getContentInstanceDAO().find(oldestCI);
-                    //Delete the oldest contentInstance
-                    DAOFactory.getContentInstanceDAO().lazyDelete(contentInstanceOldest);
+                	Router.readWriteLock.readLock().lock();
+
+	                    ContentInstance contentInstanceOldest = DAOFactory.getContentInstanceDAO().find(oldestCI);
+	                    //Delete the oldest contentInstance
+	                    DAOFactory.getContentInstanceDAO().delete(contentInstanceOldest);
+	                	Router.readWriteLock.readLock().unlock();
                 }
             }.start();
         }
-
 
 
         // Response

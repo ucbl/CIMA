@@ -83,19 +83,24 @@ public class Parser {
 			Document doc = sb.build(new StringReader(representation));
 			Element root =  doc.getRootElement();
 			String uri ="";
-			String protocol="";
+			String modeConnection="";
+			String name = "";
 
 			List<Element> childrenElement = root.getChildren();
 			for(Element element : childrenElement) {
 				if(element.getName().equals("uri")) {
 					uri = element.getText();
 				}
-				if(element.getName().equals("protocol")) {
-					protocol = element.getText();
+				if(element.getName().equals("modeConnection")) {
+					modeConnection = element.getText();
+				}
+				if(element.getName().equals("name")) {
+					name = element.getText();
 				}
 			}
 			device.setUri(uri);
-			device.setProtocol(protocol);
+			device.setModeConnection(modeConnection);
+			device.setName(name);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -138,10 +143,10 @@ public class Parser {
 			 * Parse device part
 			 */
 			for(XElem xElem : deviceElem.elems()){
-				if(xElem.attrValue(0).equals("protocol")) {
+				if(xElem.attrValue(0).equals("modeConnection")) {
 					protocol = xElem.attrValue(1);
 				}
-				if(xElem.attrValue(0).equals("url")) {
+				if(xElem.attrValue(0).equals("uri")) {
 					url = xElem.attrValue(1);
 				}
 
@@ -158,13 +163,14 @@ public class Parser {
 
 	public static void main(String args[]) throws Exception {
 		String representation = "<device>"+
-				"<protocol>http</protocol>"+
+				"<name>ev3</name>"+
+				"<modeConnection>http</modeConnection>"+
 				"<uri>192.168.43.34</uri> "+
 				"<server>http://127.0.0.1:8282</server>"+
 				"</device>";
-	/**	System.out.println(parseSimpleXmlToObix(representation));
-		System.out.println(parseSimpleXmlToObix(representation, "id", "EV3"));
-		System.out.println(parseXmlDevice(representation));*/
+//		System.out.println(parseSimpleXmlToObix(representation));
+//		System.out.println(parseSimpleXmlToObix(representation, "id", "EV3"));
+		System.out.println(parseXmlDevice(representation));
 		//System.out.println(parseXmlDeviceGateway(representation));
 
 	}

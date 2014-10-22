@@ -1,21 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2013-2014 LAAS-CNRS (www.laas.fr) 
+ * Copyright (c) 2013-2014 LAAS-CNRS (www.laas.fr)
  * 7 Colonel Roche 31077 Toulouse - France
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
- *     Thierry Monteil (Project co-founder) - Management and initial specification, 
- * 		conception and documentation.
- *     Mahdi Ben Alaya (Project co-founder) - Management and initial specification, 
- * 		conception, implementation, test and documentation.
+ *     Thierry Monteil (Project co-founder) - Management and initial specification,
+ *         conception and documentation.
+ *     Mahdi Ben Alaya (Project co-founder) - Management and initial specification,
+ *         conception, implementation, test and documentation.
  *     Christophe Chassot - Management and initial specification.
  *     Khalil Drira - Management and initial specification.
- *     Yassine Banouar - Initial specification, conception, implementation, test 
- * 		and documentation.
+ *     Yassine Banouar - Initial specification, conception, implementation, test
+ *         and documentation.
  ******************************************************************************/
 package org.eclipse.om2m.core.dao;
 
@@ -26,6 +26,7 @@ import org.eclipse.om2m.commons.resource.MgmtObjs;
 import org.eclipse.om2m.commons.resource.ReferenceToNamedResource;
 import org.eclipse.om2m.commons.resource.Subscriptions;
 
+import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import com.db4o.query.Query;
 
@@ -34,7 +35,7 @@ import com.db4o.query.Query;
  *
  * @author <ul>
  *         <li>Yessine Feki < yfeki@laas.fr > < yessine.feki@ieee.org ></li>
- *         <li>Mahdi Ben Alaya < ben.alaya@laas.fr > < benalaya.mahdi@gmail.com ></li>  
+ *         <li>Mahdi Ben Alaya < ben.alaya@laas.fr > < benalaya.mahdi@gmail.com ></li>
  *         <li>Yassine Banouar < ybanouar@laas.fr > < yassine.banouar@gmail.com ></li>
  *         </ul>
  */
@@ -73,9 +74,11 @@ public class ApplicationsDAO extends DAO<Applications> {
         Applications applications = lazyFind(uri);
 
         if(applications != null) {
+        	ObjectContainer session = DB.ext().openSession();
+
             // Find Application sub-resources and add their references
             applications.getApplicationCollection().getNamedReference().clear();
-            Query queryApplication = DB.query();
+            Query queryApplication = session.query();
             queryApplication.constrain(Application.class);
             queryApplication.descend("uri").constrain(uri).startsWith(true);
             ObjectSet<Application> resultApplication = queryApplication.execute();
@@ -88,7 +91,7 @@ public class ApplicationsDAO extends DAO<Applications> {
             }
             // Find ApplicationAnnc sub-resources and add their references
             applications.getApplicationAnncCollection().getNamedReference().clear();
-            Query queryApplicationAnnc = DB.query();
+            Query queryApplicationAnnc = session.query();
             queryApplicationAnnc.constrain(ApplicationAnnc.class);
             queryApplicationAnnc.descend("uri").constrain(uri).startsWith(true);
             ObjectSet<ApplicationAnnc> resultApplicationAnnc = queryApplicationAnnc.execute();
@@ -110,7 +113,9 @@ public class ApplicationsDAO extends DAO<Applications> {
      */
     public Applications lazyFind(String uri) {
         // Create the query based on the uri constraint
-        Query query = DB.query();
+    	ObjectContainer session = DB.ext().openSession();
+
+        Query query = session.query();
         query.constrain(Applications.class);
         query.descend("uri").constrain(uri);
         // Store all the founded resources

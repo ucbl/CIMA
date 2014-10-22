@@ -1,5 +1,7 @@
 package fr.liris.cima.gscl.commons;
 
+import java.util.Date;
+
 import obix.Obj;
 import obix.Str;
 import obix.io.ObixEncoder;
@@ -19,10 +21,13 @@ public class Device {
 	public final static String TYPE = "DEVICE";
 
 
-	static int cpt = 0;
 
 	private String id;
-	private String protocol;
+	private String name;
+	private Date dateConnection;
+	private String modeConnection;
+	
+	//private String protocol;
 	private String uri;
 	
 	private ContactInfo contactInfo;
@@ -34,11 +39,21 @@ public class Device {
 		contactInfo = new ContactInfo(this.id, PortGenerator.generatePort());
 	}
 
-	public Device(String uri, String protocol) {
+	public Device(String uri, String modeConnection) {
 		this.id = new UID().getUid();
 		this.uri = uri;
-		this.protocol = protocol;
+		this.modeConnection = modeConnection;
 		contactInfo = new ContactInfo(this.id, PortGenerator.generatePort());
+	}
+	
+	public Device(String name, String uri, String modeConnection) {
+		this.name = name;
+		this.uri = uri;
+		this.modeConnection = modeConnection;
+		this.dateConnection = new Date();
+		
+		contactInfo = new ContactInfo(this.id, PortGenerator.generatePort());
+
 	}
 
 	public String toObixFormat() {
@@ -46,7 +61,8 @@ public class Device {
 		Obj objDevice = new Obj("device");
 		Obj obj = new Obj();
 		objDevice.add(new Str("id",id));
-		objDevice.add(new Str("protocol", protocol));
+		objDevice.add(new Str("name", name));
+		objDevice.add(new Str("modeConnection", modeConnection));
 		objDevice.add(new Str("url",uri));
 		
 		obj.add(objDevice);
@@ -58,7 +74,8 @@ public class Device {
 	public String toXmlFormat() {
 		return  "<device>"+
 				"<id>"+id+"</id>"+
-				"<protocol>"+protocol+"</protocol>"+
+				"<name>"+name+"</name>"+
+				"<modeConnection>"+modeConnection+"</modeConnection>"+
 				"<uri>"+uri+"</uri> "+
 				"<server>"+serverUri+"</server>"+
 				"</device>";
@@ -80,26 +97,13 @@ public class Device {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Device[" + id + ", ");
 		sb.append(uri + ", ");
-		sb.append(protocol);
+		sb.append(modeConnection);
+		sb.append(", ");
+		sb.append(dateConnection);
 		sb.append(", ");
 		sb.append(contactInfo);
 		sb.append("]\n");
 		return sb.toString();
-	}
-
-	
-	/**
-	 * @return the protocol
-	 */
-	public String getProtocol() {
-		return protocol;
-	}
-
-	/**
-	 * @param protocol the protocol to set
-	 */
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
 	}
 
 	/**
@@ -128,5 +132,29 @@ public class Device {
 		System.out.println("Hello");
 		//Thread.sleep(10000);
 		System.out.println(new Device("URI", "http").toObixFormat());
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getDateConnection() {
+		return dateConnection;
+	}
+
+	public void setDateConnection(Date dateConnection) {
+		this.dateConnection = dateConnection;
+	}
+
+	public String getModeConnection() {
+		return modeConnection;
+	}
+
+	public void setModeConnection(String modeConnection) {
+		this.modeConnection = modeConnection;
 	}
 }

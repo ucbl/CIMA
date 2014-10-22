@@ -54,10 +54,13 @@ public class Constants {
     /** SclBase ip address. */
     public static final String SCL_IP = System.getProperty("org.eclipse.om2m.sclBaseAddress","127.0.0.1");
     /** SclBase listening port. */
-    public static final int SCL_PORT = Integer.parseInt(System.getProperty("org.eclipse.equinox.http.jetty.http.port","8080"));
+    public static final int SCL_PORT = Integer.parseInt(System.getProperty("org.eclipse.equinox.http.jetty.http.port","8080"));    
+    /** gscl coap port. */
+    public static final int COAP_PORT = Integer.parseInt(System.getProperty("org.eclipse.om2m.coapPort","5684"));
     /** listening context. */
     public static final String SCL_CONTEXT = System.getProperty("org.eclipse.om2m.sclBaseContext","/om2m");
-
+    
+   
     //The following properties are required only for GSCL to perform authentication on a remote NSCL
     /** Remote Nscl Id. (Required only for GSCL)*/
     public static final String NSCL_ID = System.getProperty("org.eclipse.om2m.remoteNsclId","nscl");
@@ -65,26 +68,18 @@ public class Constants {
     public static final String NSCL_IP = System.getProperty("org.eclipse.om2m.remoteNsclAddress","127.0.0.1");
     /** Remote Nscl listening port. (Required only for GSCL)*/
     public static final int NSCL_PORT = Integer.parseInt(System.getProperty("org.eclipse.om2m.remoteNsclPort","8080"));
+    /** Remote Nscl listening port. (Required only for GSCL)*/
+    public static final int NSCL_COAP_PORT = Integer.parseInt(System.getProperty("org.eclipse.om2m.remoteNsclCoapPort","5683"));
     /** Remote Nscl listening context. */
     public static final String NSCL_CONTEXT = System.getProperty("org.eclipse.om2m.remoteNsclContext","/om2m");
-
-    // Data Base connection type property
-    /** Select between embedded org remote data base.*/
-    public static final boolean DB_EMBEDDED  = Boolean.valueOf(System.getProperty("org.eclipse.om2m.dbEmbedded","true"));
 
     //Remote Data base specific parameters
     /** Database file name. (Required only for embeded data base)*/
     public static final String DB_FILE = System.getProperty("org.eclipse.om2m.dbFile","db");
-
-    //Remote Data base specific properties
-    /** Database server ip address. (Required only for remote data base) */
-    public static final String DB_SERVER_IP= System.getProperty("org.eclipse.om2m.dbServerHost","127.0.0.1");
-    /** Database server listening port. (Required only for remote data base) */
-    public static final int DB_SERVER_PORT= Integer.parseInt(System.getProperty("org.eclipse.om2m.dbServerPort","9090"));
-    /** Database server username. (Required only for remote data base) */
-    public static final String DB_SERVER_USER = System.getProperty("org.eclipse.om2m.dbUser","admin");
-    /** Database server password. (Required only for remote data base) */
-    public static final String DB_SERVER_PASSWORD = System.getProperty("org.eclipse.om2m.dbPassword","admin");
+    
+    //DB Defragment period
+    /** DB Defragment period in ms. */
+    public static final int DB_DEFRAGMENT_PERIOD = Integer.parseInt(System.getProperty("org.eclipse.om2m.dbDefragmentPeriod","-1"));
 
     //Rest Method names
     /** Retrieve method name. */
@@ -115,4 +110,7 @@ public class Constants {
     public static final String SEARCH_STRING_RES_TYPE = "ResourceType/";
     /** Search String resource id prefix. */
     public static final String SEARCH_STRING_RES_ID = "ResourceID/";
+    
+
 }
+

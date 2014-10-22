@@ -1,21 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2013-2014 LAAS-CNRS (www.laas.fr) 
+ * Copyright (c) 2013-2014 LAAS-CNRS (www.laas.fr)
  * 7 Colonel Roche 31077 Toulouse - France
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
- *     Thierry Monteil (Project co-founder) - Management and initial specification, 
- * 		conception and documentation.
- *     Mahdi Ben Alaya (Project co-founder) - Management and initial specification, 
- * 		conception, implementation, test and documentation.
+ *     Thierry Monteil (Project co-founder) - Management and initial specification,
+ *         conception and documentation.
+ *     Mahdi Ben Alaya (Project co-founder) - Management and initial specification,
+ *         conception, implementation, test and documentation.
  *     Christophe Chassot - Management and initial specification.
  *     Khalil Drira - Management and initial specification.
- *     Yassine Banouar - Initial specification, conception, implementation, test 
- * 		and documentation.
+ *     Yassine Banouar - Initial specification, conception, implementation, test
+ *         and documentation.
  ******************************************************************************/
 package org.eclipse.om2m.core.dao;
 
@@ -60,21 +60,21 @@ public class ApplicationDAO extends DAO<Application> {
         Containers containers = new Containers();
         containers.setUri(resource.getContainersReference());
         containers.setCreationTime(resource.getCreationTime());
-        containers.setLastModifiedTime(resource.getLastModifiedTime());
+        //containers.setLastModifiedTime(resource);
         containers.setAccessRightID(resource.getAccessRightID());
         DAOFactory.getContainersDAO().create(containers);
         // AccessRights
         AccessRights accessRights = new AccessRights();
         accessRights.setUri(resource.getAccessRightsReference());
         accessRights.setCreationTime(resource.getCreationTime());
-        accessRights.setLastModifiedTime(resource.getLastModifiedTime());
+        //accessRights.setLastModifiedTime(resource);
         accessRights.setAccessRightID(resource.getAccessRightID());
         DAOFactory.getAccessRightsDAO().create(accessRights);
         // Groups
         Groups groups = new Groups();
         groups.setUri(resource.getGroupsReference());
         groups.setCreationTime(resource.getCreationTime());
-        groups.setLastModifiedTime(resource.getLastModifiedTime());
+        //groups.setLastModifiedTime(resource);
         groups.setAccessRightID(resource.getAccessRightID());
         DAOFactory.getGroupsDAO().create(groups);
         // NotificationChannels
@@ -82,13 +82,21 @@ public class ApplicationDAO extends DAO<Application> {
         notificationChannels.setAccessRightID(resource.getAccessRightID());
         notificationChannels.setUri(resource.getNotificationChannelsReference());
         notificationChannels.setCreationTime(resource.getCreationTime());
-        notificationChannels.setLastModifiedTime(resource.getLastModifiedTime());
+        //notificationChannels.setLastModifiedTime(resource);
         DAOFactory.getNotificationChannelsDAO().create(notificationChannels);
-
+        
+        // Create the query based on the uri constraint
+        Query query = DB.query();
+        query.constrain(Applications.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getAppId())[0]);
+        // Store all the founded resources
+        ObjectSet<Applications> result = query.execute();
+        
         // Update the lastModifiedTime attribute of the parent
-        Applications applications = DAOFactory.getApplicationsDAO().lazyFind(resource.getUri().split("/"+resource.getAppId())[0]);
-        applications.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(applications.getLastModifiedTime());
+        Applications applications = result.get(0);
+        // Update the lastModifiedTime attribute of the parent
+        applications.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(applications);
         // Validate the current transaction
         commit();
 
@@ -130,10 +138,18 @@ public class ApplicationDAO extends DAO<Application> {
     public void update(Application resource) {
         // Store the updated resource
         DB.store(resource);
+        // Create the query based on the uri constraint
+        Query query = DB.query();
+        query.constrain(Applications.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getAppId())[0]);
+        // Store all the founded resources
+        ObjectSet<Applications> result = query.execute();
+        
         // Update the lastModifiedTime attribute of the parent
-        Applications applications = DAOFactory.getApplicationsDAO().lazyFind(resource.getUri().split("/"+resource.getAppId())[0]);
-        applications.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(applications.getLastModifiedTime());
+        Applications applications = result.get(0);
+        // Update the lastModifiedTime attribute of the parent
+        applications.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(applications);
         // Validate the current transaction
         commit();
 
@@ -168,9 +184,17 @@ public class ApplicationDAO extends DAO<Application> {
         DAOFactory.getNotificationChannelsDAO().lazyDelete(DAOFactory.getNotificationChannelsDAO().lazyFind(resource.getNotificationChannelsReference()));
         // Delete the resource
         DB.delete(resource);
+        // Create the query based on the uri constraint
+        Query query = DB.query();
+        query.constrain(Applications.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getAppId())[0]);
+        // Store all the founded resources
+        ObjectSet<Applications> result = query.execute();
+        
         // Update the lastModifiedTime attribute of the parent
-        Applications applications = DAOFactory.getApplicationsDAO().lazyFind(resource.getUri().split("/"+resource.getAppId())[0]);
-        applications.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(applications.getLastModifiedTime());
+        Applications applications = result.get(0);
+        // Update the lastModifiedTime attribute of the parent
+        applications.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(applications);
     }
 }

@@ -1,21 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2013-2014 LAAS-CNRS (www.laas.fr) 
+ * Copyright (c) 2013-2014 LAAS-CNRS (www.laas.fr)
  * 7 Colonel Roche 31077 Toulouse - France
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
- *     Thierry Monteil (Project co-founder) - Management and initial specification, 
- * 		conception and documentation.
- *     Mahdi Ben Alaya (Project co-founder) - Management and initial specification, 
- * 		conception, implementation, test and documentation.
+ *     Thierry Monteil (Project co-founder) - Management and initial specification,
+ *         conception and documentation.
+ *     Mahdi Ben Alaya (Project co-founder) - Management and initial specification,
+ *         conception, implementation, test and documentation.
  *     Christophe Chassot - Management and initial specification.
  *     Khalil Drira - Management and initial specification.
- *     Yassine Banouar - Initial specification, conception, implementation, test 
- * 		and documentation.
+ *     Yassine Banouar - Initial specification, conception, implementation, test
+ *         and documentation.
  ******************************************************************************/
 package org.eclipse.om2m.core.dao;
 
@@ -35,7 +35,7 @@ import com.db4o.query.Query;
  *
  * @author <ul>
  *         <li>Yessine Feki < yfeki@laas.fr > < yessine.feki@ieee.org ></li>
- *         <li>Mahdi Ben Alaya < ben.alaya@laas.fr > < benalaya.mahdi@gmail.com ></li>  
+ *         <li>Mahdi Ben Alaya < ben.alaya@laas.fr > < benalaya.mahdi@gmail.com ></li>
  *         <li>Yassine Banouar < ybanouar@laas.fr > < yassine.banouar@gmail.com ></li>
  *         </ul>
  */
@@ -60,10 +60,18 @@ public class ContainerDAO extends DAO<Container> {
         Subscriptions subscriptions = new Subscriptions();
         subscriptions.setUri(resource.getSubscriptionsReference());
         DAOFactory.getSubscriptionsDAO().create(subscriptions);
+        // Create the query based on the uri constraint
+        Query query = DB.query();
+        query.constrain(Containers.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getId())[0]);
+        // Store all the founded resources
+        ObjectSet<Containers> result = query.execute();
+        
         // Update the lastModifiedTime attribute of the parent
-        Containers containers = DAOFactory.getContainersDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
-        containers.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(containers.getLastModifiedTime());
+        Containers containers = result.get(0);
+        // Update the lastModifiedTime attribute of the parent
+        containers.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(containers);
         // Validate the current transaction
         commit();
     }
@@ -104,10 +112,18 @@ public class ContainerDAO extends DAO<Container> {
     public void update(Container resource) {
         // Store the updated resource
         DB.store(resource);
+        // Create the query based on the uri constraint
+        Query query = DB.query();
+        query.constrain(Containers.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getId())[0]);
+        // Store all the founded resources
+        ObjectSet<Containers> result = query.execute();
+        
         // Update the lastModifiedTime attribute of the parent
-        Containers containers = DAOFactory.getContainersDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
-        containers.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(containers.getLastModifiedTime());
+        Containers containers = result.get(0);
+        // Update the lastModifiedTime attribute of the parent
+        containers.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(containers);
         // Validate the current transaction
         commit();
     }
@@ -135,9 +151,17 @@ public class ContainerDAO extends DAO<Container> {
         // Delete the resource
         DB.delete(resource);
 
+        // Create the query based on the uri constraint
+        Query query = DB.query();
+        query.constrain(Containers.class);
+        query.descend("uri").constrain(resource.getUri().split("/"+resource.getId())[0]);
+        // Store all the founded resources
+        ObjectSet<Containers> result = query.execute();
+        
         // Update the lastModifiedTime attribute of the parent
-        Containers containers = DAOFactory.getContainersDAO().lazyFind(resource.getUri().split("/"+resource.getId())[0]);
-        containers.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
-        DB.store(containers.getLastModifiedTime());
+        Containers containers = result.get(0);
+        // Update the lastModifiedTime attribute of the parent
+        containers.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
+        DB.store(containers);
     }
 }

@@ -28,6 +28,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
+import fr.liris.cima.gscl.device.service.ConfigManager;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
 /**
  *  Manages the starting and stopping of the bundle.
@@ -44,7 +45,6 @@ public class Activator implements BundleActivator {
 	
 	private ServiceRegistration serviceRegistration;
 
-
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 
@@ -56,6 +56,7 @@ public class Activator implements BundleActivator {
 			public Object addingService(ServiceReference<Object> reference) {
 				logger.info("SclService discovered in mgmtdevice");
 				SclService sclService = (SclService) this.context.getService(reference);
+
 				serviceRegistration = this.context.registerService(ManagedDeviceService.class.getName(), new DeviceManagerImpl(sclService) , null);
 				logger.info("ManagedDeviceService registered successfully");
 

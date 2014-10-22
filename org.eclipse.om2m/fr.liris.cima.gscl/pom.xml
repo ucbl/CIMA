@@ -39,6 +39,7 @@
     <module>fr.liris.cima.gscl.invoke</module>
     <module>fr.liris.cima.gscl.comm.http</module>
     <module>fr.liris.cima.gscl.comm.dosgi</module>
+    <module>fr.liris.cima.gscl.device.manualconfig</module>
    </modules>
 
 </project>

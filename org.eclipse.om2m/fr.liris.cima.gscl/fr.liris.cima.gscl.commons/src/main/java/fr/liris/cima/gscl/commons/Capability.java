@@ -1,7 +1,5 @@
 package fr.liris.cima.gscl.commons;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import obix.Contract;
 import obix.Obj;
@@ -17,16 +15,11 @@ import obix.io.ObixEncoder;
 public class Capability {
 
 	private String name;
-	private List<String> arguments;
-	private String path;
-	private String functionalityImple;
-	private String type;
+	private Protocol protocol;
 
-	public Capability(String name, String type, String functionalityImpl) {
+	public Capability(String name, Protocol protocol) {
 		this.name = name;
-		this.type = type;
-		this.functionalityImple = functionalityImpl;
-		this.arguments = new ArrayList<>();
+		this.protocol = protocol;
 	}
 
 	/**
@@ -44,20 +37,7 @@ public class Capability {
 	}
 
 
-	/**
-	 * @return the arguments
-	 */
-	public List<String> getArguments() {
-		return arguments;
-	}
-
-	/**
-	 * @param arguments the arguments to set
-	 */
-	public void setArguments(List<String> arguments) {
-		this.arguments = arguments;
-	}
-
+	
 	public Op toObix(String sclId, String appId, String apocPath) {
 
 		// OP Hello
@@ -71,49 +51,16 @@ public class Capability {
 		return op;
 	}
 
-	/**
-	 * @return the path
-	 */
-	public String getPath() {
-		return path;
-	}
-
-	/**
-	 * @param path the path to set
-	 */
-	public void setPath(String path) {
-		this.path = path;
-	}
-
-	/**
-	 * @return the functionalityImple
-	 */
-	public String getFunctionalityImple() {
-		return functionalityImple;
-	}
-
-	/**
-	 * @param functionalityImple the functionalityImple to set
-	 */
-	public void setFunctionalityImple(String functionalityImple) {
-		this.functionalityImple = functionalityImple;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
 	
 	public String toString() {
-		return "capabilities (" + name + ", " + type + "," + functionalityImple + ")";
+		return "capabilities (" + name + ", "  + protocol + ")";
+	}
+
+	public Protocol getProtocol() {
+		return protocol;
+	}
+
+	public void setProtocol(Protocol protocol) {
+		this.protocol = protocol;
 	}	
 }

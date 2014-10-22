@@ -222,14 +222,15 @@
     <module>org.eclipse.om2m.core.service</module>
     <module>org.eclipse.om2m.commons</module>
     <module>org.eclipse.om2m.comm.http</module>
+    <module>org.eclipse.om2m.comm.coap</module>
     <module>org.eclipse.om2m.comm.service</module>
     <module>org.eclipse.om2m.ipu.sample</module>
-    <module>fr.liris.cima.gscl</module>
-    <module>fr.liris.cima.nscl</module>
     <module>org.eclipse.om2m.ipu.service</module>
     <module>org.eclipse.om2m.webapp.resourcesbrowser</module>
     <module>org.eclipse.om2m.site.nscl</module>
     <module>org.eclipse.om2m.site.gscl</module>
+    <module>fr.liris.cima.gscl</module>
+    <module>fr.liris.cima.nscl</module>
     <module>fr.liris.cima.comm.http</module>
   </modules>
 

@@ -95,6 +95,7 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 	public void start() {
 		LOGGER.info("Devices waiting for attachement..");
 		createManagerResources("CIMA", "devices");
+	//	createManagerResources("manualconfig", "manual");
 	}
 	
 	
@@ -155,7 +156,10 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 
 	@Override
 	public void removeUnknownDeviceById(String deviceId) {
-		
+		Device  device = getDevice(deviceId);
+		if(device != null) {
+			unknownDevices.remove(device);
+		}
 	}
 	
 	public Device getUnknownDevice(String deviceId) {

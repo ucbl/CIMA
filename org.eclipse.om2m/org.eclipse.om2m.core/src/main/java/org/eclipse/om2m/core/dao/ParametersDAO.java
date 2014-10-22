@@ -27,6 +27,7 @@ import org.eclipse.om2m.commons.resource.ReferenceToNamedResource;
 import org.eclipse.om2m.commons.resource.Subscriptions;
 import org.eclipse.om2m.commons.utils.DateConverter;
 
+import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import com.db4o.query.Query;
 
@@ -66,12 +67,12 @@ public class ParametersDAO extends DAO<Parameters> {
         if (!parameter[1].contains("/")){
             MgmtObj mgmtObj = DAOFactory.getMgmtObjDAO().find(target);
             mgmtObj.getParametersCollection().getNamedReference().add(reference);
-            mgmtObj.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
+            mgmtObj.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
             DAOFactory.getMgmtObjDAO().update(mgmtObj);
         } else {
             Parameters parameters = DAOFactory.getParametersDAO().find(target);
             parameters.getParametersCollection().getNamedReference().add(reference);
-            parameters.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()));
+            parameters.setLastModifiedTime(DateConverter.toXMLGregorianCalendar(new Date()).toString());
             DAOFactory.getParametersDAO().update(parameters);
         }
     }
@@ -82,8 +83,10 @@ public class ParametersDAO extends DAO<Parameters> {
      * @return The requested {@link Parameters} collection resource otherwise null
      */
     public Parameters find(String uri) {
+    	ObjectContainer session = DB.ext().openSession();
+
         // Create the query based on the uri constraint
-        Query query=DB.query();
+        Query query=session.query();
         query.constrain(Parameters.class);
         query.descend("uri").constrain(uri);
         // Store all the founded resources
