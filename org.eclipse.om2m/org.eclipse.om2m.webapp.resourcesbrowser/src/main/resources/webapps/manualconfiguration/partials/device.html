@@ -5,8 +5,8 @@
 		<!-- Infos sur le device -->
 		<h1><b>Device ID : {{id}}</b></h1>
 
-		<i>Last connection on {{lastConnectionDate}}</i><br>
-		<i>Communication protocol : {{connectionMode}} at {{uri}}</i>
+		<i>Last connection on {{dateConnection}}</i><br>
+		<i>Communication protocol : {{modeConnection}} at {{uri}}</i>
 		<br>
 		<br>
 
@@ -78,11 +78,11 @@
             <hr>
             <accordion-group is-open="status.open">
                 <accordion-heading >
-                    Add a capacity <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                    Add a capability <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
                 </accordion-heading>
                 <!-- ADD CAPACITY -->
                 <div>
-                    <form ng-submit="addCapacity(newCapability)">
+                    <form ng-submit="">
                        
                         <strong>ID </strong>
                         <input class="form-control" style="width: 40%" type="text" placeholder="Type an ID... (Required)" ng-model="newCapability.id" required>
@@ -105,7 +105,7 @@
                         <!-- Bouton pour tester la capacité -->
                         <button ng-click="testCapacity(newCapability)" type="button" class="btn btn-primary pull-right">Test</button>
                          <!-- Bouton pour ajouter la capacité -->
-                        <input ng-click="check(newCapability)" class="btn btn-success pull-right" type="submit" value="Add"/>
+                        <input ng-click="addCapacity(newCapability)" class="btn btn-success pull-right" type="submit" value="Add"/>
                     
                     </form>
                     <br>

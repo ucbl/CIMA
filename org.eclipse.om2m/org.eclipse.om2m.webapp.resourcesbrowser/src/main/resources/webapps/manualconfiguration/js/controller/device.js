@@ -8,11 +8,15 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 		$rootScope.loading = false;
 		$scope.id = device.id;
 		$scope.name = device.name;
-		$scope.lastConnectionDate = device.lastConnectionDate;
-		$scope.connectionMode = device.connectionMode;
+		$scope.lastConnectionDate = device.dateConnection;
+		$scope.connectionMode = device.modeConnection;
 		$scope.uri = device.uri;
 
-		$scope.capabilities = device.capabilities;
+		if(device.capabilities){
+			$scope.capabilities = device.capabilities;
+		}else{
+			$scope.capabilities = [];
+		}
 
 	}, function(msg){
 		alert(msg);
@@ -23,30 +27,27 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 	}, function(msg){
 		alert(msg);
 	})
-
-	//Fonction pour valider le formulaire d'ajout de capacité et cacher ou on
-	$scope.check = function(capacity){
-		if(capacity.id !=null && capacity.protocol.protocolName != null && capacity.protocol.parameters!= null){
-			$scope.showme = false;
-		}
-	}
 	
 	//Fonction pour ajouter une capacité à l'objet
 	$scope.addCapacity = function(newCapability){
-		var cap = {};
-		cap.id = newCapability.id;
-		cap.protocol = {};
-		cap.protocol.protocolName = newCapability.protocol.protocolName;
-		cap.protocol.parameters = newCapability.protocol.parameters;
+		if(newCapability.id !=null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null){			
 
-		$scope.capabilities.push(cap);
+			var cap = {};
+			cap.id = newCapability.id;
+			cap.protocol = {};
+			cap.protocol.protocolName = newCapability.protocol.protocolName;
+			cap.protocol.parameters = newCapability.protocol.parameters;
 
-		DeviceFactory.addCapacity($scope.id,cap).then(function(){
-			
-		}, function(){
-			alert('Votre capacity n\'a pas pu être sauvegardé');
-		});
-		$scope.newCapability = {};
+			$scope.capabilities.push(cap);
+
+
+			DeviceFactory.addCapacity($scope.id,cap).then(function(){
+			}, function(){
+				alert('Votre capacity n\'a pas pu être sauvegardé');
+			});
+			$scope.newCapability = {};
+			$scope.showme = false;
+		}
 	}
         
 	//Supprimer un capacity
