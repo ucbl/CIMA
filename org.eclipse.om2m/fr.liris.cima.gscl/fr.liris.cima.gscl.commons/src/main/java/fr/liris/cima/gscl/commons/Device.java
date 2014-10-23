@@ -1,7 +1,9 @@
 package fr.liris.cima.gscl.commons;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import obix.Obj;
 import obix.Str;
@@ -27,7 +29,17 @@ public class Device {
 	private String id;
 	private String name;
 	private Date dateConnection;
+	public List<Capability> getCapabilities() {
+		return capabilities;
+	}
+
+	public void setCapabilities(List<Capability> capabilities) {
+		this.capabilities = capabilities;
+	}
+
 	private String modeConnection;
+	
+	private List<Capability> capabilities;
 	
 	//private String protocol;
 	private String uri;
@@ -37,8 +49,9 @@ public class Device {
 	private static String serverUri = "http://127.0.0.1:8282";
 
 	public Device() {
-		this.id = new UID().getUid();
-		contactInfo = new ContactInfo(this.id, PortGenerator.generatePort());
+		//this.id = new UID().getUid();
+		//contactInfo = new ContactInfo(this.id, PortGenerator.generatePort());
+		capabilities = new ArrayList<>();
 	}
 
 	public Device(String uri, String modeConnection) {
@@ -46,18 +59,34 @@ public class Device {
 		this.uri = uri;
 		this.modeConnection = modeConnection;
 		contactInfo = new ContactInfo(this.id, PortGenerator.generatePort());
+		capabilities = new ArrayList<>();
+
 	}
 	
-	public Device(String name, String uri, String modeConnection) {
+	public Device(String name, String uri, String modeConnection, ContactInfo contactInfo) {
 		this.id = new UID().getUid();
 		this.name = name;
 		this.uri = uri;
 		this.modeConnection = modeConnection;
 		this.dateConnection = Utils.StrToDate("mercredi, oct. 22, 2014 13:52:20 PM");
 		
-		contactInfo = new ContactInfo(this.id, PortGenerator.generatePort());
+		this.contactInfo = contactInfo;
+		capabilities = new ArrayList<>();
+
 
 	}
+	
+	public Device(String name, String uri, String modeConnection, Date date, ContactInfo contactInfo) {
+		this.id = new UID().getUid();
+		this.name = name;
+		this.uri = uri;
+		this.modeConnection = modeConnection;
+		this.dateConnection = date;
+		this.contactInfo = contactInfo;
+		capabilities = new ArrayList<>();
+	}
+	
+	
 
 	public String toObixFormat() {
 		
@@ -68,12 +97,18 @@ public class Device {
 		
 		objDevice.add(new Str("id",id));
 		objDevice.add(new Str("name", name));
+		objDevice.add(new Str("uri",uri));
 		objDevice.add(new Str("modeConnection", modeConnection));
-		objDevice.add(new Str("url",uri));
 		objDevice.add(new Str("dateConnection", formatter.format(dateConnection)));
 		
+		obix.List obixCapabilities = new obix.List("capabilitities");
+		for(Capability capability : capabilities) {
+			obixCapabilities.add(capability.toObj());
+		}
+		
+		objDevice.add(obixCapabilities);
 		obj.add(objDevice);
-		obj.add(contactInfo.toBix());
+		//obj.add(contactInfo.toBix());
 
 		return ObixEncoder.toString(obj);
 	}
@@ -112,6 +147,8 @@ public class Device {
 		sb.append(dateConnection);
 		sb.append(", ");
 		sb.append(contactInfo);
+		sb.append(", ");
+		sb.append(capabilities);
 		sb.append("]\n");
 		return sb.toString();
 	}
@@ -159,6 +196,10 @@ public class Device {
 	public void setDateConnection(Date dateConnection) {
 		this.dateConnection = dateConnection;
 	}
+	
+	public void setDateConnection(String dateConnection) {
+		this.dateConnection = Utils.StrToDate(dateConnection);
+	}
 
 	public String getModeConnection() {
 		return modeConnection;
@@ -166,6 +207,14 @@ public class Device {
 
 	public void setModeConnection(String modeConnection) {
 		this.modeConnection = modeConnection;
+	}
+	
+	public void addCapability(Capability capability) {
+		capabilities.add(capability);
+	}
+	
+	public void removeCapability(Capability capability) {
+		capabilities.remove(capability);
 	}
 	
 	public boolean equals(Object other) {

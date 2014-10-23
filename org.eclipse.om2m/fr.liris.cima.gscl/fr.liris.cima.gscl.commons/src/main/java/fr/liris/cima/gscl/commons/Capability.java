@@ -1,9 +1,12 @@
 package fr.liris.cima.gscl.commons;
 
 
+import java.util.Map.Entry;
+
 import obix.Contract;
 import obix.Obj;
 import obix.Op;
+import obix.Str;
 import obix.Uri;
 import obix.io.ObixEncoder;
 
@@ -20,6 +23,10 @@ public class Capability {
 	public Capability(String name, Protocol protocol) {
 		this.name = name;
 		this.protocol = protocol;
+	}
+	
+	public  Capability(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -51,9 +58,25 @@ public class Capability {
 		return op;
 	}
 
+	public String toObixFormat() {
+		Obj objProtocol = new Obj();
+		Obj obj = new Obj();
+
+		obj.add(new Str("id",name));
+		obj.add(protocol.toObj());
+		return ObixEncoder.toString(obj);
+	}
+	
+	public Obj toObj() {
+		Obj obj = new Obj();
+
+		obj.add(new Str("id",name));
+		obj.add(protocol.toObj());
+		return obj;
+	}
 	
 	public String toString() {
-		return "capabilities (" + name + ", "  + protocol + ")";
+		return "capabilities (" + name + ", "  + protocol + ")\n";
 	}
 
 	public Protocol getProtocol() {

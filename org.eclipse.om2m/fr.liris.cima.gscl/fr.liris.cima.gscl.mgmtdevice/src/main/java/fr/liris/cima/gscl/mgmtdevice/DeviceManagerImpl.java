@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.om2m.comm.service.RestClientService;
 import org.eclipse.om2m.commons.resource.Application;
 import org.eclipse.om2m.commons.resource.Container;
 import org.eclipse.om2m.commons.resource.ContentInstance;
@@ -13,6 +14,7 @@ import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 import org.eclipse.om2m.core.service.SclService;
 
+import fr.liris.cima.gscl.commons.ContactInfo;
 import fr.liris.cima.gscl.commons.Device;
 import fr.liris.cima.gscl.commons.constants.Constants;
 import fr.liris.cima.gscl.commons.util.Utils;
@@ -181,10 +183,40 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 	}
 	
 	private void populate() {
-		Device device = new Device("ev3", "http://192.168.0.2", "http");
+		Device device = new Device("ev3", "http://192.168.0.2", "http", new ContactInfo());
 		device.setId("ev3");
 		unknownDevices.add(device);
 
+	}
+
+	@Override
+	public void sendDeviceToNSCL(Device device, RestClientService clientService) {
+		RequestIndication requestIndication = new RequestIndication();
+		requestIndication.setRepresentation(device.toObixFormat());
+
+		requestIndication.setMethod(Constants.METHOD_CREATE);
+		requestIndication.setBase("http://127.0.0.1:8080/om2m");
+		requestIndication.setTargetID("/nscl/applications/CIMANSCL/devices");
+		requestIndication.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);
+		
+		/**
+		 * Envoi des infos du device au controleur du nscl
+		 */
+		clientService.sendRequest(requestIndication);
+	}
+
+	@Override
+	public void updateUnknonwDevice(String deviceId, Device newDevice) {
+		Device device = getUnknownDevice(deviceId);
+		device.setCapabilities(newDevice.getCapabilities());
+		device.setName(newDevice.getName());
+	}
+
+	@Override
+	public void updateDevice(String deviceId, Device newDevice) {
+		Device device = getDevice(deviceId);
+		device.setCapabilities(newDevice.getCapabilities());
+		device.setName(newDevice.getName());
 	}
 
 }
