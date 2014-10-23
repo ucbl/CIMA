@@ -8,6 +8,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.XMLOutputter;
 
 import obix.xml.XElem;
 import obix.xml.XParser;
@@ -136,7 +137,115 @@ public class Parser {
 		}
 		return obj_Protocol;
 	}
-           
+        public static JSONObject parseObixToJSONProtocol(String obj_info) {
+               
+          JSONObject jsonObject = new  JSONObject();
+           try   {                     
+                       SAXBuilder sxb = new SAXBuilder(); 
+                        Document document = sxb.build(new StringReader(obj_info)); 
+                    
+                        Element racine=document.getRootElement();
+                        List list_obj=racine.getChildren();
+                        Iterator noeud = list_obj.iterator(); 
+                       JSONArray json_paramets = new  JSONArray();
+                         while(noeud.hasNext()) {
+                            Element courant = (Element)noeud.next();
+                      //      System.out.println(courant.getChildren());
+                            JSONObject json_paramet = new  JSONObject();
+                            if(!courant.getAttributeValue("name").equalsIgnoreCase("protocoleName")) {
+                      //          System.out.println("**"+courant.getAttributeValue("name")+"   "+courant.getAttributeValue("val")+"***");
+                                json_paramet.put("name", courant.getAttributeValue("name"));
+                                json_paramet.put("value", courant.getAttributeValue("val"));
+                               json_paramets.add(json_paramet);
+                                } else {
+                            //     System.out.println("**"+courant.getAttributeValue("name")+"   "+courant.getAttributeValue("val")+"***");
+                                jsonObject.put(courant.getAttributeValue("name"),courant.getAttributeValue("val"));
+                            }
+                             
+                             
+                             
+                         
+                         }
+                  //       System.out.println("**"+data+"***");
+                         jsonObject.put("parameters", json_paramets);
+                         
+                         }
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	return jsonObject;
+       }    
+       
+             public static JSONObject parseObixToJSONCapability(String obj_info) {
+               
+          JSONObject jsonObject = new  JSONObject();
+           try   {                     
+                      SAXBuilder sxb = new SAXBuilder(); 
+                        Document document = sxb.build(new StringReader(obj_info)); 
+                        Element racine=document.getRootElement();
+                        List list_obj=racine.getChildren();
+                        Iterator noeud = list_obj.iterator();
+                         while(noeud.hasNext()) {
+                            Element courant = (Element)noeud.next(); 
+                            if (courant.getChildren().size() == 0 ){
+                                
+                                jsonObject.put(courant.getAttributeValue("name"),courant.getAttributeValue("val"));
+                            }
+                            else
+                            {
+                                String s=new XMLOutputter().outputString(courant);
+                             jsonObject.put("protocol",parseObixToJSONProtocol(s))   ;
+                            
+                            
+                            }
+                             
+                         
+                         }
+                         
+                         }
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	return jsonObject;
+       }    
+             
+                          public static JSONObject parseObixToJSONDevice(String obj_info) {
+               
+          JSONObject jsonObject = new  JSONObject();
+           try   {                     
+                      SAXBuilder sxb = new SAXBuilder(); 
+                        Document document = sxb.build(new StringReader(obj_info)); 
+                        Element racine=document.getRootElement();
+                        List list_obj=racine.getChildren();
+                        Iterator noeud = list_obj.iterator();
+                         JSONArray json_capacitie = new  JSONArray();
+                         while(noeud.hasNext()) {
+                            Element courant = (Element)noeud.next(); 
+                            if (courant.getChildren().size() == 0 || !courant.getAttributeValue("name").equalsIgnoreCase("Capabilities")){
+                                
+                                jsonObject.put(courant.getAttributeValue("name"),courant.getAttributeValue("val"));
+                            }
+                            
+                            if(courant.getAttributeValue("name").equalsIgnoreCase("Capabilities")) {
+                               List list_capacitie=courant.getChildren();
+                               Iterator noeud_capacitie = list_capacitie.iterator();
+                              
+                                while(noeud_capacitie.hasNext()) {
+                                    Element courant_capacitie = (Element)noeud_capacitie.next(); 
+                                    String s=new XMLOutputter().outputString(courant_capacitie);
+                                    json_capacitie.add(parseObixToJSONCapability(s));
+                                   }
+                              }
+                          }
+                         jsonObject.put("capabilities",json_capacitie);
+                         
+                         }
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	return jsonObject;
+       }    
+                   
 	public static Device parseObixToDevice(String obixFormat)  {
 
 		Device device = null;
