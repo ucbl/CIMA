@@ -1,0 +1,124 @@
+<a class="btn btn-warning" href="#/"> < Devices list</a>
+<div ng-hide='loading' ng-controller="AccordionCtrl">
+	<div class="col-xs-6">
+		<hr>
+		<!-- Infos sur le device -->
+		<h1><b>Device ID : {{id}}</b></h1>
+
+		<i>Last connection on {{lastConnectionDate}}</i><br>
+		<i>Communication protocol : {{connectionMode}} at {{uri}}</i>
+		<br>
+		<br>
+
+		<p>
+		<strong>Name</strong>
+		<input class="control" type="text"  ng-disabled="!isEditable" ng-model="name"/> 
+		<input class="control" type="checkbox" ng-model="isEditable">  Edit
+		<br>
+		<i ng-show="isEditable">Note : changes will be effective after apply changes.</i>
+		</p>
+		<hr>
+
+		<!-- Capacités sur le device -->
+		<h2><b>Capabilities  </b></h2>
+
+	    <table st-table="devices" class="table table-striped" style="width: 40%">
+	        <thead>
+	        <tr>
+	            <th>ID </th>
+	            <th>Protocol</th>
+	        </tr>
+	        </thead>
+	        <tbody ng-repeat="capability in capabilities | orderBy:order">
+	        <tr>
+	            <td>{{capability.id}}</td>
+	            <td>{{capability.protocol.protocolName}}</td>
+	            <td>
+		            <button type="button" ng-click="openAndEditCapacity(capability)" class="btn btn-sm btn btn-info">
+		            <i class="glyphicon glyphicon-edit"></i>
+		            	Edit
+		            </button>
+            	</td>
+                <td>
+                    <button type="button"  ng-click="removeCapability(capability)" class="btn btn-sm btn-danger">
+                    	<i class="glyphicon glyphicon-remove-circle"></i>
+                        Remove
+                    </button>
+                </td>
+	        </tr>
+	        </tbody>
+	    </table>
+
+
+        <accordion>
+            <accordion-group heading="Edit capacity" is-open="status.isOpen" class="check-element animate-show" ng-show="editme">
+            	<!-- EDIT CAPACITY -->
+                <div>
+                    <form ng-submit="modifyCapability(capability)">
+                        <strong>ID : {{capability.id}} </strong>
+                        <br>
+                        Protocol type : {{capability.protocol.protocolName}}
+                        <br>
+                        <br>
+                        <li ng-repeat="parameter in capability.protocol.parameters">
+                            {{parameter.name}}:
+                            <input class="form-control" placeholder="{{parameter.value}}"  style="width: 40%" type="text" ng-model="parameter.value"/> 
+                        </li>
+                        <br>
+                        <button class="btn btn-success pull-right" type="submit" ng-click="CloseEditCapacity()">
+                            <i class="glyphicon glyphicon-ok"></i>
+                            Apply 
+                        </button>
+                        <input class="btn btn-danger pull-right" value="Undo" ng-click="CloseEditCapacity()" />
+                        <br>
+                    </form>
+                </div>
+            </accordion-group>
+            
+            <hr>
+            <accordion-group is-open="status.open">
+                <accordion-heading >
+                    Add a capacity <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                </accordion-heading>
+                <!-- ADD CAPACITY -->
+                <div>
+                    <form ng-submit="addCapacity(newCapability)">
+                       
+                        <strong>ID </strong>
+                        <input class="form-control" style="width: 40%" type="text" placeholder="Type an ID... (Required)" ng-model="newCapability.id" required>
+
+                        <strong>Protocol </strong>
+                        <select class="form-control" ng-model="newCapability.protocol"
+                                ng-options="protocol.protocolName for protocol in protocols" required>
+                            <option value="">-- choose protocol --</option>
+                        </select>
+
+                        <li ng-repeat="parameter in newCapability.protocol.parameters">
+                            {{parameter.name}}:
+                            <input class="form-control" style="width: 40%" type="text" ng-model="parameter.value">
+                        </li>
+                        <br>
+                       
+                        
+                         <!-- Bouton pour reset la capacité -->
+                        <button ng-click="newCapability={}" type="button" class="btn btn-primary pull-left">Reset</button>
+                        <!-- Bouton pour tester la capacité -->
+                        <button ng-click="testCapacity(newCapability)" type="button" class="btn btn-primary pull-right">Test</button>
+                         <!-- Bouton pour ajouter la capacité -->
+                        <input ng-click="check(newCapability)" class="btn btn-success pull-right" type="submit" value="Add"/>
+                    
+                    </form>
+                    <br>
+                </div>
+            </accordion-group>
+        </accordion> 
+
+	<hr>
+
+	<!-- Bouton pour valider tous les changements -->
+    <button ng-show="!showme" class="btn btn-success pull-right" ng-click="saveDevice()" class="btn btn-default pull-center">
+    <i class="glyphicon glyphicon-ok"></i>
+    	Apply changes
+    </button>
+	</div>
+</div>
