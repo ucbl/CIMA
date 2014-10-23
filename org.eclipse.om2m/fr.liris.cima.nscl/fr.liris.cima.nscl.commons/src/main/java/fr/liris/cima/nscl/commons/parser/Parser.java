@@ -60,7 +60,7 @@ public class Parser {
 			
 			while (capacity.hasNext()) {
                                 JSONObject capacity_tmp = (JSONObject) capacity.next();
-                                list.add(parseJSONToObixCapacity(capacity_tmp));
+                                list.add(parseJSONToObixCapability(capacity_tmp));
                                         
 			
 		} }
