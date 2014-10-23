@@ -89,9 +89,9 @@ public class Parser {
 			String uri ="";
 			String modeConnection="";
 			String name = "";
-			
+
 			Date dateConnection = null;
-			
+
 
 			List<Element> childrenElement = root.getChildren();
 			for(Element element : childrenElement) {
@@ -104,7 +104,7 @@ public class Parser {
 				if(element.getName().equals("name")) {
 					name = element.getText();
 				}
-				
+
 				if(element.getName().equals("dateConnection")) {
 					dateConnection = Utils.StrToDate(element.getText());
 				}
@@ -120,14 +120,84 @@ public class Parser {
 
 		return device;
 	}
-	
-	public static Device ParseJsonToDevice(String jsonFormat) {
-		Device device = new Device("ev3", "http://192.168.0.2", "http");
-		device.setId("ev3");
+
+	public static Device parseObixToDevice(String obixFormat) {
+
+		Device device = null;
+		String id = "",  name = "", uri = "",  modeConnection=""; 
+		Date dateConnection = null;
 		
+		try {
+			XParser parser = XParser.make(obixFormat.trim());
+			XElem root = parser.parse();
+			XElem deviceElem = root.elem(0);
+			//XElem capabilitiesElem = deviceElem.get(arg0)
+
+			for(XElem xElem : deviceElem.elems()){
+				if(xElem.attrValue(0).equals("id")) {
+					id = xElem.attrValue(1);
+					//	System.out.println( xElem.attrValue(1));
+				}
+				if(xElem.attrValue(0).equals("name")) {
+					name = xElem.attrValue(1);
+					//System.out.println( xElem.attrValue(1));
+				}
+				if(xElem.attrValue(0).equals("uri")) {
+					uri = xElem.attrValue(1);
+					//	System.out.println( xElem.attrValue(1));
+				}
+				if(xElem.attrValue(0).equals("dateConnection")) {
+					dateConnection = Utils.StrToDate(xElem.attrValue(1));
+					System.out.println( "date = "+xElem.attrValue(1));
+				}
+				if(xElem.attrValue(0).equals("modeConnection")) {
+					modeConnection = xElem.attrValue(1);
+					//	System.out.println( xElem.attrValue(1));
+				}
+				
+				device = new Device(name, uri, modeConnection, dateConnection, new ContactInfo());
+				if(id != null)
+					device.setId(id);
+
+				if(xElem.get("name").equals("capabilities")) {
+					for(XElem capabilityElem : xElem.elems()) {
+						String capabilityName = capabilityElem.elem(0).attrValue(1);
+						Capability capability = new Capability(capabilityName);
+						if(capabilityElem.elem(1).get("name").equals("protocol")) {
+							XElem protocolChildElems []= capabilityElem.elem(1).elems();
+							System.out.println("protocol = "+protocolChildElems[0].attrValue(1));
+
+							String protocolName = protocolChildElems[0].attrValue(1);
+							Protocol protocol = new Protocol(protocolName);
+							System.out.println("protocolLen = "+capabilityElem.elem(1).elems().length);
+							for(int i = 0; i < protocolChildElems.length ; i++) {
+								String key =  protocolChildElems[i].attrValue(0);
+								String value =  protocolChildElems[i].attrValue(1);
+								protocol.addParameter(key, value);
+							}
+							capability.setProtocol(protocol);
+						}
+						// Add capability to device
+						device.addCapability(capability);
+					}
+				}
+
+			}
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+
 		return device;
 	}
-	
+
+	public static Device ParseJsonToDevice(String jsonFormat) {
+		Device device = new Device("ev3", "http://192.168.0.2", "http", new ContactInfo());
+		device.setId("ev3");
+
+		return device;
+	}
+
 	public static String parseXmlDeviceGateway(String representation) {
 		try {
 			SAXBuilder sb  = new SAXBuilder();
@@ -136,7 +206,7 @@ public class Parser {
 			Element root = new Element("infos");
 			firstDoc.setRootElement(root);
 			root.addContent(firstRoot);
-			
+
 			List<Element> childrenElement = root.getChildren();
 			for(Element element : childrenElement) {
 				System.out.println(element.getValue());
@@ -146,10 +216,10 @@ public class Parser {
 			e.printStackTrace();
 		}
 		return null;
-			
+
 	}
-	
-	public static Device parseObixToDevice(String obixFormat) throws Exception {
+
+	public static Device parseObixToDevice1(String obixFormat) throws Exception {
 
 		try {
 			XParser parser = XParser.make(obixFormat);
@@ -184,15 +254,51 @@ public class Parser {
 		String representation = "<device>"+
 				"<name>ev3</name>"+
 				"<modeConnection>http</modeConnection>"+
+				"<dateConnection>mercredi, oct. 22, 2014 13:52:20 PM</dateConnection>"+
 				"<uri>192.168.43.34</uri> "+
 				"<server>http://127.0.0.1:8282</server>"+
 				"</device>";
-		
-		Device device = new Device("ev3", "localhost", "http");
+
+		Device device = new Device("ev3", "localhost", "http", new ContactInfo());
 		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
-		System.out.println(device.toObixFormat());
-		System.out.println(formatter.format(new Date()));
-		
+		System.out.println(Parser.parseXmlDevice(representation));
+		//System.out.println(formatter.format(new Date()));
+
+
+		String obixFormat = "<obj>"+
+				"<obj name=\"device\">" +
+				"<str name=\"id\" val=\"DEVICE_0\"/>"+
+				"<str name=\"name\" val=\"http\"/>"+
+				"<str name=\"uri\" val=\"192.168.43.34:/device/capabilities/\"/>"+
+				"<str name=\"dateConnection\" val=\"mercredi, oct. 22, 2014 13:52:20 PM\"/>"+
+				"<str name=\"modeConnection\" val=\"ip\"/>"+
+				"<list name=\"capabilities\">"+
+				"<obj>"+
+				"<str name=\"id\" val=\"ev3Back\"/>"+
+				"<obj name=\"protocol\">"+
+				"<str name=\"protocoleName\" val=\"http\"/>"+
+				"<str name=\"method\" val=\"post\"/>"+
+				"<str name=\"port\" val=\"8080\"/>"+
+				"<str name=\"uri\" val=\"uri\"/>"+
+				"</obj>"+
+				"</obj>"+
+				"<obj>"+
+				"<str name=\"id\" val=\"phone\"/>"+
+				"<obj name=\"protocol\">"+
+				"<str name=\"protocoleName\" val=\"http\"/>"+
+				"<str name=\"method\" val=\"post\"/>"+
+				"<str name=\"port\" val=\"8080\"/>"+
+				"<str name=\"uri\" val=\"uri\"/>"+
+				"</obj>"+
+				"</obj>"+
+				"</list>"+                
+				"</obj>"+
+				"</obj>";
+
+		Device device2 = parseObixToDevice(obixFormat);
+		System.out.println(device2);
+		System.out.println(device2.toObixFormat());
+
 
 	}
 }

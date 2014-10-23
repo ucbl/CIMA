@@ -1,5 +1,9 @@
 package fr.liris.cima.gscl.device.service;
 
+import org.eclipse.om2m.comm.service.RestClientService;
+import org.eclipse.om2m.commons.rest.RequestIndication;
+
+
 import fr.liris.cima.gscl.commons.Device;
 
 /**
@@ -57,8 +61,12 @@ public interface ManagedDeviceService {
 	
 	public void removeUnknownDeviceById(String id);
 	
+	public void updateUnknonwDevice(String deviceId, Device newDevice);
+	public void updateDevice(String deviceId, Device newDevice);
+	
 	
 	public boolean switchUnknownToKnownDevice(Device device);
 	
-
+	public void sendDeviceToNSCL(Device device, RestClientService clientService);
+	
 }

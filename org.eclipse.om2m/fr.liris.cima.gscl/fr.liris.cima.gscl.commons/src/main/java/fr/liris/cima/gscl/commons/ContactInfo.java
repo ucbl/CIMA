@@ -15,6 +15,11 @@ public class ContactInfo {
 	
 	//port in the gateway that allow a client to send communicate with device.
 	private int cloud_port;
+	
+	public ContactInfo() {
+		deviceId="DEVICE_DEFAULT";
+		cloud_port = 0;
+	}
 
 	public ContactInfo(String deviceId, int cloud_port) {
 		this.deviceId = deviceId;
