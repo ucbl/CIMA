@@ -86,4 +86,13 @@ public class Capability {
 	public void setProtocol(Protocol protocol) {
 		this.protocol = protocol;
 	}	
+	
+	public static void main(String args[]) {
+		Capability capability = new Capability("ev3");
+		Protocol protocol = new Protocol("http");
+		protocol.addParameter("method", "post");
+		capability.setProtocol(protocol);
+		
+		System.out.println(ObixEncoder.toString(capability.toObj()));
+	}
 }

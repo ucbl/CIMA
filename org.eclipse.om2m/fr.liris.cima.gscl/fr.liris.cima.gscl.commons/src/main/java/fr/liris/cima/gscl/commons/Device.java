@@ -3,6 +3,7 @@ package fr.liris.cima.gscl.commons;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import obix.Obj;
@@ -38,14 +39,14 @@ public class Device {
 	}
 
 	private String modeConnection;
-	
+
 	private List<Capability> capabilities;
-	
+
 	//private String protocol;
 	private String uri;
-	
+
 	private ContactInfo contactInfo;
-	
+
 	private static String serverUri = "http://127.0.0.1:8282";
 
 	public Device() {
@@ -62,20 +63,20 @@ public class Device {
 		capabilities = new ArrayList<>();
 
 	}
-	
+
 	public Device(String name, String uri, String modeConnection, ContactInfo contactInfo) {
 		this.id = new UID().getUid();
 		this.name = name;
 		this.uri = uri;
 		this.modeConnection = modeConnection;
 		this.dateConnection = Utils.StrToDate("mercredi, oct. 22, 2014 13:52:20 PM");
-		
+
 		this.contactInfo = contactInfo;
 		capabilities = new ArrayList<>();
 
 
 	}
-	
+
 	public Device(String name, String uri, String modeConnection, Date date, ContactInfo contactInfo) {
 		this.id = new UID().getUid();
 		this.name = name;
@@ -85,45 +86,95 @@ public class Device {
 		this.contactInfo = contactInfo;
 		capabilities = new ArrayList<>();
 	}
-	
-	
+
+
 
 	public String toObixFormat() {
-		
+
 		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
 
 		Obj objDevice = new Obj("device");
 		Obj obj = new Obj();
-		
+
 		objDevice.add(new Str("id",id));
 		objDevice.add(new Str("name", name));
 		objDevice.add(new Str("uri",uri));
 		objDevice.add(new Str("modeConnection", modeConnection));
 		objDevice.add(new Str("dateConnection", formatter.format(dateConnection)));
-		
+
 		obix.List obixCapabilities = new obix.List("capabilitities");
 		for(Capability capability : capabilities) {
 			obixCapabilities.add(capability.toObj());
 		}
-		
+
+		objDevice.add(obixCapabilities);
+		obj.add(objDevice);
+		obj.add(contactInfo.toBix());
+
+		return ObixEncoder.toString(obj);
+	}
+
+	public String toIntrinsequeObixFormat() {
+
+		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
+
+		Obj objDevice = new Obj("device");
+		Obj obj = new Obj();
+
+		objDevice.add(new Str("id",id));
+		objDevice.add(new Str("name", name));
+		objDevice.add(new Str("uri",uri));
+		objDevice.add(new Str("modeConnection", modeConnection));
+		objDevice.add(new Str("dateConnection", formatter.format(dateConnection)));
+
+		obix.List obixCapabilities = new obix.List("capabilities");
+		for(Capability capability : capabilities) {
+			obixCapabilities.add(capability.toObj());
+		}
+
 		objDevice.add(obixCapabilities);
 		obj.add(objDevice);
 		//obj.add(contactInfo.toBix());
 
 		return ObixEncoder.toString(obj);
 	}
-	
+
+	public Obj toIntrinsequeObix() {
+
+		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
+
+		Obj objDevice = new Obj("device");
+		Obj obj = new Obj();
+
+		objDevice.add(new Str("id",id));
+		objDevice.add(new Str("name", name));
+		objDevice.add(new Str("uri",uri));
+		objDevice.add(new Str("modeConnection", modeConnection));
+		objDevice.add(new Str("dateConnection", formatter.format(dateConnection)));
+
+		obix.List obixCapabilities = new obix.List("capabilities");
+		for(Capability capability : capabilities) {
+			obixCapabilities.add(capability.toObj());
+		}
+
+		objDevice.add(obixCapabilities);
+		obj.add(objDevice);
+		//obj.add(contactInfo.toBix());
+
+		return obj;
+	}
+
 	public String toXmlFormat() {
 		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
 
 		return  "<device>"+
-				"<id>"+id+"</id>"+
-				"<name>"+name+"</name>"+
-				"<modeConnection>"+modeConnection+"</modeConnection>"+
-				"<dateConnection>"+dateConnection+"</dateConnection>"+
-				"<uri>"+uri+"</uri> "+
-				"<server>"+serverUri+"</server>"+
-				"</device>";
+		"<id>"+id+"</id>"+
+		"<name>"+name+"</name>"+
+		"<modeConnection>"+modeConnection+"</modeConnection>"+
+		"<dateConnection>"+dateConnection+"</dateConnection>"+
+		"<uri>"+uri+"</uri> "+
+		"<server>"+serverUri+"</server>"+
+		"</device>";
 	}
 	public final String getId() {
 		return id;
@@ -136,7 +187,7 @@ public class Device {
 		this.id = id;
 	}
 
-	
+
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -174,11 +225,18 @@ public class Device {
 	public void setContactInfo(ContactInfo contactInfo) {
 		this.contactInfo = contactInfo;
 	}
-	
+
 	public static void main(String args[]) throws InterruptedException {
 		System.out.println("Hello");
 		//Thread.sleep(10000);
-		System.out.println(new Device("URI", "http").toObixFormat());
+		//System.out.println(new Device("URI", "http").toObixFormat());
+		
+		HashMap<String, Integer> map = new HashMap<>();
+		map.put("1", 1);
+		map.put("2", 1);
+		map.put("1", 4);
+		
+		System.out.println(map);
 	}
 
 	public String getName() {
@@ -196,7 +254,7 @@ public class Device {
 	public void setDateConnection(Date dateConnection) {
 		this.dateConnection = dateConnection;
 	}
-	
+
 	public void setDateConnection(String dateConnection) {
 		this.dateConnection = Utils.StrToDate(dateConnection);
 	}
@@ -208,18 +266,18 @@ public class Device {
 	public void setModeConnection(String modeConnection) {
 		this.modeConnection = modeConnection;
 	}
-	
+
 	public void addCapability(Capability capability) {
 		capabilities.add(capability);
 	}
-	
+
 	public void removeCapability(Capability capability) {
 		capabilities.remove(capability);
 	}
-	
+
 	public boolean equals(Object other) {
 		Device device = (Device)other;
-		
+
 		return this.id.equals(device.id);
 	}
 }

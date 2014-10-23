@@ -9,7 +9,9 @@ import java.util.Locale;
 
 import obix.Obj;
 import obix.Str;
+import obix.io.ObixDecoder;
 import obix.io.ObixEncoder;
+import obix.tools.Obixc;
 import obix.xml.XElem;
 import obix.xml.XParser;
 
@@ -126,7 +128,7 @@ public class Parser {
 		Device device = null;
 		String id = "",  name = "", uri = "",  modeConnection=""; 
 		Date dateConnection = null;
-		
+
 		try {
 			XParser parser = XParser.make(obixFormat.trim());
 			XElem root = parser.parse();
@@ -154,28 +156,28 @@ public class Parser {
 					modeConnection = xElem.attrValue(1);
 					//	System.out.println( xElem.attrValue(1));
 				}
-				
+
 				device = new Device(name, uri, modeConnection, dateConnection, new ContactInfo());
 				if(id != null)
 					device.setId(id);
 
 				if(xElem.get("name").equals("capabilities")) {
+					//System.out.println("OK");
 					for(XElem capabilityElem : xElem.elems()) {
 						String capabilityName = capabilityElem.elem(0).attrValue(1);
 						Capability capability = new Capability(capabilityName);
 						if(capabilityElem.elem(1).get("name").equals("protocol")) {
 							XElem protocolChildElems []= capabilityElem.elem(1).elems();
-							System.out.println("protocol = "+protocolChildElems[0].attrValue(1));
 
 							String protocolName = protocolChildElems[0].attrValue(1);
 							Protocol protocol = new Protocol(protocolName);
-							System.out.println("protocolLen = "+capabilityElem.elem(1).elems().length);
 							for(int i = 0; i < protocolChildElems.length ; i++) {
 								String key =  protocolChildElems[i].attrValue(0);
 								String value =  protocolChildElems[i].attrValue(1);
 								protocol.addParameter(key, value);
 							}
 							capability.setProtocol(protocol);
+							//System.out.println(capability);
 						}
 						// Add capability to device
 						device.addCapability(capability);
@@ -189,6 +191,30 @@ public class Parser {
 		}
 
 		return device;
+	}
+
+	public static Capability parseObixToCapability(String obixFormat) {
+
+		Device device = null;
+		String id = "",  name = "", uri = "",  modeConnection=""; 
+		
+		Protocol protocol = new Protocol();
+		Date dateConnection = null;
+
+		Obj capabilityObj = ObixDecoder.fromString(obixFormat);
+		
+		System.out.println("Eleme = "+capabilityObj.get("protocol"));
+		Obj protocolObj = capabilityObj.get("protocol");
+		protocol.setName(protocolObj.get("protocoleName").getStr());
+		protocol.addParameter("method", protocolObj.get("method").getStr());
+		protocol.addParameter("port", protocolObj.get("port").getStr());
+		protocol.addParameter("uri", protocolObj.get("uri").getStr());
+		
+		name = capabilityObj.get("id").getStr();
+		
+		return new Capability(name, protocol);
+
+
 	}
 
 	public static Device ParseJsonToDevice(String jsonFormat) {
@@ -258,10 +284,10 @@ public class Parser {
 				"<uri>192.168.43.34</uri> "+
 				"<server>http://127.0.0.1:8282</server>"+
 				"</device>";
-
-		Device device = new Device("ev3", "localhost", "http", new ContactInfo());
-		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
-		System.out.println(Parser.parseXmlDevice(representation));
+		//
+		//		Device device = new Device("ev3", "localhost", "http", new ContactInfo());
+		//		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
+		//		System.out.println(Parser.parseXmlDevice(representation));
 		//System.out.println(formatter.format(new Date()));
 
 
@@ -295,9 +321,35 @@ public class Parser {
 				"</obj>"+
 				"</obj>";
 
+
+		String capabilityFormat = "<obj>"+
+				"<str name=\"id\" val=\"ev3Back\"/>"+
+				"<obj name=\"protocol\">"+
+				"<str name=\"protocoleName\" val=\"http\"/>"+
+				"<str name=\"method\" val=\"post\"/>"+
+				"<str name=\"port\" val=\"8080\"/>"+
+				"<str name=\"uri\" val=\"uri\"/>"+
+				"</obj>"+
+				"</obj>";
+		
+		System.out.println(parseObixToCapability(capabilityFormat).toObixFormat());
+
+
+		//	System.out.println(obixFormat);
+
 		Device device2 = parseObixToDevice(obixFormat);
-		System.out.println(device2);
-		System.out.println(device2.toObixFormat());
+		//	System.out.println(device2);
+		//System.out.println(device2.toIntrinsequeObixFormat());
+		//		System.out.println( device2.toIntrinsequeObixFormat().equals(obixFormat));
+
+
+		obixFormat = device2.toIntrinsequeObixFormat();
+
+		Device	device3 = parseObixToDevice(obixFormat);
+
+
+
+		//System.out.println(device2.getCapabilities());
 
 
 	}

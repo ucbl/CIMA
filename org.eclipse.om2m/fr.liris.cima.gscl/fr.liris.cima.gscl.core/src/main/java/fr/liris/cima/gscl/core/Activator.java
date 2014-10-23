@@ -43,8 +43,6 @@ public class Activator implements BundleActivator {
 				final ManagedDeviceService managedDeviceService = (ManagedDeviceService) this.context.getService(reference);				
 				this.context.registerService(IpuService.class.getName(), new DeviceController(managedDeviceService), null);
 
-				managedDeviceService.start();
-
 				new Thread(){
 					public void run(){
 						try {
@@ -94,7 +92,7 @@ public class Activator implements BundleActivator {
 				logger.info("RestClientService discovered in cima gscl core");
 				final RestClientService restClientService = (RestClientService) this.context.getService(reference);
 				DeviceController.restClientService = restClientService;
-				ConfigController.restClientService = restClientService;
+			//	ConfigController.restClientService = restClientService;
 				return restClientService;
 			}
 		};

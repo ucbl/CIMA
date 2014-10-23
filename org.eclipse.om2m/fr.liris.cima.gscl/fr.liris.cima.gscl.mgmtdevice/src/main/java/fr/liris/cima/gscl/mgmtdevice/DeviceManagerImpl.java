@@ -2,6 +2,12 @@ package fr.liris.cima.gscl.mgmtdevice;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import obix.Obj;
+import obix.io.ObixDecoder;
+import obix.io.ObixEncoder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,9 +20,12 @@ import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 import org.eclipse.om2m.core.service.SclService;
 
+import fr.liris.cima.gscl.commons.Capability;
 import fr.liris.cima.gscl.commons.ContactInfo;
 import fr.liris.cima.gscl.commons.Device;
+import fr.liris.cima.gscl.commons.Protocol;
 import fr.liris.cima.gscl.commons.constants.Constants;
+import fr.liris.cima.gscl.commons.parser.Parser;
 import fr.liris.cima.gscl.commons.util.Utils;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
 
@@ -39,6 +48,7 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 	static List<Device> devices;
 	
 	static List<Device> unknownDevices;
+	static ConfigManagerImpl configManagerImpl;
 	
 	public DeviceManagerImpl() {
 		
@@ -48,6 +58,7 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 		SCL = scl;
 		devices = new ArrayList<>();
 		unknownDevices = new ArrayList<>();
+		configManagerImpl = new ConfigManagerImpl();
 	}
 	
 	public static void init(SclService scl) {
@@ -165,6 +176,7 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 		}
 	}
 	
+	@Override
 	public Device getUnknownDevice(String deviceId) {
 		for(Device device: unknownDevices) {
 			if(device.getId().equals(deviceId))
@@ -182,10 +194,65 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 		return devices.add(device);
 	}
 	
+	@Override
+	public Capability getCapabilityToUnknownDevice(String deviceId, String capabilityId) {
+		return configManagerImpl.getCapabilityToDevice(deviceId, capabilityId);
+	}
+	
+	@Override
+	public List<Capability> getUnknownDeviceCapabilities(String deviceId) {
+		return configManagerImpl.getDeviceCapabilities(deviceId);
+	}
+	
+	@Override
+	public boolean removeCapabilityToUnknownDevice(String deviceId, String capabilityId) {
+		return configManagerImpl.removeCapabilityDevice(deviceId, capabilityId);
+	}
+	
+	
+	@Override
+	public Capability updateUnknownDeviceCapability(String deviceId, Capability capability)  {
+		return configManagerImpl.updateCapability(deviceId, capability);
+	}
+	
+	
 	private void populate() {
+		
+		String obixFormat = "<obj>"+
+				"<obj name=\"device\">" +
+				"<str name=\"id\" val=\"DEVICE_0\"/>"+
+				"<str name=\"name\" val=\"http\"/>"+
+				"<str name=\"uri\" val=\"192.168.43.34:/device/capabilities/\"/>"+
+				"<str name=\"dateConnection\" val=\"mercredi, oct. 22, 2014 13:52:20 PM\"/>"+
+				"<str name=\"modeConnection\" val=\"ip\"/>"+
+				"<list name=\"capabilities\">"+
+				"<obj>"+
+				"<str name=\"id\" val=\"ev3Back\"/>"+
+				"<obj name=\"protocol\">"+
+				"<str name=\"protocoleName\" val=\"http\"/>"+
+				"<str name=\"method\" val=\"post\"/>"+
+				"<str name=\"port\" val=\"8080\"/>"+
+				"<str name=\"uri\" val=\"uri\"/>"+
+				"</obj>"+
+				"</obj>"+
+				"<obj>"+
+				"<str name=\"id\" val=\"phone\"/>"+
+				"<obj name=\"protocol\">"+
+				"<str name=\"protocoleName\" val=\"http\"/>"+
+				"<str name=\"method\" val=\"post\"/>"+
+				"<str name=\"port\" val=\"8080\"/>"+
+				"<str name=\"uri\" val=\"uri\"/>"+
+				"</obj>"+
+				"</obj>"+
+				"</list>"+                
+				"</obj>"+
+				"</obj>";
+		
 		Device device = new Device("ev3", "http://192.168.0.2", "http", new ContactInfo());
-		device.setId("ev3");
+		device.setId("DEVICE_0");
+		//Device device = Parser.parseObixToDevice(obixFormat);
 		unknownDevices.add(device);
+		LOGGER.info("size unknown = "+unknownDevices.size());
 
 	}
 
@@ -218,5 +285,113 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 		device.setCapabilities(newDevice.getCapabilities());
 		device.setName(newDevice.getName());
 	}
+	
+	@Override
+	public  String unknownDevicesToObixFormat() {
+		obix.List obixDevices = new obix.List("devices");
+		Obj obj = new Obj();
+		
+		for(Device device : unknownDevices) {
+			obixDevices.add(device.toIntrinsequeObix());
+		}
+		obj.add(obixDevices);
+				
+		return ObixEncoder.toString(obj);
+	}
+	
+	@Override
+	public  String devicesToObixFormat(List<Device> devices) {
+		obix.List obixDevices = new obix.List("devices");
+		Obj obj = new Obj();
+		
+		for(Device device : devices) {
+			obixDevices.add(device.toIntrinsequeObix());
+		}
+		obj.add(obixDevices);
+				
+		return ObixEncoder.toString(obj);
+	}
+	
+	
+	@Override
+	public  String capabilitiesToObixFormat(List<Capability> capabilities) {
+		obix.List obixCapabilities = new obix.List("capabilities");
+		Obj obj = new Obj();
+		
+		for(Capability capability : capabilities) {
+			obixCapabilities.add(capability.toObj());
+		}
+		obj.add(obixCapabilities);
+				
+		return ObixEncoder.toString(obj);
+	}
+	
+	
+	@Override
+	public void invokeCapability(String deviceId, Capability capability, RestClientService clientService) {
+		RequestIndication requestIndication = new RequestIndication();
+		Protocol protocol = capability.getProtocol();
+		
+		requestIndication.setBase(capability.getProtocol().getParameterValue("uri"));
+		requestIndication.setMethod(protocol.getParameterValue("method"));
+		requestIndication.setProtocol(protocol.getParameterValue("protocolName"));
+		requestIndication.setTargetID("");
+		requestIndication.setRepresentation("");
+		
+		clientService.sendRequest(requestIndication);
+		
+	}
+	
+	public static String unknownDevicesToObixFormat1() {
+		obix.List obixDevices = new obix.List("devices");
+		Obj obj = new Obj();
+		
+		for(Device device : unknownDevices) {
+			obixDevices.add(device.toIntrinsequeObix());
+		}
+		obj.add(obixDevices);
+		//System.out.println(obixDevices.size());
+		return ObixEncoder.toString(obj);
+	}
+	
+	
+	public static void main(String args[]) {
+		String obixFormat = "<obj>"+
+				"<obj name=\"device\">" +
+				"<str name=\"id\" val=\"DEVICE_0\"/>"+
+				"<str name=\"name\" val=\"http\"/>"+
+				"<str name=\"uri\" val=\"192.168.43.34:/device/capabilities/\"/>"+
+				"<str name=\"dateConnection\" val=\"mercredi, oct. 22, 2014 13:52:20 PM\"/>"+
+				"<str name=\"modeConnection\" val=\"ip\"/>"+
+				"<list name=\"capabilities\">"+
+				"<obj>"+
+				"<str name=\"id\" val=\"ev3Back\"/>"+
+				"<obj name=\"protocol\">"+
+				"<str name=\"protocoleName\" val=\"http\"/>"+
+				"<str name=\"method\" val=\"post\"/>"+
+				"<str name=\"port\" val=\"8080\"/>"+
+				"<str name=\"uri\" val=\"uri\"/>"+
+				"</obj>"+
+				"</obj>"+
+				"<obj>"+
+				"<str name=\"id\" val=\"phone\"/>"+
+				"<obj name=\"protocol\">"+
+				"<str name=\"protocoleName\" val=\"http\"/>"+
+				"<str name=\"method\" val=\"post\"/>"+
+				"<str name=\"port\" val=\"8080\"/>"+
+				"<str name=\"uri\" val=\"uri\"/>"+
+				"</obj>"+
+				"</obj>"+
+				"</list>"+                
+				"</obj>"+
+				"</obj>";
+		
+		Device device = Parser.parseObixToDevice(obixFormat);
+		unknownDevices = new ArrayList<>();
+		unknownDevices.add(device);
+	//	System.out.println(device.toIntrinsequeObixFormat());
+		System.out.println(unknownDevicesToObixFormat1());
+		
 
+	}
 }
