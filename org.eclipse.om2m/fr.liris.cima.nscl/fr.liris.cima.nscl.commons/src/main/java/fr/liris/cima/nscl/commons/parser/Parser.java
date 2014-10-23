@@ -11,8 +11,10 @@ import org.jdom2.input.SAXBuilder;
 
 import obix.xml.XElem;
 import obix.xml.XParser;
+
 import java.io.FileReader;
 import java.util.Iterator;
+
 import obix.Obj;
 import obix.Str;
 import obix.io.ObixEncoder;
@@ -20,13 +22,26 @@ import obix.io.ObixEncoder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import fr.liris.cima.nscl.commons.Device;
 import fr.liris.cima.nscl.commons.ContactInfo;
 import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
+
 import java.util.Iterator;
 
 public class Parser {
+	public static Obj parseJSONToObixDevice(String jsonString) {
+     	// JSON
+     	JSONParser jsonParser = new JSONParser();
+     	JSONObject jsonObject = null;
+ 		try {
+ 			jsonObject = (JSONObject) jsonParser.parse(jsonString);
+ 		} catch (ParseException e1) {
+ 			e1.printStackTrace();
+ 		}
+ 		return parseJSONToObixDevice(jsonObject);
+	}
     public static Obj parseJSONToObixDevice(JSONObject jsonObject) {
          // oBIX
 			Obj obj_Device = new Obj("Device");
@@ -56,7 +71,20 @@ public class Parser {
 		return obj_Device;
 	}
     
-     public static Obj parseJSONToObixCapacity(JSONObject capacity) {
+
+	public static Obj parseJSONToObixCapability(String jsonString) {
+     	// JSON
+     	JSONParser jsonParser = new JSONParser();
+     	JSONObject jsonObject = null;
+ 		try {
+ 			jsonObject = (JSONObject) jsonParser.parse(jsonString);
+ 		} catch (ParseException e1) {
+ 			e1.printStackTrace();
+ 		}
+ 		return parseJSONToObixCapability(jsonObject);
+	}
+    
+     public static Obj parseJSONToObixCapability(JSONObject capacity) {
                      Obj obj_capacity = new Obj();
         
 		try {
@@ -70,6 +98,20 @@ public class Parser {
 		}
 		return obj_capacity;
 	}
+     
+
+ 	public static Obj parseJSONToObixProtocol(String jsonString) {
+      	// JSON
+      	JSONParser jsonParser = new JSONParser();
+      	JSONObject jsonObject = null;
+  		try {
+  			jsonObject = (JSONObject) jsonParser.parse(jsonString);
+  		} catch (ParseException e1) {
+  			e1.printStackTrace();
+  		}
+  		return parseJSONToObixProtocol(jsonObject);
+ 	}
+     
       public static Obj parseJSONToObixProtocol(JSONObject protocol_info) {
         
                 Obj obj_Protocol = new Obj();

@@ -52,9 +52,9 @@ public class ManualConfigurationServer implements IpuService{
 			case "device" :
 				request.setTargetID("gscl/applications/CIMA/devices/unknown");
 				resp = restClientService.sendRequest(requestIndication);
-				
-//				return resp;
-				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
+//				resp.setRepresentation(Parser.parseObixToJSONDevice(resp.getRepresentation()));
+				return resp;
+//				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
 			case "protocol" :
 				request.setTargetID("gscl/applications/CIMA/devices/protocol");
 				resp = restClientService.sendRequest(requestIndication);
