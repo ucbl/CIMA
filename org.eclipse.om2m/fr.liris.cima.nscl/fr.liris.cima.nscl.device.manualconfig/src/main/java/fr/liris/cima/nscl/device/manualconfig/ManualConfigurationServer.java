@@ -70,7 +70,11 @@ public class ManualConfigurationServer implements IpuService{
 				request.setTargetID("gscl/applications/CIMA/devices/unknown");
 				resp = restClientService.sendRequest(requestIndication);
 				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
-			case "protocol" : return new ResponseConfirm(StatusCode.STATUS_OK, "{\"protocoleName\" : \"http\",\"parameters\" : [{\"name\" : \"method\",\"value\" : \"\" },{\"name\" : \"port\",\"value\" : \"\"},{\"name\" : \"uri\",\"value\" : \"\" },{\"name\" : \"body\",\"value\" : \"\"}]}");
+			case "protocol" :
+				request.setTargetID("gscl/applications/CIMA/devices/protocol");
+				resp = restClientService.sendRequest(requestIndication);
+				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
+				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"protocoleName\" : \"http\",\"parameters\" : [{\"name\" : \"method\",\"value\" : \"\" },{\"name\" : \"port\",\"value\" : \"\"},{\"name\" : \"uri\",\"value\" : \"\" },{\"name\" : \"body\",\"value\" : \"\"}]}");
 			}
 			
 		} else if(tID.length == 6){
@@ -101,7 +105,7 @@ public class ManualConfigurationServer implements IpuService{
 		RequestIndication request = new RequestIndication();
 		
 		request.setBase("");
-		request.setMethod("RETRIEVE");
+		request.setMethod("UPDATE");
 		request.setProtocol("http");
 		request.setRequestingEntity(Constants.REQENTITY);
 		if(tID.length == 6){
@@ -129,7 +133,7 @@ public class ManualConfigurationServer implements IpuService{
 		RequestIndication request = new RequestIndication();
 		
 		request.setBase("");
-		request.setMethod("RETRIEVE");
+		request.setMethod("DELETE");
 		request.setProtocol("http");
 		request.setRequestingEntity(Constants.REQENTITY);
 		if(tID.length == 8){
@@ -150,7 +154,7 @@ public class ManualConfigurationServer implements IpuService{
 		RequestIndication request = new RequestIndication();
 		
 		request.setBase("");
-		request.setMethod("RETRIEVE");
+		request.setMethod("CREATE");
 		request.setProtocol("http");
 		request.setRequestingEntity(Constants.REQENTITY);
 		if(tID.length == 6){
