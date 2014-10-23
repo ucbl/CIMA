@@ -24,50 +24,55 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 		alert(msg);
 	})
 
-	//Fonction pour valider le formulaire et cacher ou on
-	$scope.check = function(){
-		if($scope.newCapability.id !=null && $scope.newCapability.protocol.protocolName != null && $scope.newCapability.protocol.parameters!= null){
+	//Fonction pour valider le formulaire d'ajout de capacité et cacher ou on
+	$scope.check = function(capacity){
+		if(capacity.id !=null && capacity.protocol.protocolName != null && capacity.protocol.parameters!= null){
 			$scope.showme = false;
 		}
 	}
 	
 	//Fonction pour ajouter une capacité à l'objet
-	$scope.addCapacity = function(){
+	$scope.addCapacity = function(newCapability){
 		var cap = {};
-		cap.id = $scope.newCapability.id;
+		cap.id = newCapability.id;
 		cap.protocol = {};
-		cap.protocol.protocolName = $scope.newCapability.protocol.protocolName;
-		cap.protocol.parameters = $scope.newCapability.protocol.parameters;
+		cap.protocol.protocolName = newCapability.protocol.protocolName;
+		cap.protocol.parameters = newCapability.protocol.parameters;
 
 		$scope.capabilities.push(cap);
 
 		DeviceFactory.addCapacity($scope.id,cap).then(function(){
 
-
 		}, function(){
 			alert('Votre capacity n\'a pas pu être sauvegardé');
 		});
-		
 		$scope.newCapability = {};
 	}
-        $scope.removeCapability = function removeCapability(row) {
+        
+	//Supprimer un capacity
+    $scope.removeCapability = function removeCapability(row) {
+        
+        DeviceFactory.removeCapacity($scope.id, row.id).then(function(){
+
+
+		}, function(){
+			alert('Votre capacity n\'a pas pu être testé');
+		});
+
         var index = $scope.capabilities.indexOf(row);
         if (index !== -1) {
             $scope.capabilities.splice(index, 1);
         }
+        $scope.editme= false;
     }
-    $scope.verify =  function verify(){
-
-    }
-        $scope.editme = true;
 
 	//Fonction pour tester une capacité
-	$scope.testCapacity = function(){
+	$scope.testCapacity = function(newCapability){
 		var cap = {};
-		cap.id = $scope.newCapability.id;
+		cap.id = newCapability.id;
 		cap.protocol = {};
-		cap.protocol.protocolName = $scope.newCapability.protocol.protocolName;
-		cap.protocol.parameters = $scope.newCapability.protocol.parameters;
+		cap.protocol.protocolName = newCapability.protocol.protocolName;
+		cap.protocol.parameters = newCapability.protocol.parameters;
 		DeviceFactory.testCapacity($scope.id, cap).then(function(){
 
 
@@ -95,9 +100,29 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 		});
 	}
 
-	$scope.editCapacity = function(capacity){
+	//Fonction pour ajouter la capacité a modifier dans le scope et afficher la section d'edition
+	$scope.openAndEditCapacity = function(capacity){
 		$scope.editme= true;
+		$scope.isOpen=true;
 		$scope.capability = capacity;
+	}
+
+	//Fonction pour fermer la div d'edition
+	$scope.CloseEditCapacity = function(){
+		$scope.editme= false;
+	}
+
+	$scope.modifyCapability = function(capability){
+		var cap = {};
+		cap.id = capability.id;
+		cap.protocol = {};
+		cap.protocol.protocolName = capability.protocol.protocolName;
+		cap.protocol.parameters = capability.protocol.parameters;
+		DeviceFactory.modifyCapability($scope.id, cap).then(function(){
+
+		}, function(){
+			alert('Votre capacity n\'a pas pu être testé');
+		});
 	}
 
 });
