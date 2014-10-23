@@ -1,6 +1,6 @@
 <a class="btn btn-warning" href="#/"> < Devices list</a>
-<div ng-hide='loading'>
-	<div class="col-xs-6" >
+<div ng-hide='loading' ng-controller="AccordionCtrl">
+	<div class="col-xs-6">
 		<hr>
 		<!-- Infos sur le device -->
 		<h1><b>Device ID : {{id}}</b></h1>
@@ -34,59 +34,91 @@
 	            <td>{{capability.id}}</td>
 	            <td>{{capability.protocol.protocolName}}</td>
 	            <td>
-		            <input class="btn btn-sm btn btn-info" type="submit" value="Edit"  ng-click="editCapacity(capability)"/>
+		            <button type="button" ng-click="openAndEditCapacity(capability)" class="btn btn-sm btn btn-info">
+		            <i class="glyphicon glyphicon-edit"></i>
+		            	Edit
+		            </button>
             	</td>
+                <td>
+                    <button type="button"  ng-click="removeCapability(capability)" class="btn btn-sm btn-danger">
+                    	<i class="glyphicon glyphicon-remove-circle"></i>
+                        Remove
+                    </button>
+                </td>
 	        </tr>
 	        </tbody>
 	    </table>
 
-		<!-- DIV POUR EDITER CAPACITE -->
-        <div class="check-element animate-show" ng-show="editme">
-        <hr>
-            <form ng-submit="modifyCapability()">
-                <strong>ID : {{capability.id}} </strong>
-                <br>
-                Protocol type : {{capability.protocol.protocolName}}
-                <input st-search="" class="form-control"  style="width: 40%" type="text" placeholder="uri" ng-model="modifyCapability.uri"/>
-                <br>
-                <input class="btn btn-success pull-right" type="submit" value="Apply changes"  ng-click="editme=false"/>
-                <br>
-            </form>
-        </div>
 
-        <hr>
+        <accordion>
+            <accordion-group heading="Edit capacity" is-open="status.isOpen" class="check-element animate-show" ng-show="editme">
+            	<!-- EDIT CAPACITY -->
+                <div>
+                    <form ng-submit="modifyCapability(capability)">
+                        <strong>ID : {{capability.id}} </strong>
+                        <br>
+                        Protocol type : {{capability.protocol.protocolName}}
+                        <br>
+                        <br>
+                        <li ng-repeat="parameter in capability.protocol.parameters">
+                            {{parameter.name}}:
+                            <input class="form-control" placeholder="{{parameter.value}}"  style="width: 40%" type="text" ng-model="parameter.value"/> 
+                        </li>
+                        <br>
+                        <button class="btn btn-success pull-right" type="submit" ng-click="CloseEditCapacity()">
+                            <i class="glyphicon glyphicon-ok"></i>
+                            Apply 
+                        </button>
+                        <input class="btn btn-danger pull-right" value="Undo" ng-click="CloseEditCapacity()" />
+                        <br>
+                    </form>
+                </div>
+            </accordion-group>
+            
+            <hr>
+            <accordion-group is-open="status.open">
+                <accordion-heading >
+                    Add a capacity <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                </accordion-heading>
+                <!-- ADD CAPACITY -->
+                <div>
+                    <form ng-submit="addCapacity(newCapability)">
+                       
+                        <strong>ID </strong>
+                        <input class="form-control" style="width: 40%" type="text" placeholder="Type an ID... (Required)" ng-model="newCapability.id" required>
 
-	    <button type="button"  ng-click="showme=!showme" class="btn btn-default btn btn-primary">Create new capability</button>
-    	<button ng-click="showme=false" ng-show="showme" class="btn btn-default btn-danger">Undo</button><br>
-		
-		<!-- DIV POUR AJOUT DE CAPACITE -->
-        <div class="check-element animate-show" ng-show="showme">
-			<form ng-submit="addCapacity()">
-				<br>
-				<strong>ID </strong> 
-				<input class="form-control" style="width: 40%" type="text" placeholder="Type an ID... (Required)" ng-model="newCapability.id" required>
+                        <strong>Protocol </strong>
+                        <select class="form-control" ng-model="newCapability.protocol"
+                                ng-options="protocol.protocolName for protocol in protocols" required>
+                            <option value="">-- choose protocol --</option>
+                        </select>
 
-				<strong>Protocol </strong>
-				<select class="form-control" ng-model="newCapability.protocol" 
-					ng-options="protocol.protocolName for protocol in protocols" required>
-		      		<option value="">-- choose protocol --</option>
-		    	</select>
-		    	
-		    	<li ng-repeat="parameter in newCapability.protocol.parameters">
-		      		{{parameter.name}}: 
-		      		<input class="form-control" style="width: 40%" type="text" ng-model="parameter.value">
-		    	</li>
-		    	<br>
-		    	<!-- Bouton pour ajouter la capacité -->
-				<input ng-click="check(newCapability)" class="btn btn-success pull-right"  type="submit" value="Add">
-				<!-- Bouton pour tester la capacité -->
-		    	<button ng-click="testCapacity(newCapability)" type="button" class="btn btn-primary pull-right">Test</button>
-			</form>
-			<br>
-		</div>
+                        <li ng-repeat="parameter in newCapability.protocol.parameters">
+                            {{parameter.name}}:
+                            <input class="form-control" style="width: 40%" type="text" ng-model="parameter.value">
+                        </li>
+                        <br>
+                       
+                        
+                         <!-- Bouton pour reset la capacité -->
+                        <button ng-click="newCapability={}" type="button" class="btn btn-primary pull-left">Reset</button>
+                        <!-- Bouton pour tester la capacité -->
+                        <button ng-click="testCapacity(newCapability)" type="button" class="btn btn-primary pull-right">Test</button>
+                         <!-- Bouton pour ajouter la capacité -->
+                        <input ng-click="check(newCapability)" class="btn btn-success pull-right" type="submit" value="Add"/>
+                    
+                    </form>
+                    <br>
+                </div>
+            </accordion-group>
+        </accordion> 
+
 	<hr>
 
 	<!-- Bouton pour valider tous les changements -->
-    <button ng-show="!showme" class="btn btn-success pull-right" ng-click="saveDevice()" class="btn btn-default pull-center">Apply changes</button>
+    <button ng-show="!showme" class="btn btn-success pull-right" ng-click="saveDevice()" class="btn btn-default pull-center">
+    <i class="glyphicon glyphicon-ok"></i>
+    	Apply changes
+    </button>
 	</div>
 </div>

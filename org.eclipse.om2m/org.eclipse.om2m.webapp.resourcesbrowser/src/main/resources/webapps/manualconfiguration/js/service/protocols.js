@@ -11,7 +11,8 @@ app.factory('ProtocolsFactory', function($http, $q, $timeout){
 			if( factory.protocols !== false){
 				deferred.resolve(factory.protocols);
 			}else{
-				$http.get('json/protocols.json')
+				//http://134.214.213.63:8080/om2m/nscl/applications/configuration/manualconfiguration/protocol
+				$http.get('/om2m/nscl/applications/configuration/manualconfiguration/protocol')
 				.success(function(data, status){
 					factory.protocols = data;
 					 $timeout(function(){
