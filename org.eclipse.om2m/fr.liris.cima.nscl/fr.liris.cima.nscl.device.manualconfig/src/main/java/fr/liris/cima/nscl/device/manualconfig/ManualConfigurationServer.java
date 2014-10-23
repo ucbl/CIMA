@@ -1,23 +1,5 @@
 package fr.liris.cima.nscl.device.manualconfig;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpMethodRetryHandler;
-import org.apache.commons.httpclient.NoHttpResponseException;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.om2m.comm.service.RestClientService;
@@ -27,7 +9,8 @@ import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 import org.eclipse.om2m.ipu.service.IpuService;
 
-import fr.liris.cima.nscl.commons.constants.*;
+import fr.liris.cima.nscl.commons.constants.Constants;
+import fr.liris.cima.nscl.commons.parser.Parser;
 
 public class ManualConfigurationServer implements IpuService{
 	private static Log LOGGER = LogFactory.getLog(ManualConfigurationServer.class);
@@ -39,7 +22,7 @@ public class ManualConfigurationServer implements IpuService{
 	@Override
 	// POST without body
 	public ResponseConfirm doExecute(RequestIndication requestIndication) {
-		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_IMPLEMENTED,requestIndication.getMethod()+" Method not Implemented"));
+		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_IMPLEMENTED,"POST must have a body"));
 	}
 
 	@Override
@@ -69,6 +52,8 @@ public class ManualConfigurationServer implements IpuService{
 			case "device" :
 				request.setTargetID("gscl/applications/CIMA/devices/unknown");
 				resp = restClientService.sendRequest(requestIndication);
+				
+//				return resp;
 				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
 			case "protocol" :
 				request.setTargetID("gscl/applications/CIMA/devices/protocol");

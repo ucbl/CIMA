@@ -27,7 +27,7 @@ import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
 import java.util.Iterator;
 
 public class Parser {
-    public static Obj parseJSON_To_Obix_Device(JSONObject jsonObject) {
+    public static Obj parseJSONToObixDevice(JSONObject jsonObject) {
          // oBIX
 			Obj obj_Device = new Obj("Device");
          
@@ -45,7 +45,7 @@ public class Parser {
 			
 			while (capacity.hasNext()) {
                                 JSONObject capacity_tmp = (JSONObject) capacity.next();
-                                list.add(parseJSON_To_Obix_Capacity(capacity_tmp));
+                                list.add(parseJSONToObixCapacity(capacity_tmp));
                                         
 			
 		} }
@@ -56,12 +56,12 @@ public class Parser {
 		return obj_Device;
 	}
     
-     public static Obj parseJSON_To_Obix_Capacity(JSONObject capacity) {
+     public static Obj parseJSONToObixCapacity(JSONObject capacity) {
                      Obj obj_capacity = new Obj();
         
 		try {
                                 obj_capacity.add(new Str("id",(String)capacity.get("id")));
-                                obj_capacity.add(parseJSON_To_Obix_Protocol((JSONObject) capacity.get("protocol")));
+                                obj_capacity.add(parseJSONToObixProtocol((JSONObject) capacity.get("protocol")));
 			
 		} 
      
@@ -70,7 +70,7 @@ public class Parser {
 		}
 		return obj_capacity;
 	}
-      public static Obj parseJSON_To_Obix_Protocol(JSONObject protocol_info) {
+      public static Obj parseJSONToObixProtocol(JSONObject protocol_info) {
         
                 Obj obj_Protocol = new Obj();
         
