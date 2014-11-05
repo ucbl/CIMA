@@ -60,6 +60,12 @@ public class APocController extends Controller{
         String applicationId = requestIndication.getTargetID().split("/")[2];
         String applicationUri = sclId+"/applications/"+applicationId;
         Application application= DAOFactory.getApplicationDAO().find(applicationUri);
+        
+        /****** DEBUG *******/
+        LOGGER.info("Application URI : " + applicationUri);
+        /****** /DEBUG ******/
+        
+        
         String aPoCPath = application.getAPoCPaths().getAPoCPath().get(0).getPath();
         if (aPoCPath.matches(".*://.*")){
             String targetID = requestIndication.getTargetID().split(applicationId)[1];

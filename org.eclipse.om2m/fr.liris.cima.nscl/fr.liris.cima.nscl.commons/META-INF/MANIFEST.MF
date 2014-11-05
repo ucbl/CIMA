@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Service
+Bundle-Name: CIMANSCLCommons
 Bundle-SymbolicName: fr.liris.cima.nscl.commons
 Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.om2m.core.service,
  org.apache.commons.httpclient,
  org.apache.commons.codec,
@@ -11,13 +12,13 @@ Require-Bundle: org.eclipse.om2m.core.service,
  org.apache.commons.logging,
  org.eclipse.om2m.ipu.service,
  org.eclipse.om2m.comm.service
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: .,
- libs/jdom-2.0.5.jar,
- libs/obix.jar,
- libs/json-simple-1.1.1.jar
 Export-package: fr.liris.cima.nscl.commons,
  fr.liris.cima.nscl.commons.constants,
  fr.liris.cima.nscl.commons.encoder,
  fr.liris.cima.nscl.commons.parser,
- fr.liris.cima.nscl.commons.subscriber
+ fr.liris.cima.nscl.commons.subscriber,
+ org.json.simple
+Bundle-ClassPath: .,
+ libs/jdom-2.0.5.jar,
+ libs/obix.jar,
+ libs/json-simple-1.1.1.jar

@@ -28,21 +28,21 @@ public class ManualConfigurationServer implements IpuService{
 	@Override
 	// GET
 	public ResponseConfirm doRetrieve(RequestIndication requestIndication) {
-//		LOGGER.info("Base : " + requestIndication.getBase());
-//		LOGGER.info("Method : " + requestIndication.getMethod());
-//		LOGGER.info("Protocol : " + requestIndication.getProtocol());
-//		LOGGER.info("Representation : " + requestIndication.getRepresentation());
-//		LOGGER.info("RequestingEntity : " + requestIndication.getRequestingEntity());
-//		LOGGER.info("TargetID : " + requestIndication.getTargetID());
-//		LOGGER.info("Url : " + requestIndication.getUrl());
+		LOGGER.info("Base : " + requestIndication.getBase());
+		LOGGER.info("Method : " + requestIndication.getMethod());
+		LOGGER.info("Protocol : " + requestIndication.getProtocol());
+		LOGGER.info("Representation : " + requestIndication.getRepresentation());
+		LOGGER.info("RequestingEntity : " + requestIndication.getRequestingEntity());
+		LOGGER.info("TargetID : " + requestIndication.getTargetID());
+		LOGGER.info("Url : " + requestIndication.getUrl());
 		ResponseConfirm resp = null;
 		String [] tID = requestIndication.getTargetID().split("/");
 
-//		request.setBase("");
+		requestIndication.setBase("127.0.0.1:8181/");
 //		request.setMethod("RETRIEVE");
 //		request.setProtocol("http");
 //		request.setRequestingEntity(Constants.REQENTITY);
-//		request.setRepresentation("");
+		requestIndication.setRepresentation("");
 		
 		if(tID.length == 5){
 			// nscl/applications/configuration/manualconfiguration/device return the list of unrecognized devices
@@ -51,12 +51,14 @@ public class ManualConfigurationServer implements IpuService{
 			case "device" :
 				requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown");
 				resp = restClientService.sendRequest(requestIndication);
-//				resp.setRepresentation(Parser.parseObixToJSONDevice(resp.getRepresentation()));
+				LOGGER.info(resp.getRepresentation());
+				LOGGER.info(Parser.parseObixToJSONStringDevice(resp.getRepresentation()));
+				resp.setRepresentation(Parser.parseObixToJSONStringDevice(resp.getRepresentation()));
 //				return resp;
 				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
 			case "protocol" :
-				requestIndication.setTargetID("gscl/applications/CIMA/devices/protocol");
-				resp = restClientService.sendRequest(requestIndication);
+//				requestIndication.setTargetID("gscl/applications/CIMA/devices/protocol");
+//				resp = restClientService.sendRequest(requestIndication);
 //				resp.setRepresentation(Parser.parseObixToJSONDevice(resp.getRepresentation()));
 //				return resp;
 				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"protocolName\" : \"http\",\"parameters\" : [{\"name\" : \"method\",\"value\" : \"\" },{\"name\" : \"port\",\"value\" : \"\"},{\"name\" : \"uri\",\"value\" : \"\" },{\"name\" : \"body\",\"value\" : \"\"}]}]");
@@ -64,22 +66,22 @@ public class ManualConfigurationServer implements IpuService{
 			
 		} else if(tID.length == 6){
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/
-			requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5]);
-			resp = restClientService.sendRequest(requestIndication);
+//			requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5]);
+//			resp = restClientService.sendRequest(requestIndication);
 //			resp.setRepresentation(Parser.parseObixToJSONDevice(resp.getRepresentation()));
 //			return resp;
 			return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
 		} else if(tID.length == 7){
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability
-			requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5] + "/capability");
-			resp = restClientService.sendRequest(requestIndication);
+//			requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5] + "/capability");
+//			resp = restClientService.sendRequest(requestIndication);
 //			resp.setRepresentation(Parser.parseObixToJSONDevice(resp.getRepresentation()));
 //			return resp;
 			return new ResponseConfirm(StatusCode.STATUS_OK, "");
 		} else if(tID.length == 8){
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability/<capability id>
-			requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5] + "/capability/" + tID[7]);
-			resp = restClientService.sendRequest(requestIndication);
+//			requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5] + "/capability/" + tID[7]);
+//			resp = restClientService.sendRequest(requestIndication);
 //			resp.setRepresentation(Parser.parseObixToJSONDevice(resp.getRepresentation()));
 //			return resp;
 			return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" capability not found"));
@@ -95,17 +97,17 @@ public class ManualConfigurationServer implements IpuService{
 		ResponseConfirm resp = null;
 		if(tID.length == 6){
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/
-			requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5]);
-			requestIndication.setRepresentation(Parser.parseJSONToObixDevice(requestIndication.getRepresentation()).toString());
-			resp = restClientService.sendRequest(requestIndication);
+//			requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5]);
+//			requestIndication.setRepresentation(Parser.parseJSONToObixDevice(requestIndication.getRepresentation()).toString());
+//			resp = restClientService.sendRequest(requestIndication);
 //			resp.setRepresentation(Parser.parseObixToJSONDevice(resp.getRepresentation()));
 //			return resp;
 			return new ResponseConfirm(StatusCode.STATUS_OK, body);
 		} else if(tID.length == 8){
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability/<capability id>
-			requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5] + "capability/" + tID[7]);
-			requestIndication.setRepresentation(Parser.parseJSONToObixCapability(requestIndication.getRepresentation()).toString());
-			resp = restClientService.sendRequest(requestIndication);
+//			requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5] + "capability/" + tID[7]);
+//			requestIndication.setRepresentation(Parser.parseJSONToObixCapability(requestIndication.getRepresentation()).toString());
+//			resp = restClientService.sendRequest(requestIndication);
 //			resp.setRepresentation(Parser.parseObixToJSONCapability(resp.getRepresentation()));
 //			return resp;
 			return new ResponseConfirm(StatusCode.STATUS_OK, body);
@@ -121,8 +123,8 @@ public class ManualConfigurationServer implements IpuService{
 		ResponseConfirm resp = null;
 		if(tID.length == 8){
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability/<capability id>
-			requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown" + tID[5] + "capability/" + tID[7]);
-			resp = restClientService.sendRequest(requestIndication);
+//			requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown" + tID[5] + "capability/" + tID[7]);
+//			resp = restClientService.sendRequest(requestIndication);
 			// return resp;
 			return new ResponseConfirm(StatusCode.STATUS_OK, "ressource " + tID[7] + " deleted");
 		}
@@ -137,9 +139,9 @@ public class ManualConfigurationServer implements IpuService{
 		ResponseConfirm resp = null;
 		if(tID.length == 6){
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/test
-			requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5] + "/test");
-			requestIndication.setRepresentation(Parser.parseJSONToObixCapability(requestIndication.getRepresentation()).toString());
-			resp = restClientService.sendRequest(requestIndication);
+//			requestIndication.setTargetID("gscl/applications/CIMA/devices/unknown/" + tID[5] + "/test");
+//			requestIndication.setRepresentation(Parser.parseJSONToObixCapability(requestIndication.getRepresentation()).toString());
+//			resp = restClientService.sendRequest(requestIndication);
 			// return resp;
 			return new ResponseConfirm(StatusCode.STATUS_OK, "blablabla");
 		}

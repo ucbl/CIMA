@@ -45,11 +45,11 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 		},
 
 		//test une capacité
-		//URL http://134.214.213.63:8080/om2m/nscl/applications/manualconfiguration/device/'+ idDevice+'/test'+ capacity	
+		//URL http://134.214.213.63:8080/om2m/nscl/applications/configuration/manualconfiguration/device/'+ idDevice+'/test'+ capacity	
 		testCapacity : function(idDevice, capacity){
 			var deferred = $q.defer();
 			$http({
-        		url: '/om2m/nscl/applications/manualconfiguration/device/'+ idDevice+'/test',
+        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+ idDevice+'/test',
         		method: "POST",
         		data: capacity,
         		headers: {'Content-Type': 'application/json'}
@@ -66,7 +66,7 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 		addCapacity : function(idDevice, capacity){
 			var deferred = $q.defer();
 			$http({
-        		url: '/om2m/nscl/applications/manualconfiguration/device/'+idDevice+'/capability/'+capacity.id+"/",
+        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+idDevice+'/capability/'+capacity.id+"/",
         		method: "PUT",
         		data: capacity,
         		headers: {'Content-Type': 'application/json'}
@@ -86,7 +86,7 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 		saveDevice : function(device){
 			var deferred = $q.defer();
 			$http({
-        		url: '/om2m/nscl/applications/manualconfiguration/device/'+device.id+'/',
+        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+device.id+'/',
         		method: "PUT",
         		data: device,
         		headers: {'Content-Type': 'application/json'}
@@ -105,7 +105,7 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 		modifyCapability : function(idDevice, capacity){
 			var deferred = $q.defer();
 			$http({
-        		url: '/om2m/nscl/applications/manualconfiguration/device/'+idDevice+'/capability/'+capacity.id+"/",
+        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+idDevice+'/capability/'+capacity.id+"/",
         		method: "PUT",
         		data: capacity,
         		headers: {'Content-Type': 'application/json'}
@@ -123,7 +123,7 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 		removeCapacity : function(idDevice, idCapacity){
 			var deferred = $q.defer();
 			$http({
-        		url: '/om2m/nscl/applications/manualconfiguration/device/'+idDevice+'/capability/'+idCapacity+"/",
+        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+idDevice+'/capability/'+idCapacity+"/",
         		method: "DELETE",
         		data: "",
         		headers: {'Content-Type': 'application/json'}

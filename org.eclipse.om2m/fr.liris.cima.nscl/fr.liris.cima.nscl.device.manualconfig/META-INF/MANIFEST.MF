@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: nscl-comm-http-service
+Bundle-Name: NSCLManualConfig
 Bundle-SymbolicName: fr.liris.cima.nscl.device.manualconfig
 Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Activator: fr.liris.cima.nscl.device.manualconfig.Activator
 Require-Bundle: org.eclipse.om2m.core.service,
  org.apache.commons.httpclient,
@@ -14,7 +15,6 @@ Require-Bundle: org.eclipse.om2m.core.service,
  org.eclipse.om2m.comm.service,
  fr.liris.cima.nscl.commons,
  fr.liris.cima.nscl.device.service
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .
 Export-Package: fr.liris.cima.nscl.device.manualconfig
 Import-Package: org.eclipse.om2m.commons.resource,
