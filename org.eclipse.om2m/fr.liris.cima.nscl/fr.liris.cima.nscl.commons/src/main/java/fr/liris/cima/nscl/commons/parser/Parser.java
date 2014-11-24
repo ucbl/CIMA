@@ -224,34 +224,35 @@ public class Parser {
 			SAXBuilder sxb = new SAXBuilder();
 			Document document = sxb.build(new StringReader(obj_info));
 			Element racine = document.getRootElement();
-			List list_obj = racine.getChildren();
+			List list_obj = racine.getChildren().get(0).getChildren().get(0).getChildren();
 			Iterator noeud = list_obj.iterator();
-			JSONArray json_capacitie = new JSONArray();
+			JSONArray jsonDevices = new JSONArray();
+			JSONArray jsonCapabilities = new JSONArray();
+			JSONObject jsonDeviceObject;
+			Element courant;
 			while (noeud.hasNext()) {
-				Element courant = (Element) noeud.next();
-				if (courant.getChildren().size() == 0
-						|| !courant.getAttributeValue("name").equalsIgnoreCase(
-								"Capabilities")) {
-
-					jsonObject.put(courant.getAttributeValue("name"),
-							courant.getAttributeValue("val"));
+				jsonDeviceObject = new JSONObject();
+				courant = (Element) noeud.next();
+				System.out.println("NEXT : "+ courant.toString() + " " + courant.getAttributeValue("name"));
+				if (courant.getChildren().size() != 0 || !courant.getAttributeValue("name").equalsIgnoreCase("Capabilities")) {
+					jsonDeviceObject.put(courant.getAttributeValue("name"), courant.getAttributeValue("val"));
 				}
 
-				if (courant.getAttributeValue("name").equalsIgnoreCase(
-						"Capabilities")) {
-					List list_capacitie = courant.getChildren();
-					Iterator noeud_capacitie = list_capacitie.iterator();
+				if (courant.getAttributeValue("name").equalsIgnoreCase("Capabilities")) {
+					List list_capabilities = courant.getChildren();
+					Iterator noeud_capabilities = list_capabilities.iterator();
 
-					while (noeud_capacitie.hasNext()) {
-						Element courant_capacitie = (Element) noeud_capacitie
+					while (noeud_capabilities.hasNext()) {
+						Element courant_capabilities = (Element) noeud_capabilities
 								.next();
 						String s = new XMLOutputter()
-								.outputString(courant_capacitie);
-						json_capacitie.add(parseObixToJSONCapability(s));
+								.outputString(courant_capabilities);
+						jsonCapabilities.add(parseObixToJSONCapability(s));
 					}
 				}
+				jsonDeviceObject.put("capabilities", jsonCapabilities);
 			}
-			jsonObject.put("capabilities", json_capacitie);
+			jsonObject.put("devices", jsonDevices);
 
 		} catch (Exception e) {
 			e.printStackTrace();
