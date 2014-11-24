@@ -3,9 +3,14 @@ html, body {
     background-color: lightblue;
     margin-left: 20px;
     margin-top: 10px;
+    margin-bottom: 10px;
 
 }
 
 h1 {
     color: navy;
+}
+
+.editCapability{
+	background-color: white;
 }
