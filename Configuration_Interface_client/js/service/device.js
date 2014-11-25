@@ -1,9 +1,25 @@
-/* Modèle */
-app.factory('DeviceFactory', function($http, $q, $timeout){
+
+app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 	
 	var factory = {
 		devices : false,
-		/* Retourne tous les devices */
+		/* Retourne tous les devices */ 
+	req: function(){
+
+
+			$.ajax({
+			       url : 'json/devices.json',
+			       type : 'GET',
+			       dataType : 'json',
+			       success : function(data, status){
+			       		factory.devices = data;
+			       },
+			       error : function(result, status, error){
+			       		console.log("error ajax req ");
+			       },
+			    });
+
+	},
 		find : function(options){
 			/* Promesses */
 			var deferred = $q.defer();
@@ -11,19 +27,39 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 			if( factory.devices !== false){
 				deferred.resolve(factory.devices);
 			}else{
-				$http.get('json/devices.json')
+				/*$http.get('json/devices.json')
 				.success(function(data, status){
 					factory.devices = data;
 					 $timeout(function(){
 						deferred.resolve(factory.devices);
 					}, 1000);
-				}).error(function(data, status){
-					deferred.reject('Unable to get devices')
 				})
-			}
-			
+				.error(function(data, status){
+					deferred.reject('Unable to get devices')
+				})*/
+ 			setInterval(function(){
+ 				$.ajax({
+			       url : 'json/devices.json',
+			       type : 'GET',
+			       dataType : 'json',
+			       success : function(data, status){
+			       		factory.devices = data;
+			       		$timeout(function(){
+						deferred.resolve(factory.devices);
+					}, 1000);
+			       },
+			       error : function(result, status, error){
+			       		console.log("error ajax req ");
+			       		deferred.reject('Unable to get devices')
+
+			       },
+			    });
+ 			}, 1000); 
+       }
+
 			return deferred.promise;
-		},
+		
+	}, 
 		//Retourne un device avec son id
 		get : function(id){
 
@@ -58,7 +94,7 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 		addCapacity : function(idDevice, capacity){
 			var deferred = $q.defer();
 			alert('PUT /manualconfiguration/device/'+idDevice+'/capability/'+capacity.id+"/"+ capacity);
-			//...
+           // var dlg = $dialogs.notify('Adding capacity', 'PUT /manualconfiguration/device/'+idDevice+'/capability/'+capacity.id+"/"+ capacity);
 			deferred.resolve();
 			return deferred.promise;
 		},
@@ -85,8 +121,8 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 		removeCapacity : function(idDevice, idCapacity){
 			var deferred = $q.defer();
 			alert('DELETE /manualconfiguration/device/'+idDevice+'/capability/'+idCapacity+"/");
-			//...
-			deferred.resolve();
+            //$scope.modalShown = true;
+            deferred.resolve();
 			return deferred.promise;
 		}
 

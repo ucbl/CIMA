@@ -34,16 +34,24 @@
 	            <td>{{capability.id}}</td>
 	            <td>{{capability.protocol.protocolName}}</td>
 	            <td>
-		            <button type="button" ng-click="openAndEditCapacity(capability)" class="btn btn-sm btn btn-info">
-		            <i class="glyphicon glyphicon-edit"></i>
-		            	Edit
-		            </button>
+
+                    <button type="button" ng-click="openAndEditCapacity(capability)" class="btn btn-sm btn btn-info">
+                        <i class="glyphicon glyphicon-edit"></i>
+                        Edit
+                    </button>
             	</td>
                 <td>
                     <button type="button"  ng-click="removeCapability(capability)" class="btn btn-sm btn-danger">
-                    	<i class="glyphicon glyphicon-remove-circle"></i>
+                        <i class="glyphicon glyphicon-remove-circle"></i>
                         Remove
                     </button>
+
+                    <!--<div ng-controller='MyCtrl'>-->
+                        <!---->
+                        <!--<modal-dialog show='modalShown' width='400px' height='30%'>-->
+                            <!--<p>Modal Content Goes here<p>-->
+                        <!--</modal-dialog>-->
+                    <!--</div>-->
                 </td>
 	        </tr>
 	        </tbody>
@@ -65,7 +73,6 @@
                             <input class="form-control" placeholder="{{parameter.value}}"  style="width: 40%" type="text" ng-model="parameter.value"/> 
                         </li>
                         <br>
-                        <input class="btn btn-success pull-right" type="submit" value="Apply changes" ng-click="CloseEditCapacity()"/>
                         <input class="btn btn-danger pull-right" value="Undo" ng-click="CloseEditCapacity()" />
                         <br>
                     </form>
@@ -117,5 +124,21 @@
     <i class="glyphicon glyphicon-ok"></i>
     	Apply changes
     </button>
-	</div>
+    </div>
+
+    <!--<div class="row" ng-controller="dialogService">-->
+        <!--<div class="col-md-12">-->
+            <!--<button class="btn btn-danger" ng-click="launch('error')">Error Dialog</button>-->
+
+            <!--<button class="btn btn-primary" ng-click="launch('wait')">Wait Dialog</button>-->
+
+            <!--<button class="btn btn-default" ng-click="launch('notify')">Notify Dialog</button>-->
+
+            <!--<button class="btn btn-success" ng-click="launch('confirm')">Confirm Dialog</button>-->
+
+            <!--<button class="btn btn-warning" ng-click="launch('create')">Custom Dialog</button>-->
+
+        <!--</div>-->
+
+     <!--</div>-->
 </div>

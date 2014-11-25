@@ -1,11 +1,11 @@
 /* Controlleur device */
-app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams) {
+app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, $modal) {
 	/*Promesses*/
 	$rootScope.loading = true;
 	$scope.newComment ={};
 
 	DeviceFactory.get($routeParams.id).then(function(device){
-		$rootScope.loading = false;
+		$rootScope.loading = false; 
 		$scope.id = device.id;
 		$scope.name = device.name;
 		$scope.lastConnectionDate = device.lastConnectionDate;
@@ -27,7 +27,7 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 	//Fonction pour valider le formulaire d'ajout de capacité et cacher ou on
 	$scope.check = function(capacity){
 		if(capacity.id !=null && capacity.protocol.protocolName != null && capacity.protocol.parameters!= null){
-			$scope.showme = false;
+            $scope.showme = false;
 		}
 	}
 	
@@ -54,9 +54,8 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
         
         DeviceFactory.removeCapacity($scope.id, row.id).then(function(){
 
-
 		}, function(){
-			alert('Votre capacity n\'a pas pu être testé');
+			 alert('Votre capacity n\'a pas pu être testé');
 		});
 
         var index = $scope.capabilities.indexOf(row);
@@ -110,6 +109,8 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 	//Fonction pour fermer la div d'edition
 	$scope.CloseEditCapacity = function(){
 		$scope.editme= false;
+
+
 	}
 
 	$scope.modifyCapability = function(capability){
@@ -122,6 +123,7 @@ app.controller('DeviceCtrl', function ($scope, $rootScope, DeviceFactory, Protoc
 
 		}, function(){
 			alert('Votre capacity n\'a pas pu être testé');
+
 		});
 	}
 
