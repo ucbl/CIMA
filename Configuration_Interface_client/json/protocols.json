@@ -3,6 +3,10 @@
         "protocolName": "HTTP",
         "parameters": [
             {
+                "name": "URL",
+                "value": ""
+            },
+            {
                 "name": "URI",
                 "value": ""
             }
