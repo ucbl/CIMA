@@ -179,7 +179,33 @@ public class Parser {
 		}
 		return jsonObject;
 	}
-
+	
+	public static String parseObixToJSONStringCapabilities(String obj_info) {
+		return parseObixToJSONCapabilities(obj_info).toJSONString();
+	}
+	
+	public static JSONArray parseObixToJSONCapabilities(String obj_info) {
+		JSONArray jsonObject = new JSONArray();
+		try {
+			SAXBuilder sxb = new SAXBuilder();
+			Document document = sxb.build(new StringReader(obj_info));
+			Element racine = document.getRootElement();
+			List<Element> list_obj = racine.getChildren().get(0).getChildren().get(0).getChildren();
+			Iterator<Element> noeudObj = list_obj.iterator();
+			Element courant;
+			String s;
+			while (noeudObj.hasNext()) {
+				courant = (Element) noeudObj.next();
+				s = new XMLOutputter()
+				.outputString(courant);
+				jsonObject.add(parseObixToJSONCapability(s));
+			}
+		} catch (JDOMException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	public static String parseObixToJSONStringCapability(String obj_info) {
 		return parseObixToJSONCapability(obj_info).toJSONString();
 	}
@@ -213,34 +239,58 @@ public class Parser {
 		return jsonObject;
 	}
 
+	public static String parseObixToJSONStringDevices(String obj_info) {
+		return parseObixToJSONDevices(obj_info).toJSONString();
+	}
+	
+	public static JSONArray parseObixToJSONDevices(String obj_info) {
+		JSONArray jsonDevices = new JSONArray();
+		try {
+			SAXBuilder sxb = new SAXBuilder();
+			Document document = sxb.build(new StringReader(obj_info));
+			Element racine = document.getRootElement();
+			List<Element> list_obj = racine.getChildren().get(0).getChildren().get(0).getChildren();
+			Iterator<Element> noeudObj = list_obj.iterator();
+			Element objCourant;
+			String s;
+			while (noeudObj.hasNext()) {
+				objCourant = (Element) noeudObj.next();
+				s = new XMLOutputter()
+				.outputString(objCourant);
+				jsonDevices.add(parseObixToJSONDevice(s));
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonDevices;
+	}
+
 	public static String parseObixToJSONStringDevice(String obj_info) {
 		return parseObixToJSONDevice(obj_info).toJSONString();
 	}
 	
 	public static JSONObject parseObixToJSONDevice(String obj_info) {
 
-		JSONObject jsonObject = new JSONObject();
+		JSONObject jsonDeviceObject = new JSONObject();
 		try {
 			SAXBuilder sxb = new SAXBuilder();
 			Document document = sxb.build(new StringReader(obj_info));
 			Element racine = document.getRootElement();
-			List list_obj = racine.getChildren().get(0).getChildren().get(0).getChildren();
-			Iterator noeud = list_obj.iterator();
-			JSONArray jsonDevices = new JSONArray();
+			List<Element> list_capabilities;
+			Iterator<Element> noeudAttr, noeud_capabilities;
 			JSONArray jsonCapabilities = new JSONArray();
-			JSONObject jsonDeviceObject;
-			Element courant;
-			while (noeud.hasNext()) {
-				jsonDeviceObject = new JSONObject();
-				courant = (Element) noeud.next();
-				System.out.println("NEXT : "+ courant.toString() + " " + courant.getAttributeValue("name"));
-				if (courant.getChildren().size() != 0 || !courant.getAttributeValue("name").equalsIgnoreCase("Capabilities")) {
-					jsonDeviceObject.put(courant.getAttributeValue("name"), courant.getAttributeValue("val"));
-				}
-
-				if (courant.getAttributeValue("name").equalsIgnoreCase("Capabilities")) {
-					List list_capabilities = courant.getChildren();
-					Iterator noeud_capabilities = list_capabilities.iterator();
+			Element objCourant = racine,attrCourant;
+			System.out.println("NEXT OBJ : "+ objCourant.toString() + " " + objCourant.getAttributeValue("name"));
+			noeudAttr = objCourant.getChildren().iterator();
+			while (noeudAttr.hasNext()){
+				attrCourant = (Element) noeudAttr.next();
+				System.out.println("NEXT ATTR : "+ attrCourant.toString() + " NAME : " + attrCourant.getAttributeValue("name") + " VAL : " + attrCourant.getAttributeValue("val"));
+				if (!attrCourant.getAttributeValue("name").equalsIgnoreCase("Capabilities")) {
+					jsonDeviceObject.put(attrCourant.getAttributeValue("name"), attrCourant.getAttributeValue("val"));
+				} else {
+					list_capabilities = attrCourant.getChildren();
+					noeud_capabilities = list_capabilities.iterator();
 
 					while (noeud_capabilities.hasNext()) {
 						Element courant_capabilities = (Element) noeud_capabilities
@@ -249,15 +299,14 @@ public class Parser {
 								.outputString(courant_capabilities);
 						jsonCapabilities.add(parseObixToJSONCapability(s));
 					}
+					jsonDeviceObject.put("capabilities", jsonCapabilities);
 				}
-				jsonDeviceObject.put("capabilities", jsonCapabilities);
 			}
-			jsonObject.put("devices", jsonDevices);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return jsonObject;
+		return jsonDeviceObject;
 	}
 
 	public static Device parseObixToDevice(String obixFormat) {

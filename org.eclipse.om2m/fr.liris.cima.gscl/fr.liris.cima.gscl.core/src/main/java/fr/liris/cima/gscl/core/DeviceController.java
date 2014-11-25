@@ -158,8 +158,20 @@ public class DeviceController implements IpuService{
 
 			}
 		}
+		
 		else if(lastInfo.equals("protocol")) {
 			LOGGER.info("********  /manualconfiguration/protocol  ***********");
+		}
+		
+		else if(lastInfo.contains("capabilities?")) {
+			LOGGER.info("********  /manualconfiguration/capabilities?filter=<filter>  ***********");
+			String []  filter = lastInfo.split("=")[1].split("+");
+			String str = "";
+			for(Sting s : filter) str += s + " + ";
+			LOGGER.info("filter = " + str);
+			
+			// TODO Le filtre sur les capabilities
+			// TODO Où stocke-t-on les capabilities ?
 		}
 
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_IMPLEMENTED,requestIndication.getMethod()+" Method not Implemented"));
