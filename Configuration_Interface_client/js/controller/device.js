@@ -6,7 +6,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 	$rootScope.loading = true;
 	$scope.newComment ={};
 	$rootScope.EditIsOpen = false;
-	
+
 	/* Recupere les infos sur le device selectionné et les ajoute à la vue */
 	DeviceFactory.get($routeParams.id).then(function(device){
 		$scope.id = device.id;
@@ -141,4 +141,19 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 	      	return response.data;
 	    });
   	};
+
+  	//Fonction qui intercepte la selection d'une capacité existante
+  	$scope.onSelectCapability = function ($item, $model, $label) {
+	    //alert($item.protocol.protocolName);
+	    $scope.NewFromExistingCapability = $item;
+	    for (i = $scope.protocols.length - 1; i >= 0; i--) {
+		dataset = $scope.protocols[i];
+			if (dataset.protocolName == $item.protocol.protocolName) {
+				alert("Protocole dans select trouvé !");
+				$scope.protocols[i].parameters = $item.protocol.parameters;
+			    $scope.NewFromExistingCapability.protocol = $scope.protocols[i];
+			    break;
+			}
+		}
+	};
 });

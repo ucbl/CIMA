@@ -19,7 +19,7 @@
     {
     "id" : "ev3Back",
     "protocol": {
-        "protocolName" : "http",
+        "protocolName" : "HTTP",
         "parameters": [{
                     "name": "URI",
                     "value": "/mass.com"

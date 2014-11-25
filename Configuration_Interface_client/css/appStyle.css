@@ -11,10 +11,18 @@ h1 {
     color: navy;
 }
 
-.editCapability{
-	background-color: #F8F8F8;
-    padding: 20px 20px;
+.addCapacity{
+	background-color: #eee;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-radius: 5px;
 }
-li{
-  padding: 10px;
+
+.editCapability{
+	background-color: #eee;
+	padding-bottom: 20px;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-radius: 5px;
 }
