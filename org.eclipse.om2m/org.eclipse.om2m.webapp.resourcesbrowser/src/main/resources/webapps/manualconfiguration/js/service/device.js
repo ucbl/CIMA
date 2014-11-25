@@ -77,7 +77,7 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 		addCapability : function(idDevice, capability){
 			var deferred = $q.defer();
 			$http({
-        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+idDevice+'/capability/'+capacity.id+"/",
+        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+idDevice+'/capability/'+capability.id+"/",
         		method: "PUT",
         		data: capability,
         		headers: {'Content-Type': 'application/json'}
@@ -116,12 +116,13 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 		modifyCapability : function(idDevice, capability){
 			var deferred = $q.defer();
 			$http({
-        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+idDevice+'/capability/'+capacity.id+"/",
+        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+idDevice+'/capability/'+capability.id+"/",
         		method: "PUT",
         		data: capability,
         		headers: {'Content-Type': 'application/json'}
       		}).success(function (data, status, headers, config) {
 				deferred.resolve();
+				alert('success');
 				//On doit recharger les devices
 	  			devices = false;
         	}).error(function (data, status, headers, config) {
@@ -135,7 +136,7 @@ app.factory('DeviceFactory', function($http, $q, $timeout){
 		removeCapability : function(idDevice, idCapability){
 			var deferred = $q.defer();
 			$http({
-        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+idDevice+'/capability/'+idCapacity+"/",
+        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+idDevice+'/capability/'+idCapability+"/",
         		method: "DELETE",
         		data: "",
         		headers: {'Content-Type': 'application/json'}

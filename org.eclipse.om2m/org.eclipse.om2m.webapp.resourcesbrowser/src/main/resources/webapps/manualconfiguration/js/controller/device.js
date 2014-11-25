@@ -52,7 +52,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 	}
         
 	//Supprimer un capability du podèle et de la vue si succès
-    $scope.removeCapability = function removeCapability(row) {
+    $scope.removeCapability = function (row) {
         
         DeviceFactory.removeCapability($scope.id, row.id).then(function(){
         	var index = $scope.capabilities.indexOf(row);
