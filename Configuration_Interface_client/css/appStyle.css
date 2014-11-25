@@ -12,5 +12,9 @@ h1 {
 }
 
 .editCapability{
-	background-color: white;
+	background-color: #F8F8F8;
+    padding: 20px 20px;
+}
+li{
+  padding: 10px;
 }
