@@ -20,6 +20,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 		}else{
 			$scope.capabilities = [];
 		}
+		$scope.keywords = device.keywords; 
 		$rootScope.loading = false; 
 
 	}, function(msg){
@@ -139,7 +140,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 	    	}
 	  	}).then(function(response){
 	      	return response.data;
-	    });
+	    }); 
   	};
 
   	//Fonction qui intercepte la selection d'une capacité existante

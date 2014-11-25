@@ -52,7 +52,9 @@
                             "value": "/HUHUHUH"
                         }
                         ]            
-                    }
+                    },
+         "keywords" : ["ev3","reculer","back","robot","mouvement"]
+
             }
         ]
     },
@@ -77,7 +79,9 @@
                             "value": "www./mass.com"
                         }
                         ]            
-                    }
+                    },
+         "keywords" : ["ev3","reculer","back","robot","mouvement"]
+
             },
             {
                 "id": "HORUS",
@@ -89,7 +93,9 @@
                             "value": "/mass2DINGUE.com"
                         }
                         ]            
-                    }
+                    },
+         "keywords" : ["ev3","reculer","back","robot","mouvement"]
+
             }
         ]
     }

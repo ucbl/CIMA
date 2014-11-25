@@ -69,7 +69,12 @@
                     {{parameter.name}}:
                     <input class="form-control" placeholder="{{parameter.value}}"  style="width: 40%" type="text" ng-model="parameter.value"/> 
                 </li>
+
+                <li> Key words </li> 
+                 <tags-input   ng-model="editedCapability.keywords"></tags-input> 
+
                 <br>
+
                 <button class="btn btn-success pull-right" style="margin-left:5px" type="submit">
                     <i class="glyphicon glyphicon-ok"></i>
                     Apply 
@@ -105,7 +110,6 @@
                         <select class="form-control" ng-model="NewFromExistingCapability.protocol"
                                 ng-options="protocol.protocolName for protocol in protocols" ng-required="true">
                         </select>
-
                         <li ng-repeat="parameter in NewFromExistingCapability.protocol.parameters">
                             {{parameter.name}}:
                             <input class="form-control"  type="text" ng-model="parameter.value">
@@ -151,6 +155,38 @@
             </accordion>
         </div>
 
+<!--<<<<<<< local-->
+            <div ng-show="showAdd">
+                <form ng-submit="">
+                    <strong>ID </strong>
+                    <input class="form-control" style="width: 40%" type="text" placeholder="Type an ID... (Required)" ng-model="newCapability.id" required>
+
+                    <strong>Protocol </strong>
+                    <select class="form-control" ng-model="newCapability.protocol"
+                            ng-options="protocol.protocolName for protocol in protocols" required>
+                        <option value=""> -- Choose protocol --</option>
+                    </select>
+                    
+                    
+                <li> Key words </li> 
+                 <tags-input ng-model="tags"></tags-input>
+
+                    <li ng-repeat="parameter in newCapability.protocol.parameters" >
+                        {{parameter.name}}:
+                        <input class="form-control" style="width: 40%" type="text" ng-model="parameter.value">
+                    </li>
+                    <br>                        
+                     <!-- Bouton pour reset la capacité -->
+                    <button ng-click="newCapability={}" type="button" class="btn btn-primary pull-left" >Reset</button>
+                     <!-- Bouton pour ajouter la capacité -->
+                    <input ng-click="addCapability(newCapability)" style="margin-left:5px" class="btn btn-success pull-right" type="submit" value="Add"/>
+                    <!-- Bouton pour tester la capacité -->
+                    <button ng-click="testCapability(newCapability)" type="button" class="btn btn-primary pull-right">Test</button>
+                </form>
+                <br>
+            </div>
+
+        </div> 
 	<hr>
 
 	<!-- Bouton pour valider tous les changements -->
