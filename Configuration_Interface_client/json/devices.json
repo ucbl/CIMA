@@ -7,7 +7,7 @@
         "uri":"http://192.168.0.1",
         "capabilities": [
             {
-                "id": "000",
+                "id": "TESTCAP",
                 "protocol": 
                     {
                         "protocolName":"HTTP",

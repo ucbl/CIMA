@@ -1,0 +1,31 @@
+[
+    {
+        "id": "HBFV",
+        "protocol": 
+            {
+                "protocolName":"HTTP",
+                "parameters": [{
+                    "name": "URI",
+                    "value": "/mass.com"
+                },
+                {
+                    "name": "URL",
+                    "value": "www./mass.com"
+                }
+                ]            
+            }
+    },
+    {
+        "id": "HORUS",
+        "protocol": 
+            {
+                "protocolName":"USB",
+                "parameters": [{
+                    "name": "URI",
+                    "value": "/mass2DINGUE.com"
+                }
+                ]            
+            }
+    }
+]
+    
