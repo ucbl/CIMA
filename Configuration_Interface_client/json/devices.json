@@ -1,9 +1,44 @@
 [
+
+    {
+        "id" : "0123456789",
+        "name" : "monObjet",
+        "uri" : "http://192.168.0.2",
+        "dateConnection" : "10/10/14",
+        "modeConnection" : "http",
+        "capabilities": [
+            {
+                "id" : "ev3Back",
+                "protocol": {
+                    "protocoleName" : "http",
+                    "parameters" : [
+                        {
+                            "name" : "method",
+                            "value" : "POST" 
+                        },
+                        {
+                            "name" : "port",
+                            "value" : "8080" 
+                        },
+                       {
+                            "name" : "URI",
+                            "value" : "/capability" 
+                        },
+                        {
+                            "name" : "body",
+                            "value" : "YmFjaw==" 
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    
     {
         "id": "000",
         "name": "EV3",
-        "lastConnectionDate" : "01/10/2014",
-        "connectionMode":"HTTP",
+        "dateConnection" : "01/10/2014",
+        "modeConnection":"HTTP",
         "uri":"http://192.168.0.1",
         "capabilities": [
             {
@@ -23,8 +58,8 @@
     {
         "id": "001",
         "name": "IPhone",
-        "lastConnectionDate" : "21/09/2014",
-        "connectionMode":"USB",
+        "dateConnection" : "21/09/2014",
+        "modeConnection":"USB",
         "uri":"http://181.67.3.6",
         "capabilities": [
             {

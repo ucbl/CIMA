@@ -4,31 +4,11 @@
 app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 
 	var factory = {
-		devices : false,
 		/* Retourne tous les devices */ 
-	req: function(){
-
-
-			$.ajax({
-			       url : 'json/devices.json',
-			       type : 'GET',
-			       dataType : 'json',
-			       success : function(data, status){
-			       		factory.devices = data;
-			       },
-			       error : function(result, status, error){
-			       		console.log("error ajax req ");
-			       },
-			    });
-
-	},
 		find : function(options){
 			/* Promesses */
 			var deferred = $q.defer();
-			//Eviter de recharger
-			if( factory.devices !== false){
-				deferred.resolve(factory.devices);
-			}else{ 
+
 				/*$http.get('/om2m/nscl/applications/configuration/manualconfiguration/device')
 				.success(function(data, status){
 					factory.devices = data;
@@ -37,16 +17,6 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 					deferred.reject('Unable to get devices')
 				})*/
 
-				/*$http.get('json/devices.json')
-				.success(function(data, status){
-					factory.devices = data;
-					 $timeout(function(){
-						deferred.resolve(factory.devices);
-					}, 1000);
-				})
-				.error(function(data, status){
-					deferred.reject('Unable to get devices')
-				})*/
  			setInterval(function(){
  				$.ajax({
 			       url : 'json/devices.json',
@@ -54,9 +24,7 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 			       dataType : 'json',
 			       success : function(data, status){
 			       		factory.devices = data;
-			       		$timeout(function(){
 						deferred.resolve(factory.devices);
-					}, 1000);
 			       },
 			       error : function(result, status, error){
 			       		console.log("error ajax req ");
@@ -65,7 +33,7 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 			       },
 			    });
  			}, 1000); 
-       }
+       
 
 			return deferred.promise;
 		
@@ -118,8 +86,6 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
         		headers: {'Content-Type': 'application/json'}
       		}).success(function (data, status, headers, config) {
 				deferred.resolve();
-				//On doit recharger les devices
-	  			devices = false;
         	}).error(function (data, status, headers, config) {
 				deferred.reject('Unable to add capability, status : '+status+', header : '+headers);
         	});
@@ -138,8 +104,6 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
         		headers: {'Content-Type': 'application/json'}
       		}).success(function (data, status, headers, config) {
 				deferred.resolve();
-				//On doit recharger les devices
-	  			devices = false;
         	}).error(function (data, status, headers, config) {
 				deferred.reject('Unable to save device, status : '+status+', header : '+headers);
         	});
@@ -158,8 +122,6 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
       		}).success(function (data, status, headers, config) {
 				deferred.resolve();
 				alert('success');
-				//On doit recharger les devices
-	  			devices = false;
         	}).error(function (data, status, headers, config) {
 				deferred.reject('Unable to modify capability, status : '+status+', header : '+headers);
         	});
@@ -177,8 +139,6 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
         		headers: {'Content-Type': 'application/json'}
       		}).success(function (data, status, headers, config) {
 				deferred.resolve();
-				//On doit recharger les devices
-	  			devices = false;
         	}).error(function (data, status, headers, config) {
 				deferred.reject('Unable to delete capability, status : '+status+', header : '+headers);
         	});

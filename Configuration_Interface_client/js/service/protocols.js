@@ -16,9 +16,7 @@ app.factory('ProtocolsFactory', function($http, $q, $timeout){
 				$http.get('/om2m/nscl/applications/configuration/manualconfiguration/protocol')
 				.success(function(data, status){
 					factory.protocols = data;
-					 $timeout(function(){
 						deferred.resolve(factory.protocols);
-					}, 1000);
 				}).error(function(data, status){
 					deferred.reject('Unable to get protocols')
 				})*/
@@ -26,13 +24,10 @@ app.factory('ProtocolsFactory', function($http, $q, $timeout){
 				$http.get('json/protocols.json')
 				.success(function(data, status){
 					factory.protocols = data;
-					 $timeout(function(){
-						deferred.resolve(factory.protocols);
-					}, 1000);
+					deferred.resolve(factory.protocols);
 				}).error(function(data, status){
 					deferred.reject('Unable to get protocols')
 				})
-
 			}
 			
 			return deferred.promise;

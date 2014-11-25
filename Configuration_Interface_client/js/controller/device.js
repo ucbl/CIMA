@@ -9,7 +9,6 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 	
 	/* Recupere les infos sur le device selectionné et les ajoute à la vue */
 	DeviceFactory.get($routeParams.id).then(function(device){
-		$rootScope.loading = false; 
 		$scope.id = device.id;
 		$scope.name = device.name;
 		$scope.lastConnectionDate = device.dateConnection;
@@ -21,6 +20,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 		}else{
 			$scope.capabilities = [];
 		}
+		$rootScope.loading = false; 
 
 	}, function(msg){
 		alert(msg);
