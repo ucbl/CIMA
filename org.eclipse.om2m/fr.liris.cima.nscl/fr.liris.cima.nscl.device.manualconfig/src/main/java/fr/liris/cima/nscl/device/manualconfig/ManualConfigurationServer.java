@@ -51,17 +51,20 @@ public class ManualConfigurationServer implements IpuService{
 			case "device" :
 				requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown");
 				resp = restClientService.sendRequest(requestIndication);
-				LOGGER.info(resp.getRepresentation());
-				LOGGER.info(Parser.parseObixToJSONStringDevice(resp.getRepresentation()));
-				resp.setRepresentation(Parser.parseObixToJSONStringDevice(resp.getRepresentation()));
+				resp.setRepresentation(Parser.parseObixToJSONStringDevices(resp.getRepresentation()));
 				return resp;
 //				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
 			case "protocol" :
-				requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/protocol");
+//				requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/protocol");
+//				resp = restClientService.sendRequest(requestIndication);
+//				resp.setRepresentation(resp.getRepresentation());
+//				return resp;
+				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"protocolName\" : \"http\",\"parameters\" : [{\"name\" : \"method\",\"value\" : \"\" },{\"name\" : \"port\",\"value\" : \"\"},{\"name\" : \"uri\",\"value\" : \"\" },{\"name\" : \"body\",\"value\" : \"\"}]}]");
+			case "capabilities" :
+				requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/capabilities");
 				resp = restClientService.sendRequest(requestIndication);
-				resp.setRepresentation(resp.getRepresentation());
+				resp.setRepresentation(Parser.parseObixToJSONStringCapabilities(resp.getRepresentation()));
 				return resp;
-//				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"protocolName\" : \"http\",\"parameters\" : [{\"name\" : \"method\",\"value\" : \"\" },{\"name\" : \"port\",\"value\" : \"\"},{\"name\" : \"uri\",\"value\" : \"\" },{\"name\" : \"body\",\"value\" : \"\"}]}]");
 			}
 			
 		} else if(tID.length == 6){
