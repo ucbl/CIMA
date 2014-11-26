@@ -1,10 +1,10 @@
-	
+
 /* Modèle Device 
 ** Défini toutes les méthodes pour requêter le serveur */
 app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 
-	var factory = {
-		/* Retourne tous les devices */ 
+	var factory = { 
+		/* Retourne tous les devices */  
 		find : function(options){
 			/* Promesses */
 			var deferred = $q.defer();
