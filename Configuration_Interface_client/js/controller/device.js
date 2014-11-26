@@ -43,13 +43,13 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 			cap.protocol = {};
 			cap.protocol.protocolName = newCapability.protocol.protocolName;
 			cap.protocol.parameters = newCapability.protocol.parameters;
-
+			
 			DeviceFactory.addCapability($scope.id,cap).then(function(){
 				$scope.capabilities.push(cap);
 			}, function(){
 				alert('Votre capability n\'a pas pu être ajoutée');
 			});
-			$scope.newCapability = {};
+			$scope.newCapability = {}; 
 			$scope.showme = false;
 		}
 	}
@@ -156,5 +156,5 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 			    break;
 			}
 		}
-	};
+	}; 
 });
