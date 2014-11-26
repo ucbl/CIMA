@@ -8,4 +8,5 @@ Require-Bundle: org.eclipse.om2m.commons,
  fr.liris.cima.gscl.commons,
  org.eclipse.om2m.comm.service
 Export-package: fr.liris.cima.gscl.device.service,
+ fr.liris.cima.gscl.device.service.capability,
  fr.liris.cima.gscl.device.service.discovery

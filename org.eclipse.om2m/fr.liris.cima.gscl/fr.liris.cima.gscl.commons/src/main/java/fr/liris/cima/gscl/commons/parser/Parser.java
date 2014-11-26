@@ -2,10 +2,10 @@ package fr.liris.cima.gscl.commons.parser;
 
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
 
 import obix.Obj;
 import obix.Str;
@@ -179,6 +179,14 @@ public class Parser {
 							capability.setProtocol(protocol);
 							//System.out.println(capability);
 						}
+						if(capabilityElem.elem(2).get("name").equals("keywords")){
+							XElem keywordsChildElems [] = capabilityElem.elem(2).elems();
+							List<String> keywords = new ArrayList<>();
+							for(XElem xe : keywordsChildElems){
+								keywords.add(xe.attrValue(0));
+							}
+							capability.setKeywords(keywords);
+						}
 						// Add capability to device
 						device.addCapability(capability);
 					}
@@ -210,9 +218,15 @@ public class Parser {
 		protocol.addParameter("port", protocolObj.get("port").getStr());
 		protocol.addParameter("uri", protocolObj.get("uri").getStr());
 		
+		Obj [] objs = capabilityObj.get("keywords").list();
+		List<String> keywords = new ArrayList<>();
+		for(Obj o : objs){
+			keywords.add(o.getStr());
+		}
+		
 		name = capabilityObj.get("id").getStr();
 		
-		return new Capability(name, protocol);
+		return new Capability(name, protocol, keywords);
 
 
 	}
@@ -322,7 +336,7 @@ public class Parser {
 				"</obj>";
 
 
-		String capabilityFormat = "<obj>"+
+		String capabilityFormat = "<obj name=\"capability\">"+
 				"<str name=\"id\" val=\"ev3Back\"/>"+
 				"<obj name=\"protocol\">"+
 				"<str name=\"protocoleName\" val=\"http\"/>"+
@@ -330,22 +344,27 @@ public class Parser {
 				"<str name=\"port\" val=\"8080\"/>"+
 				"<str name=\"uri\" val=\"uri\"/>"+
 				"</obj>"+
+				"<list name=\"keywords\">"+
+				"<str val=\"ev3\" />"+
+				"<str val=\"back\" />"+
+				"</list>"+
 				"</obj>";
-		
+
+		System.out.println(parseObixToCapability(capabilityFormat).toString());
 		System.out.println(parseObixToCapability(capabilityFormat).toObixFormat());
 
 
 		//	System.out.println(obixFormat);
 
-		Device device2 = parseObixToDevice(obixFormat);
+//		Device device2 = parseObixToDevice(obixFormat);
 		//	System.out.println(device2);
 		//System.out.println(device2.toIntrinsequeObixFormat());
 		//		System.out.println( device2.toIntrinsequeObixFormat().equals(obixFormat));
 
 
-		obixFormat = device2.toIntrinsequeObixFormat();
+//		obixFormat = device2.toIntrinsequeObixFormat();
 
-		Device	device3 = parseObixToDevice(obixFormat);
+//		Device	device3 = parseObixToDevice(obixFormat);
 
 
 

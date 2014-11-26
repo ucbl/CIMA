@@ -1,6 +1,8 @@
 package fr.liris.cima.gscl.commons;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import obix.Contract;
@@ -19,10 +21,12 @@ public class Capability {
 
 	private String name;
 	private Protocol protocol;
-
-	public Capability(String name, Protocol protocol) {
+	private List<String> keywords;
+ 
+	public Capability(String name, Protocol protocol, List<String> keywords) {
 		this.name = name;
 		this.protocol = protocol;
+		this.keywords = keywords;
 	}
 	
 	public  Capability(String name) {
@@ -59,12 +63,7 @@ public class Capability {
 	}
 
 	public String toObixFormat() {
-		Obj objProtocol = new Obj();
-		Obj obj = new Obj();
-
-		obj.add(new Str("id",name));
-		obj.add(protocol.toObj());
-		return ObixEncoder.toString(obj);
+		return ObixEncoder.toString(this.toObj());
 	}
 	
 	public Obj toObj() {
@@ -72,11 +71,18 @@ public class Capability {
 
 		obj.add(new Str("id",name));
 		obj.add(protocol.toObj());
+		obix.List keywords = new obix.List("keywords");
+		obix.Str sK = null;
+		for(String k : this.keywords){
+			sK = new Str(k);
+			keywords.add(sK);
+		}
+		obj.add(keywords);
 		return obj;
 	}
 	
 	public String toString() {
-		return "capabilities (" + name + ", "  + protocol + ")\n";
+		return "capabilities (" + name + ", "  + protocol + ", " + keywords + ")";
 	}
 
 	public Protocol getProtocol() {
@@ -87,12 +93,34 @@ public class Capability {
 		this.protocol = protocol;
 	}	
 	
+	public List<String> getKeywords(){
+		return this.keywords;
+	}
+	
+	public void addKeyword(String keyword){
+		this.keywords.add(keyword);
+	}
+	
+	public void addKeyword(List<String> keywords){
+		this.keywords.addAll(keywords);
+	}
+	
+	public void setKeywords(List<String>keywords){
+		this.keywords = keywords;
+	}
+	
 	public static void main(String args[]) {
 		Capability capability = new Capability("ev3");
 		Protocol protocol = new Protocol("http");
 		protocol.addParameter("method", "post");
 		capability.setProtocol(protocol);
-		
-		System.out.println(ObixEncoder.toString(capability.toObj()));
+		List<String> k = new ArrayList<>();
+		k.add("ev3");
+		k.add("back");
+		k.add("robot");
+		capability.setKeywords(k);
+
+//		System.out.println(ObixEncoder.toString(capability.toObj()));
+		System.out.println(capability.toObixFormat());
 	}
 }

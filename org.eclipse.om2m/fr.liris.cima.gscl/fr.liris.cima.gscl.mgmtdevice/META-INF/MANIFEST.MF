@@ -13,6 +13,7 @@ Require-Bundle: org.eclipse.om2m.core.service,
  org.eclipse.om2m.ipu.service,
  org.eclipse.om2m.comm.service,
  fr.liris.cima.gscl.commons,
- fr.liris.cima.gscl.device.service
+ fr.liris.cima.gscl.device.service,
+ fr.liris.cima.gscl.device.service.capability
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .

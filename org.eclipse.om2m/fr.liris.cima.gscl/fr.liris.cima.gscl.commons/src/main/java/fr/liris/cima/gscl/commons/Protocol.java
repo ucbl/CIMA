@@ -53,7 +53,7 @@ public class Protocol {
 
 	public String toString() {
 		String result = "";
-		result = "Protocol("+name + ", " +parameters+")\n";
+		result = "Protocol("+name + ", " +parameters+")";
 
 		return result;
 	}

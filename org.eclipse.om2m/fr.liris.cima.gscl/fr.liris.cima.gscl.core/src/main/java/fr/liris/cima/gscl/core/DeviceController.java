@@ -3,6 +3,8 @@ package fr.liris.cima.gscl.core;
 
 import java.util.List;
 
+import obix.io.ObixEncoder;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.om2m.comm.service.RestClientService;
@@ -17,6 +19,7 @@ import fr.liris.cima.gscl.commons.Device;
 import fr.liris.cima.gscl.commons.constants.Constants;
 import fr.liris.cima.gscl.commons.parser.Parser;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
+import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
 
 /**
  * Specific device controller to perform requests on devices.
@@ -30,12 +33,15 @@ public class DeviceController implements IpuService{
 
 	/** managed device service*/
 	private  ManagedDeviceService managerImpl;
+
+	private CapabilityManager capabilityManager;
 	/** rest client service*/
 	public static RestClientService restClientService;
 
 
-	public DeviceController(ManagedDeviceService deviceManagerImpl) {
+	public DeviceController(ManagedDeviceService deviceManagerImpl, CapabilityManager capabilityManager) {
 		this.managerImpl = deviceManagerImpl;
+		this.capabilityManager = capabilityManager;
 	}
 
 	/** Returns the implemented Application Point of Contact id */
@@ -161,17 +167,23 @@ public class DeviceController implements IpuService{
 		
 		else if(lastInfo.equals("protocol")) {
 			LOGGER.info("********  /manualconfiguration/protocol  ***********");
+			
 		}
 		
-		else if(lastInfo.contains("capabilities?")) {
+		else if(lastInfo.contains("capabilities?filter=")) {
 			LOGGER.info("********  /manualconfiguration/capabilities?filter=<filter>  ***********");
-			String []  filter = lastInfo.split("=")[1].split("+");
-			String str = "";
-			for(Sting s : filter) str += s + " + ";
-			LOGGER.info("filter = " + str);
+			String filter = lastInfo.split("=")[1];
+			LOGGER.info("filter = " + filter);
 			
 			// TODO Le filtre sur les capabilities
 			// TODO Où stocke-t-on les capabilities ?
+			List<Capability> fCapabilities = this.capabilityManager.getCapabilities(filter);
+			obix.List lObix = new obix.List("filter");
+			for(Capability c : fCapabilities){
+				lObix.add(c.toObj());
+			}
+			String representation = ObixEncoder.toString(lObix);
+			return new ResponseConfirm(StatusCode.STATUS_OK, representation);
 		}
 
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_IMPLEMENTED,requestIndication.getMethod()+" Method not Implemented"));
@@ -284,6 +296,21 @@ public class DeviceController implements IpuService{
 				}
 
 				LOGGER.info("********  /manualconfiguration/device/<id d'un device>/test  ***********");
+			}
+		} else if(infos[infos.length - 3].equals(Constants.PATH_CAPABILITIES) && infos[infos.length - 2].equals(Constants.PATH_INVOKE)){
+			String deviceId = infos[infos.length - 4];
+			String capabilityName = infos[infos.length - 1];
+
+			Device device = managerImpl.getDevice(deviceId);
+			if(device != null) {
+				requestIndication.setBase(device.getUri());
+				requestIndication.setTargetID("");
+				//	requestIndication.setTargetID("/"+Constants.PATH_CAPABILITIES+"/"+Constants.PATH_INVOKE+"/"+capabilityName);
+				requestIndication.setProtocol(device.getModeConnection());
+				LOGGER.info("send request for executing capabilities");
+				ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
+				//	ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
+				return responseConfirm;
 			}
 		}
 

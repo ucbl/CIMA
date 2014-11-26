@@ -32,6 +32,8 @@
     <maven.version>3.0</maven.version>
     <tycho.version>0.20.0</tycho.version>
     <tycho.test.jvmArgs>-Xmx512m -XX:MaxPermSize=256m</tycho.test.jvmArgs>
+    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>1.7</maven.compiler.source>
   </properties>
 
   <repositories>

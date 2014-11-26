@@ -1,6 +1,7 @@
 package fr.liris.cima.gscl.mgmtdevice;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,8 +29,9 @@ import fr.liris.cima.gscl.commons.constants.Constants;
 import fr.liris.cima.gscl.commons.parser.Parser;
 import fr.liris.cima.gscl.commons.util.Utils;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
+import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
 
-public class DeviceManagerImpl implements ManagedDeviceService{
+public class DeviceManagerImpl implements ManagedDeviceService,CapabilityManager {
 
 	/** Logger */
 	private static Log LOGGER = LogFactory.getLog(DeviceManagerImpl.class);
@@ -48,6 +50,9 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 	static List<Device> devices;
 	
 	static List<Device> unknownDevices;
+	
+	static Map<String,Capability> capabilities;
+	
 	static ConfigManagerImpl configManagerImpl;
 	
 	public DeviceManagerImpl() {
@@ -58,6 +63,7 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 		SCL = scl;
 		devices = new ArrayList<>();
 		unknownDevices = new ArrayList<>();
+		capabilities = new HashMap<>();
 		configManagerImpl = new ConfigManagerImpl();
 	}
 	
@@ -65,6 +71,7 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 		SCL = scl;
 		devices = new ArrayList<>();
 		unknownDevices = new ArrayList<>();
+		capabilities = new HashMap<>();
 	}
 
 	@Override
@@ -212,6 +219,7 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 	
 	@Override
 	public Capability updateUnknownDeviceCapability(String deviceId, Capability capability)  {
+		this.capabilities.put(capability.getName(), capability);
 		return configManagerImpl.updateCapability(deviceId, capability);
 	}
 	
@@ -394,4 +402,33 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 		
 
 	}
+
+	@Override
+	public boolean add(Capability c) {
+		if(capabilities.get(c.getName()) != null)
+			return false;
+		else{
+			capabilities.put(c.getName(), c);
+			return true;
+		}
+	}
+
+	@Override
+	public boolean remove(String c) {
+		return capabilities.remove(c).getName() == c;
+	}
+
+	@Override
+	public List<Capability> getCapabilities() {
+		return new ArrayList<Capability>(capabilities.values());
+	}
+
+	@Override
+	public List<Capability> getCapabilities(String filter) {
+		// TODO Filter
+		
+		return new ArrayList<Capability>();
+	}
+	
+	
 }

@@ -60,12 +60,12 @@ public class Parser {
 
 		try {
 			JSONArray capabilities = (JSONArray) jsonObject.get("capabilities");
-			Iterator capacity = capabilities.iterator();
+			Iterator capability = capabilities.iterator();
 			int i = 0;
 
-			while (capacity.hasNext()) {
-				JSONObject capacity_tmp = (JSONObject) capacity.next();
-				list.add(parseJSONToObixCapability(capacity_tmp));
+			while (capability.hasNext()) {
+				JSONObject capability_tmp = (JSONObject) capability.next();
+				list.add(parseJSONToObixCapability(capability_tmp));
 
 			}
 		} catch (Exception e) {
@@ -87,20 +87,26 @@ public class Parser {
 		return parseJSONToObixCapability(jsonObject);
 	}
 
-	public static Obj parseJSONToObixCapability(JSONObject capacity) {
-		Obj obj_capacity = new Obj();
+	public static Obj parseJSONToObixCapability(JSONObject capability) {
+		Obj obj_capability = new Obj("capability");
 
 		try {
-			obj_capacity.add(new Str("id", (String) capacity.get("id")));
-			obj_capacity.add(parseJSONToObixProtocol((JSONObject) capacity
+			String name = capability.get("id").toString();
+			obj_capability.add(new Str("id", name));
+			
+			obj_capability.add(parseJSONToObixProtocol((JSONObject) capability
 					.get("protocol")));
+			obix.List keywords = new obix.List("keywords");
+			JSONArray jsonKeywords = (JSONArray) capability.get("keywords");
+			for(Object k : jsonKeywords.toArray()){
+				keywords.add(new Str((String) k));
+			}
+			obj_capability.add(keywords);
 
-		}
-
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return obj_capacity;
+		return obj_capability;
 	}
 
 	public static Obj parseJSONToObixProtocol(String jsonString) {
@@ -121,8 +127,7 @@ public class Parser {
 
 		try {
 			obj_Protocol.setName("protocol");
-			obj_Protocol.add(new Str("protocoleName", (String) protocol_info
-					.get("protocoleName")));
+			obj_Protocol.add(new Str("protocoleName", (String) protocol_info.get("protocolName")));
 			JSONArray parameters = (JSONArray) protocol_info.get("parameters");
 
 			Iterator parameter = parameters.iterator();
@@ -190,7 +195,7 @@ public class Parser {
 			SAXBuilder sxb = new SAXBuilder();
 			Document document = sxb.build(new StringReader(obj_info));
 			Element racine = document.getRootElement();
-			List<Element> list_obj = racine.getChildren().get(0).getChildren().get(0).getChildren();
+			List<Element> list_obj = racine.getChildren();
 			Iterator<Element> noeudObj = list_obj.iterator();
 			Element courant;
 			String s;
@@ -201,10 +206,9 @@ public class Parser {
 				jsonObject.add(parseObixToJSONCapability(s));
 			}
 		} catch (JDOMException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return jsonObject;
 	}
 	public static String parseObixToJSONStringCapability(String obj_info) {
 		return parseObixToJSONCapability(obj_info).toJSONString();
@@ -217,18 +221,23 @@ public class Parser {
 			SAXBuilder sxb = new SAXBuilder();
 			Document document = sxb.build(new StringReader(obj_info));
 			Element racine = document.getRootElement();
-			List list_obj = racine.getChildren();
-			Iterator noeud = list_obj.iterator();
+			List<Element> list_obj = racine.getChildren();
+			Iterator<Element> noeud = list_obj.iterator();
 			while (noeud.hasNext()) {
 				Element courant = (Element) noeud.next();
-				if (courant.getChildren().size() == 0) {
-
-					jsonObject.put(courant.getAttributeValue("name"),
-							courant.getAttributeValue("val"));
-				} else {
+				if (courant.getAttributeValue("name").equalsIgnoreCase("keywords")) {
+					List<Element> xmlKeywords = courant.getChildren();
+					JSONArray keywords = new JSONArray();
+					for(Element e : xmlKeywords){
+						keywords.add(e.getAttributeValue("val"));
+					}
+				} else if(courant.getAttributeValue("name").equalsIgnoreCase("protocol")){
 					String s = new XMLOutputter().outputString(courant);
 					jsonObject.put("protocol", parseObixToJSONProtocol(s));
 
+				} else {
+					jsonObject.put(courant.getAttributeValue("name"),
+							courant.getAttributeValue("val"));
 				}
 
 			}
@@ -281,11 +290,9 @@ public class Parser {
 			Iterator<Element> noeudAttr, noeud_capabilities;
 			JSONArray jsonCapabilities = new JSONArray();
 			Element objCourant = racine,attrCourant;
-			System.out.println("NEXT OBJ : "+ objCourant.toString() + " " + objCourant.getAttributeValue("name"));
 			noeudAttr = objCourant.getChildren().iterator();
 			while (noeudAttr.hasNext()){
 				attrCourant = (Element) noeudAttr.next();
-				System.out.println("NEXT ATTR : "+ attrCourant.toString() + " NAME : " + attrCourant.getAttributeValue("name") + " VAL : " + attrCourant.getAttributeValue("val"));
 				if (!attrCourant.getAttributeValue("name").equalsIgnoreCase("Capabilities")) {
 					jsonDeviceObject.put(attrCourant.getAttributeValue("name"), attrCourant.getAttributeValue("val"));
 				} else {
@@ -445,29 +452,60 @@ public class Parser {
 	}
 
 	public static void main(String args[]) throws Exception {
-		String strClient = "<subscriber> <url>localhost</url></subscriber>";
-		String representation = "<infos>" + "<device>" + "<id>DEVICE_0</id>"
-				+ "<url>192.168.43.34:/infos/</url>"
-				+ "<protocol>http</protocol>" + "</device>" + "<gateway>"
-				+ "<url>http://localhost:8282</url>" + "</gateway>"
-				+ "</infos>";
+//		String strClient = "<subscriber> <url>localhost</url></subscriber>";
+//		String representation = "<infos>" + "<device>" + "<id>DEVICE_0</id>"
+//				+ "<url>192.168.43.34:/infos/</url>"
+//				+ "<protocol>http</protocol>" + "</device>" + "<gateway>"
+//				+ "<url>http://localhost:8282</url>" + "</gateway>"
+//				+ "</infos>";
+//
+//		String obixFormat = "<obj>"
+//				+ "<obj name=\"device\">"
+//				+ "<str name=\"id\" val=\"DEVICE_0\"/>"
+//				+ "<str name=\"protocol\" val=\"http\"/>"
+//				+ "<str name=\"url\" val=\"192.168.43.34:/device/capabilities/\"/>"
+//				+ "</obj>" + "<obj name=\"contactInfo\">"
+//				+ "<str name=\"deviceId\" val=\"DEVICE_0\"/>"
+//				+ "<int name=\"cloud_port\" val=\"6000\"/>" + "</obj>"
+//				+ "</obj>";
+		
+		String jsconCapa = "{" +
+			    "\"id\" : \"ev3Back\"," +
+			    "\"protocol\": {" +
+			        "\"protocolName\" : \"http\"," +
+			        "\"parameters\" : [" +
+			            "{" +
+			                "\"name\" : \"method\"," +
+			                "\"value\" : \"post\"" +
+			            "}," +
+			            "{" +
+			                "\"name\" : \"port\"," +
+			                "\"value\" : \"8080\"" +
+			            "}," +
+			            "{" +
+			                "\"name\" : \"uri\"," +
+			                "\"value\" : \"/capability\"" + 
+			            "}," +
+			            "{" +
+			                "\"name\" : \"body\"," +
+			                "\"value\" : \"YmFjaw==\"" +
+			            "}" +
+			         "]" +
+			    "}," +
+			    "\"keywords\" : [\"ev3\",\"reculer\",\"back\",\"robot\",\"mouvement\"]" +
+			"}";
 
-		String obixFormat = "<obj>"
-				+ "<obj name=\"device\">"
-				+ "<str name=\"id\" val=\"DEVICE_0\"/>"
-				+ "<str name=\"protocol\" val=\"http\"/>"
-				+ "<str name=\"url\" val=\"192.168.43.34:/device/capabilities/\"/>"
-				+ "</obj>" + "<obj name=\"contactInfo\">"
-				+ "<str name=\"deviceId\" val=\"DEVICE_0\"/>"
-				+ "<int name=\"cloud_port\" val=\"6000\"/>" + "</obj>"
-				+ "</obj>";
-
-		parseObixToContactInfo(obixFormat);
-		parseObixToDevice(obixFormat.trim());
-		System.out.println(parseXmlToClientSubscriber(strClient));
+//		parseObixToContactInfo(obixFormat);
+//		parseObixToDevice(obixFormat.trim());
+//		System.out.println(parseXmlToClientSubscriber(strClient));
 		// System.out.println(parseXmlToDevice(representation));
 		// System.out.println(parseXmlToGatewayInfo(representation));
 		// parseObix();
+		System.out.println("json depart : " + jsconCapa);
+		String obixCapa = ObixEncoder.toString(parseJSONToObixCapability(jsconCapa));
+		System.out.println("OBIX capa : \n" + obixCapa);
+		System.out.println("JSON capa : \n" + parseObixToJSONStringCapability(obixCapa));
+		
 	}
 }
 
