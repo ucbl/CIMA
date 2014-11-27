@@ -2,12 +2,10 @@
 /* Controller page device.html */
 app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams) {
 
-	/*Promesses*/
 	$rootScope.loading = true;
-	$scope.newComment ={};
 	$scope.EditIsOpen = false;
 	$scope.idrequired = false;
-
+	$scope.selected = undefined;
 
 	/*retrieve information about the device and add them to the view*/
 	DeviceFactory.get($routeParams.id).then(function(device){
@@ -34,6 +32,8 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 		$scope.protocols = protocols;
 		//List of protocol from an existing capability (obliged to abort cross config problem between new cap and cap from existiong)
 		$scope.protocolsFromExisting = JSON.parse(JSON.stringify(protocols));
+		$scope.protocolsFromEdited = JSON.parse(JSON.stringify(protocols));
+
 	}, function(msg){
 		alert(msg);
 	})
@@ -163,6 +163,15 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 	$scope.openAndEditCapability = function(capability){
 		$scope.EditIsOpen = true;
 		$scope.editedCapability = JSON.parse(JSON.stringify(capability));
+	    //Not to have same reference
+	    for (i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
+			dataset = $scope.protocolsFromEdited[i];
+			if (dataset.protocolName == capability.protocol.protocolName) {
+				$scope.protocolsFromEdited[i].parameters = capability.protocol.parameters;
+			    $scope.editedCapability.protocol = $scope.protocolsFromEdited[i];
+			    break;
+			}
+		}
 	}
 
     /*Function for closing the edition div*/
@@ -173,7 +182,6 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 	}
 
     /*Auto Indent capabilities searching bloc*/
-	$scope.selected = undefined;
   	$scope.getCapability = function(val) {
 	  	return $http.get(URL_CAPABILITIES, {
 	    	params: {
@@ -187,8 +195,6 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
     /*Fucntion for intercepting the existing capability selection*/
   	$scope.onSelectCapability = function ($item, $model, $label) {
 	    $scope.NewFromExistingCapability = $item;
-	    //Not to have same reference
-	    $scope.existingCapability = JSON.parse(JSON.stringify($item));
 	    for (i = $scope.protocolsFromExisting.length - 1; i >= 0; i--) {
 			dataset = $scope.protocolsFromExisting[i];
 			if (dataset.protocolName == $item.protocol.protocolName) {

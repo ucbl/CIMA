@@ -22,11 +22,11 @@
         "protocolName" : "HTTP",
         "parameters": [{
                     "name": "URI",
-                    "value": "/mass.com"
+                    "value": "/EV3333.com"
                 },
                 {
                     "name": "URL",
-                    "value": "www./mass.com"
+                    "value": "www./ev3.com"
                 }
                 ]      
     },

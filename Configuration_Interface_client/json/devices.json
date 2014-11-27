@@ -9,27 +9,19 @@
         "capabilities": [
             {
                 "id" : "ev3Back",
-                "protocol": {
-                    "protocoleName" : "http",
-                    "parameters" : [
-                        {
-                            "name" : "method",
-                            "value" : "POST" 
+                "protocol": 
+                    {
+                        "protocolName":"HTTP",
+                        "parameters": [{
+                            "name": "URI",
+                            "value": "/EV33333.com"
                         },
                         {
-                            "name" : "port",
-                            "value" : "8080" 
-                        },
-                       {
-                            "name" : "URI",
-                            "value" : "/capability" 
-                        },
-                        {
-                            "name" : "body",
-                            "value" : "YmFjaw==" 
+                            "name": "URL",
+                            "value": "www./ev3.com"
                         }
-                    ]
-                },
+                        ]            
+                    },
                 "keywords" : ["ev3","reculer","back","robot","mouvement"]
             }
         ]
@@ -43,13 +35,16 @@
         "uri":"http://192.168.0.1",
         "capabilities": [
             {
-                "id": "TESTCAP",
                 "protocol": 
                     {
                         "protocolName":"HTTP",
                         "parameters": [{
                             "name": "URI",
-                            "value": "/HUHUHUH"
+                            "value": "/mass.com"
+                        },
+                        {
+                            "name": "URL",
+                            "value": "www./mass.com"
                         }
                         ]            
                     },
