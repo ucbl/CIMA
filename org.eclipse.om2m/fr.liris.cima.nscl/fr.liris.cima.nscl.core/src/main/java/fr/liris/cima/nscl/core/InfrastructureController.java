@@ -70,6 +70,8 @@ public class InfrastructureController implements IpuService{
 			responseConfirm = new ResponseConfirm(StatusCode.STATUS_OK, representation);
 			return responseConfirm;
 		}
+		// TODO : Ajouter le retour de la liste des capacités en fonction d'un device
+		// /nscl/application/CIMANSCL/devices/<device_id>/capabilities
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST, ""));
 	}
 
