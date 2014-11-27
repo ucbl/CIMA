@@ -10,18 +10,10 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 			/* Promesses */
 			var deferred = $q.defer();
 
-				/*$http.get('/om2m/nscl/applications/configuration/manualconfiguration/device')
-				.success(function(data, status){
-					factory.devices = data;
-					deferred.resolve(factory.devices);
-				}).error(function(data, status){
-					deferred.reject('Unable to get devices')
-				})*/
             /*Asynchronous request for getting all devices*/
  			setInterval(function(){
  				$.ajax({
- 				   //$http.get('/om2m/nscl/applications/configuration/manualconfiguration/device')
-			       url : 'json/devices.json',
+ 				   url : URL_DEVICE,
 			       type : 'GET',
 			       dataType : 'json',
 			       success : function(data, status){
@@ -61,11 +53,11 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 		},
 
         /*test a device*/
-		//URL http://134.214.213.63:8080/om2m/nscl/applications/manualconfiguration/device/'+ idDevice+'/test'+ capability	
 		testCapability : function(idDevice, capability){
 			var deferred = $q.defer();
 			$http({
-        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+ idDevice+'/test',
+				//url : URL_DEVICE + '/' + idDevice+'/test',	
+        		url: URL_DEVICE + '/' + idDevice+'/test',
         		method: "POST",
         		data: capability,
         		headers: {'Content-Type': 'application/json'}
@@ -82,7 +74,7 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 		addCapability : function(idDevice, capability){
 			var deferred = $q.defer();
 			$http({
-        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+idDevice+'/capability/'+capability.id+"/",
+        		url: URL_DEVICE + '/' + idDevice + '/capability/'+capability.id+"/",
         		method: "PUT",
         		data: capability,
         		headers: {'Content-Type': 'application/json'}
@@ -99,7 +91,7 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 		saveDevice : function(device){
 			var deferred = $q.defer();
 			$http({
-        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+device.id+'/',
+        		url: URL_DEVICE+'/'+device.id+'/',
         		method: "PUT",
         		data: device,
         		headers: {'Content-Type': 'application/json'}
@@ -116,7 +108,7 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 		modifyCapability : function(idDevice, capability){
 			var deferred = $q.defer();
 			$http({
-        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+idDevice+'/capability/'+capability.id+"/",
+        		url: URL_DEVICE+'/'+idDevice+'/capability/'+capability.id+"/",
         		method: "PUT",
         		data: capability,
         		headers: {'Content-Type': 'application/json'}
@@ -134,7 +126,7 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 		removeCapability : function(idDevice, idCapability){
 			var deferred = $q.defer();
 			$http({
-        		url: '/om2m/nscl/applications/configuration/manualconfiguration/device/'+idDevice+'/capability/'+idCapability+"/",
+        		url: URL_DEVICE+'/'+idDevice+'/capability/'+idCapability+"/",
         		method: "DELETE",
         		data: "",
         		headers: {'Content-Type': 'application/json'}

@@ -175,7 +175,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
     /*Auto Indent capabilities searching bloc*/
 	$scope.selected = undefined;
   	$scope.getCapability = function(val) {
-	  	return $http.get('json/capabilities.json', {
+	  	return $http.get(URL_CAPABILITIES, {
 	    	params: {
 	      		filter: val
 	    	}
