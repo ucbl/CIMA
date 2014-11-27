@@ -1,3 +1,4 @@
+/*css style file*/
 html, body {
     height: 100%;
     background-color: lightblue;
@@ -5,27 +6,24 @@ html, body {
     margin-top: 10px;
     margin-bottom: 10px;
 
-}
-
+} 
 h1 {
     color: navy;
-}
-
+} 
 .addCapacity{
 	background-color: #eee;
 	padding-bottom: 5px;
 	padding-left: 5px;
 	padding-right: 5px;
 	border-radius: 5px;
-}
-
+} 
 .editCapability{
 	background-color: white;
 	padding-bottom: 20px;
 	padding-left: 20px;
 	padding-right: 5px;
 	border-radius: 5px;
-}
+} 
 #edit{
   background-color: #F8F8F8; 
 }

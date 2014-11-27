@@ -1,3 +1,4 @@
+<!--Devices view-->
 <div ng-hide='loading'>
     <div class="col-xs-6" >
 
@@ -16,7 +17,7 @@
             <th>URI</th>
         </tr>
         </thead>
-        <!-- Tableau de devices -->
+        <!-- Devices table -->
         <tbody ng-repeat="device in devices | filter:query ">
         <tr>
             <td>{{device.id}}</td>

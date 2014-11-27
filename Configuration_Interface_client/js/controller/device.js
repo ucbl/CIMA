@@ -1,5 +1,5 @@
 
-/* Controlleur page device.html */
+/* Controller page device.html */
 app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams) {
 
 	/*Promesses*/
@@ -7,7 +7,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 	$scope.newComment ={};
 	$rootScope.EditIsOpen = false;
 
-	/* Recupere les infos sur le device selectionné et les ajoute à la vue */
+	/*retrieve information about the device and add them to the view*/
 	DeviceFactory.get($routeParams.id).then(function(device){
 		$scope.id = device.id;
 		$scope.name = device.name;
@@ -27,14 +27,14 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 		alert(msg);
 	})
 
-	/* Recupere les protocoles disponibles et les ajoute à la vue */
+	/*retrieve the avalable protocols and add them to the view*/
 	ProtocolsFactory.find().then(function(protocols){
 		$scope.protocols = protocols;
 	}, function(msg){
 		alert(msg);
 	})
 	
-	//Ajoute une capability au modèle et à la vue si c'est un succès
+	/*Add the capability to the model and to the view if it's a success*/
 	$scope.addCapability = function(newCapability){
 		if(newCapability.id !=null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null){			
 
@@ -54,7 +54,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 		}
 	}
         
-	//Supprimer un capability du podèle et de la vue si succès
+    /*remove a capability from the model and the view*/
     $scope.removeCapability = function (row) {
         
         DeviceFactory.removeCapability($scope.id, row.id).then(function(){
@@ -70,7 +70,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
         
     }
 
-	//Fonction pour tester une capacité
+    /*Testing capability function*/
 	$scope.testCapability = function(newCapability){
 		var cap = {};
 		cap.id = newCapability.id;
@@ -85,7 +85,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 		});
 	}
 
-	//Fonction pour sauvegarder le device
+	/*Function for saving a device */
 	$scope.saveDevice = function(){
 		var device = {};
 
@@ -103,8 +103,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 			alert('Votre device n\'a pas pu être sauvegardé');
 		});
 	}
-	//Fonction pour modifier le device
-
+	/*Function for modifing a device */
 	$scope.modifyCapability = function(capability){
 		var cap = {};
 		cap.id = capability.id;
@@ -118,20 +117,20 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 		});
 	}
 
-	//Fonction pour ajouter la capacité a modifier dans le scope et afficher la section d'edition
+	/*Function for setting the capability to modify to the scope and display the edition section*/
 	$scope.openAndEditCapability = function(capability){
 		$rootScope.EditIsOpen = true;
 		$scope.editedCapability = JSON.parse(JSON.stringify(capability));
 	}
 
-	//Fonction pour fermer la div d'edition
+    /*Function for closing the edition div*/
 	$scope.CloseEditCapability = function(){
 		if($rootScope.EditIsOpen){
 			$rootScope.EditIsOpen = false;
 		}
 	}
 
-	//Bloc pour recherche capabilities auto indentation
+    /*Auto Indent capabilities searching bloc*/
 	$scope.selected = undefined;
   	$scope.getCapability = function(val) {
 	  	return $http.get('json/capabilities.json', {
@@ -143,9 +142,8 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 	    }); 
   	};
 
-  	//Fonction qui intercepte la selection d'une capacité existante
+    /*Fucntion for intercepting the existing capability selection*/
   	$scope.onSelectCapability = function ($item, $model, $label) {
-	    //alert($item.protocol.protocolName);
 	    $scope.NewFromExistingCapability = $item;
 	    for (i = $scope.protocols.length - 1; i >= 0; i--) {
 		dataset = $scope.protocols[i];
