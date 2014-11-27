@@ -36,6 +36,7 @@
     <module>fr.liris.cima.gscl.mgmtdevice</module>
     <module>fr.liris.cima.gscl.comm.service</module>
     <module>fr.liris.cima.gscl.discovery</module>
+    <module>fr.liris.cima.gscl.hiddiscovery</module>
     <module>fr.liris.cima.gscl.invoke</module>
     <module>fr.liris.cima.gscl.comm.http</module>
     <module>fr.liris.cima.gscl.comm.dosgi</module>

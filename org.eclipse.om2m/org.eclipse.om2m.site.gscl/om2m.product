@@ -61,6 +61,7 @@
       <plugin id="fr.liris.cima.gscl.comm.http"/>
       <plugin id="fr.liris.cima.gscl.commons"/>
       <plugin id="fr.liris.cima.gscl.discovery"/>
+      <plugin id="fr.liris.cima.gscl.hiddiscovery"/>
       <plugin id="fr.liris.cima.gscl.core"/>
       <plugin id="fr.liris.cima.gscl.mgmtdevice"/>
       <plugin id="fr.liris.cima.gscl.device.service"/>
@@ -78,6 +79,7 @@
       <plugin id="org.eclipse.om2m.ipu.sample" autoStart="false" startLevel="4" />
       <plugin id="fr.liris.cima.gscl.comm.http" autoStart="true" startLevel="4" />
       <plugin id="fr.liris.cima.gscl.discovery" autoStart="true" startLevel="5" />
+     <plugin id="fr.liris.cima.gscl.hiddiscovery" autoStart="true" startLevel="5" />
       <plugin id="fr.liris.cima.gscl.core" autoStart="true" startLevel="6" />
       <plugin id="fr.liris.cima.gscl.mgmtdevice" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.om2m.webapp.resourcesbrowser" autoStart="true" startLevel="3" />
