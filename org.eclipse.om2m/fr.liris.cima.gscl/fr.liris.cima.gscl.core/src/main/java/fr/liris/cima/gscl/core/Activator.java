@@ -11,6 +11,7 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import fr.liris.cima.gscl.device.service.ConfigManager;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
+import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
 import fr.liris.cima.gscl.device.service.discovery.DiscoveryService;
 
 /**
@@ -40,8 +41,9 @@ public class Activator implements BundleActivator {
 
 			public Object addingService(ServiceReference<Object> reference) {
 				logger.info("ManagedDevice discovered in cima gscl core");
-				final ManagedDeviceService managedDeviceService = (ManagedDeviceService) this.context.getService(reference);				
-				this.context.registerService(IpuService.class.getName(), new DeviceController(managedDeviceService), null);
+				final ManagedDeviceService managedDeviceService = (ManagedDeviceService) this.context.getService(reference);
+				final CapabilityManager managedCapabilityManager = (CapabilityManager) this.context.getService(this.context.getServiceReference(CapabilityManager.class.getName()));		
+				this.context.registerService(IpuService.class.getName(), new DeviceController(managedDeviceService,managedCapabilityManager), null);
 
 				new Thread(){
 					public void run(){

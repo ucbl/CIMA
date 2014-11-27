@@ -30,6 +30,7 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import fr.liris.cima.gscl.device.service.ConfigManager;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
+import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author <ul>
@@ -59,6 +60,8 @@ public class Activator implements BundleActivator {
 
 				serviceRegistration = this.context.registerService(ManagedDeviceService.class.getName(), new DeviceManagerImpl(sclService) , null);
 				logger.info("ManagedDeviceService registered successfully");
+				serviceRegistration = this.context.registerService(CapabilityManager.class.getName(), new CapabilityManagerImpl(sclService) , null);
+				logger.info("CapabilityManager registered successfully");
 
 				return sclService;
 			}
