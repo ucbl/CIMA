@@ -27,7 +27,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 		alert(msg);
 	})
 
-	/*retrieve the avalable protocols and add them to the view*/
+	/*retrieve the available protocols and add them to the view*/
 	ProtocolsFactory.find().then(function(protocols){
 		$scope.protocols = protocols;
 	}, function(msg){
@@ -155,4 +155,16 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 			}
 		}
 	}; 
+	$scope.SelectCapability = function () {
+	   /*$scope.editedCapability.protocol = $item; 
+	    for (i = $scope.protocols.length - 1; i >= 0; i--) {
+		dataset = $scope.protocols[i];
+			if (dataset.protocolName == $item.protocol.protocolName) {
+				$scope.protocols[i].parameters = $item.protocol.parameters;
+			    $scope.editedCapability.protocol = $scope.protocols[i];
+			    break;
+			}
+		}*/ 
+		$scope.protocols.protocol =null;
+	}; 	
 });
