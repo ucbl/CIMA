@@ -1,10 +1,11 @@
 
-/* Modèle Device 
-** Défini toutes les méthodes pour requêter le serveur */
+/*Device Model
+* Defining all methods to request the server*/
+
 app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 
 	var factory = { 
-		/* Retourne tous les devices */  
+		/*Return all devices*/
 		find : function(options){
 			/* Promesses */
 			var deferred = $q.defer();
@@ -16,9 +17,10 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 				}).error(function(data, status){
 					deferred.reject('Unable to get devices')
 				})*/
-
+            /*Asynchronous request for getting all devices*/
  			setInterval(function(){
  				$.ajax({
+ 				   //$http.get('/om2m/nscl/applications/configuration/manualconfiguration/device')
 			       url : 'json/devices.json',
 			       type : 'GET',
 			       dataType : 'json',
@@ -38,8 +40,8 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 			return deferred.promise;
 		
 	}, 
-		//Retourne un device avec son id
-		get : function(id){
+        /*get a device from its id*/
+ 		get : function(id){
 			/* Promesses */
 			var deferred = $q.defer();
 			var device = {};
@@ -58,7 +60,7 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 			return deferred.promise;
 		},
 
-		//test une capacité
+        /*test a device*/
 		//URL http://134.214.213.63:8080/om2m/nscl/applications/manualconfiguration/device/'+ idDevice+'/test'+ capability	
 		testCapability : function(idDevice, capability){
 			var deferred = $q.defer();
@@ -76,7 +78,7 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 			return deferred.promise;
 		},
 
-		//add capability
+		/*add capability*/
 		addCapability : function(idDevice, capability){
 			var deferred = $q.defer();
 			$http({
@@ -93,8 +95,7 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 			return deferred.promise;
 		},
 
-
-		//save device (server side)
+		/*save a device (server side)*/
 		saveDevice : function(device){
 			var deferred = $q.defer();
 			$http({
@@ -111,7 +112,7 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 			return deferred.promise;
 		},
 
-		//modify capability
+		/*modifying capability*/
 		modifyCapability : function(idDevice, capability){
 			var deferred = $q.defer();
 			$http({
@@ -129,7 +130,7 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 			return deferred.promise;
 		},
 
-		//delete capability
+		/*deleting a capability*/
 		removeCapability : function(idDevice, idCapability){
 			var deferred = $q.defer();
 			$http({

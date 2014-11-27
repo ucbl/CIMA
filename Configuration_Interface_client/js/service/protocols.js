@@ -1,14 +1,15 @@
-/* Modèle pour protocoles */
+/* Protocols model */
 app.factory('ProtocolsFactory', function($http, $q, $timeout){
 
 	var factory = {
 		protocols : false,
 		/* Retourne tous les protocoles */
+		/*Return all protocols*/
 		find : function(options){
 			/* Promesses */
 			var deferred = $q.defer();
-			//Eviter de recharger
-			if( factory.protocols !== false){
+            /*Avoid loading */
+ 			if( factory.protocols !== false){
 				deferred.resolve(factory.protocols);
 			}else{
 				//http://134.214.213.63:8080/om2m/nscl/applications/configuration/manualconfiguration/protocol
@@ -32,7 +33,7 @@ app.factory('ProtocolsFactory', function($http, $q, $timeout){
 			
 			return deferred.promise;
 		},
-		//Retourne un protocol avec son id
+        /*get a protocol from its id*/
 		get : function(id){
 			/* Promesses */
 			var deferred = $q.defer();

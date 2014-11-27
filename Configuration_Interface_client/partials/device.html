@@ -1,3 +1,4 @@
+<!--Device view-->
 <a class="btn btn-warning" href="#/"> < Devices list</a>
 <div ng-hide='loading' ng-controller="DeviceCtrl">
 	<div class="col-xs-6">
@@ -9,7 +10,6 @@
 		<i>Communication protocol : {{modeConnection}} at {{uri}}</i>
 		<br>
 		<br>
-
 		<p>
 		<strong>Name</strong>
 		<input class="control" type="text"  ng-disabled="!isEditable" ng-model="name"/> 
@@ -19,7 +19,7 @@
 		</p>
 		<hr>
 
-		<!-- Capacités sur le device -->
+		<!-- Devices capabilities -->
 		<h2><b>Capabilities  </b></h2>
 
 	    <table st-table="devices" class="table table-striped" style="width: 40%">
@@ -110,14 +110,13 @@
                             <input class="form-control"  type="text" ng-model="parameter.value">
                         </li>
                         <br>     
-
                          <strong>Key words </strong>
                          <tags-input ng-model="tags"></tags-input>                   
-                         <!-- Bouton pour reset la capacité -->
+                         <!-- Reset capability button -->
                         <button ng-click="NewFromExistingCapability='';tags=null" type="button" class="btn btn-primary pull-left" >Reset</button>
-                         <!-- Bouton pour ajouter la capacité -->
+                         <!-- Add capability button -->
                         <button style="margin-left:5px" class="btn btn-success pull-right" type="submit" >Add</button>
-                        <!-- Bouton pour tester la capacité -->
+                        <!-- Test capability button -->
                         <button ng-click="testCapability(NewFromExistingCapability)" type="button" class="btn btn-primary pull-right">Test</button>
                     </form>
                 </accordion-group>
@@ -125,6 +124,7 @@
                 <accordion-group>
                     <accordion-heading>
                     New one
+                    <!--Create a new capability-->
                     </accordion-heading>
                     <form ng-submit="addCapability(newCapability)">
                         <strong>ID </strong>
@@ -144,11 +144,11 @@
                          <strong>Key words </strong>
                          <tags-input ng-model="tags"></tags-input> 
                          <br>                
-                         <!-- Bouton pour reset la capacité -->
+                         <!-- Reset capability button -->
                         <button ng-click="newCapability={};tags=null" type="button" class="btn btn-primary pull-left">Reset</button> 
-                         <!-- Bouton pour ajouter la capacité -->
+                         <!-- Add capability button -->
                         <input style="margin-left:5px" class="btn btn-success pull-right" type="submit" value="Add"/>
-                        <!-- Bouton pour tester la capacité -->
+                         <!-- Test capability button -->
                         <button ng-click="testCapability(newCapability)" type="button" class="btn btn-primary pull-right">Test</button>
                     </form>
                     <br>
@@ -157,7 +157,7 @@
         </div> 
 	<hr>
 
-	<!-- Bouton pour valider tous les changements -->
+	<!-- Applying changes button-->
     <button ng-show="!showme" class="btn btn-success pull-right" ng-click="saveDevice()" class="btn btn-default pull-center">
     <i class="glyphicon glyphicon-ok"></i>
     	Apply changes
