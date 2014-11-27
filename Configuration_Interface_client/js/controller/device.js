@@ -29,7 +29,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 		alert(msg);
 	})
 
-	/*retrieve the avalable protocols and add them to the view*/
+	/*retrieve the available protocols and add them to the view*/
 	ProtocolsFactory.find().then(function(protocols){
 		$scope.protocols = protocols;
 		//List of protocol from an existing capability (obliged to abort cross config problem between new cap and cap from existiong)
@@ -198,5 +198,6 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 			}
 		}
 	};
+
 
 });

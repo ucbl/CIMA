@@ -46,7 +46,7 @@
                         Remove
                     </button>
                 </td>
-	        </tr>
+	         </tr>
 	        </tbody>
 	    </table>
     	<!-- EDIT CAPACBILITY -->
@@ -56,15 +56,22 @@
             
             <form ng-submit="modifyCapability(editedCapability)">
                 <strong>ID : {{editedCapability.id}} </strong>
-                <br>
-                Protocol type : {{editedCapability.protocol.protocolName}}
-                <br>
-                <br>
-                <li ng-repeat="parameter in editedCapability.protocol.parameters">
-                    {{parameter.name}}:
-                    <input class="form-control" placeholder="{{parameter.value}}"  style="width: 40%" type="text" ng-model="parameter.value"/> 
-                </li>
+                <br><br>
+                <li>
+                Protocol type :  {{editedCapability.protocol.protocolName}}
+               <!-- <select class="form-control" ng-model="editedCapability.protocol"
+                                ng-options="protocol.protocolName for protocol in protocols" ng-required="true" ng-change ="SelectCapability($item)">-->
 
+                <select class="form-control" ng-model="editedCapability.protocol"
+                                ng-options="protocol.protocolName for protocol in protocols" ng-required="true">
+                <option value="" >{{editedCapability.protocol.protocolName}}</option>
+                </select>
+                </li>
+                <li ng-repeat="parameter in editedCapability.protocol.parameters">
+                            {{parameter.name}}:
+                            <input class="form-control"  style="width: 40%" type="text" ng-model="parameter.value">
+                </li>
+                <br>   
                 <li> Key words </li> 
                  <tags-input   ng-model="editedCapability.keywords"></tags-input> 
 
