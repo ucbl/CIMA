@@ -92,24 +92,23 @@
                         From existing one
                     </accordion-heading>                
                     <!-- From Existing -->
-                    <input type="text" ng-model="existingCapability" placeholder="search for a capability..." typeahead="capability as capability.id for capability in getCapability($viewValue) | filter:{id:$viewValue}" typeahead-loading="loadingCapabilities" typeahead-on-select="onSelectCapability($item, $model, $label)" class="form-control">
+                    <input type="text" ng-model="NewFromExistingCapability" placeholder="search for a capability..." typeahead="capability as capability.id for capability in getCapability($viewValue) | filter:{id:$viewValue}" typeahead-loading="loadingCapabilities" typeahead-on-select="onSelectCapability($item, $model, $label)" class="form-control">
                     <i ng-show="loadingCapabilities" class="glyphicon glyphicon-refresh"></i>
-                    <!--<pre>Model: {{existingCapability | json}}</pre>-->
-                    <form ng-submit="addCapability(NewFromExistingCapability)" ng-show="(existingCapability != '' && existingCapability != null )">
-                        <strong>ID </strong>
-                        <input class="form-control" style="width: 40%" type="text" placeholder="Type an ID... (Required)" ng-model="NewFromExistingCapability.id" required>
+                    <!--<pre>Model: {{NewFromExistingCapability | json}}</pre>-->
+                    <form name = "addFromExisting" ng-submit="addCapabilityFromExisting(NewFromExistingCapability)" ng-show="(NewFromExistingCapability != '' && NewFromExistingCapability != null )">
+                        <strong>ID </strong><span class=" btn-danger" ng-show="idrequired">You must specify a new ID !</span>
+
+                        <input name="id" class="form-control" style="width: 40%" type="text" placeholder="Type an ID... (Required)" ng-model="NewFromExistingCapability.id" id required>
 
                         <strong>Protocol </strong>
-                        {{existingCapability.protocol.protocolName}}
-
                         <select class="form-control" ng-model="NewFromExistingCapability.protocol"
-                                ng-options="protocol.protocolName for protocol in protocols" ng-required="true">
+                                ng-options="protocol.protocolName for protocol in protocolsFromExisting" ng-required="true">
                         </select>
                         <li ng-repeat="parameter in NewFromExistingCapability.protocol.parameters">
                             {{parameter.name}}:
                             <input class="form-control"  type="text" ng-model="parameter.value">
                         </li>
-                        <br>     
+                        <br>
                          <strong>Key words </strong>
                          <tags-input ng-model="tags"></tags-input>                   
                          <!-- Reset capability button -->
@@ -125,7 +124,7 @@
                     <accordion-heading>
                     New one
                     <!--Create a new capability-->
-                    </accordion-heading>
+                    </accordion-heading >
                     <form ng-submit="addCapability(newCapability)">
                         <strong>ID </strong>
                         <input class="form-control" style="width: 40%" type="text" placeholder="Type an ID... (Required)" ng-model="newCapability.id" required>

@@ -5,7 +5,9 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 	/*Promesses*/
 	$rootScope.loading = true;
 	$scope.newComment ={};
-	$rootScope.EditIsOpen = false;
+	$scope.EditIsOpen = false;
+	$scope.idrequired = false;
+
 
 	/*retrieve information about the device and add them to the view*/
 	DeviceFactory.get($routeParams.id).then(function(device){
@@ -30,6 +32,8 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 	/*retrieve the avalable protocols and add them to the view*/
 	ProtocolsFactory.find().then(function(protocols){
 		$scope.protocols = protocols;
+		//List of protocol from an existing capability (obliged to abort cross config problem between new cap and cap from existiong)
+		$scope.protocolsFromExisting = JSON.parse(JSON.stringify(protocols));
 	}, function(msg){
 		alert(msg);
 	})
@@ -38,6 +42,44 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 	$scope.addCapability = function(newCapability){
 		if(newCapability.id !=null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null){			
 
+			var cap = {};
+			cap.id = newCapability.id;
+			cap.protocol = {};
+			cap.protocol.protocolName = newCapability.protocol.protocolName;
+			cap.protocol.parameters = newCapability.protocol.parameters;
+			
+			DeviceFactory.addCapability($scope.id,cap).then(function(){
+				$scope.capabilities.push(cap);
+			}, function(){
+				alert('Votre capability n\'a pas pu être ajoutée');
+			});
+			$scope.newCapability = {}; 
+			$scope.showme = false;
+		}
+	}
+
+	/* Add a capability from an existing capability. Need specific control */
+	$scope.addCapabilityFromExisting = function(newCapability){
+		var add = true;
+		if( JSON.stringify($scope.existingCapability) !== angular.toJson(newCapability) ){
+			//alert('newCapFrom existing !=  existing capability');
+			
+			if(JSON.stringify($scope.existingCapability.protocol) !== angular.toJson(newCapability.protocol)){
+			//alert('protocol change');
+				
+				if($scope.existingCapability.id === newCapability.id){
+					//alert('id ddnt change -> problem');
+					add = false;
+					//alert('you must specified other ID because you change protocol')
+					$scope.idrequired = true;
+
+				}
+			}
+		}
+
+
+		if(newCapability.id !=null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null && add){			
+			$scope.idrequired = false;
 			var cap = {};
 			cap.id = newCapability.id;
 			cap.protocol = {};
@@ -62,7 +104,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
         	if (index !== -1) {
             	$scope.capabilities.splice(index, 1);
         	}
-        	$rootScope.EditIsOpen= false;
+        	$scope.EditIsOpen= false;
 		}, function(){
 			alert('Votre capability n\'a pas pu être supprimé');
 		});
@@ -119,14 +161,14 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 
 	/*Function for setting the capability to modify to the scope and display the edition section*/
 	$scope.openAndEditCapability = function(capability){
-		$rootScope.EditIsOpen = true;
+		$scope.EditIsOpen = true;
 		$scope.editedCapability = JSON.parse(JSON.stringify(capability));
 	}
 
     /*Function for closing the edition div*/
 	$scope.CloseEditCapability = function(){
-		if($rootScope.EditIsOpen){
-			$rootScope.EditIsOpen = false;
+		if($scope.EditIsOpen){
+			$scope.EditIsOpen = false;
 		}
 	}
 
@@ -145,14 +187,16 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
     /*Fucntion for intercepting the existing capability selection*/
   	$scope.onSelectCapability = function ($item, $model, $label) {
 	    $scope.NewFromExistingCapability = $item;
-	    for (i = $scope.protocols.length - 1; i >= 0; i--) {
-		dataset = $scope.protocols[i];
+	    //Not to have same reference
+	    $scope.existingCapability = JSON.parse(JSON.stringify($item));
+	    for (i = $scope.protocolsFromExisting.length - 1; i >= 0; i--) {
+			dataset = $scope.protocolsFromExisting[i];
 			if (dataset.protocolName == $item.protocol.protocolName) {
-				alert("Protocole dans select trouvé !");
-				$scope.protocols[i].parameters = $item.protocol.parameters;
-			    $scope.NewFromExistingCapability.protocol = $scope.protocols[i];
+				$scope.protocolsFromExisting[i].parameters = $item.protocol.parameters;
+			    $scope.NewFromExistingCapability.protocol = $scope.protocolsFromExisting[i];
 			    break;
 			}
 		}
-	}; 
+	};
+
 });
