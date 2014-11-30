@@ -11,8 +11,8 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 	DeviceFactory.get($routeParams.id).then(function(device){
 		$scope.id = device.id;
 		$scope.name = device.name;
-		$scope.lastConnectionDate = device.dateConnection;
-		$scope.connectionMode = device.modeConnection;
+		$scope.dateConnection = device.dateConnection;
+		$scope.modeConnection = device.modeConnection;
 		$scope.uri = device.uri;
 
 		if(device.capabilities){
@@ -54,7 +54,6 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 				alert('Votre capability n\'a pas pu être ajoutée');
 			});
 			$scope.newCapability = {}; 
-			$scope.showme = false;
 		}
 	}
 
@@ -92,7 +91,6 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 				alert('Votre capability n\'a pas pu être ajoutée');
 			});
 			$scope.newCapability = {}; 
-			$scope.showme = false;
 		}
 	}
         
@@ -133,8 +131,8 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 
 		device.id = $scope.id;
 		device.name = $scope.name;
-		device.lastConnectionDate = $scope.lastConnectionDate;
-		device.connectionMode = $scope.connectionMode;
+		device.dateConnection = $scope.dateConnection;
+		device.modeConnection = $scope.modeConnection;
 		device.uri = $scope.uri;
 		device.capabilities = {};
 		device.capabilities = $scope.capabilities;
