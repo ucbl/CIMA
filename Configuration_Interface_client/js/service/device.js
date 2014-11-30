@@ -2,6 +2,7 @@
 /*Device Model
 * Defining all methods to request the server*/
 
+	
 app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 
 	var factory = { 
