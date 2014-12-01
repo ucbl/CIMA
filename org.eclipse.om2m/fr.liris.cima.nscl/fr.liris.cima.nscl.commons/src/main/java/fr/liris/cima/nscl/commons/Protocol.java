@@ -1,11 +1,19 @@
-package fr.liris.cima.gscl.commons;
+package fr.liris.cima.nscl.commons;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Defines generic, object to provide information for how to protocol use to invoke, get, etc capabilities.
+ * @author madiallo
+ *
+ */
 public class Protocol {
 
+	/** Protocol name*/
 	private String name;
+	
+	/** generics parameters */
 	private Map<String, String> parameters;
 
 	public Protocol() {
@@ -51,23 +59,4 @@ public class Protocol {
 
 		return result;
 	}
-
-//	public String toObixFormat() {
-//		Obj objProtocol = new Obj("protocol");
-//
-//		for(Entry<String, String> entry : parameters.entrySet()) {
-//			objProtocol.add(new Str(entry.getKey(),entry.getValue()));
-//		}
-//		return ObixEncoder.toString(objProtocol);
-//	}
-//	
-//	public Obj toObj() {
-//		Obj objProtocol = new Obj("protocol");
-//
-//		for(Entry<String, String> entry : parameters.entrySet()) {
-//			objProtocol.add(new Str(entry.getKey(),entry.getValue()));
-//		}
-//		return objProtocol;
-//	}
-
 }

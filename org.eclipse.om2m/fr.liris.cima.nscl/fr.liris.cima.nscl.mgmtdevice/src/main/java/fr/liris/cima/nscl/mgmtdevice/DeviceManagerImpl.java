@@ -1,8 +1,10 @@
 package fr.liris.cima.nscl.mgmtdevice;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -38,6 +40,9 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 	static List<Device> devices;
 	
 	static Set<ClientSubscriber> subscribers;
+	
+	// deviceId, contactInfo
+	static Map<String, String> mapContactInfos;
 
 
 	public DeviceManagerImpl() {
@@ -47,6 +52,7 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 		SCL = scl;
 		devices = new ArrayList<>();
 		subscribers = new HashSet<>();
+		mapContactInfos = new HashMap<String, String>();
 	}
 	
 	public static void init(SclService scl) {

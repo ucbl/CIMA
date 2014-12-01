@@ -14,6 +14,8 @@ import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 
 import fr.liris.cima.gscl.commons.Device;
+import fr.liris.cima.gscl.commons.Encoder;
+import fr.liris.cima.gscl.commons.DeviceDescription;
 import fr.liris.cima.gscl.commons.ExecuteShellComand;
 import fr.liris.cima.gscl.commons.constants.*;
 import fr.liris.cima.gscl.commons.parser.*;
@@ -83,7 +85,7 @@ public class DeviceDiscovery implements DiscoveryService{
 				i = 0;
 				LOGGER.info("**********Handle connected devices **********" + address);
 				String deviceId = mapConnectedAddresses.get(address);
-				notifyDisconnectionToInfController(deviceService.getDevice(deviceId));
+				notifyDisconnectionToInfController(deviceService.getDevice(deviceId).getDeviceDescription());
 				mapConnectedAddresses.remove(address);
 				deviceService.removeDevice(deviceId);
 			}
@@ -93,17 +95,17 @@ public class DeviceDiscovery implements DiscoveryService{
 	/**
 	 * Send a notification to the NSCL for device disconnecting.
 	 * @param device -The that is disconnected.
-     * @return The generic returned response.
+	 * @return The generic returned response.
 	 */
-	private ResponseConfirm notifyDisconnectionToInfController(Device device) {
-		LOGGER.info("SEND NOTIFICATION FOR DEVICE" + device.getId());
-		LOGGER.info("representation obix = "+device.toObixFormat());
+	private ResponseConfirm notifyDisconnectionToInfController(DeviceDescription deviceDescription) {
+		LOGGER.info("SEND NOTIFICATION FOR DEVICE" + deviceDescription.getId());
+		LOGGER.info("representation obix = "+Encoder.encodeDeviceDescriptionToObix(deviceDescription));
 		RequestIndication requestIndication = new RequestIndication();
-		requestIndication.setRepresentation(device.toObixFormat());
+		requestIndication.setRepresentation(Encoder.encodeDeviceDescriptionToObix(deviceDescription));
 		requestIndication.setProtocol("http");
 		requestIndication .setMethod(Constants.METHOD_DELETE);
 		requestIndication.setBase("http://127.0.0.1:8080/om2m");
-		requestIndication.setTargetID("/nscl/applications/CIMANSCL/devices/"+device.getId());
+		requestIndication.setTargetID("/nscl/applications/CIMANSCL/devices/"+deviceDescription.getId());
 		requestIndication.setRequestingEntity(ADMIN_REQUESTING_ENTITY);
 
 		/**
@@ -125,12 +127,15 @@ public class DeviceDiscovery implements DiscoveryService{
 
 
 		Set<String> addresses = lookUp();
-		LOGGER.info("in do discovery" +lookUp());
+		LOGGER.info("lookup in do discovery" +lookUp());
 
 		for(String address : addresses) {
 
 			handleAlwaysConnected();
-			if(mapConnectedAddresses.containsKey(address)) continue;
+			if(mapConnectedAddresses.containsKey(address)) {
+				LOGGER.info("CONTINUE");
+				continue;
+			}
 
 			requestIndication.setBase(address);
 			try {
@@ -139,33 +144,52 @@ public class DeviceDiscovery implements DiscoveryService{
 				responseConfirm = clientService.sendRequest(requestIndication);
 				if(responseConfirm.getStatusCode() == null ) continue;
 				LOGGER.info("getStatusCode "+responseConfirm.getStatusCode());
-				if(responseConfirm.getStatusCode().equals(StatusCode.STATUS_OK) || 
-						responseConfirm.getStatusCode().equals(StatusCode.STATUS_ACCEPTED)) {
+				// TODO 
+				if(true || responseConfirm.getStatusCode().equals(StatusCode.STATUS_OK) || 
+						responseConfirm.getStatusCode().equals(StatusCode.STATUS_ACCEPTED) ) {
 					String representation = responseConfirm.getRepresentation();
 
-					Device device =  Parser.parseXmlDevice(representation);
+					// TODO
+					//Device device =  Parser.parseXmlDevice(representation);
+					//DeviceDescription deviceDescription  = Parser.parseXmlToDeviceDescription(representation);
+					DeviceDescription deviceDescription = new DeviceDescription("ev3", "http://192.168.0.02:/infos/", "ip");
+					Device device = new Device(deviceDescription);
+					LOGGER.info("mapConnectedAddresses in doDiscorvery "+mapConnectedAddresses);
+					LOGGER.info("device in doDiscorvery "+device);
+					LOGGER.info("representation in doDiscorvery "+representation);
 					deviceService.addDevice(device);
 					deviceService.sendDeviceToNSCL(device, clientService);
-					mapConnectedAddresses.put(address, device.getId());
 
-//					requestIndication.setRepresentation(device.toObixFormat());
-//
-//					requestIndication.setMethod(Constants.METHOD_CREATE);
-//					requestIndication.setBase("http://127.0.0.1:8080/om2m");
-//					requestIndication.setTargetID("/nscl/applications/CIMANSCL/devices");
-//					requestIndication.setRequestingEntity(ADMIN_REQUESTING_ENTITY);
-//
-//					
-//					// Envoi des infos du device au controleur du nscl
-//					 
-//					responseConfirm = clientService.sendRequest(requestIndication);
+					mapConnectedAddresses.put(address, deviceDescription.getId());
 
-					
-				//	new CIMAInternalCommunication().sendInfos(device.getContactInfo().getCloud_port()+"-8080-192.168.0.2");
+
+					//					requestIndication.setRepresentation(device.toObixFormat());
+					//
+					//					requestIndication.setMethod(Constants.METHOD_CREATE);
+					//					requestIndication.setBase("http://127.0.0.1:8080/om2m");
+					//					requestIndication.setTargetID("/nscl/applications/CIMANSCL/devices");
+					//					requestIndication.setRequestingEntity(ADMIN_REQUESTING_ENTITY);
+					//
+					//					
+					//					// Envoi des infos du device au controleur du nscl
+					//					 
+					//					responseConfirm = clientService.sendRequest(requestIndication);
+
+
+					//	new CIMAInternalCommunication().sendInfos(device.getContactInfo().getCloud_port()+"-8080-192.168.0.2");
 				}
 				else {
-					Device device = new Device(address, Constants.MOD_IP);
+					DeviceDescription deviceDescription = new DeviceDescription();
+					deviceDescription.setModeConnection(Constants.MOD_IP);
+					deviceDescription.setUri(address);
+					Device device = new Device(deviceDescription);
+					//	Device device = new Device(address, Constants.MOD_IP);
 					deviceService.addUnknownDevice(device);
+					mapConnectedAddresses.put(address, deviceDescription.getId());
+					if(mapConnectedAddresses.containsKey(address)) {
+						LOGGER.info("CONTINUE FOR UNKNOWN DEVICE");
+						continue;
+					}
 				}
 				LOGGER.info(responseConfirm);
 			}catch(Exception e) {
