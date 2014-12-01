@@ -34,7 +34,6 @@ import fr.liris.cima.nscl.commons.Protocol;
 import fr.liris.cima.nscl.commons.Capability;
 import fr.liris.cima.nscl.commons.Device;
 import fr.liris.cima.nscl.commons.DeviceDescription;
-import fr.liris.cima.nscl.commons.Device;
 import fr.liris.cima.nscl.commons.ContactInfo;
 import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
 
@@ -390,7 +389,7 @@ public class Parser {
 		Obj capabilityObj = ObixDecoder.fromString(obixFormat);
 
 		Obj protocolObj = capabilityObj.get("protocol");
-		protocol.setName(protocolObj.get("protocoleName").getStr());
+		protocol.setName(protocolObj.get("protocolName").getStr());
 		protocol.addParameter("method", protocolObj.get("method").getStr());
 		protocol.addParameter("port", protocolObj.get("port").getStr());
 		protocol.addParameter("uri", protocolObj.get("uri").getStr());
@@ -587,9 +586,9 @@ public class Parser {
 		// System.out.println(parseXmlToGatewayInfo(representation));
 		// parseObix();
 		System.out.println("json depart : " + jsconCapa);
-		String obixCapa = ObixEncoder.toString(parseJSONToObixCapability(jsconCapa));
-		System.out.println("OBIX capa : \n" + obixCapa);
-		System.out.println("JSON capa : \n" + parseObixToJSONStringCapability(obixCapa));
+//		String obixCapa = ObixEncoder.toString(parseJSONToObixCapability(jsconCapa));
+//		System.out.println("OBIX capa : \n" + obixCapa);
+//		System.out.println("JSON capa : \n" + parseObixToJSONStringCapability(obixCapa));
 		
 		
 		String obixFormat = "<obj>"+

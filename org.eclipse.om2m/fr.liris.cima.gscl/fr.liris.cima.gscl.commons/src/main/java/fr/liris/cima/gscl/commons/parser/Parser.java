@@ -354,7 +354,9 @@ public class Parser {
 				"</obj>";
 
 		//System.out.println(obixFormat);
-		parseObixToDevice(obixFormat);
+		Device device = parseObixToDevice(obixFormat);
+		System.out.println(parseXmlToDeviceDescription(representation));
+		System.out.println(Encoder.encodeDeviceToObix(device));
 
 
 

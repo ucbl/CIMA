@@ -75,7 +75,6 @@ public class DeviceDiscovery implements DiscoveryService{
 						Thread.sleep(1000);
 						listIpAddress = lookUp();
 						i++;
-						LOGGER.info("i#####################"+i+"######################address"+address);
 						LOGGER.info(listIpAddress.contains(address));
 					} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -130,7 +129,6 @@ public class DeviceDiscovery implements DiscoveryService{
 		LOGGER.info("lookup in do discovery" +lookUp());
 
 		for(String address : addresses) {
-
 			handleAlwaysConnected();
 			if(mapConnectedAddresses.containsKey(address)) {
 				LOGGER.info("CONTINUE");
@@ -145,14 +143,13 @@ public class DeviceDiscovery implements DiscoveryService{
 				if(responseConfirm.getStatusCode() == null ) continue;
 				LOGGER.info("getStatusCode "+responseConfirm.getStatusCode());
 				// TODO 
-				if(true || responseConfirm.getStatusCode().equals(StatusCode.STATUS_OK) || 
+				if(responseConfirm.getStatusCode().equals(StatusCode.STATUS_OK) || 
 						responseConfirm.getStatusCode().equals(StatusCode.STATUS_ACCEPTED) ) {
 					String representation = responseConfirm.getRepresentation();
 
 					// TODO
-					//Device device =  Parser.parseXmlDevice(representation);
-					//DeviceDescription deviceDescription  = Parser.parseXmlToDeviceDescription(representation);
-					DeviceDescription deviceDescription = new DeviceDescription("ev3", "http://192.168.0.02:/infos/", "ip");
+					DeviceDescription deviceDescription  = Parser.parseXmlToDeviceDescription(representation);
+				//	DeviceDescription deviceDescription = new DeviceDescription("ev3", "http://192.168.0.02:/infos/", "ip");
 					Device device = new Device(deviceDescription);
 					LOGGER.info("mapConnectedAddresses in doDiscorvery "+mapConnectedAddresses);
 					LOGGER.info("device in doDiscorvery "+device);
@@ -163,19 +160,7 @@ public class DeviceDiscovery implements DiscoveryService{
 					mapConnectedAddresses.put(address, deviceDescription.getId());
 
 
-					//					requestIndication.setRepresentation(device.toObixFormat());
-					//
-					//					requestIndication.setMethod(Constants.METHOD_CREATE);
-					//					requestIndication.setBase("http://127.0.0.1:8080/om2m");
-					//					requestIndication.setTargetID("/nscl/applications/CIMANSCL/devices");
-					//					requestIndication.setRequestingEntity(ADMIN_REQUESTING_ENTITY);
-					//
-					//					
-					//					// Envoi des infos du device au controleur du nscl
-					//					 
-					//					responseConfirm = clientService.sendRequest(requestIndication);
-
-
+					// Envoi des infos du device a la partie C de CIMA
 					//	new CIMAInternalCommunication().sendInfos(device.getContactInfo().getCloud_port()+"-8080-192.168.0.2");
 				}
 				else {
@@ -183,7 +168,6 @@ public class DeviceDiscovery implements DiscoveryService{
 					deviceDescription.setModeConnection(Constants.MOD_IP);
 					deviceDescription.setUri(address);
 					Device device = new Device(deviceDescription);
-					//	Device device = new Device(address, Constants.MOD_IP);
 					deviceService.addUnknownDevice(device);
 					mapConnectedAddresses.put(address, deviceDescription.getId());
 					if(mapConnectedAddresses.containsKey(address)) {

@@ -98,7 +98,6 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 	@Override
 	public void addDevice(Device device) {
 		devices.add(device);
-		LOGGER.info("Add device ..."+ device.getDeviceDescription().getId());
 	}
 
 	@Override
@@ -116,9 +115,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 	@Override
 	public void start() {
 		LOGGER.info("Devices waiting for attachement..");
-		populate();
 		createManagerResources("CIMA", "devices");
-	//	createManagerResources("manualconfig", "manual");
 	}
 	
 	
@@ -335,7 +332,6 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		Obj obj = new Obj();
 		
 		for(Capability capability : capabilities) {
-			//obixCapabilities.add(capability.toObj());
 			obixCapabilities.add(Encoder.encodeCapabilityToObixObj(capability));
 		}
 		obj.add(obixCapabilities);
@@ -368,7 +364,6 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 			
 		}
 		obj.add(obixDevices);
-		//System.out.println(obixDevices.size());
 		return ObixEncoder.toString(obj);
 	}
 	
@@ -407,7 +402,6 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		Device device = Parser.parseObixToDevice(obixFormat);
 		unknownDevices = new ArrayList<>();
 		unknownDevices.add(device);
-	//	System.out.println(device.toIntrinsequeObixFormat());
 		System.out.println(unknownDevicesToObixFormat1());
 		
 
