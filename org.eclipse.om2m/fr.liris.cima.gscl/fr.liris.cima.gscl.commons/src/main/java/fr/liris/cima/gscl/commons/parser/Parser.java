@@ -81,8 +81,8 @@ public class Parser {
 		return null;
 	}
 
-	public static Device parseXmlDevice(String representation) {
-		Device device =  new Device();
+	public static DeviceDescription parseXmlToDeviceDescription(String representation) {
+		DeviceDescription deviceDescription = new DeviceDescription();
 
 		try {
 			SAXBuilder sb  = new SAXBuilder();
@@ -91,8 +91,6 @@ public class Parser {
 			String uri ="";
 			String modeConnection="";
 			String name = "";
-
-			Date dateConnection = null;
 
 
 			List<Element> childrenElement = root.getChildren();
@@ -106,23 +104,19 @@ public class Parser {
 				if(element.getName().equals("name")) {
 					name = element.getText();
 				}
-
-				if(element.getName().equals("dateConnection")) {
-					dateConnection = Utils.StrToDate(element.getText());
-				}
 			}
-			device.setUri(uri);
-			device.setModeConnection(modeConnection);
-			device.setName(name);
-			device.setDateConnection(dateConnection);
+			deviceDescription.setUri(uri);
+			deviceDescription.setModeConnection(modeConnection);
+			deviceDescription.setName(name);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return device;
+		return deviceDescription;
 	}
 
+	/**
 	public static Device parseObixToDevice(String obixFormat) {
 
 		Device device = null;
@@ -157,9 +151,11 @@ public class Parser {
 					//	System.out.println( xElem.attrValue(1));
 				}
 
-				device = new Device(name, uri, modeConnection, dateConnection, new ContactInfo());
-				if(id != null)
-					device.setId(id);
+				DeviceDescription deviceDescription = new DeviceDescription(name, uri, modeConnection);
+				device = new Device(deviceDescription);
+				if(deviceDescription.getId() != null) {
+					deviceDescription.setId(id);
+				}
 
 				if(xElem.get("name").equals("capabilities")) {
 					//System.out.println("OK");
@@ -191,7 +187,6 @@ public class Parser {
 						device.addCapability(capability);
 					}
 				}
-
 			}
 
 		}catch(Exception e) {
@@ -200,43 +195,84 @@ public class Parser {
 
 		return device;
 	}
-
+	 */
 	public static Capability parseObixToCapability(String obixFormat) {
 
 		Device device = null;
 		String id = "",  name = "", uri = "",  modeConnection=""; 
-		
+
 		Protocol protocol = new Protocol();
 		Date dateConnection = null;
 
 		Obj capabilityObj = ObixDecoder.fromString(obixFormat);
-		
-		System.out.println("Eleme = "+capabilityObj.get("protocol"));
+
 		Obj protocolObj = capabilityObj.get("protocol");
 		protocol.setName(protocolObj.get("protocoleName").getStr());
 		protocol.addParameter("method", protocolObj.get("method").getStr());
 		protocol.addParameter("port", protocolObj.get("port").getStr());
 		protocol.addParameter("uri", protocolObj.get("uri").getStr());
-		
+
 		Obj [] objs = capabilityObj.get("keywords").list();
 		List<String> keywords = new ArrayList<>();
 		for(Obj o : objs){
 			keywords.add(o.getStr());
 		}
-		
+
 		name = capabilityObj.get("id").getStr();
-		
+
 		return new Capability(name, protocol, keywords);
-
-
 	}
 
-	public static Device ParseJsonToDevice(String jsonFormat) {
-		Device device = new Device("ev3", "http://192.168.0.2", "http", new ContactInfo());
-		device.setId("ev3");
+	public static Device parseObixToDevice(String obixFormat) {
 
-		return device;
+		Device device;
+		List<Capability> capabilities = new ArrayList<>();
+		String id = null, name = null, uri = null, modeConnection = null, dateConnection = null;
+
+		Obj objRoot = ObixDecoder.fromString(obixFormat);
+		Obj ObjDevice = objRoot.get("device");
+
+		id = ObjDevice.get("id").getStr();
+		name = ObjDevice.get("name").getStr();
+		uri = ObjDevice.get("uri").getStr();
+		modeConnection = ObjDevice.get("modeConnection").getStr();
+		dateConnection  = ObjDevice.get("dateConnection").getStr();
+
+		DeviceDescription deviceDescription = new DeviceDescription(name, uri, modeConnection);
+		if(id != null) {
+			deviceDescription.setId(id);
+		}
+		if(dateConnection != null) {
+			deviceDescription.setDateConnection(dateConnection);
+		}
+		deviceDescription.setName(name);
+		deviceDescription.setUri(uri);
+		deviceDescription.setModeConnection(modeConnection);
+
+		device = new Device(deviceDescription);
+
+		obix.List obixCapabilities = (obix.List)ObjDevice.get("capabilities");
+
+		if(obixCapabilities != null) {
+			for(Obj objCapability : obixCapabilities.list()) {
+				Capability capability = parseObixToCapability(ObixEncoder.toString(objCapability));
+				if(capability != null) {
+					device.addCapability(capability);
+				}
+			}
+		}
+		
+		Obj objContactInfo = ObjDevice.get("contactInfo");
+		if(objContactInfo != null) {
+			System.out.println(objContactInfo.get("cloud_port"));
+			long cloudPort = objContactInfo.get("cloud_port").getInt();
+			ContactInfo contactInfo = new ContactInfo(id, (int)cloudPort);
+			device.setContactInfo(contactInfo);
+		}
+		
+		return device;	
 	}
+
 
 	public static String parseXmlDeviceGateway(String representation) {
 		try {
@@ -259,36 +295,6 @@ public class Parser {
 
 	}
 
-	public static Device parseObixToDevice1(String obixFormat) throws Exception {
-
-		try {
-			XParser parser = XParser.make(obixFormat);
-			String id = null, url = null, protocol = null;
-
-			XElem root = parser.parse();
-			XElem deviceElem = root.elem(0);
-
-			/**
-			 * Parse device part
-			 */
-			for(XElem xElem : deviceElem.elems()){
-				if(xElem.attrValue(0).equals("modeConnection")) {
-					protocol = xElem.attrValue(1);
-				}
-				if(xElem.attrValue(0).equals("uri")) {
-					url = xElem.attrValue(1);
-				}
-
-			}
-			Device device = new Device(url, protocol);
-			System.out.println(device);
-			return device;
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-
-	}
 
 	public static void main(String args[]) throws Exception {
 		String representation = "<device>"+
@@ -321,6 +327,10 @@ public class Parser {
 				"<str name=\"port\" val=\"8080\"/>"+
 				"<str name=\"uri\" val=\"uri\"/>"+
 				"</obj>"+
+				"<list name=\"keywords\">"+
+				"<str val=\"ev3\" />"+
+				"<str val=\"back\" />"+
+				"</list>"+
 				"</obj>"+
 				"<obj>"+
 				"<str name=\"id\" val=\"phone\"/>"+
@@ -330,13 +340,26 @@ public class Parser {
 				"<str name=\"port\" val=\"8080\"/>"+
 				"<str name=\"uri\" val=\"uri\"/>"+
 				"</obj>"+
+				"<list name=\"keywords\">"+
+				"<str val=\"ev3\" />"+
+				"<str val=\"back\" />"+
+				"</list>"+
 				"</obj>"+
-				"</list>"+                
+				"</list>"+  
+				"<obj name=\"contactInfo\">"+
+			     " <str name=\"deviceId\" val=\"DEVICE_0\"/>"+
+			     " <int name=\"cloud_port\" val=\"14948\"/> " +
+			    "</obj>" +
 				"</obj>"+
 				"</obj>";
 
+		//System.out.println(obixFormat);
+		parseObixToDevice(obixFormat);
 
-		String capabilityFormat = "<obj name=\"capability\">"+
+
+
+
+		String capabilityFormat = "<obj>"+
 				"<str name=\"id\" val=\"ev3Back\"/>"+
 				"<obj name=\"protocol\">"+
 				"<str name=\"protocoleName\" val=\"http\"/>"+
@@ -349,27 +372,30 @@ public class Parser {
 				"<str val=\"back\" />"+
 				"</list>"+
 				"</obj>";
-
-		System.out.println(parseObixToCapability(capabilityFormat).toString());
-		System.out.println(parseObixToCapability(capabilityFormat).toObixFormat());
+		//	System.out.println(capabilityFormat);
+		//		System.out.println(parseObixToCapability(capabilityFormat).toString());
+		//
+		//	
+		//		System.out.println(parseObixToCapability(capabilityFormat).toObixFormat());
+		//
+		//
 
 
 		//	System.out.println(obixFormat);
 
-//		Device device2 = parseObixToDevice(obixFormat);
-		//	System.out.println(device2);
+		//	Device device2 = parseObixToDevice(obixFormat);
+		//System.out.println(device2);
 		//System.out.println(device2.toIntrinsequeObixFormat());
 		//		System.out.println( device2.toIntrinsequeObixFormat().equals(obixFormat));
 
 
-//		obixFormat = device2.toIntrinsequeObixFormat();
+		//		obixFormat = device2.toIntrinsequeObixFormat();
 
-//		Device	device3 = parseObixToDevice(obixFormat);
+		//		Device	device3 = parseObixToDevice(obixFormat);
 
 
 
 		//System.out.println(device2.getCapabilities());
-
 
 	}
 }

@@ -1,4 +1,4 @@
-package fr.liris.cima.gscl.commons;
+package fr.liris.cima.nscl.commons;
 
 
 import java.util.ArrayList;
@@ -19,16 +19,20 @@ import obix.io.ObixEncoder;
  */
 public class Capability {
 
+	/** The name of the capability*/
 	private String name;
+	/** Protocol for getting, invoking capability */
 	private Protocol protocol;
+
+	/** The key words associated  */
 	private List<String> keywords;
- 
+
 	public Capability(String name, Protocol protocol, List<String> keywords) {
 		this.name = name;
 		this.protocol = protocol;
 		this.keywords = keywords;
 	}
-	
+
 	public  Capability(String name) {
 		this.name = name;
 	}
@@ -47,11 +51,7 @@ public class Capability {
 		this.name = name;
 	}
 
-
-	
 	public Op toObix(String sclId, String appId, String apocPath) {
-
-		// OP Hello
 		Op op = new Op();
 		op.setName(this.name);
 		op.setHref(new Uri(sclId+"/"+"applications/"+appId+"/"+apocPath+"/"+this.name));
@@ -61,30 +61,7 @@ public class Capability {
 
 		return op;
 	}
-
-//	public String toObixFormat() {
-//		return ObixEncoder.toString(this.toObj());
-//	}
-//	
-//	public Obj toObj() {
-//		Obj obj = new Obj();
-//
-//		obj.add(new Str("id",name));
-//		obj.add(protocol.toObj());
-//		obix.List keywords = new obix.List("keywords");
-//		obix.Str sK = null;
-//		for(String k : this.keywords){
-//			sK = new Str(k);
-//			keywords.add(sK);
-//		}
-//		obj.add(keywords);
-//		return obj;
-//	}
 	
-	public String toString() {
-		return "capabilities (" + name + ", "  + protocol + ", " + keywords + ")";
-	}
-
 	public Protocol getProtocol() {
 		return protocol;
 	}
@@ -92,35 +69,27 @@ public class Capability {
 	public void setProtocol(Protocol protocol) {
 		this.protocol = protocol;
 	}	
-	
+
 	public List<String> getKeywords(){
 		return this.keywords;
 	}
-	
+
 	public void addKeyword(String keyword){
+		if(this.keywords == null) {
+			this.keywords = new ArrayList<String>();
+		}
 		this.keywords.add(keyword);
 	}
-	
+
 	public void addKeyword(List<String> keywords){
 		this.keywords.addAll(keywords);
 	}
-	
+
 	public void setKeywords(List<String>keywords){
 		this.keywords = keywords;
 	}
 	
-	public static void main(String args[]) {
-		Capability capability = new Capability("ev3");
-		Protocol protocol = new Protocol("http");
-		protocol.addParameter("method", "post");
-		capability.setProtocol(protocol);
-		List<String> k = new ArrayList<>();
-		k.add("ev3");
-		k.add("back");
-		k.add("robot");
-		capability.setKeywords(k);
-
-//		System.out.println(ObixEncoder.toString(capability.toObj()));
-	//	System.out.println(capability.toObixFormat());
+	public String toString() {
+		return "capabilities (" + name + ", "  + protocol + ", " + keywords + ")";
 	}
 }

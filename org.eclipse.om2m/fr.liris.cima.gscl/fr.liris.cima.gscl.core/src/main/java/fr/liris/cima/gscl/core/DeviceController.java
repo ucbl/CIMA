@@ -16,6 +16,8 @@ import org.eclipse.om2m.ipu.service.IpuService;
 
 import fr.liris.cima.gscl.commons.Capability;
 import fr.liris.cima.gscl.commons.Device;
+import fr.liris.cima.gscl.commons.DeviceDescription;
+import fr.liris.cima.gscl.commons.Encoder;
 import fr.liris.cima.gscl.commons.constants.Constants;
 import fr.liris.cima.gscl.commons.parser.Parser;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
@@ -112,12 +114,12 @@ public class DeviceController implements IpuService{
 
 			if(device != null) {
 				LOGGER.info("*********Constant INFO = = = ****"+Constants.PATH_CAPABILITIES);
-				String uri = device.getUri();
+				String uri = device.getDeviceDescription().getUri();
 				requestIndication.setBase(uri);
 				requestIndication.setTargetID("capabilities");
 				//requestIndication.setTargetID("/"+Constants.PATH_CAPABILITIES);
 				requestIndication.setMethod(Constants.METHOD_RETRIEVE);
-				requestIndication.setProtocol(device.getModeConnection());
+				requestIndication.setProtocol(device.getDeviceDescription().getModeConnection());
 				LOGGER.info("send request for getting capabilities");
 				ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
 				responseConfirm.getRepresentation();
@@ -145,7 +147,8 @@ public class DeviceController implements IpuService{
 				LOGGER.info("******** /manualconfiguration/device/<id d'un device>/capability***********");
 				String deviceId = infos[infos.length - 2];
 				List<Capability> capabilities = managerImpl.getUnknownDeviceCapabilities(deviceId);
-				String representation = managerImpl.capabilitiesToObixFormat(capabilities);
+				//String representation = managerImpl.capabilitiesToObixFormat(capabilities);
+				String representation = Encoder.encodeCapabilitiesToObix(capabilities);
 
 				ResponseConfirm confirm = new ResponseConfirm(StatusCode.STATUS_OK, representation);
 			}
@@ -158,7 +161,8 @@ public class DeviceController implements IpuService{
 				String capabilityId = infos[infos.length - 1];
 				String representation; 
 				Capability capability = managerImpl.getCapabilityToUnknownDevice(deviceId, capabilityId);
-				representation = capability.toObixFormat();
+				//representation = capability.toObixFormat();
+				representation = Encoder.encodeCapabilityToObix(capability);
 
 				return new ResponseConfirm(StatusCode.STATUS_OK, representation);
 
@@ -180,7 +184,8 @@ public class DeviceController implements IpuService{
 			List<Capability> fCapabilities = this.capabilityManager.getCapabilities(filter);
 			obix.List lObix = new obix.List("filter");
 			for(Capability c : fCapabilities){
-				lObix.add(c.toObj());
+				//lObix.add(c.toObj());
+				lObix.add(Encoder.encodeCapabilityToObixObj(c));
 			}
 			String representation = ObixEncoder.toString(lObix);
 			return new ResponseConfirm(StatusCode.STATUS_OK, representation);
@@ -278,11 +283,11 @@ public class DeviceController implements IpuService{
 		String representation = requestIndication.getRepresentation();
 
 		if(lastInfo.equals(Device.APOCPATH)) {
-			Device device = Parser.parseXmlDevice(representation);
-
-			if(device != null) {
+			DeviceDescription deviceDescription = Parser.parseXmlToDeviceDescription(representation);
+			if(deviceDescription != null) {
+				Device device = new Device(deviceDescription);
 				LOGGER.info("***DEVICE TO OBIX FORMAT***");
-				LOGGER.info(device.toObixFormat());
+				//LOGGER.info(device.toObixFormat());
 				managerImpl.addDevice(device);
 			}
 		}
@@ -303,10 +308,10 @@ public class DeviceController implements IpuService{
 
 			Device device = managerImpl.getDevice(deviceId);
 			if(device != null) {
-				requestIndication.setBase(device.getUri());
+				requestIndication.setBase(device.getDeviceDescription().getUri());
 				requestIndication.setTargetID("");
 				//	requestIndication.setTargetID("/"+Constants.PATH_CAPABILITIES+"/"+Constants.PATH_INVOKE+"/"+capabilityName);
-				requestIndication.setProtocol(device.getModeConnection());
+				requestIndication.setProtocol(device.getDeviceDescription().getModeConnection());
 				LOGGER.info("send request for executing capabilities");
 				ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
 				//	ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);

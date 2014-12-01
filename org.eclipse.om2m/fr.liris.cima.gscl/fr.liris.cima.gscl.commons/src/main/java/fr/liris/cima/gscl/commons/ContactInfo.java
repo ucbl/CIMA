@@ -42,27 +42,27 @@ public class ContactInfo {
 		this.cloud_port = cloud_port;
 	}
 	
-	public String toBixFormat() {
-		Obj obj = new Obj();
-		obj.add(new Str("deviceId",deviceId));
-		obj.add(new Int("cloud_port", cloud_port));
-
-		return ObixEncoder.toString(obj);
-	}
-	
-	public Obj toBix() {
-		Obj obj = new Obj("contactInfo");
-		obj.add(new Str("deviceId",deviceId));
-		obj.add(new Int("cloud_port", cloud_port));
-
-		return obj;
-	}
+//	public String toBixFormat() {
+//		Obj obj = new Obj();
+//		obj.add(new Str("deviceId",deviceId));
+//		obj.add(new Int("cloud_port", cloud_port));
+//
+//		return ObixEncoder.toString(obj);
+//	}
+//	
+//	public Obj toBix() {
+//		Obj obj = new Obj("contactInfo");
+//		obj.add(new Str("deviceId",deviceId));
+//		obj.add(new Int("cloud_port", cloud_port));
+//
+//		return obj;
+//	}
 	
 	public String toString() {
 		return "ContactInfo("+deviceId + ", " + cloud_port + ")";
 	}
 	
 	public static void main(String args[]) {
-		System.out.println(new ContactInfo("DEVICE_0", 6001).toBixFormat());
+		//System.out.println(new ContactInfo("DEVICE_0", 6001).toBixFormat());
 	}
 }
