@@ -146,6 +146,7 @@ public class InfrastructureController implements IpuService{
                   
 					Device device = Parser.parseObixToDevice(representation);
 					managerImpl.addDevice(device);
+					LOGGER.info("device = " + device);
 					
 					for(ClientSubscriber subscriber : managerImpl.getSubscribers()){
 						requestIndication.setBase(subscriber.getUrl());
@@ -164,7 +165,6 @@ public class InfrastructureController implements IpuService{
 	private void notifyAllSubscribers(RequestIndication requestIndication, Device device) {
 		for(ClientSubscriber subscriber : managerImpl.getSubscribers()){
 			requestIndication.setBase(subscriber.getUrl());
-		//	requestIndication.setRepresentation(JsonEncoder.encodeContactInfo(device));
 			requestIndication.setRepresentation(JsonEncoder.contactInfoToJSONStr(device.getContactInfo()));
 			requestIndication.setTargetID("");
 			

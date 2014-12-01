@@ -67,7 +67,7 @@ public class Encoder {
 		objDevice.add(new Str("modeConnection", deviceDescription.getModeConnection()));
 		objDevice.add(new Str("dateConnection", deviceDescription.getDateConnection()));
 
-		obix.List obixCapabilities = new obix.List("capabilitities");
+		obix.List obixCapabilities = new obix.List("capabilities");
 		for(Capability capability : device.getCapabilities()) {
 			obixCapabilities.add(encodeCapabilityToObixObj(capability));
 		}
@@ -151,6 +151,7 @@ public class Encoder {
 	
 	public static Obj encodeProtocolObixObj(Protocol protocol) {
 		Obj objProtocol = new Obj("protocol");
+		objProtocol.add(new Str("protocolName", protocol.getName()));
 		for(Entry<String, String> entry : protocol.getParameters().entrySet()) {
 			objProtocol.add(new Str(entry.getKey(),entry.getValue()));
 		}
