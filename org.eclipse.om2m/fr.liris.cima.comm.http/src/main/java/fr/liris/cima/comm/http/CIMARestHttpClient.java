@@ -85,7 +85,7 @@ public class CIMARestHttpClient implements RestClientService{
 					responseConfirm.setResourceURI(httpMethod.getResponseHeader("Location").getValue());
 				}
 			}
-			LOGGER.debug("Http Client > "+responseConfirm);
+			LOGGER.info("Http Client > "+responseConfirm);
 
 		}catch(IOException e){
 			LOGGER.error(url+ " Not Found"+responseConfirm,e);

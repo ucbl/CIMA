@@ -439,16 +439,19 @@ public class Parser {
 		SAXBuilder sb = new SAXBuilder();
 		Document doc;
 		String url = null;
+		String port = null;
 		try {
 			doc = sb.build(new StringReader(representation));
 			Element root = doc.getRootElement();
 			Element urlElement = root.getChild("url");
+			Element portElment = root.getChild("port");
 			url = urlElement.getValue();
+			port = portElment.getValue();
 		} catch (JDOMException | IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(url);
-		return new ClientSubscriber(url);
+		System.out.println(url+":"+port);
+		return new ClientSubscriber(url,port);
 	}
 
 	public static void main(String args[]) throws Exception {

@@ -13,7 +13,7 @@ public static String APOCPATH = "devices";
 	public static String REQENTITY = System.getProperty("org.eclipse.om2m.adminRequestingEntity","");
 	public final static String SCLID = System.getProperty("org.eclipse.om2m.sclBaseId","");
 	
-	public static final String APOCPATH_SUBSCRIBERS = "devices/subscribers";
+	public static final String APOCPATH_SUBSCRIBERS = "subscribers";
 	public static final String APOCPATH_DEVICES = "devices";
 	public static final String CIMA_ADDRESS = "localhost";
 }

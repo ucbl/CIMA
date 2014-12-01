@@ -103,7 +103,7 @@ public class Parser {
     }
     
     private void spaceMapper(){
-         spacePresent.sort(null);//trie croissant
+//         spacePresent.sort(null);//trie croissant
          int i = 0;
          while(i<spacePresent.size())
          {

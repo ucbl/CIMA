@@ -132,7 +132,7 @@ public class InfrastructureController implements IpuService{
 						LOGGER.info("A client Subscriber added succesfully ");
 						// send all information to this subscriber
 						List<Device> devices = managerImpl.getDevices();
-						requestIndication.setBase(subscriber.getUrl());
+						requestIndication.setBase(subscriber.getUrl()+":"+subscriber.getPort());
 						requestIndication.setTargetID("");
 						requestIndication.setRepresentation(JsonEncoder.allContactInfoToJSONStr(devices));
 						LOGGER.info("Sending all devices contact info to new subscriber");

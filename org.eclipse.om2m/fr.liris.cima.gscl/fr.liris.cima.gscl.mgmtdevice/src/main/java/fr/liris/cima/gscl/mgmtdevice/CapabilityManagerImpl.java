@@ -1,6 +1,7 @@
 package fr.liris.cima.gscl.mgmtdevice;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map;
 import org.eclipse.om2m.core.service.SclService;
 
 import fr.liris.cima.gscl.commons.Capability;
+import fr.liris.cima.gscl.commons.Protocol;
 import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
 
 public class CapabilityManagerImpl implements CapabilityManager {
@@ -53,8 +55,83 @@ public class CapabilityManagerImpl implements CapabilityManager {
 
 	@Override
 	public List<Capability> getCapabilities(String filter) {
-		// TODO Filter
+		List<Capability> filtredCapabilities = new ArrayList<>();
+		Collection<Capability> capabilities = this.capabilities.values();
+		String [] filters = filter.split("\\+");
+		List<String> capabilityKeywords = new ArrayList<>();
+		boolean isFiltred = true;
+		for(Capability c : capabilities){
+			//init keywords list
+			capabilityKeywords.add(c.getName());
+			capabilityKeywords.addAll(c.getKeywords());
+			
+			for(String f : filters){
+				// if a keyword filter is not in the capability keywords then the capability is not filtred
+				if(!capabilityKeywords.contains(f)){
+					isFiltred = false;
+				}
+			}
+			if(isFiltred){
+				filtredCapabilities.add(c);
+			}
+			// reinit
+			capabilityKeywords.clear();
+			isFiltred = true;
+		}
 		
-		return new ArrayList<Capability>();
+		return filtredCapabilities;
+	}
+	
+	public static void main(String [] args){
+		CapabilityManagerImpl capabilityManagerImpl = new CapabilityManagerImpl();
+		Protocol p = new Protocol("http");
+		List<String> l = new ArrayList<>();
+		l.add("k1");
+		l.add("k2");
+		l.add("k3");
+		Capability c = new Capability("test1", p, l);
+		capabilityManagerImpl.add(c);
+		l = new ArrayList<>();
+		l.add("k1");
+		l.add("k2");
+		l.add("k3");
+		l.add("k4");
+		c = new Capability("test2", p, l);
+		capabilityManagerImpl.add(c);
+		
+		List<Capability> filtredCapa = capabilityManagerImpl.getCapabilities("k1");
+		System.out.println("filtre sur k1");
+		System.out.println("  nombre de resultats : " + filtredCapa.size() + "/2");
+		for(Capability capa : filtredCapa){
+			System.out.println("  " + capa.getName());
+		}
+		
+		filtredCapa = capabilityManagerImpl.getCapabilities("k1+k2+k3");
+		System.out.println("filtre sur k1+k2+k3");
+		System.out.println("  nombre de resultats : " + filtredCapa.size() + "/2");
+		for(Capability capa : filtredCapa){
+			System.out.println("  " + capa.getName());
+		}
+
+		filtredCapa = capabilityManagerImpl.getCapabilities("k1+k2+k3+k4");
+		System.out.println("filtre sur k1+k2+k3+k4");
+		System.out.println("  nombre de resultats : " + filtredCapa.size() + "/1");
+		for(Capability capa : filtredCapa){
+			System.out.println("  " + capa.getName());
+		}
+		
+		filtredCapa = capabilityManagerImpl.getCapabilities("kapa");
+		System.out.println("filtre sur kapa");
+		System.out.println("  nombre de resultats : " + filtredCapa.size() + "/0");
+		for(Capability capa : filtredCapa){
+			System.out.println("  " + capa.getName());
+		}
+		
+		filtredCapa = capabilityManagerImpl.getCapabilities("k1+k2+k3+kapa");
+		System.out.println("filtre sur k1+k2+k3+kapa");
+		System.out.println("  nombre de resultats : " + filtredCapa.size() + "/0");
+		for(Capability capa : filtredCapa){
+			System.out.println("  " + capa.getName());
+		}
 	}
 }
