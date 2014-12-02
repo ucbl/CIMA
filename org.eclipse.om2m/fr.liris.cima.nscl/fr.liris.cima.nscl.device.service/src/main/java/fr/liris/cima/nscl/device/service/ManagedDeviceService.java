@@ -54,8 +54,9 @@ public interface ManagedDeviceService {
 	/**
 	 * Add a subscriber
 	 * @param subscriber - The subscriber to add.
+	 * @return 0 if the subscriber added successfully, 1 if the subscriber already exist, 2 if a problem is encountered
 	 */
-	public boolean addSubscriber(ClientSubscriber subscriber);
+	public int addSubscriber(ClientSubscriber subscriber);
 	/**
 	 * Remove a subscriber
 	 * @param subscriber - The subscriber to remove.

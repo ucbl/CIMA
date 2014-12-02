@@ -127,9 +127,10 @@ public class InfrastructureController implements IpuService{
 				
 				if(infos[length - 1].equals(Constants.APOCPATH_SUBSCRIBERS)){
 					ClientSubscriber subscriber = Parser.parseXmlToClientSubscriber(representation);
-					boolean success = managerImpl.addSubscriber(subscriber);
-					if(success) {
-						LOGGER.info("A client Subscriber added succesfully ");
+					int success = managerImpl.addSubscriber(subscriber);
+					if(success == 0 || success == 1) {
+						if(success == 0 ) LOGGER.info("A client Subscriber added succesfully ");
+						else LOGGER.info("The client Subscriber already exist");
 						// send all information to this subscriber
 						List<Device> devices = managerImpl.getDevices();
 						requestIndication.setBase(subscriber.getUrl()+":"+subscriber.getPort());

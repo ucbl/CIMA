@@ -108,8 +108,10 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 	}
 	
 	@Override
-	public  boolean addSubscriber(ClientSubscriber subscriber) {
-		return subscribers.add(subscriber);
+	public  int addSubscriber(ClientSubscriber subscriber) {
+		if(subscribers.contains(subscriber)) return 1;
+		else if(subscribers.add(subscriber)) return 0;
+		else return 2;
 	}
 	
 	@Override
