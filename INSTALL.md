@@ -26,9 +26,9 @@ the following command:
 
 Une fois compilé vous devez configuré CIMA pour le NSCL et le GSCL comme suit : 
  * NSCL 
-		modifier à vous besoins le fichier org.eclipse.om2m.site.nscl/target/products/nscl/linux/gtk/x86_64/configuration/config.ini
+		modifier à vos besoins le fichier org.eclipse.om2m.site.nscl/target/products/nscl/linux/gtk/x86_64/configuration/config.ini
  * GSCL
-		modifier à vous besoins le fichier org.eclipse.om2m.site.gscl/target/products/nscl/linux/gtk/x86_64/configuration/config.ini
+		modifier à vos besoins le fichier org.eclipse.om2m.site.gscl/target/products/nscl/linux/gtk/x86_64/configuration/config.ini
 
 4. Running
 ----------
