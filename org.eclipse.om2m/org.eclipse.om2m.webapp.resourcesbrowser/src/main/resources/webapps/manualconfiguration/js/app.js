@@ -1,9 +1,7 @@
-/* Module de notre appli */
+/* Application moduls */
+var app = angular.module("MonApp",["MonApp.routes","MonApp.ui","MonApp.tags"]);
 
-
-var app = angular.module("MonApp",["MonApp.routes","MonApp.ui"]);
-
-/* route qui spécifie les URLS */
+/*routing URLs*/
 angular.module('MonApp.routes', ['ngRoute']).config(function($routeProvider){
   $routeProvider
   .when('/', {templateUrl: 'partials/home.html', controller: 'HomeCtrl'})
@@ -11,10 +9,10 @@ angular.module('MonApp.routes', ['ngRoute']).config(function($routeProvider){
   .otherwise({redirectTo : '/'});
 });
 
-/* Module pour bootstrap UI */
+/* bootstrap UI modul */
 angular.module('MonApp.ui', ['ui.bootstrap']);
-
-//header Auth pour requetes http
+angular.module('MonApp.tags', ['ngTagsInput']);
+/*Auth header for http requests*/
 app.run(function($http){
 	$http.defaults.headers.common.Authorization = 'Basic YWRtaW46YWRtaW4='
 });
