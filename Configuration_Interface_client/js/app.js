@@ -12,7 +12,9 @@ angular.module('MonApp.routes', ['ngRoute']).config(function($routeProvider){
 /* bootstrap UI modul */
 angular.module('MonApp.ui', ['ui.bootstrap']);
 angular.module('MonApp.tags', ['ngTagsInput']);
+
 /*Auth header for http requests*/
 app.run(function($http){
 	$http.defaults.headers.common.Authorization = 'Basic YWRtaW46YWRtaW4='
+
 });

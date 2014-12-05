@@ -26,6 +26,8 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 			       		deferred.reject('Unable to get devices')
 
 			       },
+			       beforeSend: function(xhr, settings) { xhr.setRequestHeader('Authorization','Basic YWRtaW46YWRtaW4='); } 
+
 			    });
  			}, 1000); 
        
