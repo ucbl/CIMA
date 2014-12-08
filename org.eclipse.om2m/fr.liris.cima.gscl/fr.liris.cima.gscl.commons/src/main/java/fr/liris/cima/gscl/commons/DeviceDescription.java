@@ -29,7 +29,7 @@ public class DeviceDescription {
 	}
 	
 	public String getId() {
-		return id;
+		return (id != null) ? id : "";
 	}
 	
 	public void setId(String id) {
@@ -37,7 +37,7 @@ public class DeviceDescription {
 	}
 	
 	public String getName() {
-		return name;
+		return (name != null) ? name : "";
 	}
 	
 	public void setName(String name) {
@@ -45,14 +45,14 @@ public class DeviceDescription {
 	}
 	
 	public String getUri() {
-		return uri;
+		return (uri != null) ? uri : "";
 	}
 	public void setUri(String uri) {
 		this.uri = uri;
 	}
 
 	public String getModeConnection() {
-		return modeConnection;
+		return (modeConnection != null) ? modeConnection : "";
 	}
 
 	public void setModeConnection(String modeConnection) {
@@ -60,7 +60,7 @@ public class DeviceDescription {
 	}
 
 	public String getDateConnection() {
-		return dateConnection;
+		return (dateConnection != null) ? dateConnection : "";
 	}
 
 	public void setDateConnection(String dateConnection) {

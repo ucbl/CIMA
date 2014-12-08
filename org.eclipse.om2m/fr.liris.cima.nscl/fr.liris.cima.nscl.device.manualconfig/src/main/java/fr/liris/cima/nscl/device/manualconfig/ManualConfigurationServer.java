@@ -144,10 +144,12 @@ public class ManualConfigurationServer implements IpuService{
 		
 		ResponseConfirm resp = null;
 		requestIndication.setBase("127.0.0.1:8181/");
-		if(tID.length == 6){
+		LOGGER.info("++++++++++++++++++++");
+		LOGGER.info("tID.lengh = " + tID.length);
+		if(tID.length == 7){
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/test
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5] + "/test");
-			requestIndication.setRepresentation(Parser.parseJSONToObixCapability(requestIndication.getRepresentation()).toString());
+			requestIndication.setRepresentation(Parser.parseJSONToObixStringCapability(requestIndication.getRepresentation()));
 			resp = restClientService.sendRequest(requestIndication);
 			return resp;
 //			return new ResponseConfirm(StatusCode.STATUS_OK, "blablabla");

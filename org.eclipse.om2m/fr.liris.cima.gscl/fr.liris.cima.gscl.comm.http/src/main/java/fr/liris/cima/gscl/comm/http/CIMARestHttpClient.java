@@ -34,7 +34,7 @@ public class CIMARestHttpClient implements RestClientService{
 
 	@Override
 	public ResponseConfirm sendRequest(RequestIndication requestIndication) {
-		LOGGER.debug("Http Client > "+requestIndication);
+		LOGGER.info("Http Client > "+requestIndication);
 		HttpClient httpclient = new HttpClient();
 
 		ResponseConfirm responseConfirm = new ResponseConfirm();
@@ -43,6 +43,8 @@ public class CIMARestHttpClient implements RestClientService{
 		if(!url.startsWith(protocol+"://")){
 			url=protocol+"://"+url;
 		}
+		
+		LOGGER.info("URL : " + url);
 		try {
 			switch (requestIndication.getMethod()){
 			case "RETRIEVE" :
@@ -95,8 +97,7 @@ public class CIMARestHttpClient implements RestClientService{
 			setParameter(HttpMethodParams.RETRY_HANDLER, myretryhandler);		
 
 
-
-			httpMethod.addRequestHeader("Authorization", "Basic "+new String(Base64.encodeBase64(requestIndication.getRequestingEntity().getBytes())));
+			if(requestIndication.getRequestingEntity() != null)	httpMethod.addRequestHeader("Authorization", "Basic "+new String(Base64.encodeBase64(requestIndication.getRequestingEntity().getBytes())));
 			httpMethod.setQueryString(getQueryFromParams(requestIndication.getParameters()));
 
 			int statusCode = httpclient.executeMethod(httpMethod);
@@ -112,10 +113,10 @@ public class CIMARestHttpClient implements RestClientService{
 					responseConfirm.setResourceURI(httpMethod.getResponseHeader("Location").getValue());
 				}
 			}
-			LOGGER.debug("Http Client > "+responseConfirm);
+			LOGGER.info("Http Client > "+responseConfirm);
 
 		}catch(IOException e){
-			///LOGGER.error(url+ " Not Found"+responseConfirm,e);
+			LOGGER.error(url+ " Not Found"+responseConfirm,e);
 		} finally {
 			httpMethod.releaseConnection();
 		}

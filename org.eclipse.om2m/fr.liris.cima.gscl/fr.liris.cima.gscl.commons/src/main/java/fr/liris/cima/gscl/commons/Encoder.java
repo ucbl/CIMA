@@ -60,7 +60,7 @@ public class Encoder {
 		Obj obj = new Obj();
 
 		DeviceDescription deviceDescription = device.getDeviceDescription();
-
+		System.out.println("device desc : " + deviceDescription);
 		objDevice.add(new Str("id",deviceDescription.getId()));
 		objDevice.add(new Str("name", deviceDescription.getName()));
 		objDevice.add(new Str("uri",deviceDescription.getUri()));

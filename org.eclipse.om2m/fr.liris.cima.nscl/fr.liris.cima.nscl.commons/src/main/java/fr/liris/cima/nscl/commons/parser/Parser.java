@@ -83,6 +83,12 @@ public class Parser {
 		return obj_Device;
 	}
 
+	public static String parseJSONToObixStringCapability(String jsonString) {
+		Obj ret = parseJSONToObixCapability(jsonString);
+		String stret = ObixEncoder.toString(ret);
+		return stret;
+	}
+	
 	public static Obj parseJSONToObixCapability(String jsonString) {
 		// JSON
 		JSONParser jsonParser = new JSONParser();
@@ -100,20 +106,28 @@ public class Parser {
 
 		try {
 			String name = capability.get("id").toString();
-			obj_capability.add(new Str("id", name));
-
+			System.out.println("id : " + name);
+			obj_capability.add(new Str("id", (String) capability.get("id")));
+			System.out.println("obj capa : " + obj_capability.get("id").getStr());
+			
 			obj_capability.add(parseJSONToObixProtocol((JSONObject) capability
 					.get("protocol")));
+			System.out.println("obj capa : " + obj_capability.toString());
+			
 			obix.List keywords = new obix.List("keywords");
 			JSONArray jsonKeywords = (JSONArray) capability.get("keywords");
-			for(Object k : jsonKeywords.toArray()){
-				keywords.add(new Str((String) k));
+			if(jsonKeywords != null){
+				for(Object k : jsonKeywords.toArray()){
+					keywords.add(new Str((String) k));
+				}
 			}
 			obj_capability.add(keywords);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println("+++++++++++++++++++++++++");
+		System.out.println("obj capa : " + obj_capability.toString());
 		return obj_capability;
 	}
 
@@ -135,7 +149,7 @@ public class Parser {
 
 		try {
 			obj_Protocol.setName("protocol");
-			obj_Protocol.add(new Str("protocoleName", (String) protocol_info.get("protocolName")));
+			obj_Protocol.add(new Str("protocolName", (String) protocol_info.get("protocolName")));
 			JSONArray parameters = (JSONArray) protocol_info.get("parameters");
 
 			Iterator parameter = parameters.iterator();
@@ -143,6 +157,7 @@ public class Parser {
 				JSONObject parameter_tmp = (JSONObject) parameter.next();
 				String nam = (String) parameter_tmp.get("name");
 				String value = (String) parameter_tmp.get("value");
+				System.out.println("Write protocol attr : " + nam + ":" + value);
 				obj_Protocol.add(new Str(nam, value));
 			}
 

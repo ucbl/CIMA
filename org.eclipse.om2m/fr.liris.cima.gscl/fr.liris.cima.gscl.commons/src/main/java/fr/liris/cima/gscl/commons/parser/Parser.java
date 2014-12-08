@@ -207,10 +207,11 @@ public class Parser {
 		Obj capabilityObj = ObixDecoder.fromString(obixFormat);
 
 		Obj protocolObj = capabilityObj.get("protocol");
-		protocol.setName(protocolObj.get("protocoleName").getStr());
+		protocol.setName(protocolObj.get("protocolName").getStr());
 		protocol.addParameter("method", protocolObj.get("method").getStr());
 		protocol.addParameter("port", protocolObj.get("port").getStr());
 		protocol.addParameter("uri", protocolObj.get("uri").getStr());
+		protocol.addParameter("body", protocolObj.get("body").getStr());
 
 		Obj [] objs = capabilityObj.get("keywords").list();
 		List<String> keywords = new ArrayList<>();

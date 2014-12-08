@@ -235,6 +235,14 @@ public class DeviceController implements IpuService{
 				String capabilityId = infos[infos.length - 1];
 				String representation; 
 				Capability capability = managerImpl.getCapabilityToUnknownDevice(deviceId, capabilityId);
+				//TODO edit la capability
+				// si la capability n'existe pas on en créé une nouvelle
+				if(capability == null){
+					capability = new Capability(capabilityId);
+				}
+				// on teste les champs et on les modifies si nécéssaire
+				
+				
 				managerImpl.updateUnknownDeviceCapability(deviceId, capability);				
 				return new ResponseConfirm(StatusCode.STATUS_OK, "Capability updated or created");
 

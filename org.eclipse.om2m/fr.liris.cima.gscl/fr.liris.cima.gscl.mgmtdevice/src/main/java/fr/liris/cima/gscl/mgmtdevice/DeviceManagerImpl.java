@@ -344,12 +344,17 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 	public void invokeCapability(String deviceId, Capability capability, RestClientService clientService) {
 		RequestIndication requestIndication = new RequestIndication();
 		Protocol protocol = capability.getProtocol();
-		
-		requestIndication.setBase(capability.getProtocol().getParameterValue("uri"));
+		String base = "";
+		if(getDevice(deviceId) != null) base = getDevice(deviceId).getUri();
+		else if(getUnknownDevice(deviceId) != null) base = getUnknownDevice(deviceId).getUri();
+		LOGGER.info(base);
+		LOGGER.info(protocol.getParameterValue("protocolName"));
+		LOGGER.info(capability.getProtocol().getParameterValue("body"));
+		requestIndication.setBase("http://" + base + ":" + capability.getProtocol().getParameterValue("port") + capability.getProtocol().getParameterValue("uri"));
 		requestIndication.setMethod(protocol.getParameterValue("method"));
-		requestIndication.setProtocol(protocol.getParameterValue("protocolName"));
+		requestIndication.setProtocol("http");
 		requestIndication.setTargetID("");
-		requestIndication.setRepresentation("");
+		requestIndication.setRepresentation(capability.getProtocol().getParameterValue("body"));
 		
 		clientService.sendRequest(requestIndication);
 		
