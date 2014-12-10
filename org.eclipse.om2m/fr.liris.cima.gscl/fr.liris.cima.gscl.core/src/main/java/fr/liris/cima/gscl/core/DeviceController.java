@@ -62,14 +62,14 @@ public class DeviceController implements IpuService{
 		LOGGER.info("*********Execute in DEVICE CONTROLLER ****");
 
 		/**
-		 * http://localhost:8181/om2m/gscl/applications/CIMA/devices/DEVICE_1/capabilities/invoke/EV3Back
+		 * http://localhost:8181/om2m/gscl/applications/CIMA/devices/DEVICE_1/capabilities/EV3Back
 		 */
 		String[] infos = requestIndication.getTargetID().split("/");
 		int length = infos.length;
 
 		try {
-			if(infos[length - 3].equals(Constants.PATH_CAPABILITIES) && infos[length - 2].equals(Constants.PATH_INVOKE)){
-				String deviceId = infos[length - 4];
+			if(infos[length - 2].equals(Constants.PATH_CAPABILITIES) ){
+				String deviceId = infos[length - 3];
 				String capabilityName = infos[length - 1];
 
 				Device device = managerImpl.getDevice(deviceId);
@@ -114,15 +114,9 @@ public class DeviceController implements IpuService{
 
 			if(device != null) {
 				LOGGER.info("*********Constant INFO = = = ****"+Constants.PATH_CAPABILITIES);
-				String uri = device.getDeviceDescription().getUri();
-				requestIndication.setBase(uri);
-				requestIndication.setTargetID("capabilities");
-				//requestIndication.setTargetID("/"+Constants.PATH_CAPABILITIES);
-				requestIndication.setMethod(Constants.METHOD_RETRIEVE);
-				requestIndication.setProtocol(device.getDeviceDescription().getModeConnection());
+				String representation = Encoder.encodeCapabilitiesToObix(device.getCapabilities());
 				LOGGER.info("send request for getting capabilities");
-				ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
-				responseConfirm.getRepresentation();
+				ResponseConfirm responseConfirm = new ResponseConfirm(StatusCode.STATUS_OK, representation);
 				return responseConfirm;
 			}
 		}

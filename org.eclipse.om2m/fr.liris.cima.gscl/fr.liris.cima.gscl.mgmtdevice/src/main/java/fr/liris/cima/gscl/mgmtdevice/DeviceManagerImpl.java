@@ -354,16 +354,25 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		RequestIndication requestIndication = new RequestIndication();
 		Protocol protocol = capability.getProtocol();
 		String base = "";
+		
 		if(getDevice(deviceId) != null) base = getDevice(deviceId).getUri();
 		else if(getUnknownDevice(deviceId) != null) base = getUnknownDevice(deviceId).getUri();
 		LOGGER.info(base);
 		LOGGER.info(protocol.getParameterValue("protocolName"));
 		LOGGER.info(capability.getProtocol().getParameterValue("body"));
-		requestIndication.setBase("http://" + base + ":" + capability.getProtocol().getParameterValue("port") + capability.getProtocol().getParameterValue("uri"));
-		requestIndication.setMethod(protocol.getParameterValue("method"));
+		String capabilityURI = capability.getProtocol().getParameterValue("uri");
+		LOGGER.info("capabilityURI = "+capabilityURI);
+		if(capabilityURI.startsWith("/")) {
+			capabilityURI = capabilityURI.substring(1);
+		}
+		LOGGER.info("capabilityURI = "+capabilityURI);
+
+		requestIndication.setBase(base + capabilityURI);
+		requestIndication.setMethod(protocol.getParameterValue("method").trim());
 		requestIndication.setProtocol("http");
 		requestIndication.setTargetID("");
 		requestIndication.setRepresentation(capability.getProtocol().getParameterValue("body"));
+	//	requestIndication.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);
 		
 		clientService.sendRequest(requestIndication);
 		

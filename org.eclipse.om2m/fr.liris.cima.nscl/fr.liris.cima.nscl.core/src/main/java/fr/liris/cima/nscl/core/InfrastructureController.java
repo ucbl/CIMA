@@ -135,7 +135,7 @@ public class InfrastructureController implements IpuService{
 						List<Device> devices = managerImpl.getDevices();
 						requestIndication.setBase(subscriber.getUrl()+":"+subscriber.getPort());
 						requestIndication.setTargetID("");
-						requestIndication.setRepresentation(JsonEncoder.allContactInfoToJSONStr(devices));
+						requestIndication.setRepresentation(JsonEncoder.devicesToJSONStr(devices));
 						LOGGER.info("Sending all devices contact info to new subscriber");
 						restClientService.sendRequest(requestIndication);
 

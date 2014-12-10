@@ -154,7 +154,8 @@ public class Encoder {
 		Obj objProtocol = new Obj("protocol");
 	//	objProtocol.add(new Str("protocolName", protocol.getName()));
 		for(Entry<String, String> entry : protocol.getParameters().entrySet()) {
-			objProtocol.add(new Str(entry.getKey(),entry.getValue()));
+			System.out.println("parameter = '"+entry.getValue().trim()+"'");
+			objProtocol.add(new Str(entry.getKey(),entry.getValue().trim()));
 		}
 		return objProtocol;
 	}	

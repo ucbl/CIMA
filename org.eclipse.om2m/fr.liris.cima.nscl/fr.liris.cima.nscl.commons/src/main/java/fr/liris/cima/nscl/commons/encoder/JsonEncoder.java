@@ -123,6 +123,14 @@ public class JsonEncoder {
 
 
 	public static void main(String args[]) {
+		
+		String s = "\"foo\" is not \"bar\". specials: \b\r\n\f\t\\/";
+
+		  s = JSONObject.escape(s);
+		  
+		                
+		  System.out.println(s);
+		  
 		ContactInfo contact = new ContactInfo("DEVICE_0", 6000);
 		
 

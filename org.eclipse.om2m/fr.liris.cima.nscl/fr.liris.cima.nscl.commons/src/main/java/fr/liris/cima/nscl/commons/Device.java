@@ -3,8 +3,8 @@ package fr.liris.cima.nscl.commons;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+//import org.apache.commons.logging.Log;
+//import org.apache.commons.logging.LogFactory;
 
 /**
  * Defines a device for CIMA NSCL
@@ -14,7 +14,7 @@ import org.apache.commons.logging.LogFactory;
 public class Device {
 
 	/** Logger */
-	private static Log LOGGER = LogFactory.getLog(Device.class);
+//	private static Log LOGGER = LogFactory.getLog(Device.class);
 	/** Application point of contact for the devices controller {@link DeviceController} */
 	public final static String APOCPATH = "devices";
 	/** Default Device type */

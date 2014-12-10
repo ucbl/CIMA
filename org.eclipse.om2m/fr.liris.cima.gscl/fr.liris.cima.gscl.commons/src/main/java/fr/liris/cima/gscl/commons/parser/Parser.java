@@ -97,13 +97,13 @@ public class Parser {
 			List<Element> childrenElement = root.getChildren();
 			for(Element element : childrenElement) {
 				if(element.getName().equals("uri")) {
-					uri = element.getText();
+					uri = element.getText().trim();
 				}
 				if(element.getName().equals("modeConnection")) {
-					modeConnection = element.getText();
+					modeConnection = element.getText().trim();
 				}
 				if(element.getName().equals("name")) {
-					name = element.getText();
+					name = element.getText().trim();
 				}
 			}
 			deviceDescription.setUri(uri);
@@ -169,13 +169,13 @@ public class Parser {
 			List<Element> childrenElement = root.getChildren();
 			for(Element element : childrenElement) {
 				if(element.getName().equals("uri")) {
-					uri = element.getText();
+					uri = element.getText().trim();
 				}
 				if(element.getName().equals("modeConnection")) {
-					modeConnection = element.getText();
+					modeConnection = element.getText().trim();
 				}
 				if(element.getName().equals("name")) {
-					name = element.getText();
+					name = element.getText().trim();
 				}
 				if(element.getName().equals("capabilities")) {
 					List<Element> childrenCapabilityElement = element.getChildren("capability");

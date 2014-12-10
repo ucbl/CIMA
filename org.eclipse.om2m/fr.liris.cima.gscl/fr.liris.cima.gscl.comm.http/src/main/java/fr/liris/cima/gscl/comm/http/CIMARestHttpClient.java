@@ -46,11 +46,11 @@ public class CIMARestHttpClient implements RestClientService{
 		
 		LOGGER.info("URL : " + url);
 		try {
+			LOGGER.info("Method  : '"+requestIndication.getMethod() + "'");
 			switch (requestIndication.getMethod()){
-			case "RETRIEVE" :
-				httpMethod =  new GetMethod(url);
-				break;
+			
 			case "GET" :
+			case "RETRIEVE" :
 				httpMethod =  new GetMethod(url);
 				break;
 			case "CREATE":
@@ -58,11 +58,12 @@ public class CIMARestHttpClient implements RestClientService{
 
 				((PostMethod)httpMethod).setRequestEntity(new StringRequestEntity(requestIndication.getRepresentation(),"application/xml", "UTF8"));
 				break;
-			case "UPDATE":
-				httpMethod = new PutMethod(url);
-				((PutMethod)httpMethod).setRequestEntity(new StringRequestEntity(requestIndication.getRepresentation(),"application/xml", "UTF8"));
-				break;
 			case "PUT":
+				
+				LOGGER.info("PUT");
+			case "UPDATE":
+				LOGGER.info("UPDATE");
+
 				httpMethod = new PutMethod(url);
 				((PutMethod)httpMethod).setRequestEntity(new StringRequestEntity(requestIndication.getRepresentation(),"application/xml", "UTF8"));
 				break;
