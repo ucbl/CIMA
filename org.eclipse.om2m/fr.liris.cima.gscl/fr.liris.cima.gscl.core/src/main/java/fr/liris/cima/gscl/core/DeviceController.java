@@ -62,7 +62,7 @@ public class DeviceController implements IpuService{
 		LOGGER.info("*********Execute in DEVICE CONTROLLER ****");
 
 		/**
-		 * http://localhost:8181/om2m/gscl/applications/CIMA/devices/DEVICE_0/capabilities/goOn
+		 * http://localhost:8181/om2m/gscl/applications/CIMA/devices/DEVICE_1/capabilities/invoke/EV3Back
 		 */
 		String[] infos = requestIndication.getTargetID().split("/");
 		int length = infos.length;
@@ -74,13 +74,16 @@ public class DeviceController implements IpuService{
 
 				Device device = managerImpl.getDevice(deviceId);
 				if(device != null) {
-					requestIndication.setBase(device.getUri());
-					requestIndication.setTargetID("");
+					//requestIndication.setBase(device.getUri());
+					Capability capability = device.getCapability(capabilityName);
+					managerImpl.invokeCapability(deviceId, capability, restClientService);
+					
+				//	requestIndication.setTargetID("");
 					//	requestIndication.setTargetID("/"+Constants.PATH_CAPABILITIES+"/"+Constants.PATH_INVOKE+"/"+capabilityName);
-					requestIndication.setProtocol(device.getModeConnection());
+			//		requestIndication.setProtocol(device.getModeConnection());
 					LOGGER.info("send request for executing capabilities");
-					ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
-					//	ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
+					//ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
+						ResponseConfirm responseConfirm = new ResponseConfirm(StatusCode.STATUS_ACCEPTED); 
 					return responseConfirm;
 				}
 			}
@@ -100,11 +103,8 @@ public class DeviceController implements IpuService{
 	public ResponseConfirm doRetrieve(RequestIndication requestIndication) {
 
 		LOGGER.info("*********Retrieve in DEVICE CONTROLLER ****");
-
 		String []infos = requestIndication.getTargetID().split("/");
 		String lastInfo = infos[infos.length - 1];
-
-
 
 		if(lastInfo.equals(Constants.PATH_CAPABILITIES)){
 			String deviceId = infos[infos.length - 2];

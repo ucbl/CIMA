@@ -128,6 +128,15 @@ public class Device {
 	public void addCapability(Capability capability) {
 		capabilities.add(capability);
 	}
+	
+	public Capability getCapability(String capabilityName) {
+		for(Capability capability : capabilities) {
+			if(capability.getName().equals(capabilityName)) {
+				return capability;
+			}
+		}
+		return null;
+	}
 
 	public void removeCapability(Capability capability) {
 		capabilities.remove(capability);

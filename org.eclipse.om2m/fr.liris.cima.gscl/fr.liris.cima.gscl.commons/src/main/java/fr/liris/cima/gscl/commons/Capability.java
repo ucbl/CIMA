@@ -31,6 +31,13 @@ public class Capability {
 	
 	public  Capability(String name) {
 		this.name = name;
+		protocol = new Protocol();
+		keywords = new ArrayList<String>();
+	}
+	
+	public  Capability() {
+		protocol = new Protocol();
+		keywords = new ArrayList<String>();
 	}
 
 	/**

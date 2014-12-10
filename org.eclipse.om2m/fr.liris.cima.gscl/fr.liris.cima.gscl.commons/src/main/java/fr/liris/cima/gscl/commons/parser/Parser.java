@@ -1,5 +1,6 @@
 package fr.liris.cima.gscl.commons.parser;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -114,6 +115,89 @@ public class Parser {
 		}
 
 		return deviceDescription;
+	}
+
+	public static Protocol elementToProtocol(Element protocolElement) throws JDOMException, IOException {
+		Protocol protocol = new Protocol();
+
+		List<Element> childrenElement = protocolElement.getChildren();
+		for(Element element : childrenElement) {
+			if(element.getName().equals("protocolName")) {
+				protocol.setName(element.getText());
+			}
+			protocol.addParameter(element.getName(), element.getText());
+		}
+		return protocol;
+	}
+
+	public static Capability elementToCapability(Element capabilityElement) throws JDOMException, IOException {
+		Capability capability = new Capability();
+	
+		Element idElement = capabilityElement.getChild("id");
+		if(idElement != null) {
+			capability.setName( idElement.getText());
+		}
+		Element elementProtocol = capabilityElement.getChild("protocol");
+		Element elementKeywords = capabilityElement.getChild("keywords");
+		if(elementKeywords != null) {
+			for(Element keywordElement : elementKeywords.getChildren()) {
+				capability.addKeyword(keywordElement.getText());
+			}
+		}
+		if( elementProtocol!= null) {
+			capability.setProtocol(elementToProtocol(elementProtocol));
+		}
+		
+		return capability;
+	}
+
+	public static Device parseXmlToDevice(String representation) {
+		DeviceDescription deviceDescription = new DeviceDescription();
+		Device device = null;
+		List<Capability> capabilities = new ArrayList<>();
+
+		try {
+			SAXBuilder sb  = new SAXBuilder();
+			Document doc = sb.build(new StringReader(representation));
+			Element root =  doc.getRootElement();
+			String uri ="";
+			String modeConnection="";
+			String name = "";
+
+			String capabilityId = "";
+			Protocol protocol;
+			List<Element> childrenElement = root.getChildren();
+			for(Element element : childrenElement) {
+				if(element.getName().equals("uri")) {
+					uri = element.getText();
+				}
+				if(element.getName().equals("modeConnection")) {
+					modeConnection = element.getText();
+				}
+				if(element.getName().equals("name")) {
+					name = element.getText();
+				}
+				if(element.getName().equals("capabilities")) {
+					List<Element> childrenCapabilityElement = element.getChildren("capability");
+
+					for(Element capabilityElement : childrenCapabilityElement) {
+						Capability capability = elementToCapability(capabilityElement);
+						capabilities.add(capability);
+					}
+				}
+
+			}
+			deviceDescription.setUri(uri);
+			deviceDescription.setModeConnection(modeConnection);
+			deviceDescription.setName(name);
+			device = new Device(deviceDescription);
+			device.setCapabilities(capabilities);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return device;
 	}
 
 	/**
@@ -262,7 +346,7 @@ public class Parser {
 				}
 			}
 		}
-		
+
 		Obj objContactInfo = ObjDevice.get("contactInfo");
 		if(objContactInfo != null) {
 			System.out.println(objContactInfo.get("cloud_port"));
@@ -270,7 +354,7 @@ public class Parser {
 			ContactInfo contactInfo = new ContactInfo(id, (int)cloudPort);
 			device.setContactInfo(contactInfo);
 		}
-		
+
 		return device;	
 	}
 
@@ -303,14 +387,29 @@ public class Parser {
 				"<modeConnection>http</modeConnection>"+
 				"<dateConnection>mercredi, oct. 22, 2014 13:52:20 PM</dateConnection>"+
 				"<uri>192.168.43.34</uri> "+
-				"<server>http://127.0.0.1:8282</server>"+
-				"</device>";
+				"<capabilities> "
+				+ "<capability>"
+				+ "<id> ev3back</id>"
+				+ "<protocol>"
+				+ "<protocolName>" + "http" + "</protocolName>"
+				+ "<method> "+ "PUT" +"</method>"
+				+ "<port>8080</port>"
+				+ "<uri>" + "/capabilities" + "</uri>"
+				+ "<body>body</body>"
+				+ "</protocol>"
+				+ "<keywords>"
+				+ "<keyword>ev3</keyword>"
+				+ "</keywords>"
+				+ "</capability>"
+				+ "</capabilities>"
+				+"</device>";
 		//
 		//		Device device = new Device("ev3", "localhost", "http", new ContactInfo());
 		//		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
 		//		System.out.println(Parser.parseXmlDevice(representation));
 		//System.out.println(formatter.format(new Date()));
 
+		System.out.println("device = "+parseXmlToDevice(representation));
 
 		String obixFormat = "<obj>"+
 				"<obj name=\"device\">" +
@@ -348,16 +447,16 @@ public class Parser {
 				"</obj>"+
 				"</list>"+  
 				"<obj name=\"contactInfo\">"+
-			     " <str name=\"deviceId\" val=\"DEVICE_0\"/>"+
-			     " <int name=\"cloud_port\" val=\"14948\"/> " +
-			    "</obj>" +
+				" <str name=\"deviceId\" val=\"DEVICE_0\"/>"+
+				" <int name=\"cloud_port\" val=\"14948\"/> " +
+				"</obj>" +
 				"</obj>"+
 				"</obj>";
 
 		//System.out.println(obixFormat);
 		Device device = parseObixToDevice(obixFormat);
-		System.out.println(parseXmlToDeviceDescription(representation));
-		System.out.println(Encoder.encodeDeviceToObix(device));
+		//	System.out.println(parseXmlToDeviceDescription(representation));
+		//	System.out.println(Encoder.encodeDeviceToObix(device));
 
 
 
