@@ -61,6 +61,8 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		devices = new ArrayList<>();
 		unknownDevices = new ArrayList<>();
 		configManagerImpl = new ConfigManagerImpl();
+		
+
 	}
 	
 	public DeviceManagerImpl(SclService scl){
@@ -68,6 +70,11 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		devices = new ArrayList<>();
 		unknownDevices = new ArrayList<>();
 		configManagerImpl = new ConfigManagerImpl();
+		
+
+		DeviceDescription deviceDescription = new DeviceDescription("ev3", "http://192.168.0.02:/infos/", "ip");
+		Device device = new Device(deviceDescription);
+		devices.add(device);
 	}
 	
 	public static void init(SclService scl) {
@@ -268,10 +275,12 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 
 	@Override
 	public void sendDeviceToNSCL(Device device, RestClientService clientService) {
-		LOGGER.info("Send device to nscl");
 		RequestIndication requestIndication = new RequestIndication();
 		//requestIndication.setRepresentation(device.toObixFormat());
-		requestIndication.setRepresentation(Encoder.encodeDeviceToObix(device));
+		String representation = Encoder.encodeDeviceToObix(device);
+		LOGGER.info("Send device to nscl  = "+representation);
+
+		requestIndication.setRepresentation(representation);
 
 		requestIndication.setMethod(Constants.METHOD_CREATE);
 		requestIndication.setBase("http://127.0.0.1:8080/om2m");

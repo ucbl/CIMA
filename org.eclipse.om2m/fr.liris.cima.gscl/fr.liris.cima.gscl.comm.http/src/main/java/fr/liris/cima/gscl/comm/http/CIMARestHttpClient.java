@@ -34,7 +34,7 @@ public class CIMARestHttpClient implements RestClientService{
 
 	@Override
 	public ResponseConfirm sendRequest(RequestIndication requestIndication) {
-		LOGGER.debug("Http Client > "+requestIndication);
+		LOGGER.info("Http Client > "+requestIndication);
 		HttpClient httpclient = new HttpClient();
 
 		ResponseConfirm responseConfirm = new ResponseConfirm();
@@ -48,12 +48,19 @@ public class CIMARestHttpClient implements RestClientService{
 			case "RETRIEVE" :
 				httpMethod =  new GetMethod(url);
 				break;
+			case "GET" :
+				httpMethod =  new GetMethod(url);
+				break;
 			case "CREATE":
 				httpMethod = new PostMethod(url);
 
 				((PostMethod)httpMethod).setRequestEntity(new StringRequestEntity(requestIndication.getRepresentation(),"application/xml", "UTF8"));
 				break;
 			case "UPDATE":
+				httpMethod = new PutMethod(url);
+				((PutMethod)httpMethod).setRequestEntity(new StringRequestEntity(requestIndication.getRepresentation(),"application/xml", "UTF8"));
+				break;
+			case "PUT":
 				httpMethod = new PutMethod(url);
 				((PutMethod)httpMethod).setRequestEntity(new StringRequestEntity(requestIndication.getRepresentation(),"application/xml", "UTF8"));
 				break;

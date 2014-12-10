@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
+import fr.liris.cima.gscl.commons.parser.Parser;
 import obix.Int;
 import obix.Obj;
 import obix.Str;
@@ -151,7 +152,7 @@ public class Encoder {
 	
 	public static Obj encodeProtocolObixObj(Protocol protocol) {
 		Obj objProtocol = new Obj("protocol");
-		objProtocol.add(new Str("protocolName", protocol.getName()));
+	//	objProtocol.add(new Str("protocolName", protocol.getName()));
 		for(Entry<String, String> entry : protocol.getParameters().entrySet()) {
 			objProtocol.add(new Str(entry.getKey(),entry.getValue()));
 		}
@@ -161,7 +162,33 @@ public class Encoder {
 	public static void main(String args[]) {
 		System.out.println(new Date());
 		
+		String representation = "<device>"+
+				"<name>ev3</name>"+
+				"<modeConnection>http</modeConnection>"+
+				"<dateConnection>mercredi, oct. 22, 2014 13:52:20 PM</dateConnection>"+
+				"<uri>192.168.43.34</uri> "+
+				"<capabilities> "
+				+ "<capability>"
+				+ "<id> ev3back</id>"
+				+ "<protocol>"
+				+ "<protocolName>" + "http" + "</protocolName>"
+				+ "<method> "+ "PUT" +"</method>"
+				+ "<port>8080</port>"
+				+ "<uri>" + "/capabilities" + "</uri>"
+				+ "<body>body</body>"
+				+ "</protocol>"
+				+ "<keywords>"
+				+ "<keyword>ev3</keyword>"
+				+ "</keywords>"
+				+ "</capability>"
+				+ "</capabilities>"
+				+"</device>";
 		
+		Device device = Parser.parseXmlToDevice(representation);
+		System.out.println("device = "+device);
+	   System.out.println(encodeDeviceToObix(device));
+		
+		System.exit(0);
 		 // DeviceDescription
 		
 		DeviceDescription deviceDescription = new DeviceDescription("ev3", "http://192.168.0.02:/infos/", "ip");
@@ -197,9 +224,9 @@ public class Encoder {
 		
 	//	System.out.println(encodeContactInfoToObix(contactInfo));
 		
-		Device device = new Device(deviceDescription);
-		device.addCapability(capability);
-		System.out.println(encodeDeviceToObix(device));
+//		Device device = new Device(deviceDescription);
+//		device.addCapability(capability);
+//		System.out.println(encodeDeviceToObix(device));
 		
 //		String xmlFormat = "<device><id>DEVICE_0</id><name>ev3</name><uri>http://192.168.0.02:/infos/</uri> "
 //				+ "<modeConnection>ip</modeConnection></device>";
