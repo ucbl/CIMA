@@ -16,4 +16,5 @@ public static String APOCPATH = "devices";
 	public static final String APOCPATH_SUBSCRIBERS = "subscribers";
 	public static final String APOCPATH_DEVICES = "devices";
 	public static final String CIMA_ADDRESS = "localhost";
+	public static final String APOCPATH_CAPABILITIES = "capabilities";
 }

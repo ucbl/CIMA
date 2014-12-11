@@ -102,7 +102,7 @@ public class ManualConfigurationServer implements IpuService{
 		if(tID.length == 6){
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5]);
-			requestIndication.setRepresentation(Parser.parseJSONToObixDevice(requestIndication.getRepresentation()).toString());
+			requestIndication.setRepresentation(Parser.parseJSONToObixStringDevice(requestIndication.getRepresentation()));
 			resp = restClientService.sendRequest(requestIndication);
 			resp.setRepresentation(Parser.parseObixToJSONStringDevice(resp.getRepresentation()));
 			return resp;
@@ -110,7 +110,7 @@ public class ManualConfigurationServer implements IpuService{
 		} else if(tID.length == 8){
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability/<capability id>
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5] + "/capability/" + tID[7]);
-			requestIndication.setRepresentation(Parser.parseJSONToObixCapability(requestIndication.getRepresentation()).toString());
+			requestIndication.setRepresentation(Parser.parseJSONToObixStringCapability(requestIndication.getRepresentation()));
 			resp = restClientService.sendRequest(requestIndication);
 			resp.setRepresentation(Parser.parseObixToJSONStringCapability(resp.getRepresentation()));
 			return resp;

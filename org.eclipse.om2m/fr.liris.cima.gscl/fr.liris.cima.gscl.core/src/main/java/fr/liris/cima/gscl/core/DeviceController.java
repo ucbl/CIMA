@@ -200,7 +200,7 @@ public class DeviceController implements IpuService{
 
 		ResponseConfirm confirm = new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST, ""));
 
-		if(infos[infos.length - 1].equals(Constants.PATH_UNKNOWN_DEVICES)){
+		if(infos[infos.length - 2].equals(Constants.PATH_UNKNOWN_DEVICES)){
 
 			LOGGER.info("*********PATH_UNKNOWN_DEVICES ****");
 
@@ -229,14 +229,14 @@ public class DeviceController implements IpuService{
 				String capabilityId = infos[infos.length - 1];
 				String representation; 
 				Capability capability = managerImpl.getCapabilityToUnknownDevice(deviceId, capabilityId);
+				Capability upCapability = Parser.parseObixToCapability(requestIndication.getRepresentation());
+				
 				//TODO edit la capability
 				// si la capability n'existe pas on en créé une nouvelle
-				if(capability == null){
-					capability = new Capability(capabilityId);
-				}
-				// on teste les champs et on les modifies si nécéssaire
-				
-				
+				if(capability == null) capability = new Capability(capabilityId);
+				if (upCapability.getName() != null) capability.setName(upCapability.getName());
+				if (upCapability.getKeywords() != null) capability.setKeywords(upCapability.getKeywords());
+				if (upCapability.getProtocol() != null) capability.setProtocol(upCapability.getProtocol());
 				managerImpl.updateUnknownDeviceCapability(deviceId, capability);				
 				return new ResponseConfirm(StatusCode.STATUS_OK, "Capability updated or created");
 

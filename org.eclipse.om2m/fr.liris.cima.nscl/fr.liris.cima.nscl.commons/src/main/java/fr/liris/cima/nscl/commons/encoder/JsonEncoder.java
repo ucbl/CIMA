@@ -3,9 +3,12 @@ package fr.liris.cima.nscl.commons.encoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import fr.liris.cima.nscl.commons.Capability;
 import fr.liris.cima.nscl.commons.ContactInfo;
@@ -38,10 +41,20 @@ public class JsonEncoder {
 		JSONArray capabilitiesJson =  new JSONArray();
 		
 		for(Capability capability : device.getCapabilities()) {
-		 capabilitiesJson.add(capabilityToJSONStr(capability));
+			String jsonStr = capabilityToJSONStr(capability);
+			JSONParser jsonParser = new JSONParser();
+			JSONObject jsonObject = null;
+			try {
+				jsonObject = (JSONObject) jsonParser.parse(jsonStr);
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+			capabilitiesJson.add(jsonObject);
 		}
 		obj.put("capabilities", capabilitiesJson);
-		obj.put("contactInfo", contactInfoToJSONStr(device.getContactInfo()));
+		ContactInfo contactInfo = device.getContactInfo();
+		obj.put("deviceId", contactInfo.getDeviceId());
+		obj.put("cloud_port", contactInfo.getCloud_port());
 		
 		return obj.toJSONString();
 	}
@@ -70,9 +83,17 @@ public class JsonEncoder {
 		String result = "";
 		List<String> devicesStr = new ArrayList<>();
 		for(Device device : devices) {
-			devicesStr.add(deviceToJSONStr(device));
+			String jsonStr = deviceToJSONStr(device);
+			JSONParser jsonParser = new JSONParser();
+			JSONObject jsonObject = null;
+			try {
+				jsonObject = (JSONObject) jsonParser.parse(jsonStr);
+				array.add(jsonObject);
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
 		}
-		obj.put("devices", devicesStr);
+		obj.put("devices", array);
 		return obj.toJSONString();
 	}
 
@@ -82,9 +103,17 @@ public class JsonEncoder {
 		String result = "";
 		List<String> devicesStr = new ArrayList<>();
 		for(Device device : devices) {
-			devicesStr.add(contactInfoToJSONStr(device.getContactInfo()));
+			String jsonStr = contactInfoToJSONStr(device.getContactInfo());
+			JSONParser jsonParser = new JSONParser();
+			JSONObject jsonObject = null;
+			try {
+				jsonObject = (JSONObject) jsonParser.parse(jsonStr);
+				array.add(jsonObject);
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
 		}
-		obj.put("devices", devicesStr);
+		obj.put("devices", array);
 		return obj.toJSONString();
 	}
 
@@ -104,12 +133,40 @@ public class JsonEncoder {
 		
 		return obj.toJSONString();
 	}
+
+	public static String capabilitiesToJSONStr(Set<Capability> capabilities) {
+		//TODO return a list of Capability
+		JSONObject obj = new JSONObject();
+		JSONArray array = new JSONArray();
+		String jsonStr = "";
+		for(Capability c : capabilities){
+			jsonStr = capabilityToJSONStr(c);
+			JSONParser jsonParser = new JSONParser();
+			JSONObject jsonObject = null;
+			try {
+				jsonObject = (JSONObject) jsonParser.parse(jsonStr);
+				array.add(jsonObject);
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+		}
+		obj.put("capabilities", array);
+		return obj.toJSONString();
+	}
 	
 	public static String capabilityToJSONStr(Capability capability) {
 		JSONObject obj=new JSONObject();
 		
 		obj.put("id", capability.getName());
-		obj.put("protocol", protocolToJSONStr(capability.getProtocol()));
+		String jsonStr = protocolToJSONStr(capability.getProtocol());
+		JSONParser jsonParser = new JSONParser();
+		JSONObject jsonObject = null;
+		try {
+			jsonObject = (JSONObject) jsonParser.parse(jsonStr);
+			obj.put("protocol", jsonObject);
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		JSONArray keyWords = new JSONArray();
 		keyWords.addAll(capability.getKeywords());
 		

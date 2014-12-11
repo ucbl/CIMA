@@ -29,7 +29,7 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 			       beforeSend: function(xhr, settings) { xhr.setRequestHeader('Authorization','Basic YWRtaW46YWRtaW4='); } 
 
 			    });
- 			}, 1000); 
+ 			}, 5000); 
        
 
 			return deferred.promise;

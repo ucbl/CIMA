@@ -40,6 +40,12 @@ import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
 import java.util.Iterator;
 
 public class Parser {
+	
+	public static String parseJSONToObixStringDevice(String jsonString) {
+		Obj ret = parseJSONToObixDevice(jsonString);
+		String stret = ObixEncoder.toString(ret);
+		return stret;
+	}
 
 	public static Obj parseJSONToObixDevice(String jsonString) {
 		// JSON
@@ -106,13 +112,10 @@ public class Parser {
 
 		try {
 			String name = capability.get("id").toString();
-			System.out.println("id : " + name);
 			obj_capability.add(new Str("id", (String) capability.get("id")));
-			System.out.println("obj capa : " + obj_capability.get("id").getStr());
 			
 			obj_capability.add(parseJSONToObixProtocol((JSONObject) capability
 					.get("protocol")));
-			System.out.println("obj capa : " + obj_capability.toString());
 			
 			obix.List keywords = new obix.List("keywords");
 			JSONArray jsonKeywords = (JSONArray) capability.get("keywords");
@@ -126,8 +129,6 @@ public class Parser {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("+++++++++++++++++++++++++");
-		System.out.println("obj capa : " + obj_capability.toString());
 		return obj_capability;
 	}
 
@@ -157,7 +158,6 @@ public class Parser {
 				JSONObject parameter_tmp = (JSONObject) parameter.next();
 				String nam = (String) parameter_tmp.get("name");
 				String value = (String) parameter_tmp.get("value");
-				System.out.println("Write protocol attr : " + nam + ":" + value);
 				obj_Protocol.add(new Str(nam, value));
 			}
 
@@ -248,13 +248,13 @@ public class Parser {
 			Iterator<Element> noeud = list_obj.iterator();
 			while (noeud.hasNext()) {
 				Element courant = (Element) noeud.next();
-				if (courant.getAttributeValue("name").equalsIgnoreCase("keywords")) {
+				if (courant.getAttributeValue("name") != null && courant.getAttributeValue("name").equalsIgnoreCase("keywords")) {
 					List<Element> xmlKeywords = courant.getChildren();
 					JSONArray keywords = new JSONArray();
 					for(Element e : xmlKeywords){
 						keywords.add(e.getAttributeValue("val"));
 					}
-				} else if(courant.getAttributeValue("name").equalsIgnoreCase("protocol")){
+				} else if(courant.getAttributeValue("name") != null && courant.getAttributeValue("name").equalsIgnoreCase("protocol")){
 					String s = new XMLOutputter().outputString(courant);
 					jsonObject.put("protocol", parseObixToJSONProtocol(s));
 
@@ -316,7 +316,7 @@ public class Parser {
 			noeudAttr = objCourant.getChildren().iterator();
 			while (noeudAttr.hasNext()){
 				attrCourant = (Element) noeudAttr.next();
-				if (!attrCourant.getAttributeValue("name").equalsIgnoreCase("Capabilities")) {
+				if (attrCourant.getAttributeValue("name") != null && !attrCourant.getAttributeValue("name").equalsIgnoreCase("Capabilities")) {
 					jsonDeviceObject.put(attrCourant.getAttributeValue("name"), attrCourant.getAttributeValue("val"));
 				} else {
 					list_capabilities = attrCourant.getChildren();

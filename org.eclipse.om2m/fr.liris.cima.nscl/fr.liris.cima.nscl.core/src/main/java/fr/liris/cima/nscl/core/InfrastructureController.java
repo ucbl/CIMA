@@ -2,6 +2,7 @@ package fr.liris.cima.nscl.core;
 
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,6 +13,7 @@ import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 import org.eclipse.om2m.ipu.service.IpuService;
 
+import fr.liris.cima.nscl.commons.Capability;
 import fr.liris.cima.nscl.commons.Device;
 import fr.liris.cima.nscl.commons.constants.Constants;
 import fr.liris.cima.nscl.commons.parser.Parser;
@@ -64,14 +66,24 @@ public class InfrastructureController implements IpuService{
 		int length = infos.length;
 		ResponseConfirm responseConfirm = null;
 		String representation = JsonEncoder.devicesToJSONStr(managerImpl.getDevices());
+	
 		if(infos[length - 1].equals(Constants.APOCPATH_DEVICES)){
 			LOGGER.info("********************REPRESENTATION*******"+requestIndication.getUrl());
 			requestIndication.setRepresentation(representation);
 			responseConfirm = new ResponseConfirm(StatusCode.STATUS_OK, representation);
 			return responseConfirm;
+		} else if(infos[length-1].equals(Constants.APOCPATH_CAPABILITIES) && infos[length - 3].equals(Constants.APOCPATH_DEVICES)){
+			// TODO : Ajouter le retour de la liste des capacités en fonction d'un device
+			// /nscl/application/CIMANSCL/devices/<device_id>/capabilities
+			LOGGER.info("********************REPRESENTATION*******"+requestIndication.getUrl());
+			LOGGER.info("********************GET CAPABILITIES*******");
+			Device device = managerImpl.getDevice(infos[length-2]);
+			Set<Capability> capabilities = device.getCapabilities();
+			requestIndication.setRepresentation(JsonEncoder.capabilitiesToJSONStr(capabilities));
+			responseConfirm = new ResponseConfirm(StatusCode.STATUS_OK, JsonEncoder.capabilitiesToJSONStr(capabilities));
+			return responseConfirm;
+			
 		}
-		// TODO : Ajouter le retour de la liste des capacités en fonction d'un device
-		// /nscl/application/CIMANSCL/devices/<device_id>/capabilities
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST, ""));
 	}
 
@@ -136,7 +148,9 @@ public class InfrastructureController implements IpuService{
 						requestIndication.setBase(subscriber.getUrl()+":"+subscriber.getPort());
 						requestIndication.setTargetID("");
 						requestIndication.setRepresentation(JsonEncoder.devicesToJSONStr(devices));
+						LOGGER.info(JsonEncoder.devicesToJSONStr(devices));
 						LOGGER.info("Sending all devices contact info to new subscriber");
+						LOGGER.info(JsonEncoder.devicesToJSONStr(devices));
 						restClientService.sendRequest(requestIndication);
 
 						return new ResponseConfirm(StatusCode.STATUS_ACCEPTED, "");

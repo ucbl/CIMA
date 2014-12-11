@@ -61,6 +61,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		devices = new ArrayList<>();
 		unknownDevices = new ArrayList<>();
 		configManagerImpl = new ConfigManagerImpl();
+		capabilityManager = new CapabilityManagerImpl();
 		
 
 	}
@@ -70,6 +71,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		devices = new ArrayList<>();
 		unknownDevices = new ArrayList<>();
 		configManagerImpl = new ConfigManagerImpl();
+		capabilityManager = new CapabilityManagerImpl();
 		
 
 		DeviceDescription deviceDescription = new DeviceDescription("ev3", "http://192.168.0.02:/infos/", "ip");
@@ -356,7 +358,11 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		String base = "";
 		
 		if(getDevice(deviceId) != null) base = getDevice(deviceId).getUri();
-		else if(getUnknownDevice(deviceId) != null) base = getUnknownDevice(deviceId).getUri();
+		else if(getUnknownDevice(deviceId) != null){
+			base = getUnknownDevice(deviceId).getUri();
+			base += ":" + capability.getProtocol().getParameterValue("port");
+		}
+		if(!base.endsWith("/")) base += "/";
 		LOGGER.info(base);
 		LOGGER.info(protocol.getParameterValue("protocolName"));
 		LOGGER.info(capability.getProtocol().getParameterValue("body"));

@@ -309,19 +309,20 @@ public class Parser {
 	}
 
 	public static Device parseObixToDevice(String obixFormat) {
-
+		System.out.println("OBIX FORMAT : " + obixFormat);
 		Device device;
 		List<Capability> capabilities = new ArrayList<>();
 		String id = null, name = null, uri = null, modeConnection = null, dateConnection = null;
 
 		Obj objRoot = ObixDecoder.fromString(obixFormat);
-		Obj ObjDevice = objRoot.get("device");
-
-		id = ObjDevice.get("id").getStr();
-		name = ObjDevice.get("name").getStr();
-		uri = ObjDevice.get("uri").getStr();
-		modeConnection = ObjDevice.get("modeConnection").getStr();
-		dateConnection  = ObjDevice.get("dateConnection").getStr();
+		Obj objDevice = objRoot.get("device");
+		if(objDevice == null) objDevice = objRoot.get("Device");
+		if(objDevice == null) objDevice = objRoot;
+		id = objDevice.get("id").getStr();
+		name = objDevice.get("name").getStr();
+		uri = objDevice.get("uri").getStr();
+		modeConnection = objDevice.get("modeConnection").getStr();
+		dateConnection  = objDevice.get("dateConnection").getStr();
 
 		DeviceDescription deviceDescription = new DeviceDescription(name, uri, modeConnection);
 		if(id != null) {
@@ -336,7 +337,7 @@ public class Parser {
 
 		device = new Device(deviceDescription);
 
-		obix.List obixCapabilities = (obix.List)ObjDevice.get("capabilities");
+		obix.List obixCapabilities = (obix.List)objDevice.get("capabilities");
 
 		if(obixCapabilities != null) {
 			for(Obj objCapability : obixCapabilities.list()) {
@@ -347,7 +348,7 @@ public class Parser {
 			}
 		}
 
-		Obj objContactInfo = ObjDevice.get("contactInfo");
+		Obj objContactInfo = objDevice.get("contactInfo");
 		if(objContactInfo != null) {
 			System.out.println(objContactInfo.get("cloud_port"));
 			long cloudPort = objContactInfo.get("cloud_port").getInt();
@@ -430,8 +431,8 @@ public class Parser {
 				"<list name=\"keywords\">"+
 				"<str val=\"ev3\" />"+
 				"<str val=\"back\" />"+
-				"</list>"+
 				"</obj>"+
+				"</list>"+
 				"<obj>"+
 				"<str name=\"id\" val=\"phone\"/>"+
 				"<obj name=\"protocol\">"+

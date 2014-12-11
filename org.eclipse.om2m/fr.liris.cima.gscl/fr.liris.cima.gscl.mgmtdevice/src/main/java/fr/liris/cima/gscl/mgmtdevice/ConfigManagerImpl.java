@@ -37,7 +37,9 @@ public class ConfigManagerImpl {
 	}
 	
 	public Capability getCapabilityToDevice(String deviceId, String capabilityId) {
-		return mapConfig.get(deviceId).get(capabilityId);
+		Map<String, Capability> mapCapa = mapConfig.get(deviceId);
+		if(mapCapa != null) return mapCapa.get(capabilityId);
+		else return null;
 	}
 	
 	public boolean removeCapabilityDevice(String deviceId, String capabilityId) {
@@ -51,8 +53,11 @@ public class ConfigManagerImpl {
 	
 	public Capability updateCapability(String deviceId, Capability capability) {
 		Map<String, Capability> mapCapabilities = mapConfig.get(deviceId);
-		
-		mapCapabilities.put(capability.getName(), capability);	
+		if (mapCapabilities == null){
+			mapCapabilities = new HashMap<String, Capability>();
+			mapConfig.put(deviceId, mapCapabilities);
+		}
+		mapCapabilities.put(capability.getName(), capability);
 		return capability;
 	}
 
