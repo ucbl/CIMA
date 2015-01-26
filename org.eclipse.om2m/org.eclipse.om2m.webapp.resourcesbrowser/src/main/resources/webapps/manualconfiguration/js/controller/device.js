@@ -47,6 +47,8 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 			cap.protocol = {};
 			cap.protocol.protocolName = newCapability.protocol.protocolName;
 			cap.protocol.parameters = newCapability.protocol.parameters;
+			cap.keywords = newCapability.keywords;
+
 			
 			DeviceFactory.addCapability($scope.id,cap).then(function(){
 				$scope.capabilities.push(cap);

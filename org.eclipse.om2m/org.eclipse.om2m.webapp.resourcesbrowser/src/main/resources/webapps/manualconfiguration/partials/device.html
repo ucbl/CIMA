@@ -110,7 +110,7 @@
                             </li>
                             <br>   
                             <li> Key words </li> 
-                             <tags-input   ng-model="editedCapability.keywords"></tags-input> 
+                             <tags-input ng-model="editedCapability.keywords"></tags-input> 
 
                             <br>
 
@@ -160,9 +160,9 @@
                             </li>
                             <br>
                              <strong>Key words </strong>
-                             <tags-input ng-model="tags"></tags-input>                   
+                             <tags-input ng-model="NewFromExistingCapability.keywords"></tags-input>                   
                              <!-- Reset capability button -->
-                            <button ng-click="NewFromExistingCapability='';tags=null" type="button" class="btn btn-primary pull-left" >Reset</button>
+                            <button ng-click="NewFromExistingCapability={}" type="button" class="btn btn-primary pull-left" >Reset</button>
                              <!-- Add capability button -->
                             <button style="margin-left:5px" class="btn btn-success pull-right" type="submit" >Add</button>
                             <!-- Test capability button -->
@@ -194,7 +194,7 @@
                              <tags-input ng-model="newCapability.keywords"></tags-input> 
                              <br>                
                              <!-- Reset capability button -->
-                            <button ng-click="newCapability={};tags=null" type="button" class="btn btn-primary pull-left">Reset</button> 
+                            <button ng-click="newCapability={}" type="button" class="btn btn-primary pull-left">Reset</button> 
                              <!-- Add capability button -->
                             <input style="margin-left:5px" class="btn btn-success pull-right" type="submit" value="Add"/>
                              <!-- Test capability button -->

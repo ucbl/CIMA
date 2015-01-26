@@ -10,5 +10,6 @@ images/*
 *.png
 .gitignore
 .idea
+.DS_Store
 todo_09_12_2014.txt
 
