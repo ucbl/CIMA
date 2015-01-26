@@ -28,7 +28,7 @@
                     <td>{{device.modeConnection}}</td>
                     <td>{{device.uri}}</td>
                     <td>
-                        <a class="btn btn-sm btn-success" href="#/device/{{device.id}}"> Configure</a>
+                        <a class="btn btn-sm btn-success" ng-click="stopRefreshDevices()" href="#/device/{{device.id}}"> Configure</a>
                     </td>
                 </tr>
                 </tbody>

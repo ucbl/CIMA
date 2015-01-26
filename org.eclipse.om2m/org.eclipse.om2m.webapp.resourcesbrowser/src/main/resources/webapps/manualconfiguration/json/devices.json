@@ -3,94 +3,102 @@
     {
         "id" : "0123456789",
         "name" : "monObjet",
+        "configuration" : "automatic",
         "uri" : "http://192.168.0.2",
         "dateConnection" : "10/10/14",
-        "modeConnection" : "http",
+        "modeConnection" : "HTTP",
         "capabilities": [
             {
                 "id" : "ev3Back",
-                "protocol": 
-                    {
-                        "protocolName":"HTTP",
-                        "parameters": [{
-                            "name": "URI",
-                            "value": "/EV33333.com"
+                "protocol": {
+                    "protocolName" : "HTTP",
+                    "parameters" : [
+                        {
+                            "name" : "method",
+                            "value" : "POST" 
                         },
                         {
-                            "name": "URL",
-                            "value": "www./ev3.com"
-                        }
-                        ]            
-                    },
-                "keywords" : ["ev3","reculer","back","robot","mouvement"]
-            }
-        ]
-    },
-    
-    {
-        "id": "000",
-        "name": "EV3",
-        "dateConnection" : "01/10/2014",
-        "modeConnection":"HTTP",
-        "uri":"http://192.168.0.1",
-        "capabilities": [
-            {
-                "protocol": 
-                    {
-                        "protocolName":"HTTP",
-                        "parameters": [{
-                            "name": "URI",
-                            "value": "/mass.com"
+                            "name" : "port",
+                            "value" : "8080" 
+                        },
+                       {
+                            "name" : "URI",
+                            "value" : "/capability" 
                         },
                         {
-                            "name": "URL",
-                            "value": "www./mass.com"
+                            "name" : "body",
+                            "value" : "YmFjaw==" 
                         }
-                        ]            
-                    },
-         "keywords" : ["ev3","reculer","back","robot","mouvement"]
-
+                    ]
+                }
             }
         ]
     },
     {
-        "id": "001",
-        "name": "IPhone",
-        "dateConnection" : "21/09/2014",
-        "modeConnection":"USB",
-        "uri":"http://181.67.3.6",
+        "id" : "9876543210",
+        "name" : "unObjet",
+        "configuration" : "manual",
+        "uri" : "http://192.168.0.1",
+        "dateConnection" : "09/10/14",
+        "modeConnection" : "HTTP",
         "capabilities": [
             {
-                "id": "HBFV",
-                "protocol": 
-                    {
-                        "protocolName":"HTTP",
-                        "parameters": [{
-                            "name": "URI",
-                            "value": "/mass.com"
+                "id" : "ev3Back",
+                "protocol": {
+                    "protocolName" : "HTTP",
+                    "parameters" : [
+                        {
+                            "name" : "method",
+                            "value" : "POST" 
                         },
                         {
-                            "name": "URL",
-                            "value": "www./mass.com"
+                            "name" : "port",
+                            "value" : "8080" 
+                        },
+                       {
+                            "name" : "URI",
+                            "value" : "/capability" 
+                        },
+                        {
+                            "name" : "body",
+                            "value" : "YmFjaw==" 
                         }
-                        ]            
-                    },
-         "keywords" : ["ev3","reculer","back","robot","mouvement"]
-
-            },
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "id" : "0918273645",
+        "name" : "LObjet",
+        "configuration" : "automatic",
+        "uri" : "http://192.168.0.3",
+        "dateConnection" : "08/10/14",
+        "modeConnection" : "HTTP",
+        "capabilities": [
             {
-                "id": "HORUS",
-                "protocol": 
-                    {
-                        "protocolName":"USB",
-                        "parameters": [{
-                            "name": "URI",
-                            "value": "/mass2DINGUE.com"
+                "id" : "ev3Back",
+                "protocol": {
+                    "protocolName" : "HTTP",
+                    "parameters" : [
+                        {
+                            "name" : "method",
+                            "value" : "POST" 
+                        },
+                        {
+                            "name" : "port",
+                            "value" : "8080" 
+                        },
+                       {
+                            "name" : "URI",
+                            "value" : "/capability" 
+                        },
+                        {
+                            "name" : "body",
+                            "value" : "YmFjaw==" 
                         }
-                        ]            
-                    },
-         "keywords" : ["ev3","reculer","back","robot","mouvement"]
-
+                    ]
+                }
             }
         ]
     }

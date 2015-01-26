@@ -2,6 +2,7 @@ package fr.liris.cima.gscl.core;
 
 
 import java.util.List;
+import java.util.Map;
 
 import obix.io.ObixEncoder;
 
@@ -107,17 +108,29 @@ public class DeviceController implements IpuService{
 		String lastInfo = infos[infos.length - 1];
 
 		if(lastInfo.equals(Constants.PATH_CAPABILITIES)){
-			String deviceId = infos[infos.length - 2];
-			Device device = managerImpl.getDevice(deviceId);
-			LOGGER.info("*********LAST INFO ****"+deviceId);
-
-
-			if(device != null) {
-				LOGGER.info("*********Constant INFO = = = ****"+Constants.PATH_CAPABILITIES);
-				String representation = Encoder.encodeCapabilitiesToObix(device.getCapabilities());
-				LOGGER.info("send request for getting capabilities");
-				ResponseConfirm responseConfirm = new ResponseConfirm(StatusCode.STATUS_OK, representation);
-				return responseConfirm;
+			if(infos[infos.length - 2].equals(Constants.PATH_UNKNOWN_DEVICES)){
+				// filter on capabilities
+				Map<String, List <String>> params = requestIndication.getParameters();
+				List<String> lFilter = params.get("filter");
+				String filter = "";
+				for(String f : lFilter){
+					filter += f + "+";
+				}
+				filter = filter.substring(0, filter.length() - 1);
+				List<Capability> capabilites = capabilityManager.getCapabilities(filter);
+			} else {
+				String deviceId = infos[infos.length - 2];
+				Device device = managerImpl.getDevice(deviceId);
+				LOGGER.info("*********LAST INFO ****"+deviceId);
+	
+	
+				if(device != null) {
+					LOGGER.info("*********Constant INFO = = = ****"+Constants.PATH_CAPABILITIES);
+					String representation = Encoder.encodeCapabilitiesToObix(device.getCapabilities());
+					LOGGER.info("send request for getting capabilities");
+					ResponseConfirm responseConfirm = new ResponseConfirm(StatusCode.STATUS_OK, representation);
+					return responseConfirm;
+				}
 			}
 		}
 		else if(infos[infos.length - 1].equals(Constants.PATH_UNKNOWN_DEVICES)){
