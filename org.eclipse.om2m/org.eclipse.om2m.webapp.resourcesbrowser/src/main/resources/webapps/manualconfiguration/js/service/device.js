@@ -1,19 +1,15 @@
-
 /*Device Model
 * Defining all methods to request the server*/
-
 	
-app.factory('DeviceFactory',function($http, $q, $timeout, $log){
+app.factory('DeviceFactory', function($http, $q, $timeout, $log){
 
-	var factory = { 
+	var factory = {
 		/*Return all devices*/
 		find : function(options){
 			/* Promesses */
 			var deferred = $q.defer();
-
-            /*Asynchronous request for getting all devices*/
- 			setInterval(function(){
- 				$.ajax({
+        	/* First call to initialise */
+        	$.ajax({
  				   url : URL_DEVICE,
 			       type : 'GET',
 			       dataType : 'json',
@@ -24,16 +20,12 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 			       error : function(result, status, error){
 			       		console.log("error ajax req ");
 			       		deferred.reject('Unable to get devices')
-
 			       },
-			       beforeSend: function(xhr, settings) { xhr.setRequestHeader('Authorization','Basic YWRtaW46YWRtaW4='); } 
-
-			    });
- 			}, 5000); 
-       
-
-			return deferred.promise;
-		
+			       beforeSend: function(xhr, settings) { 
+			       		xhr.setRequestHeader('Authorization','Basic YWRtaW46YWRtaW4=');
+				    }
+			});
+		return deferred.promise;
 	}, 
         /*get a device from its id*/
  		get : function(id){
@@ -140,8 +132,6 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
         	});
 			return deferred.promise;
 		}
-
-	};
-return factory;
-
+	}
+	return factory;
 })
