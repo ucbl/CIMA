@@ -52,8 +52,8 @@ public class ManualConfigurationServer implements IpuService{
 				requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown");
 				resp = restClientService.sendRequest(requestIndication);
 				resp.setRepresentation(Parser.parseObixToJSONStringDevices(resp.getRepresentation()));
-				return resp;
-//				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
+//				return resp;
+				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
 			case "protocol" :
 //				requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/protocol");
 //				resp = restClientService.sendRequest(requestIndication);
@@ -72,22 +72,22 @@ public class ManualConfigurationServer implements IpuService{
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5]);
 			resp = restClientService.sendRequest(requestIndication);
 			resp.setRepresentation(Parser.parseObixToJSONStringDevice(resp.getRepresentation()));
-			return resp;
-//			return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
+//			return resp;
+			return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
 		} else if(tID.length == 7){
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5] + "/capability");
 			resp = restClientService.sendRequest(requestIndication);
 			resp.setRepresentation(Parser.parseObixToJSONStringDevice(resp.getRepresentation()));
-			return resp;
-//			return new ResponseConfirm(StatusCode.STATUS_OK, "");
+//			return resp;
+			return new ResponseConfirm(StatusCode.STATUS_OK, "");
 		} else if(tID.length == 8){
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability/<capability id>
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5] + "/capability/" + tID[7]);
 			resp = restClientService.sendRequest(requestIndication);
 			resp.setRepresentation(Parser.parseObixToJSONStringDevice(resp.getRepresentation()));
-			return resp;
-//			return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" capability not found"));
+//			return resp;
+			return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" capability not found"));
 		}
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" ressource not found"));
 	}
@@ -105,16 +105,16 @@ public class ManualConfigurationServer implements IpuService{
 			requestIndication.setRepresentation(Parser.parseJSONToObixStringDevice(requestIndication.getRepresentation()));
 			resp = restClientService.sendRequest(requestIndication);
 			resp.setRepresentation(Parser.parseObixToJSONStringDevice(resp.getRepresentation()));
-			return resp;
-//			return new ResponseConfirm(StatusCode.STATUS_OK, body);
+//			return resp;
+			return new ResponseConfirm(StatusCode.STATUS_OK, body);
 		} else if(tID.length == 8){
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability/<capability id>
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5] + "/capability/" + tID[7]);
 			requestIndication.setRepresentation(Parser.parseJSONToObixStringCapability(requestIndication.getRepresentation()));
 			resp = restClientService.sendRequest(requestIndication);
 			resp.setRepresentation(Parser.parseObixToJSONStringCapability(resp.getRepresentation()));
-			return resp;
-//			return new ResponseConfirm(StatusCode.STATUS_OK, body);
+//			return resp;
+			return new ResponseConfirm(StatusCode.STATUS_OK, body);
 		}
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" ressource not found"));
 	}
@@ -131,8 +131,8 @@ public class ManualConfigurationServer implements IpuService{
 			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability/<capability id>
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5] + "/capability/" + tID[7]);
 			resp = restClientService.sendRequest(requestIndication);
-			return resp;
-//			return new ResponseConfirm(StatusCode.STATUS_OK, "ressource " + tID[7] + " deleted");
+//			return resp;
+			return new ResponseConfirm(StatusCode.STATUS_OK, "ressource " + tID[7] + " deleted");
 		}
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" ressource not found"));
 	}
@@ -151,8 +151,8 @@ public class ManualConfigurationServer implements IpuService{
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5] + "/test");
 			requestIndication.setRepresentation(Parser.parseJSONToObixStringCapability(requestIndication.getRepresentation()));
 			resp = restClientService.sendRequest(requestIndication);
-			return resp;
-//			return new ResponseConfirm(StatusCode.STATUS_OK, "blablabla");
+//			return resp;
+			return new ResponseConfirm(StatusCode.STATUS_OK, "blablabla");
 		}
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" ressource not found"));
 	}
