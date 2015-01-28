@@ -31,7 +31,7 @@
 		<module>fr.liris.cima.nscl.proto</module>
 		<module>fr.liris.cima.nscl.commons</module>
 		<module>fr.liris.cima.nscl.device.service</module>
-		<module>fr.liris.cima.nscl.device.manualconfig</module>
+		<module>fr.liris.cima.nscl.administration</module>
 		<module>fr.liris.cima.nscl.mgmtdevice</module>
 		<module>fr.liris.cima.nscl.core</module>
 	</modules>

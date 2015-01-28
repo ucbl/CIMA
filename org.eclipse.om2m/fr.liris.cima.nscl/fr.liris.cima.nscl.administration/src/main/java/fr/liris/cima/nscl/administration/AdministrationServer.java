@@ -1,4 +1,4 @@
-package fr.liris.cima.nscl.device.manualconfig;
+package fr.liris.cima.nscl.administration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,19 +12,18 @@ import org.eclipse.om2m.ipu.service.IpuService;
 import fr.liris.cima.nscl.commons.constants.Constants;
 import fr.liris.cima.nscl.commons.parser.Parser;
 
-public class ManualConfigurationServer implements IpuService{
-	private static Log LOGGER = LogFactory.getLog(ManualConfigurationServer.class);
+public class AdministrationServer implements IpuService{
+	private static Log LOGGER = LogFactory.getLog(AdministrationServer.class);
 	
 	/** rest client service*/
 	public static RestClientService restClientService;
-	public static String GSCL_DEVICES_CONTACT = "om2m/gscl/applications/CIMA/devices";
+	public static final String GSCL_DEVICES_CONTACT = "om2m/gscl/applications/CIMA/devices";
 	
 	@Override
 	// POST without body
 	public ResponseConfirm doExecute(RequestIndication requestIndication) {
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_IMPLEMENTED,"POST must have a body"));
 	}
-
 	@Override
 	// GET
 	public ResponseConfirm doRetrieve(RequestIndication requestIndication) {
@@ -45,8 +44,8 @@ public class ManualConfigurationServer implements IpuService{
 		requestIndication.setRepresentation("");
 		
 		if(tID.length == 5){
-			// nscl/applications/configuration/manualconfiguration/device return the list of unrecognized devices
-			// nscl/applications/configuration/manualconfiguration/protocol return the spported protocol list
+			// nscl/applications/CIMA/administration/device return the list of unrecognized devices
+			// nscl/applications/CIMA/administration/protocol return the spported protocol list
 			switch(tID[4]){
 			case "device" :
 				requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown");
@@ -68,21 +67,21 @@ public class ManualConfigurationServer implements IpuService{
 			}
 			
 		} else if(tID.length == 6){
-			// nscl/applications/configuration/manualconfiguration/device/<device id>/
+			// nscl/applications/CIMA/administration/device/<device id>/
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5]);
 			resp = restClientService.sendRequest(requestIndication);
 			resp.setRepresentation(Parser.parseObixToJSONStringDevice(resp.getRepresentation()));
 //			return resp;
 			return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
 		} else if(tID.length == 7){
-			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability
+			// nscl/applications/CIMA/administration/device/<device id>/capability
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5] + "/capability");
 			resp = restClientService.sendRequest(requestIndication);
 			resp.setRepresentation(Parser.parseObixToJSONStringDevice(resp.getRepresentation()));
 //			return resp;
 			return new ResponseConfirm(StatusCode.STATUS_OK, "");
 		} else if(tID.length == 8){
-			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability/<capability id>
+			// nscl/applications/CIMA/administration/device/<device id>/capability/<capability id>
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5] + "/capability/" + tID[7]);
 			resp = restClientService.sendRequest(requestIndication);
 			resp.setRepresentation(Parser.parseObixToJSONStringDevice(resp.getRepresentation()));
@@ -100,7 +99,7 @@ public class ManualConfigurationServer implements IpuService{
 		ResponseConfirm resp = null;
 		requestIndication.setBase("127.0.0.1:8181/");
 		if(tID.length == 6){
-			// nscl/applications/configuration/manualconfiguration/device/<device id>/
+			// nscl/applications/CIMA/administration/device/<device id>/
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5]);
 			requestIndication.setRepresentation(Parser.parseJSONToObixStringDevice(requestIndication.getRepresentation()));
 			resp = restClientService.sendRequest(requestIndication);
@@ -108,7 +107,7 @@ public class ManualConfigurationServer implements IpuService{
 //			return resp;
 			return new ResponseConfirm(StatusCode.STATUS_OK, body);
 		} else if(tID.length == 8){
-			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability/<capability id>
+			// nscl/applications/CIMA/administration/device/<device id>/capability/<capability id>
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5] + "/capability/" + tID[7]);
 			requestIndication.setRepresentation(Parser.parseJSONToObixStringCapability(requestIndication.getRepresentation()));
 			resp = restClientService.sendRequest(requestIndication);
@@ -128,7 +127,7 @@ public class ManualConfigurationServer implements IpuService{
 		requestIndication.setBase("127.0.0.1:8181/");
 		requestIndication.setRepresentation("");
 		if(tID.length == 8){
-			// nscl/applications/configuration/manualconfiguration/device/<device id>/capability/<capability id>
+			// nscl/applications/CIMA/administration/device/<device id>/capability/<capability id>
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5] + "/capability/" + tID[7]);
 			resp = restClientService.sendRequest(requestIndication);
 //			return resp;
@@ -147,7 +146,7 @@ public class ManualConfigurationServer implements IpuService{
 		LOGGER.info("++++++++++++++++++++");
 		LOGGER.info("tID.lengh = " + tID.length);
 		if(tID.length == 7){
-			// nscl/applications/configuration/manualconfiguration/device/<device id>/test
+			// nscl/applications/CIMA/administration/device/<device id>/test
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/unknown/" + tID[5] + "/test");
 			requestIndication.setRepresentation(Parser.parseJSONToObixStringCapability(requestIndication.getRepresentation()));
 			resp = restClientService.sendRequest(requestIndication);
@@ -159,7 +158,7 @@ public class ManualConfigurationServer implements IpuService{
 
 	@Override
 	public String getAPOCPath() {
-		return "manualconfiguration";
+		return "administration";
 	}
 
 }

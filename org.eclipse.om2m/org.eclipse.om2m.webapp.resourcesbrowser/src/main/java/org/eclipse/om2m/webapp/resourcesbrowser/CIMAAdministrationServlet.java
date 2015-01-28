@@ -12,7 +12,6 @@ public class CIMAAdministrationServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
       @Override
       protected void service(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
-          //httpServletRequest.getRequestDispatcher("/webapps/index.html").forward (httpServletRequest, httpServletResponse);
           httpServletResponse.sendRedirect("/cima/ManualConfiguration.html");
       }
 }

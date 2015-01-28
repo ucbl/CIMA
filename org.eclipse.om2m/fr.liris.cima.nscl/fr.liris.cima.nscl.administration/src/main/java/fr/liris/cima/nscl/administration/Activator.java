@@ -1,4 +1,4 @@
-package fr.liris.cima.nscl.device.manualconfig;
+package fr.liris.cima.nscl.administration;
 
 import java.util.Dictionary;
 import java.util.Properties;
@@ -28,9 +28,9 @@ public class Activator implements BundleActivator {
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 
-		logger.info("register Service ManualConfigurationServer .");
+		logger.info("register Service CIMA Administration .");
 
-		bundleContext.registerService(IpuService.class.getName(), new ManualConfigurationServer(), null);
+		bundleContext.registerService(IpuService.class.getName(), new AdministrationServer(), null);
 		logger.info("open  ManagedDeviceService .");
 
 		logger.info("get  restServiceClient .");
@@ -40,9 +40,9 @@ public class Activator implements BundleActivator {
 			}
 
 			public Object addingService(ServiceReference<Object> reference) {
-				logger.info("RestClientService discovered in cima nscl manual configuration server");
+				logger.info("RestClientService discovered in cima nscl administration server");
 				final RestClientService restClientService = (RestClientService) this.context.getService(reference);
-				ManualConfigurationServer.restClientService = restClientService;
+				AdministrationServer.restClientService = restClientService;
 				return restClientService;
 			}
 		};

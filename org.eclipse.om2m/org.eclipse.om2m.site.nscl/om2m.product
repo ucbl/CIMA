@@ -67,7 +67,7 @@
       <plugin id="fr.liris.cima.nscl.commons"/>
       <plugin id="fr.liris.cima.nscl.controller"/>
       <plugin id="fr.liris.cima.nscl.core"/>
-      <plugin id="fr.liris.cima.nscl.device.manualconfig"/>
+      <plugin id="fr.liris.cima.nscl.administration"/>
       <plugin id="fr.liris.cima.nscl.device.service"/>
       <plugin id="fr.liris.cima.nscl.mgmtdevice"/>
       <plugin id="fr.liris.cima.nscl.proto"/>
@@ -87,7 +87,7 @@
       <plugin id="fr.liris.cima.nscl.avatarbuilder" autoStart="true" startLevel="4" />
       <plugin id="fr.liris.cima.nscl.controller" autoStart="false" startLevel="5" />
       <plugin id="fr.liris.cima.nscl.core" autoStart="true" startLevel="5" />
-      <plugin id="fr.liris.cima.nscl.device.manualconfig" autoStart="true" startLevel="5" />
+      <plugin id="fr.liris.cima.nscl.administration" autoStart="true" startLevel="5" />
       <plugin id="fr.liris.cima.nscl.mgmtdevice" autoStart="true" startLevel="4" />
       <plugin id="fr.liris.cima.nscl.proto" autoStart="false" startLevel="4" />
       <property name="org.eclipse.equinox.http.jetty.http.port" value="8080" />

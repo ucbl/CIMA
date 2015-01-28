@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>fr.liris.cima.nscl.device.manualconfig</artifactId>
+	<artifactId>fr.liris.cima.nscl.administration</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>fr.liris.cima.nscl.core :: cima nscl device manualconfig</name>
-	<description>fr.liris.cima.nscl.core :: cima nscl device manualconfig</description>
+	<name>fr.liris.cima.nscl.administration :: cima nscl administration</name>
+	<description>fr.liris.cima.nscl.administration :: cima nscl administration</description>
 	<parent>
 		<groupId>fr.liris.cima.nscl</groupId>
 		<artifactId>fr.liris.cima.nscl</artifactId>
