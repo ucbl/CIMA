@@ -19,18 +19,18 @@ import obix.io.ObixEncoder;
  */
 public class Capability {
 
-	/** The name of the capability*/
 	private String name;
-	/** Protocol for getting, invoking capability */
 	private Protocol protocol;
-
-	/** The key words associated  */
 	private List<String> keywords;
+	private int cloudPort;
 
-	public Capability(String name, Protocol protocol, List<String> keywords) {
+ 
+	public Capability(String name, Protocol protocol, List<String> keywords, int cloudPort) {
 		this.name = name;
 		this.protocol = protocol;
 		this.keywords = keywords;
+                this.cloudPort=cloudPort;
+		
 	}
 
 	public  Capability(String name) {

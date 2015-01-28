@@ -31,7 +31,7 @@ public class Device {
 	private List<Capability> capabilities;
 	
 	/** Information for contacting the device in the cloudby-passing the OM2M layer*/
-	private ContactInfo contactInfo;
+//	private ContactInfo contactInfo;
 
 	/** A simple device description*/
 	private DeviceDescription deviceDescription;
@@ -47,13 +47,13 @@ public class Device {
 		this.capabilities = capabilities;
 	}
 
-	public ContactInfo getContactInfo() {
-		return contactInfo;
-	}
+//	public ContactInfo getContactInfo() {
+//		return contactInfo;
+//	}
 
-	public void setContactInfo(ContactInfo contactInfo) {
-		this.contactInfo = contactInfo;
-	}
+//	public void setContactInfo(ContactInfo contactInfo) {
+//		this.contactInfo = contactInfo;
+//	}
 
 
 	public Device() {
@@ -62,7 +62,7 @@ public class Device {
 
 	public Device(DeviceDescription deviceDescription) {
 		this.deviceDescription = deviceDescription;
-		contactInfo = new ContactInfo(deviceDescription.getId(), PortGenerator.generatePort());
+//		contactInfo = new ContactInfo(deviceDescription.getId(), PortGenerator.generatePort());
 		capabilities = new ArrayList<>();
 		this.configuration = Configuration.AUTOMATIC;
 	}
@@ -84,7 +84,7 @@ public class Device {
 
 		sb.append(deviceDescription);
 		sb.append(", ");
-		sb.append(contactInfo);
+//		sb.append(contactInfo);
 		sb.append(", ");
 		sb.append(capabilities);
 		sb.append("]\n");

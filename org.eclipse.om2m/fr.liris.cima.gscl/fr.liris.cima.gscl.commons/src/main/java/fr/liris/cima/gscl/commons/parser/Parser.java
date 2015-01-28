@@ -284,7 +284,6 @@ public class Parser {
 
 		Device device = null;
 		String id = "",  name = "", uri = "",  modeConnection=""; 
-
 		Protocol protocol = new Protocol();
 		Date dateConnection = null;
 
@@ -296,7 +295,9 @@ public class Parser {
 		protocol.addParameter("port", protocolObj.get("port").getStr());
 		protocol.addParameter("uri", protocolObj.get("uri").getStr());
 		protocol.addParameter("body", protocolObj.get("body").getStr());
-
+                
+                int cloudPort=Integer.parseInt(capabilityObj.get("cloudPort").getStr());
+                
 		Obj [] objs = capabilityObj.get("keywords").list();
 		List<String> keywords = new ArrayList<>();
 		for(Obj o : objs){
@@ -304,10 +305,9 @@ public class Parser {
 		}
 
 		name = capabilityObj.get("id").getStr();
-
-		return new Capability(name, protocol, keywords);
+		return new Capability(name, protocol, keywords,cloudPort);
 	}
-
+        
 	public static Device parseObixToDevice(String obixFormat) {
 		System.out.println("OBIX FORMAT : " + obixFormat);
 		Device device;
@@ -348,13 +348,13 @@ public class Parser {
 			}
 		}
 
-		Obj objContactInfo = objDevice.get("contactInfo");
-		if(objContactInfo != null) {
-			System.out.println(objContactInfo.get("cloud_port"));
-			long cloudPort = objContactInfo.get("cloud_port").getInt();
-			ContactInfo contactInfo = new ContactInfo(id, (int)cloudPort);
-			device.setContactInfo(contactInfo);
-		}
+//		Obj objContactInfo = objDevice.get("contactInfo");
+//		if(objContactInfo != null) {
+//			System.out.println(objContactInfo.get("cloud_port"));
+//			long cloudPort = objContactInfo.get("cloud_port").getInt();
+//			ContactInfo contactInfo = new ContactInfo(id, (int)cloudPort);
+//			device.setContactInfo(contactInfo);
+//		}
 
 		return device;	
 	}
@@ -383,34 +383,34 @@ public class Parser {
 
 
 	public static void main(String args[]) throws Exception {
-		String representation = "<device>"+
-				"<name>ev3</name>"+
-				"<modeConnection>http</modeConnection>"+
-				"<dateConnection>mercredi, oct. 22, 2014 13:52:20 PM</dateConnection>"+
-				"<uri>192.168.43.34</uri> "+
-				"<capabilities> "
-				+ "<capability>"
-				+ "<id> ev3back</id>"
-				+ "<protocol>"
-				+ "<protocolName>" + "http" + "</protocolName>"
-				+ "<method> "+ "PUT" +"</method>"
-				+ "<port>8080</port>"
-				+ "<uri>" + "/capabilities" + "</uri>"
-				+ "<body>body</body>"
-				+ "</protocol>"
-				+ "<keywords>"
-				+ "<keyword>ev3</keyword>"
-				+ "</keywords>"
-				+ "</capability>"
-				+ "</capabilities>"
-				+"</device>";
+//		String representation = "<device>"+
+//				"<name>ev3</name>"+
+//				"<modeConnection>http</modeConnection>"+
+//				"<dateConnection>mercredi, oct. 22, 2014 13:52:20 PM</dateConnection>"+
+//				"<uri>192.168.43.34</uri> "+
+//				"<capabilities> "
+//				+ "<capability>"
+//				+ "<id> ev3back</id>"
+//				+ "<protocol>"
+//				+ "<protocolName>" + "http" + "</protocolName>"
+//				+ "<method> "+ "PUT" +"</method>"
+//				+ "<port>8080</port>"
+//				+ "<uri>" + "/capabilities" + "</uri>"
+//				+ "<body>body</body>"
+//				+ "</protocol>"
+//				+ "<keywords>"
+//				+ "<keyword>ev3</keyword>"
+//				+ "</keywords>"
+//				+ "</capability>"
+//				+ "</capabilities>"
+//				+"</device>";
 		//
 		//		Device device = new Device("ev3", "localhost", "http", new ContactInfo());
 		//		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
 		//		System.out.println(Parser.parseXmlDevice(representation));
 		//System.out.println(formatter.format(new Date()));
 
-		System.out.println("device = "+parseXmlToDevice(representation));
+//		System.out.println("device = "+parseXmlToDevice(representation));
 
 		String obixFormat = "<obj>"+
 				"<obj name=\"device\">" +
@@ -422,24 +422,13 @@ public class Parser {
 				"<list name=\"capabilities\">"+
 				"<obj>"+
 				"<str name=\"id\" val=\"ev3Back\"/>"+
+                                "<str name=\"cloudPort\" val=\"8080\" />"+
 				"<obj name=\"protocol\">"+
-				"<str name=\"protocoleName\" val=\"http\"/>"+
+				"<str name=\"protocolName\" val=\"http\"/>"+ 
 				"<str name=\"method\" val=\"post\"/>"+
 				"<str name=\"port\" val=\"8080\"/>"+
 				"<str name=\"uri\" val=\"uri\"/>"+
-				"</obj>"+
-				"<list name=\"keywords\">"+
-				"<str val=\"ev3\" />"+
-				"<str val=\"back\" />"+
-				"</obj>"+
-				"</list>"+
-				"<obj>"+
-				"<str name=\"id\" val=\"phone\"/>"+
-				"<obj name=\"protocol\">"+
-				"<str name=\"protocoleName\" val=\"http\"/>"+
-				"<str name=\"method\" val=\"post\"/>"+
-				"<str name=\"port\" val=\"8080\"/>"+
-				"<str name=\"uri\" val=\"uri\"/>"+
+                                "<str name=\"body\" val=\"body\"/>"+
 				"</obj>"+
 				"<list name=\"keywords\">"+
 				"<str val=\"ev3\" />"+
@@ -456,27 +445,29 @@ public class Parser {
 
 		//System.out.println(obixFormat);
 		Device device = parseObixToDevice(obixFormat);
-		//	System.out.println(parseXmlToDeviceDescription(representation));
+         	System.out.println(device);
 		//	System.out.println(Encoder.encodeDeviceToObix(device));
 
 
 
-
-		String capabilityFormat = "<obj>"+
-				"<str name=\"id\" val=\"ev3Back\"/>"+
-				"<obj name=\"protocol\">"+
-				"<str name=\"protocoleName\" val=\"http\"/>"+
-				"<str name=\"method\" val=\"post\"/>"+
-				"<str name=\"port\" val=\"8080\"/>"+
-				"<str name=\"uri\" val=\"uri\"/>"+
-				"</obj>"+
-				"<list name=\"keywords\">"+
-				"<str val=\"ev3\" />"+
-				"<str val=\"back\" />"+
-				"</list>"+
-				"</obj>";
-		//	System.out.println(capabilityFormat);
-		//		System.out.println(parseObixToCapability(capabilityFormat).toString());
+//
+//		String capabilityFormat = "<obj>"+
+//				"<str name=\"id\" val=\"ev3Back\"/>"+
+//                                "<str name=\"cloudPort\" val=\"8080\" />"+
+//				"<obj name=\"protocol\">"+
+//				"<str name=\"protocolName\" val=\"http\"/>"+ 
+//				"<str name=\"method\" val=\"post\"/>"+
+//				"<str name=\"port\" val=\"8080\"/>"+
+//				"<str name=\"uri\" val=\"uri\"/>"+
+//                                "<str name=\"body\" val=\"body\"/>"+
+//				"</obj>"+
+//				"<list name=\"keywords\">"+
+//				"<str val=\"ev3\" />"+
+//				"<str val=\"back\" />"+
+//				"</list>"+
+//				"</obj>";
+//		//	System.out.println(capabilityFormat);
+//				System.out.println(parseObixToCapability(capabilityFormat).toString());
 		//
 		//	
 		//		System.out.println(parseObixToCapability(capabilityFormat).toObixFormat());

@@ -409,6 +409,8 @@ public class Parser {
 		protocol.addParameter("port", protocolObj.get("port").getStr());
 		protocol.addParameter("uri", protocolObj.get("uri").getStr());
 
+		int cloudPort=Integer.parseInt(capabilityObj.get("cloudPort").getStr());
+                
 		Obj [] objs = capabilityObj.get("keywords").list();
 		List<String> keywords = new ArrayList<>();
 		for(Obj o : objs){
@@ -416,8 +418,7 @@ public class Parser {
 		}
 
 		name = capabilityObj.get("id").getStr();
-
-		return new Capability(name, protocol, keywords);
+		return new Capability(name, protocol, keywords,cloudPort);
 	}
 	
 	public static Device parseObixToDevice(String obixFormat) {
