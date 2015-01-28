@@ -18,8 +18,7 @@ app.factory('DeviceFactory', function($http, $q, $timeout, $log){
 						deferred.resolve(factory.devices);
 			       },
 			       error : function(result, status, error){
-			       		console.log("error ajax req ");
-			       		deferred.reject('Unable to get devices')
+			       		deferred.reject('status : '+status+', error : '+error+'.');
 			       },
 			       beforeSend: function(xhr, settings) { 
 			       		xhr.setRequestHeader('Authorization','Basic YWRtaW46YWRtaW4=');
@@ -109,7 +108,6 @@ app.factory('DeviceFactory', function($http, $q, $timeout, $log){
         		headers: {'Content-Type': 'application/json'}
       		}).success(function (data, status, headers, config) {
 				deferred.resolve();
-				alert('success');
         	}).error(function (data, status, headers, config) {
 				deferred.reject('Unable to modify capability, status : '+status+', header : '+headers);
         	});

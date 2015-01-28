@@ -1,15 +1,26 @@
 /* Controller page home.html */
-app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,$interval){
+app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,$interval,$timeout, toaster){
 	
 	$rootScope.loading = true;
+	$scope.devices = new Array();
+	$scope.predicate = '-configuration';
+
 
 	/* Calling the DeviceFactory for changing the devices list */
 	$scope.loadDevices = function(){
-		$scope.devices = DeviceFactory.find().then(function(devices){
-			$scope.devices = devices;
-			$rootScope.loading = false;
+		var count = $scope.devices.length;
+		DeviceFactory.find().then(function(devices){
+			
+			if(devices.length != count){
+				toaster.pop('success', "", (devices.length-count)+" new devices detected.");
+				$scope.devices = devices;
+				$rootScope.loading = false;
+			}
+			
+
 		}, function(msg){
-			alert(msg);
+			$rootScope.requestInfo = msg;
+			toaster.pop('error', "Unable to get devices", msg);
 		})
 	};
 
