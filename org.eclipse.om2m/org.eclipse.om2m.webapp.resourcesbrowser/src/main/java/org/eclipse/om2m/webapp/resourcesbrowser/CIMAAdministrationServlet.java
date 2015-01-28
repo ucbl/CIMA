@@ -13,6 +13,6 @@ public class CIMAAdministrationServlet extends HttpServlet {
       @Override
       protected void service(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
           //httpServletRequest.getRequestDispatcher("/webapps/index.html").forward (httpServletRequest, httpServletResponse);
-          httpServletResponse.sendRedirect("/config/ManualConfiguration.html");
+          httpServletResponse.sendRedirect("/cima/ManualConfiguration.html");
       }
 }

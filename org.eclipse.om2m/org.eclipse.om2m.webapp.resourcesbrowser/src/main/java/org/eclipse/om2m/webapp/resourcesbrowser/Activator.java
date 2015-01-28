@@ -67,7 +67,7 @@ public class Activator implements BundleActivator {
 	          httpService.registerServlet(uiContext+sep, new WelcomeServlet(), null, null);
 	          httpService.registerServlet(uiContext+sep+"manualconfiguration", new CIMAAdministrationServlet(), null, null);
 			  httpService.registerResources(uiContext+sep+"welcome", uiContext+sep+"webapps", null);
-			  httpService.registerResources(uiContext+sep+"config", uiContext+sep+"webapps/cima", null);
+			  httpService.registerResources(uiContext+sep+"cima", uiContext+sep+"webapps/cima", null);
 	        } catch (Exception e) {
 	          LOGGER.error("Error registring webapp servlet",e);
 	        }
