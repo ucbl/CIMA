@@ -4,7 +4,6 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
 	$rootScope.loading = true;
 	$scope.devices = new Array();
 
-
 	/* Calling the DeviceFactory for changing the devices list */
 	$scope.loadDevices = function(){
 		var count = $scope.devices.length;
