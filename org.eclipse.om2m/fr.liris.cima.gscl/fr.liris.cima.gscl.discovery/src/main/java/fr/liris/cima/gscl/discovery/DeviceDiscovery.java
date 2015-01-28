@@ -13,12 +13,14 @@ import org.eclipse.om2m.commons.resource.StatusCode;
 import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 
+import fr.liris.cima.gscl.commons.Capability;
 import fr.liris.cima.gscl.commons.Device;
 import fr.liris.cima.gscl.commons.Encoder;
 import fr.liris.cima.gscl.commons.DeviceDescription;
 import fr.liris.cima.gscl.commons.ExecuteShellComand;
 import fr.liris.cima.gscl.commons.constants.*;
 import fr.liris.cima.gscl.commons.parser.*;
+import fr.liris.cima.gscl.commons.util.*;
 import fr.liris.cima.gscl.device.service.discovery.DiscoveryService;
 import fr.liris.cima.gscl.device.service.*;
 
@@ -31,11 +33,18 @@ public class DeviceDiscovery implements DiscoveryService{
 
 	private static Log LOGGER = LogFactory.getLog(DeviceDiscovery.class);
 	public static final String ADMIN_REQUESTING_ENTITY = System.getProperty("org.eclipse.om2m.adminRequestingEntity","admin/admin");
+	
+	public static final String FORWARD_PORT = System.getProperty("fr.liris.cima.gscl.forwardPort");
+	public static final String CIMA_ADDRESS = System.getProperty("fr.liris.cima.gscl.adress");
+	public static final String DEFAULT_DEVICE_PATH_INFOS = System.getProperty("fr.liris.cima.gscl.adress.defaultDevicePathInfos");
+	public static final String DISCOVERY_WAITING_TIMER = System.getProperty("fr.liris.cima.gscl.discoveryWaitingTimer");
 
 	// A rest client service
 	private RestClientService clientService;
 	// A device managed service
 	private ManagedDeviceService deviceService;
+	
+	private CIMAInternalCommunication cimaInternalCommunication ;
 
 	/**
 	 * the map, key is ip adress and value is the device id
@@ -43,17 +52,21 @@ public class DeviceDiscovery implements DiscoveryService{
 	 */
 	private Map<String, String> mapConnectedAddresses;
 
+
+
 	/**
-	 * this map store the avalaible device on the network
-	 * the key is ip adress and value is the device id
+	 * the map, key is ip adress and value is the device id
+	 * this map store the really connected device
 	 */
-	private Map<String, String> mapAvaliableAddresses;
-
-
-
 	private Map<String, String> mapKnownAddresses;
 
+	/**
+	 * the map, key is ip adress and value is the device id
+	 * this map store the unknown adress for configuration.
+	 */
 	private Map<String, String> mapConfiguredAddresses;
+	
+	Map<Integer, Pair<Integer, Integer>>mapPortManager;
 
 
 	public DeviceDiscovery() {
@@ -72,7 +85,10 @@ public class DeviceDiscovery implements DiscoveryService{
 		this.mapConfiguredAddresses = new HashMap<>();
 
 		this.mapConnectedAddresses= new HashMap<>();
-		this.mapAvaliableAddresses = new HashMap<>();
+		
+		this.mapPortManager = new HashMap<>();
+		
+		cimaInternalCommunication = new CIMAInternalCommunication();
 	}
 
 	/**
@@ -83,40 +99,6 @@ public class DeviceDiscovery implements DiscoveryService{
 		return ExecuteShellComand.getAllIpAddress(Constants.COMMAND_ARP_FOR_IP, Constants.IP_PREFIX);
 	}
 
-	/**
-	 * Check a connected device, 
-	 */
-	private void  handleAlwaysConnected() {
-
-		int i = 0;
-		Set<String> listIpAddress = lookUp();
-		Set<String> connectedAddresses = mapConnectedAddresses.keySet();
-
-		LOGGER.info("***********handleAlwaysConnected**************"+listIpAddress);
-		for(String address : connectedAddresses) {
-			if(!listIpAddress.contains(address)) {
-				LOGGER.info("***********attempt in handleAlwaysConnected **************"+listIpAddress);
-				do {
-					try {
-						Thread.sleep(1000);
-						listIpAddress = lookUp();
-						i++;
-						LOGGER.info(listIpAddress.contains(address));
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}while(!listIpAddress.contains(address) && i < 10);
-				if(listIpAddress.contains(address)) return;
-				i = 0;
-				LOGGER.info("**********Handle connected devices **********" + address);
-				String deviceId = mapConnectedAddresses.get(address);
-				notifyDisconnectionToInfController(deviceService.getDevice(deviceId).getDeviceDescription());
-				mapConnectedAddresses.remove(address);
-				deviceService.removeDevice(deviceId);
-			}
-		}
-	}
-	
 	/**
 	 * Send a notification to the NSCL for device disconnecting.
 	 * @param device -The that is disconnected.
@@ -136,6 +118,9 @@ public class DeviceDiscovery implements DiscoveryService{
 		/**
 		 * Send notification to Infrasctrucure controller
 		 */
+
+		new CIMAInternalCommunication().sendInfos("d"+Utils.extractIpAdress(deviceDescription.getUri()));
+
 		ResponseConfirm responseConfirm = clientService.sendRequest(requestIndication);
 		return responseConfirm;
 	}
@@ -149,11 +134,12 @@ public class DeviceDiscovery implements DiscoveryService{
 		requestIndication.setMethod("RETRIEVE");
 		requestIndication.setProtocol("http");
 
+		LOGGER.info("***************getProperty"+System.getProperty("org.eclipse.om2m.sclBaseId"));
+
 		// Retrieve all connected address in local network
 		Set<String> addresses = lookUp();
 		LOGGER.info("addresses = " + addresses);
 
-		handleAlwaysConnected();
 		for(String address : addresses) {
 			requestIndication.setBase(address);
 
@@ -246,14 +232,15 @@ public class DeviceDiscovery implements DiscoveryService{
 			mapConnectedAddresses.put(address, device.getId());
 			mapKnownAddresses.put(address, device.getId());
 
-			// Envoi des infos du device a la partie C de CIMA
-			//	new CIMAInternalCommunication().sendInfos(device.getContactInfo().getCloud_port()+"-8080-192.168.0.2");
+			// Envoi des infos du device a la partie C de CIMA : ipAdress-TCP-PORT
+			LOGGER.info("***********extractIpAdress*************"+Utils.extractIpAdress(device.getUri()));
+			new CIMAInternalCommunication().sendInfos("c"+Utils.extractIpAdress(device.getUri()) + ":8080"+ "-UDP-" +device.getContactInfo().getCloud_port());
 			return true;
 		} else return false;
 	}
 
 	private  boolean checkKnownDeviceConnection(RequestIndication requestIndication) {
-		requestIndication.setTargetID(":8080/infos");
+		requestIndication.setTargetID(":8080"+DEFAULT_DEVICE_PATH_INFOS);
 		ResponseConfirm responseConfirm = clientService.sendRequest(requestIndication);
 		LOGGER.info("***********isAlwaysConnected*************"+responseConfirm.getStatusCode());
 		if(responseConfirm.getStatusCode() != null && responseConfirm.getStatusCode().equals(StatusCode.STATUS_OK)) {
@@ -263,5 +250,25 @@ public class DeviceDiscovery implements DiscoveryService{
 		}
 		LOGGER.info("**********device is disconnected*****************");
 		return false;
+	}
+	
+	public void test(Device device) {
+		
+		int countNbconnectedCapability = 0;
+	//	String infos
+		
+		List<Capability> capabilities = device.getCapabilities();
+		for(Capability capability : capabilities) {
+			int port = Integer.parseInt(capability.getProtocol().getParameterValue("port"));
+			if( !mapPortManager.containsKey(port)) {
+				cimaInternalCommunication.sendInfos(data);
+				mapPortManager.put(port, new Pair<>(1, second));
+			}
+			else {
+				
+			}
+		}
+	
+		
 	}
 }
