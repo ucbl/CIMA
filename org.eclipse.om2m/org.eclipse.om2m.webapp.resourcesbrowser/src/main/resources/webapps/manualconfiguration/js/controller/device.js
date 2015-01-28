@@ -1,6 +1,6 @@
 
 /* Controller page device.html */
-app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams) {
+app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, toaster) {
 
 	$rootScope.loading = true;
 	$scope.EditIsOpen = false;
@@ -9,6 +9,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 
 	/*retrieve information about the device and add them to the view*/
 	DeviceFactory.get($routeParams.id).then(function(device){
+		toaster.pop('success', "", "Devices "+device.id+" retrieved.");
 		$scope.id = device.id;
 		$scope.name = device.name;
 		$scope.dateConnection = device.dateConnection;
@@ -24,7 +25,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 		$rootScope.loading = false; 
 
 	}, function(msg){
-		alert(msg);
+		toaster.pop('error', "Unable to get device", msg);
 	})
 
 	/*retrieve the available protocols and add them to the view*/
@@ -35,7 +36,7 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 		$scope.protocolsFromEdited = JSON.parse(JSON.stringify(protocols));
 
 	}, function(msg){
-		alert(msg);
+		toaster.pop('error', "Unable to get protocols", msg);
 	})
 	
 	/*Add the capability to the model and to the view if it's a success*/
@@ -49,11 +50,11 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 			cap.protocol.parameters = newCapability.protocol.parameters;
 			cap.keywords = newCapability.keywords;
 
-			
 			DeviceFactory.addCapability($scope.id,cap).then(function(){
 				$scope.capabilities.push(cap);
-			}, function(){
-				alert('Votre capability n\'a pas pu être ajoutée');
+				toaster.pop('success', "", "Capability added.");
+			}, function(msg){
+				toaster.pop('error', "Unable to add capability", msg);
 			});
 			$scope.newCapability = {}; 
 		}
@@ -63,17 +64,13 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 	$scope.addCapabilityFromExisting = function(newCapability){
 		var add = true;
 		if( JSON.stringify($scope.existingCapability) !== angular.toJson(newCapability) ){
-			//alert('newCapFrom existing !=  existing capability');
-			
+			alert('newCapFrom existing !=  existing capability');
 			if(JSON.stringify($scope.existingCapability.protocol) !== angular.toJson(newCapability.protocol)){
-			//alert('protocol change');
-				
+			alert('protocol change');
 				if($scope.existingCapability.id === newCapability.id){
-					//alert('id ddnt change -> problem');
 					add = false;
-					//alert('you must specified other ID because you change protocol')
 					$scope.idrequired = true;
-
+					toaster.pop('error', "", "You must specified other ID because you change protocol specifications.");
 				}
 			}
 		}
@@ -89,8 +86,9 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 			
 			DeviceFactory.addCapability($scope.id,cap).then(function(){
 				$scope.capabilities.push(cap);
-			}, function(){
-				alert('Votre capability n\'a pas pu être ajoutée');
+				toaster.pop('success', "", "Capability added.");
+			}, function(msg){
+				toaster.pop('error', "Unable to add capability", msg);
 			});
 			$scope.newCapability = {}; 
 		}
@@ -98,18 +96,16 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
         
     /*remove a capability from the model and the view*/
     $scope.removeCapability = function (row) {
-        
         DeviceFactory.removeCapability($scope.id, row.id).then(function(){
         	var index = $scope.capabilities.indexOf(row);
         	if (index !== -1) {
             	$scope.capabilities.splice(index, 1);
         	}
         	$scope.EditIsOpen= false;
-		}, function(){
-			alert('Votre capability n\'a pas pu être supprimé');
+        	toaster.pop('success', "", "Capability removed.");
+		}, function(msg){
+			toaster.pop('error', "Unable to remove capability", msg);
 		});
-
-        
     }
 
     /*Testing capability function*/
@@ -121,9 +117,9 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 		cap.protocol.parameters = newCapability.protocol.parameters;
 		
 		DeviceFactory.testCapability($scope.id, cap).then(function(){
-
-		}, function(){
-			alert('Votre capability n\'a pas pu être testé');
+        	toaster.pop('success', "", "Capability test send.");
+		}, function(msg){
+			toaster.pop('error', "Unable to test capability", msg);
 		});
 	}
 
@@ -140,9 +136,9 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 		device.capabilities = $scope.capabilities;
 
 		DeviceFactory.saveDevice(device).then(function(){
-
-		}, function(){
-			alert('Votre device n\'a pas pu être sauvegardé');
+        	toaster.pop('success', "", "Device saved.");
+		}, function(msg){
+			toaster.pop('error', "Unable to save device", msg);
 		});
 	}
 	/*Function for modifing a device */
@@ -153,9 +149,9 @@ app.controller('DeviceCtrl', function ($http, $scope, $rootScope, DeviceFactory,
 		cap.protocol.protocolName = capability.protocol.protocolName;
 		cap.protocol.parameters = capability.protocol.parameters;
 		DeviceFactory.modifyCapability($scope.id, cap).then(function(){
-
-		}, function(){
-			alert('Votre capability n\'a pas pu être modifié');
+        	toaster.pop('success', "", "Capability modified.");
+		}, function(msg){
+			toaster.pop('error', "Unable to modify device", msg);
 		});
 	}
 

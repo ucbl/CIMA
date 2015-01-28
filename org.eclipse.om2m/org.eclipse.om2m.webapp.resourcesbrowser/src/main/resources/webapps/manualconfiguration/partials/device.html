@@ -1,6 +1,6 @@
 <!--Device view-->
-<div class ="col-md-offset-3" ng-hide='loading' ng-controller="DeviceCtrl">
-	<div class="col-xs-6">
+<div  ng-hide='loading' ng-controller="DeviceCtrl">
+	<div >
         <a class="btn btn-warning" href="#/"> < Devices list</a>
         <!-- Applying changes button-->
         <button class="btn btn-success pull-right" ng-click="saveDevice()">
@@ -147,9 +147,7 @@
                         <!--<pre>Model: {{NewFromExistingCapability | json}}</pre>-->
                         <form name = "addFromExisting" ng-submit="addCapabilityFromExisting(NewFromExistingCapability)" ng-show="(NewFromExistingCapability != '' && NewFromExistingCapability != null )">
                             <strong>ID </strong><span class=" btn-danger" ng-show="idrequired">You must specify a new ID !</span>
-
                             <input name="id" class="form-control" style="width: 40%" type="text" placeholder="Type an ID... (Required)" ng-model="NewFromExistingCapability.id" id required>
-
                             <strong>Protocol </strong>
                             <select class="form-control" ng-model="NewFromExistingCapability.protocol"
                                     ng-options="protocol.protocolName for protocol in protocolsFromExisting" ng-required="true">

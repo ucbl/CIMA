@@ -30,7 +30,8 @@
                             "value" : "YmFjaw==" 
                         }
                     ]
-                }
+                },
+                "keywords" : ["ev3","back","robot","mouvement"]
             }
         ]
     },
@@ -64,7 +65,9 @@
                             "value" : "YmFjaw==" 
                         }
                     ]
-                }
+                },
+                "keywords" : ["ev3","back","robot","mouvement"]
+
             }
         ]
     },
@@ -98,7 +101,8 @@
                             "value" : "YmFjaw==" 
                         }
                     ]
-                }
+                },
+                "keywords" : ["ev3","reculer","back","robot","mouvement"]
             }
         ]
     }
