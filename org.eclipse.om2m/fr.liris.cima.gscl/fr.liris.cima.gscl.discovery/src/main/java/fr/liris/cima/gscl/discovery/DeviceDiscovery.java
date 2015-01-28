@@ -37,7 +37,24 @@ public class DeviceDiscovery implements DiscoveryService{
 	// A device managed service
 	private ManagedDeviceService deviceService;
 
+	/**
+	 * the map, key is ip adress and value is the device id
+	 * this map store the really connected device
+	 */
 	private Map<String, String> mapConnectedAddresses;
+
+	/**
+	 * this map store the avalaible device on the network
+	 * the key is ip adress and value is the device id
+	 */
+	private Map<String, String> mapAvaliableAddresses;
+
+
+
+	private Map<String, String> mapKnownAddresses;
+
+	private Map<String, String> mapConfiguredAddresses;
+
 
 	public DeviceDiscovery() {
 
@@ -50,7 +67,12 @@ public class DeviceDiscovery implements DiscoveryService{
 	public DeviceDiscovery(RestClientService clientService, ManagedDeviceService deviceService) {
 		this.clientService = clientService;
 		this.deviceService = deviceService;
-		this.mapConnectedAddresses= new HashMap<>(); 
+
+		this.mapKnownAddresses = new HashMap<>();
+		this.mapConfiguredAddresses = new HashMap<>();
+
+		this.mapConnectedAddresses= new HashMap<>();
+		this.mapAvaliableAddresses = new HashMap<>();
 	}
 
 	/**
@@ -65,11 +87,15 @@ public class DeviceDiscovery implements DiscoveryService{
 	 * Check a connected device, 
 	 */
 	private void  handleAlwaysConnected() {
+
 		int i = 0;
 		Set<String> listIpAddress = lookUp();
 		Set<String> connectedAddresses = mapConnectedAddresses.keySet();
+
+		LOGGER.info("***********handleAlwaysConnected**************"+listIpAddress);
 		for(String address : connectedAddresses) {
 			if(!listIpAddress.contains(address)) {
+				LOGGER.info("***********attempt in handleAlwaysConnected **************"+listIpAddress);
 				do {
 					try {
 						Thread.sleep(1000);
@@ -90,7 +116,7 @@ public class DeviceDiscovery implements DiscoveryService{
 			}
 		}
 	}
-
+	
 	/**
 	 * Send a notification to the NSCL for device disconnecting.
 	 * @param device -The that is disconnected.
@@ -123,68 +149,86 @@ public class DeviceDiscovery implements DiscoveryService{
 		requestIndication.setMethod("RETRIEVE");
 		requestIndication.setProtocol("http");
 
-
+		// Retrieve all connected address in local network
 		Set<String> addresses = lookUp();
-		//LOGGER.info("lookup in do discovery" +lookUp());
-		
-		for(String address : addresses) {
+		LOGGER.info("addresses = " + addresses);
 
-			handleAlwaysConnected();
+		handleAlwaysConnected();
+		for(String address : addresses) {
+			requestIndication.setBase(address);
+
+			// Check if device is in the network local network
 			if(mapConnectedAddresses.containsKey(address)) {
-				LOGGER.info("CONTINUE");
-				continue;
+				LOGGER.info("device is already connected maybe = " + address);
+
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				// Check if device connected to the cima plateform.
+				if (checkKnownDeviceConnection(requestIndication)) {
+					// The device is always connected.
+					LOGGER.info("CONTINUE  " + address);
+					continue;
+				}
+				// The device is disconnected.
+				//send notification to the Infrasctructure Controller.
+				String deviceId = mapConnectedAddresses.get(address);
+				LOGGER.info("****deviceId***  = "+deviceId);
+				DeviceDescription deviceDescription  = deviceService.getDevice(deviceId).getDeviceDescription();
+				LOGGER.info("***deviceDescription*** = "+deviceDescription);
+				notifyDisconnectionToInfController(deviceDescription);
+
+				// update mapConnectedAddresses by removing the device address
+				LOGGER.info(" Le device viens de se deconnecter  " + address);
+				mapConnectedAddresses.remove(address);
 			}
 
 			requestIndication.setBase(address);
 			boolean deviceCreated = false;
 			try {
+				// Create connected device
 				if(this.createDevice(address, requestIndication, ":8080/infos")){}
-				else if(this.createDevice(address, requestIndication, ":8080/simu/infos")){}
+				//	else if(this.createDevice(address, requestIndication, ":8080/simu/infos")){}
 				else {
-					DeviceDescription deviceDescription = new DeviceDescription();
-					deviceDescription.setModeConnection(Constants.MOD_IP);
-					deviceDescription.setUri(address);
-					Device device = new Device(deviceDescription);
-					deviceService.addUnknownDevice(device);
-					mapConnectedAddresses.put(address, deviceDescription.getId());
-					if(mapConnectedAddresses.containsKey(address)) {
-						LOGGER.info("CONTINUE FOR UNKNOWN DEVICE");
-						continue;
+					LOGGER.info(" UNKNOWN DEVICE "+address);
+					if( !mapConfiguredAddresses.containsKey(address)) {
+						// Create unknown device
+						LOGGER.info(" UNKNOWN DEVICE add successfully "+address);
+
+						DeviceDescription deviceDescription = new DeviceDescription();
+						deviceDescription.setModeConnection(Constants.MOD_IP);
+						deviceDescription.setUri(address);
+						Device device = new Device(deviceDescription);
+						deviceService.addUnknownDevice(device);
+						mapConfiguredAddresses.put(address, deviceDescription.getId());
 					}
 				}
-//				LOGGER.info(responseConfirm);
 			}catch(Exception e) {
 			}
 		}
 	}
-	
+
 	protected boolean createDevice(String address, RequestIndication requestIndication, String targetId){
 		requestIndication.setTargetID(targetId);
 		ResponseConfirm responseConfirm = null ;
-		
+
 		responseConfirm = clientService.sendRequest(requestIndication);
 		LOGGER.info("device requestIndication = "+requestIndication);
-//		LOGGER.info("getStatusCode "+responseConfirm.getStatusCode());
 		// TODO 
 		if(!(responseConfirm.getStatusCode() == null) && (responseConfirm.getStatusCode().equals(StatusCode.STATUS_OK) || 
 				responseConfirm.getStatusCode().equals(StatusCode.STATUS_ACCEPTED)) ) {
 			String representation = responseConfirm.getRepresentation();
 
-			// TODO
-		//	DeviceDescription deviceDescription  = Parser.parseXmlToDeviceDescription(representation);
-		//	LOGGER.info("In if");
-		//	DeviceDescription deviceDescription = new DeviceDescription("ev3", "http://192.168.0.02:/infos/", "ip");
-			//Device device = new Device(deviceDescription);
+
 			Device device = Parser.parseXmlToDevice(representation);
-		//	LOGGER.info("device =  "+device);
-			//LOGGER.info("device in doDiscorvery "+device);
-			//LOGGER.info("representation in doDiscorvery "+representation);
-		//	LOGGER.info("**********************OK1*************"+device.getId());
 			deviceService.addDevice(device);
 			//deviceService.sendDeviceToNSCL(device, clientService);
-			
+
 			LOGGER.info("rep = "+Encoder.encodeDeviceToObix(device));
-			
+
 			RequestIndication client = new RequestIndication();
 
 			client.setMethod(Constants.METHOD_CREATE);
@@ -192,19 +236,32 @@ public class DeviceDiscovery implements DiscoveryService{
 			client.setTargetID("/nscl/applications/CIMANSCL/devices");
 			client.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);
 			client.setRepresentation( Encoder.encodeDeviceToObix(device));
-			
+
 			/**
 			 * Envoi des infos du device au controleur du nscl
 			 */
 			clientService.sendRequest(client);
-		//	LOGGER.info("**********************OK*************");
 
+			//TODO
 			mapConnectedAddresses.put(address, device.getId());
-
+			mapKnownAddresses.put(address, device.getId());
 
 			// Envoi des infos du device a la partie C de CIMA
 			//	new CIMAInternalCommunication().sendInfos(device.getContactInfo().getCloud_port()+"-8080-192.168.0.2");
 			return true;
-			} else return false;
+		} else return false;
+	}
+
+	private  boolean checkKnownDeviceConnection(RequestIndication requestIndication) {
+		requestIndication.setTargetID(":8080/infos");
+		ResponseConfirm responseConfirm = clientService.sendRequest(requestIndication);
+		LOGGER.info("***********isAlwaysConnected*************"+responseConfirm.getStatusCode());
+		if(responseConfirm.getStatusCode() != null && responseConfirm.getStatusCode().equals(StatusCode.STATUS_OK)) {
+			String representation = responseConfirm.getRepresentation();
+			LOGGER.info("device is connected");
+			return true;
+		}
+		LOGGER.info("**********device is disconnected*****************");
+		return false;
 	}
 }
