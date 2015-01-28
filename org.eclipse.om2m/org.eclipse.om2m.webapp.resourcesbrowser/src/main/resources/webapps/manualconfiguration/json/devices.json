@@ -1,0 +1,138 @@
+[
+
+    {
+        "id" : "0123456789",
+        "name" : "monObjet",
+        "configuration" : "automatic",
+        "uri" : "http://192.168.0.2",
+        "dateConnection" : "10/10/14",
+        "modeConnection" : "HTTP",
+        "capabilities": [
+            {
+                "id" : "ev3Back",
+                "configuration" : "automatic",
+                "protocol": {
+                    "protocolName" : "HTTP",
+                    "parameters" : [
+                        {
+                            "name" : "method",
+                            "value" : "POST" 
+                        },
+                        {
+                            "name" : "port",
+                            "value" : "8080" 
+                        },
+                       {
+                            "name" : "URI",
+                            "value" : "/capability" 
+                        },
+                        {
+                            "name" : "body",
+                            "value" : "YmFjaw==" 
+                        }
+                    ]
+                },
+                "keywords" : ["ev3","back","robot","mouvement"]
+            },
+            {
+                "id" : "ev3Back",
+                "configuration" : "manual",
+                "protocol": {
+                    "protocolName" : "HTTP",
+                    "parameters" : [
+                        {
+                            "name" : "method",
+                            "value" : "POST" 
+                        },
+                        {
+                            "name" : "port",
+                            "value" : "8080" 
+                        },
+                       {
+                            "name" : "URI",
+                            "value" : "/capability" 
+                        },
+                        {
+                            "name" : "body",
+                            "value" : "YmFjaw==" 
+                        }
+                    ]
+                },
+                "keywords" : ["ev3","reculer","back","robot","mouvement"]
+            }
+        ]
+    },
+    {
+        "id" : "9876543210",
+        "name" : "unObjet",
+        "configuration" : "manual",
+        "uri" : "http://192.168.0.1",
+        "dateConnection" : "09/10/14",
+        "modeConnection" : "HTTP",
+        "capabilities": [
+            {
+                "id" : "ev3Back",
+                "configuration" : "automatic",
+                "protocol": {
+                    "protocolName" : "HTTP",
+                    "parameters" : [
+                        {
+                            "name" : "method",
+                            "value" : "POST" 
+                        },
+                        {
+                            "name" : "port",
+                            "value" : "8080" 
+                        },
+                       {
+                            "name" : "URI",
+                            "value" : "/capability" 
+                        },
+                        {
+                            "name" : "body",
+                            "value" : "YmFjaw==" 
+                        }
+                    ]
+                },
+                "keywords" : ["ev3","back","robot","mouvement"]
+
+            }
+        ]
+    },
+    {
+        "id" : "0918273645",
+        "name" : "LObjet",
+        "configuration" : "automatic",
+        "uri" : "http://192.168.0.3",
+        "dateConnection" : "08/10/14",
+        "modeConnection" : "HTTP",
+        "capabilities": [
+            {
+                "id" : "ev3Back",
+                "configuration" : "manual",
+                "protocol": {
+                    "protocolName" : "HTTP",
+                    "parameters" : [
+                        {
+                            "name" : "method",
+                            "value" : "POST" 
+                        },
+                        {
+                            "name" : "port",
+                            "value" : "8080" 
+                        },
+                       {
+                            "name" : "URI",
+                            "value" : "/capability" 
+                        },
+                        {
+                            "name" : "body",
+                            "value" : "YmFjaw==" 
+                        }
+                    ]
+                },
+                "keywords" : ["ev3","reculer","back","robot","mouvement"]
+            }
+        ]
+    }
+]
