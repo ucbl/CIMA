@@ -1,5 +1,5 @@
 <!--Devices view-->
-<div class="col-md-6 col-md-offset-3" ng-hide='loading'>
+<div  ng-hide='loading'>
     <div class="panel panel-primary" >
         <div class="panel-heading">
             <h2 class="panel-title">Unrecognized devices list</h2>
@@ -12,6 +12,7 @@
             <table st-table="devices" class="table table-striped">
                 <thead>
                 <tr>
+                    <th>Configuration<th>
                     <th>ID Device</th>
                     <th>Name</th>
                     <th>Last connection date</th>
@@ -22,13 +23,14 @@
                 <!-- Devices table -->
                 <tbody ng-repeat="device in devices | filter:query ">
                 <tr>
+                    <td>{{device.configuration}}<td>
                     <td>{{device.id}}</td>
                     <td>{{device.name}}</td>
                     <td>{{device.dateConnection}}</td>
                     <td>{{device.modeConnection}}</td>
                     <td>{{device.uri}}</td>
                     <td>
-                        <a class="btn btn-sm btn-success" ng-click="stopRefreshDevices()" href="#/device/{{device.id}}"> Configure</a>
+                        <a class="btn btn-sm btn-success" ng-click="stopRefreshDevices()" href="#/device/{{device.id}}"> View</a>
                     </td>
                 </tr>
                 </tbody>

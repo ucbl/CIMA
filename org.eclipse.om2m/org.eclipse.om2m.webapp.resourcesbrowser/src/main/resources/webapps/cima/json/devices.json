@@ -10,6 +10,7 @@
         "capabilities": [
             {
                 "id" : "ev3Back",
+                "configuration" : "automatic",
                 "protocol": {
                     "protocolName" : "HTTP",
                     "parameters" : [
@@ -30,7 +31,34 @@
                             "value" : "YmFjaw==" 
                         }
                     ]
-                }
+                },
+                "keywords" : ["ev3","back","robot","mouvement"]
+            },
+            {
+                "id" : "ev3Back",
+                "configuration" : "manual",
+                "protocol": {
+                    "protocolName" : "HTTP",
+                    "parameters" : [
+                        {
+                            "name" : "method",
+                            "value" : "POST" 
+                        },
+                        {
+                            "name" : "port",
+                            "value" : "8080" 
+                        },
+                       {
+                            "name" : "URI",
+                            "value" : "/capability" 
+                        },
+                        {
+                            "name" : "body",
+                            "value" : "YmFjaw==" 
+                        }
+                    ]
+                },
+                "keywords" : ["ev3","reculer","back","robot","mouvement"]
             }
         ]
     },
@@ -44,6 +72,7 @@
         "capabilities": [
             {
                 "id" : "ev3Back",
+                "configuration" : "automatic",
                 "protocol": {
                     "protocolName" : "HTTP",
                     "parameters" : [
@@ -64,7 +93,9 @@
                             "value" : "YmFjaw==" 
                         }
                     ]
-                }
+                },
+                "keywords" : ["ev3","back","robot","mouvement"]
+
             }
         ]
     },
@@ -78,6 +109,7 @@
         "capabilities": [
             {
                 "id" : "ev3Back",
+                "configuration" : "manual",
                 "protocol": {
                     "protocolName" : "HTTP",
                     "parameters" : [
@@ -98,7 +130,8 @@
                             "value" : "YmFjaw==" 
                         }
                     ]
-                }
+                },
+                "keywords" : ["ev3","reculer","back","robot","mouvement"]
             }
         ]
     }
