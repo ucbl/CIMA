@@ -8,6 +8,8 @@ import java.util.List;
 //import org.apache.commons.logging.Log;
 //import org.apache.commons.logging.LogFactory;
 
+
+import fr.liris.cima.gscl.commons.constants.Configuration;
 import fr.liris.cima.gscl.commons.port.PortGenerator;
 import fr.liris.cima.gscl.commons.util.Utils;
 
@@ -33,6 +35,9 @@ public class Device {
 
 	/** A simple device description*/
 	private DeviceDescription deviceDescription;
+	
+	/** Configuration's type of the Device(automatic or manual) */
+	private Configuration configuration;
 
 	public List<Capability> getCapabilities() {
 		return capabilities;
@@ -51,8 +56,6 @@ public class Device {
 	}
 
 
-	private static String serverUri = "http://127.0.0.1:8282";
-
 	public Device() {
 		this(new DeviceDescription());
 	}
@@ -61,6 +64,7 @@ public class Device {
 		this.deviceDescription = deviceDescription;
 		contactInfo = new ContactInfo(deviceDescription.getId(), PortGenerator.generatePort());
 		capabilities = new ArrayList<>();
+		this.configuration = Configuration.AUTOMATIC;
 	}
 	public final String getId() {
 		return this.deviceDescription.getId();

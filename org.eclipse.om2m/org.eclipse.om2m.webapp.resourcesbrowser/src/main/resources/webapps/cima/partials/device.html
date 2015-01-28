@@ -44,7 +44,6 @@
                         <th>ID </th>
                         <th>Protocol</th>
                         <th>Action</th>
-
                     </tr>
                 </thead>
                 <tbody ng-repeat="capability in device.capabilities | orderBy:order">
@@ -71,6 +70,7 @@
                     <i class="glyphicon glyphicon-remove-circle"></i>
                     Remove
                 </button>
+                </td>
                             <!--MODAL FOR REMOVING-->
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel" aria-hidden="true">

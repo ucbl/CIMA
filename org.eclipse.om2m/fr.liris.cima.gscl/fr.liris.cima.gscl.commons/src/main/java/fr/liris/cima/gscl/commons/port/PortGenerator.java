@@ -1,6 +1,9 @@
 package fr.liris.cima.gscl.commons.port;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.HashSet;
+
 /**
  * This class generate a port 
  * @author madiallo
@@ -14,12 +17,19 @@ public class PortGenerator {
 	
 	static HashSet<Integer> ports = new HashSet<>();
 	
+	
 	public static int generatePort() {
 		int port = 0;
+		boolean ok = false;
 		do {
-			 port = Min + (int)(Math.random() * ((Max - Min) + 1));
+			 try {
+				port = new ServerSocket(0).getLocalPort();
+				ok = true;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		while(ports.contains(port));
+		while(ports.contains(port) || ok == false);
 		ports.add(port);
 		return port;
 	}

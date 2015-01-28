@@ -19,7 +19,7 @@
                     <th ng-click="predicate = 'modeConnection'; reverse=!reverse">Connection mode</th>
                     <th ng-click="predicate = 'uri'; reverse=!reverse">URI</th>
                     <th >Action</th>
-
+ 
                 </tr>
                 </thead>
                 <!-- Devices table -->
@@ -32,6 +32,7 @@
                     <td class="text-center">{{device.modeConnection}}</td>
                     <td class="text-center">{{device.uri}}</td>
                     <td class="text-center">
+
                         <a class="btn btn-sm btn-success" ng-click="stopRefreshDevices()" href="#/device/{{device.id}}"> View</a>
                     </td>
                 </tr>

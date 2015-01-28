@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.om2m.core.service,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
  libs/jdom-2.0.5.jar,
- libs/obix.jar
+ libs/obix.jar,
+ libs/json-simple-1.1.1.jar
 Export-package: fr.liris.cima.gscl.commons,
  fr.liris.cima.gscl.commons.constants,
  fr.liris.cima.gscl.commons.parser,

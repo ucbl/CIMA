@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import fr.liris.cima.gscl.commons.constants.Configuration;
 import obix.Contract;
 import obix.Obj;
 import obix.Op;
@@ -22,11 +23,17 @@ public class Capability {
 	private String name;
 	private Protocol protocol;
 	private List<String> keywords;
+	private int cloudPort;
+	
+	/** Configuration's type of the Capability(automatic or manual) */
+	private Configuration configuration;
  
 	public Capability(String name, Protocol protocol, List<String> keywords) {
 		this.name = name;
 		this.protocol = protocol;
 		this.keywords = keywords;
+		this.configuration = Configuration.AUTOMATIC;
+		
 	}
 	
 	public  Capability(String name) {
@@ -129,5 +136,13 @@ public class Capability {
 
 //		System.out.println(ObixEncoder.toString(capability.toObj()));
 	//	System.out.println(capability.toObixFormat());
+	}
+
+	public int getCloudPort() {
+		return cloudPort;
+	}
+
+	public void setCloudPort(int cloudPort) {
+		this.cloudPort = cloudPort;
 	}
 }
