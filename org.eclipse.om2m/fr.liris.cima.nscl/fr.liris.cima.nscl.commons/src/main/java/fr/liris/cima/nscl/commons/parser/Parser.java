@@ -20,6 +20,7 @@ import obix.xml.XParser;
 import java.io.FileReader;
 import java.util.Iterator;
 
+import obix.Int;
 import obix.Obj;
 import obix.Str;
 import obix.io.ObixDecoder;
@@ -113,6 +114,7 @@ public class Parser {
 		try {
 			String name = capability.get("id").toString();
 			obj_capability.add(new Str("id", (String) capability.get("id")));
+			obj_capability.add(new Int("id", (int) capability.get("cloudPort")));
 			
 			obj_capability.add(parseJSONToObixProtocol((JSONObject) capability
 					.get("protocol")));
@@ -409,7 +411,7 @@ public class Parser {
 		protocol.addParameter("port", protocolObj.get("port").getStr());
 		protocol.addParameter("uri", protocolObj.get("uri").getStr());
 
-		int cloudPort=Integer.parseInt(capabilityObj.get("cloudPort").getStr());
+		int cloudPort = Integer.parseInt(capabilityObj.get("cloudPort").getStr());
                 
 		Obj [] objs = capabilityObj.get("keywords").list();
 		List<String> keywords = new ArrayList<>();

@@ -71,15 +71,18 @@ public class DeviceDiscovery implements DiscoveryService{
 	 */
 	private Map<String, String> mapConfiguredAddresses;
 
-	//	Map<Integer, Pair<Integer, Integer>>mapPortManager;
 
 	/**
 	 * key : deviceId_capabilityPort
 	 * Value : generate port  by c part for contacting object from cloud 
 	 */
-	Map<String, Integer>mapPortForwarding;
-
-
+	Map<String, Integer>mapConnectionPortForwarding;
+	
+	/**
+	 * key : deviceId_capabilityPort
+	 * Value : status that indicate if port opening in the c part is closing or not 
+	 */
+	Map<String, String>mapDisconnectionPortForwarding;
 
 	public DeviceDiscovery() {
 
@@ -98,7 +101,8 @@ public class DeviceDiscovery implements DiscoveryService{
 
 		this.mapConnectedAddresses= new HashMap<>();
 
-		this.mapPortForwarding = new HashMap<>();
+		this.mapConnectionPortForwarding = new HashMap<>();
+		this.mapDisconnectionPortForwarding = new HashMap<>();
 
 		cimaInternalCommunication = new CIMAInternalCommunication();
 	}
@@ -130,8 +134,6 @@ public class DeviceDiscovery implements DiscoveryService{
 		/**
 		 * Send notification to Infrasctrucure controller
 		 */
-
-		new CIMAInternalCommunication().sendInfos("d"+Utils.extractIpAdress(deviceDescription.getUri()));
 
 		ResponseConfirm responseConfirm = clientService.sendRequest(requestIndication);
 		return responseConfirm;
@@ -179,6 +181,24 @@ public class DeviceDiscovery implements DiscoveryService{
 				LOGGER.info("***deviceDescription*** = "+deviceDescription);
 				notifyDisconnectionToInfController(deviceDescription);
 
+				// Get ids that identifying  specifics ports to devices, in port forwarding part
+//				List<String> ids = new ArrayList<>();
+//				ids.addAll(mapConnectionPortForwarding.keySet());
+				
+				// Generate port forwarding ids
+				List<String> ids = generateIdsPortForwardingIds(device);
+				
+				// Send disconnection notification to port forwarding part
+				String responseDisconnection = cimaInternalCommunication.sendInfos(Encoder.JsonDeviceDisconnectionInfoToPortForwading(ids));
+				mapDisconnectionPortForwarding = Encoder.decodeResponseDisconnection(responseDisconnection);
+				for(Map.Entry<String, String> entry : mapDisconnectionPortForwarding.entrySet() ) {
+					if(! entry.getValue().equals("OK")) {
+						String portForwadingId = entry.getKey();
+						int cloudPort =  mapConnectionPortForwarding.get(portForwadingId);
+						LOGGER.info("Error for disconnecting port "+cloudPort + " in port forwarding part");
+					}
+				}
+				
 				// update mapConnectedAddresses by removing the device address
 				LOGGER.info(" Le device viens de se deconnecter  " + address);
 				mapConnectedAddresses.remove(address);
@@ -188,8 +208,8 @@ public class DeviceDiscovery implements DiscoveryService{
 			boolean deviceCreated = false;
 			try {
 				// Create connected device
-				if(this.createDevice(address, requestIndication, ":8080/infos")){}
-				//	else if(this.createDevice(address, requestIndication, ":8080/simu/infos")){}
+				if(this.handleNewDeviceConnection(address, requestIndication, ":8080/infos")){}
+				//	else if(this.handleNewDeviceConnection(address, requestIndication, ":8080/simu/infos")){}
 				else {
 					LOGGER.info(" UNKNOWN DEVICE "+address);
 					if( !mapConfiguredAddresses.containsKey(address)) {
@@ -209,20 +229,31 @@ public class DeviceDiscovery implements DiscoveryService{
 		}
 	}
 
-	protected boolean createDevice(String address, RequestIndication requestIndication, String targetId){
+	/**
+	 * This method handle new device connection by sending a request for discovery of potential device.
+	 * @param address
+	 * @param requestIndication
+	 * @param targetId
+	 * @return
+	 */
+	protected boolean handleNewDeviceConnection(String address, RequestIndication requestIndication, String targetId){
 		requestIndication.setTargetID(targetId);
 		ResponseConfirm responseConfirm = null ;
 
 		responseConfirm = clientService.sendRequest(requestIndication);
 		LOGGER.info("device requestIndication = "+requestIndication);
-		// TODO 
+
 		if(!(responseConfirm.getStatusCode() == null) && (responseConfirm.getStatusCode().equals(StatusCode.STATUS_OK) || 
 				responseConfirm.getStatusCode().equals(StatusCode.STATUS_ACCEPTED)) ) {
 			String representation = responseConfirm.getRepresentation();
 
 
+			// Create device from its xml representation
 			Device device = Parser.parseXmlToDevice(representation);
+			// Adding device to the device manager
 			deviceService.addDevice(device);
+			
+			// Notify NSCL 
 			//deviceService.sendDeviceToNSCL(device, clientService);
 
 			LOGGER.info("rep = "+Encoder.encodeDeviceToObix(device));
@@ -235,15 +266,11 @@ public class DeviceDiscovery implements DiscoveryService{
 			client.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);
 			client.setRepresentation( Encoder.encodeDeviceToObix(device));
 
-			/**
-			 * Envoi des infos du device au controleur du nscl
-			 */
+			// Send notification request to the nscl
 			clientService.sendRequest(client);
 
-			//TODO
+			// Add the (key = IP address of the device, value = deviceId) to the map 
 			mapConnectedAddresses.put(address, device.getId());
-			mapKnownAddresses.put(address, device.getId());
-
 			
 			// Encode connection data to json for the c part
 			String data = Encoder.encodeDeviceToJSONPortForwarding(device);
@@ -252,7 +279,7 @@ public class DeviceDiscovery implements DiscoveryService{
 			String cResponse = cimaInternalCommunication.sendInfos(data);
 			
 			// Decode connection response from c part 
-			mapPortForwarding = Encoder.decodeJson(cResponse);
+			mapConnectionPortForwarding = Encoder.decodeJson(cResponse);
 			
 			return true;
 		} else return false;
@@ -269,5 +296,17 @@ public class DeviceDiscovery implements DiscoveryService{
 		}
 		LOGGER.info("**********device is disconnected*****************");
 		return false;
+	}
+	
+	// Generates a list of id for the port forwarding section
+	//each identifier is like deviceId_protocolPort
+	private List<String> generateIdsPortForwardingIds(Device device) {
+		List<String> ids = new ArrayList<>();
+		
+		for(Capability capability : device.getCapabilities()) {
+			int port = Integer.parseInt(capability.getProtocol().getParameterValue("port"));
+			ids.add(device.getId() + "_" + port);
+		}
+		return ids;
 	}
 }
