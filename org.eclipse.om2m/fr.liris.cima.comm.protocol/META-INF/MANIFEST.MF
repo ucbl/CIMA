@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: comm-http-service
-Bundle-SymbolicName: fr.liris.cima.comm.http
+Bundle-Name: comm-protocol-service
+Bundle-SymbolicName: fr.liris.cima.comm.protocol
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: fr.liris.cima.comm.http.Activator
+Bundle-Activator: fr.liris.cima.comm.protocol.Activator
 Require-Bundle: org.eclipse.om2m.core.service,
  org.apache.commons.httpclient,
  org.apache.commons.codec,
@@ -13,8 +13,7 @@ Require-Bundle: org.eclipse.om2m.core.service,
  org.eclipse.om2m.ipu.service,
  org.eclipse.om2m.comm.service,
  fr.liris.cima.nscl.commons,
- fr.liris.cima.nscl.device.service,
- fr.liris.cima.comm.protocol
+ fr.liris.cima.nscl.device.service
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .
-Export-Package: fr.liris.cima.comm.http
+Export-Package: fr.liris.cima.comm.protocol
