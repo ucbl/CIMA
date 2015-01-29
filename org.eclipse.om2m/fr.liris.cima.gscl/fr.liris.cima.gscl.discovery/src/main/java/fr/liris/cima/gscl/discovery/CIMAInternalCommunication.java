@@ -1,6 +1,8 @@
 package fr.liris.cima.gscl.discovery;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -21,17 +23,33 @@ public class CIMAInternalCommunication {
 	public CIMAInternalCommunication() {		
 	}
 	
-	public void sendInfos(String data ) {
+	public String sendInfos(String data ) {
 		PrintWriter out = null;
+        BufferedReader in = null;
+
 		try {
+			// Open socket connection between gscl and port forwarding part
 			Socket client = new Socket(CIMA_ADDRESS, Integer.parseInt(FORWARD_PORT));
+			
 			out = new PrintWriter(new PrintWriter(client.getOutputStream()));
+            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+
+            // send connection  data to the c part
 			out.print(data);
 			out.flush();
+			
+			// Read server c response 
+			String inputLine = in.readLine();
+			
+	        in.close(); 
+            out.close();
+            
+			return inputLine;
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 }

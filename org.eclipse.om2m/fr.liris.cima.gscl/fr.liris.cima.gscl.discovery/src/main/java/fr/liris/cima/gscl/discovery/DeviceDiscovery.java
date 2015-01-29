@@ -1,6 +1,7 @@
 package fr.liris.cima.gscl.discovery;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +13,16 @@ import org.eclipse.om2m.comm.service.RestClientService;
 import org.eclipse.om2m.commons.resource.StatusCode;
 import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import fr.liris.cima.gscl.commons.Capability;
 import fr.liris.cima.gscl.commons.Device;
 import fr.liris.cima.gscl.commons.Encoder;
 import fr.liris.cima.gscl.commons.DeviceDescription;
 import fr.liris.cima.gscl.commons.ExecuteShellComand;
+import fr.liris.cima.gscl.commons.Protocol;
 import fr.liris.cima.gscl.commons.constants.*;
 import fr.liris.cima.gscl.commons.parser.*;
 import fr.liris.cima.gscl.commons.util.*;
@@ -33,7 +38,7 @@ public class DeviceDiscovery implements DiscoveryService{
 
 	private static Log LOGGER = LogFactory.getLog(DeviceDiscovery.class);
 	public static final String ADMIN_REQUESTING_ENTITY = System.getProperty("org.eclipse.om2m.adminRequestingEntity","admin/admin");
-	
+
 	public static final String FORWARD_PORT = System.getProperty("fr.liris.cima.gscl.forwardPort");
 	public static final String CIMA_ADDRESS = System.getProperty("fr.liris.cima.gscl.adress");
 	public static final String DEFAULT_DEVICE_PATH_INFOS = System.getProperty("fr.liris.cima.gscl.adress.defaultDevicePathInfos");
@@ -43,7 +48,7 @@ public class DeviceDiscovery implements DiscoveryService{
 	private RestClientService clientService;
 	// A device managed service
 	private ManagedDeviceService deviceService;
-	
+
 	private CIMAInternalCommunication cimaInternalCommunication ;
 
 	/**
@@ -65,8 +70,15 @@ public class DeviceDiscovery implements DiscoveryService{
 	 * this map store the unknown adress for configuration.
 	 */
 	private Map<String, String> mapConfiguredAddresses;
-	
-	Map<Integer, Pair<Integer, Integer>>mapPortManager;
+
+	//	Map<Integer, Pair<Integer, Integer>>mapPortManager;
+
+	/**
+	 * key : deviceId_capabilityPort
+	 * Value : generate port  by c part for contacting object from cloud 
+	 */
+	Map<String, Integer>mapPortForwarding;
+
 
 
 	public DeviceDiscovery() {
@@ -85,9 +97,9 @@ public class DeviceDiscovery implements DiscoveryService{
 		this.mapConfiguredAddresses = new HashMap<>();
 
 		this.mapConnectedAddresses= new HashMap<>();
-		
-		this.mapPortManager = new HashMap<>();
-		
+
+		this.mapPortForwarding = new HashMap<>();
+
 		cimaInternalCommunication = new CIMAInternalCommunication();
 	}
 
@@ -232,9 +244,16 @@ public class DeviceDiscovery implements DiscoveryService{
 			mapConnectedAddresses.put(address, device.getId());
 			mapKnownAddresses.put(address, device.getId());
 
-			// Envoi des infos du device a la partie C de CIMA : ipAdress-TCP-PORT
-			LOGGER.info("***********extractIpAdress*************"+Utils.extractIpAdress(device.getUri()));
-			new CIMAInternalCommunication().sendInfos("c"+Utils.extractIpAdress(device.getUri()) + ":8080"+ "-UDP-" +device.getContactInfo().getCloud_port());
+			
+			// Encode connection data to json for the c part
+			String data = Encoder.encodeDeviceToJSONPortForwarding(device);
+			
+			// send connection data to the c part
+			String cResponse = cimaInternalCommunication.sendInfos(data);
+			
+			// Decode connection response from c part 
+			mapPortForwarding = Encoder.decodeJson(cResponse);
+			
 			return true;
 		} else return false;
 	}
@@ -250,25 +269,5 @@ public class DeviceDiscovery implements DiscoveryService{
 		}
 		LOGGER.info("**********device is disconnected*****************");
 		return false;
-	}
-	
-	public void test(Device device) {
-		
-		int countNbconnectedCapability = 0;
-	//	String infos
-		
-		List<Capability> capabilities = device.getCapabilities();
-		for(Capability capability : capabilities) {
-			int port = Integer.parseInt(capability.getProtocol().getParameterValue("port"));
-			if( !mapPortManager.containsKey(port)) {
-				cimaInternalCommunication.sendInfos(data);
-				mapPortManager.put(port, new Pair<>(1, second));
-			}
-			else {
-				
-			}
-		}
-	
-		
 	}
 }
