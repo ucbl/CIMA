@@ -348,13 +348,13 @@ public class Parser {
 			}
 		}
 
-//		Obj objContactInfo = objDevice.get("contactInfo");
-//		if(objContactInfo != null) {
-//			System.out.println(objContactInfo.get("cloud_port"));
-//			long cloudPort = objContactInfo.get("cloud_port").getInt();
-//			ContactInfo contactInfo = new ContactInfo(id, (int)cloudPort);
-//			device.setContactInfo(contactInfo);
-//		}
+		Obj objContactInfo = objDevice.get("contactInfo");
+		if(objContactInfo != null) {
+			System.out.println(objContactInfo.get("cloud_port"));
+			long cloudPort = objContactInfo.get("cloud_port").getInt();
+			ContactInfo contactInfo = new ContactInfo(id, (int)cloudPort);
+			device.setContactInfo(contactInfo);
+		}
 
 		return device;	
 	}

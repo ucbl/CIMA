@@ -31,7 +31,7 @@ public class Device {
 	private List<Capability> capabilities;
 	
 	/** Information for contacting the device in the cloudby-passing the OM2M layer*/
-//	private ContactInfo contactInfo;
+	private ContactInfo contactInfo;
 
 	/** A simple device description*/
 	private DeviceDescription deviceDescription;
@@ -47,13 +47,13 @@ public class Device {
 		this.capabilities = capabilities;
 	}
 
-//	public ContactInfo getContactInfo() {
-//		return contactInfo;
-//	}
+	public ContactInfo getContactInfo() {
+		return contactInfo;
+	}
 
-//	public void setContactInfo(ContactInfo contactInfo) {
-//		this.contactInfo = contactInfo;
-//	}
+	public void setContactInfo(ContactInfo contactInfo) {
+		this.contactInfo = contactInfo;
+	}
 
 
 	public Device() {
