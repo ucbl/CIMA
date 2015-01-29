@@ -1,9 +1,11 @@
+
 /*Device Model
 * Defining all methods to request the server*/
-	
-app.factory('DeviceFactory', function($http, $q, $timeout, $log){
 
-	var factory = {
+	
+app.factory('DeviceFactory',function($http, $q, $timeout, $log){
+
+	var factory = { 
 		/*Return all devices*/
 		find : function(options){
 			/* Promesses */
@@ -108,6 +110,7 @@ app.factory('DeviceFactory', function($http, $q, $timeout, $log){
         		headers: {'Content-Type': 'application/json'}
       		}).success(function (data, status, headers, config) {
 				deferred.resolve();
+				alert('success');
         	}).error(function (data, status, headers, config) {
 				deferred.reject('Unable to modify capability, status : '+status+', header : '+headers);
         	});
@@ -130,6 +133,8 @@ app.factory('DeviceFactory', function($http, $q, $timeout, $log){
         	});
 			return deferred.promise;
 		}
-	}
-	return factory;
+
+	};
+return factory;
+
 })

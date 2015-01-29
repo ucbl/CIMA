@@ -4,56 +4,51 @@
         <a class="btn btn-warning" href="#/"> < Devices list</a>
         <!-- Applying changes button-->
         <button class="btn btn-success pull-right" ng-click="saveDevice()">
-            <i class="glyphicon glyphicon-ok"></i>
+        <i class="glyphicon glyphicon-ok"></i>
             Apply changes
         </button>
-        <hr>
-        <!-- Infos sur le device -->
+		<hr>
+		<!-- Infos sur le device -->
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h2 class="panel-title">Device ID : {{device.id}}</h2>
+                <h2 class="panel-title">Device ID : {{id}}</h2>
             </div>
             <div class="panel-body">
-                <i>Configuration : {{device.configuration}}</i><br>
-                <i>Last connection on {{device.dateConnection}}</i><br>
-                <i>Communication protocol : {{device.modeConnection}} at {{device.uri}}</i>
+                <i>Configuration : {{configuration}}</i><br>
+        		<i>Last connection on {{dateConnection}}</i><br>
+        		<i>Communication protocol : {{modeConnection}} at {{uri}}</i>
+        		<br>
+        		<br>
+        		<p>
+        		<strong>Name</strong>
+        		<input class="control" type="text"  ng-disabled="!isEditable" ng-model="name"/> 
+        		<input class="control" type="checkbox" ng-model="isEditable">  Edit
+        		<br>
+        		<i ng-show="isEditable">Note : changes will be effective after apply changes.</i>
+        		</p>
+        		<hr>
 
-                <br>
-                <br>
-                <p>
-                    <div ng-show="!isDeviceNameEditable">
-                        <strong>Name</strong> : {{device.name}}
-                    </div>
-                    <div ng-show="isDeviceNameEditable">
-                        <strong>Name</strong>
-                        <input class="control" type="text"  ng-disabled="!isEditable" ng-model="device.name"/> 
-                        <input class="control" type="checkbox" ng-model="isEditable">Edit
-                    </div>
-                    <br>
-                    <i ng-show="isEditable">Note : changes will be effective after apply changes.</i>
-                </p>
-                <hr>
+        		<!-- Devices capabilities -->
+        		<h3>Capabilities</h3>
 
-                <!-- Devices capabilities -->
-                <h3>Capabilities</h3>
+        	    <table st-table="devices" class="table table-striped" style="width: 40%">
+        	        <thead>
+        	        <tr>
+                        <th class="text-center">Configuration </th>
+        	            <th class="text-center">ID </th>
+        	            <th class="text-center">Protocol</th>
+                        <th class="text-center">Action</th>
 
-                <table st-table="devices" class="table table-striped" style="width: 40%">
-                   <thead>
-                       <tr>
-                        <th>Configuration </th>
-                        <th>ID </th>
-                        <th>Protocol</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody ng-repeat="capability in device.capabilities | orderBy:order">
-                   <tr>
-                    <td class="text-center">{{capability.configuration}}</td>
-                    <td class="text-center">{{capability.id}}</td>
-                    <td class="text-center">{{capability.protocol.protocolName}}</td>
-                    <td class="text-center">
+        	        </tr>
+        	        </thead>
+        	        <tbody ng-repeat="capability in capabilities | orderBy:order">
+        	        <tr>
+                        <td class="text-center">{{capability.configuration}}</td>
+        	            <td class="text-center">{{capability.id}}</td>
+        	            <td class="text-center">{{capability.protocol.protocolName}}</td>
+        	            <td class="text-right">
 
-                        <button ng-show="!capability.isEditable" type="button" ng-click="openAndShowCapability(capability)" class="btn btn-sm btn btn-info">
+		               <button ng-show="!capability.isEditable" type="button" ng-click="openAndShowCapability(capability)" class="btn btn-sm btn btn-info">
                             <i class="glyphicon glyphicon-show"></i>
                             Show
                         </button>
@@ -63,43 +58,17 @@
                           Edit
                       </button>
 
-                    <button ng-show="capability.isEditable" type="submit" id="delete{{capability.id}}"
-                    data-loading-text="deleting..." class="btn btn-sm btn-danger" autocomplete="off" onclick="javascript: id = this.value;"
-                    value="{{capability.id}}" data-toggle="modal"
-                    data-target="#confirm-delete">
-                    <i class="glyphicon glyphicon-remove-circle"></i>
-                    Remove
-                </button>
+                        <button class="btn btn-sm btn-danger" ng-show="capability.isEditable" type="button" ng-click="removeCapability(capability)" class="btn btn-sm btn btn-info">
+                         <i class="glyphicon glyphicon-remove-circle"></i>
+                        Remove
+                      </button>
                 </td>
-                            <!--MODAL FOR REMOVING-->
-<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog"
-    aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"
-                    aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
-            </div>
-            <div class="modal-body">
-                <p>You are about to delete a capability, this procedure is
-                    irreversible.</p>
-                <p>Do you want to proceed?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger danger"
-                    ng-click="removeCapability(capability)"data-dismiss="modal">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>
-                </td>
-	         </tr>
-	        </tbody>
-	    </table>
+             </tr>
+            </tbody>
+        </table>
 
-                <!-- SHOW CAPACBILITY -->
+
+        <!-- SHOW CAPACBILITY -->
                 <div class="panel panel-warning" id="edit" ng-show="ShowIsOpen">
                     <div class="panel-heading">
                         <h2 class="panel-title">Show capability</h2>
@@ -130,6 +99,7 @@
                     </div>
                 </div>
 
+
             	<!-- EDIT CAPACBILITY -->
                 <div class="panel panel-warning" id="edit" ng-show="EditIsOpen">
                     <div class="panel-heading">
@@ -154,7 +124,7 @@
                             </li>
                             <br>   
                             <li> Key words </li> 
-                             <tags-input ng-model="editedCapability.keywords"></tags-input> 
+                             <tags-input   ng-model="editedCapability.keywords"></tags-input> 
 
                             <br>
 
@@ -162,7 +132,7 @@
                                 <i class="glyphicon glyphicon-ok"></i>
                                 Apply 
                             </button>
-                            <button class="btn btn-danger pull-left" type="button" ng-click="openAndEditCapability(null)" />
+                            <button class="btn btn-danger pull-left" type="button" ng-click="CloseEditCapability()" />
                                 Undo
                             </button>
                             <!-- Test capability button -->
@@ -171,10 +141,6 @@
                         </form>
                     </div>
                 </div>
-
-
-
-
             </div>
         </div>
 
@@ -195,7 +161,9 @@
                         <!--<pre>Model: {{NewFromExistingCapability | json}}</pre>-->
                         <form name = "addFromExisting" ng-submit="addCapabilityFromExisting(NewFromExistingCapability)" ng-show="(NewFromExistingCapability != '' && NewFromExistingCapability != null )">
                             <strong>ID </strong><span class=" btn-danger" ng-show="idrequired">You must specify a new ID !</span>
+
                             <input name="id" class="form-control" style="width: 40%" type="text" placeholder="Type an ID... (Required)" ng-model="NewFromExistingCapability.id" id required>
+
                             <strong>Protocol </strong>
                             <select class="form-control" ng-model="NewFromExistingCapability.protocol"
                                     ng-options="protocol.protocolName for protocol in protocolsFromExisting" ng-required="true">
@@ -206,9 +174,9 @@
                             </li>
                             <br>
                              <strong>Key words </strong>
-                             <tags-input ng-model="NewFromExistingCapability.keywords"></tags-input>                   
+                             <tags-input ng-model="tags"></tags-input>                   
                              <!-- Reset capability button -->
-                            <button ng-click="NewFromExistingCapability={}" type="button" class="btn btn-primary pull-left" >Reset</button>
+                            <button ng-click="NewFromExistingCapability='';tags=null" type="button" class="btn btn-primary pull-left" >Reset</button>
                              <!-- Add capability button -->
                             <button style="margin-left:5px" class="btn btn-success pull-right" type="submit" >Add</button>
                             <!-- Test capability button -->
@@ -237,10 +205,10 @@
                             <br>        
 
                              <strong>Key words </strong>
-                             <tags-input ng-model="newCapability.keywords"></tags-input> 
+                             <tags-input ng-model="tags"></tags-input> 
                              <br>                
                              <!-- Reset capability button -->
-                            <button ng-click="newCapability={}" type="button" class="btn btn-primary pull-left">Reset</button> 
+                            <button ng-click="newCapability={};tags=null" type="button" class="btn btn-primary pull-left">Reset</button> 
                              <!-- Add capability button -->
                             <input style="margin-left:5px" class="btn btn-success pull-right" type="submit" value="Add"/>
                              <!-- Test capability button -->

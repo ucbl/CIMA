@@ -1,5 +1,5 @@
 <!--Devices view-->
-<div  ng-hide='loading'>
+<div ng-hide='loading'>
     <div class="panel panel-primary" >
         <div class="panel-heading">
             <h2 class="panel-title">Unrecognized devices list</h2>
@@ -12,13 +12,13 @@
             <table st-table="devices" class="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th ng-click="predicate = 'configuration'; reverse=!reverse">Configuration</th>
-                    <th ng-click="predicate = 'id'; reverse=!reverse">ID Device</th>
-                    <th ng-click="predicate = 'name'; reverse=!reverse">Name</th>
-                    <th ng-click="predicate = 'dateConnection'; reverse=!reverse">Last connection date</th>
-                    <th ng-click="predicate = 'modeConnection'; reverse=!reverse">Connection mode</th>
-                    <th ng-click="predicate = 'uri'; reverse=!reverse">URI</th>
-                    <th >Action</th>
+                    <th class="text-center" ng-click="predicate = 'configuration'; reverse=!reverse">Configuration</th>
+                    <th class="text-center" ng-click="predicate = 'id'; reverse=!reverse">ID Device</th>
+                    <th class="text-center" ng-click="predicate = 'name'; reverse=!reverse">Name</th>
+                    <th class="text-center" ng-click="predicate = 'dateConnection'; reverse=!reverse">Last connection date</th>
+                    <th class="text-center" ng-click="predicate = 'modeConnection'; reverse=!reverse">Connection mode</th>
+                    <th class="text-center" ng-click="predicate = 'uri'; reverse=!reverse">URI</th>
+                    <th class="text-center">Action</th>
  
                 </tr>
                 </thead>

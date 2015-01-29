@@ -1,5 +1,5 @@
 /* Application moduls */
-var app = angular.module('MonApp',['MonApp.routes','MonApp.ui','MonApp.tags','toaster']);
+var app = angular.module("MonApp",["MonApp.routes","MonApp.ui","MonApp.tags"]);
 
 /*routing URLs*/
 angular.module('MonApp.routes', ['ngRoute']).config(function($routeProvider){
