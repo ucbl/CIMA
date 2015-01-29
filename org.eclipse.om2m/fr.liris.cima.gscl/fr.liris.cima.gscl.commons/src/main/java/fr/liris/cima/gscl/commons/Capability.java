@@ -36,6 +36,12 @@ public class Capability {
                 this.cloudPort=cloudPort;
 		
 	}
+          public Capability(String name, Protocol protocol, List<String> keywords) {
+		this.name = name;
+		this.protocol = protocol;
+		this.keywords = keywords;
+		
+	}
 	
 	public  Capability(String name) {
 		this.name = name;
