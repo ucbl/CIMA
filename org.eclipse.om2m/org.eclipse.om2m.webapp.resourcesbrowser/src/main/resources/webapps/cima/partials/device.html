@@ -43,14 +43,15 @@
                         <th>Configuration </th>
                         <th>ID </th>
                         <th>Protocol</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody ng-repeat="capability in device.capabilities | orderBy:order">
                    <tr>
-                    <td>{{capability.configuration}}</td>
-                    <td>{{capability.id}}</td>
-                    <td>{{capability.protocol.protocolName}}</td>
-                    <td>
+                    <td class="text-center">{{capability.configuration}}</td>
+                    <td class="text-center">{{capability.id}}</td>
+                    <td class="text-center">{{capability.protocol.protocolName}}</td>
+                    <td class="text-center">
 
                         <button ng-show="!capability.isEditable" type="button" ng-click="openAndShowCapability(capability)" class="btn btn-sm btn btn-info">
                             <i class="glyphicon glyphicon-show"></i>
@@ -61,8 +62,7 @@
                           <i class="glyphicon glyphicon-edit"></i>
                           Edit
                       </button>
-                  </td>
-                  <td>
+
                     <button ng-show="capability.isEditable" type="submit" id="delete{{capability.id}}"
                     data-loading-text="deleting..." class="btn btn-sm btn-danger" autocomplete="off" onclick="javascript: id = this.value;"
                     value="{{capability.id}}" data-toggle="modal"
@@ -70,6 +70,7 @@
                     <i class="glyphicon glyphicon-remove-circle"></i>
                     Remove
                 </button>
+                </td>
                             <!--MODAL FOR REMOVING-->
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel" aria-hidden="true">

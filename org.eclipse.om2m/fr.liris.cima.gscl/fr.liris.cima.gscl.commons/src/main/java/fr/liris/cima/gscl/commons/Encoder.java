@@ -2,8 +2,12 @@ package fr.liris.cima.gscl.commons;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+
+import org.json.simple.JSONObject;
 
 import fr.liris.cima.gscl.commons.parser.Parser;
 import obix.Int;
@@ -152,6 +156,7 @@ public class Encoder {
 	
 	public static Obj encodeProtocolObixObj(Protocol protocol) {
 		Obj objProtocol = new Obj("protocol");
+		
 	//	objProtocol.add(new Str("protocolName", protocol.getName()));
 		for(Entry<String, String> entry : protocol.getParameters().entrySet()) {
 			System.out.println("parameter = '"+entry.getValue().trim()+"'");
@@ -160,8 +165,26 @@ public class Encoder {
 		return objProtocol;
 	}	
 	
+	@SuppressWarnings("unchecked")
+	public static String encodeToJson(Map<String, Object> parameters) {
+		
+		JSONObject jsonObject = new JSONObject();
+		
+		for(Map.Entry<String, Object> entry : parameters.entrySet() ) {
+			jsonObject.put( entry.getKey(), entry.getValue());
+		}
+
+		return jsonObject.toJSONString();		
+	}
+	
 	public static void main(String args[]) {
 		System.out.println(new Date());
+		
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("name", "nom");
+		parameters.put("port", 8080);
+		
+		System.out.println(encodeToJson(parameters));
 		
 		String representation = "<device>"+
 				"<name>ev3</name>"+
