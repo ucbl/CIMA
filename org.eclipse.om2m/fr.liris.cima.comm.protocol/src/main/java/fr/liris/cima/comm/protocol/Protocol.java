@@ -14,7 +14,7 @@ public interface Protocol {
 	/**
 	 * Getter
 	 * @param paramName parameter's name
-	 * @return value of paramter
+	 * @return value of the parameter
 	 */
 	public Object getParam(String paramName);
 	

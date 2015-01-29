@@ -36,7 +36,7 @@ public class Activator implements BundleActivator {
 		props.put("fr.liris.cima.comm.plateform", "cima");
         this.serviceRegistration = bundleContext.registerService(RestClientService.class.getName(), new CIMARestHttpClient(), props);
         
-     // for fast development purposes, we consider that the capability manager is always available
+     	// Now we add the HTTP protocol to the available protocols
     	ServiceReference refServ = bundleContext.getServiceReference(ProtocolResolver.class.getName());
     	if(refServ != null) {
     	    this.protocolResolver = (ProtocolResolver) bundleContext.getService(refServ);

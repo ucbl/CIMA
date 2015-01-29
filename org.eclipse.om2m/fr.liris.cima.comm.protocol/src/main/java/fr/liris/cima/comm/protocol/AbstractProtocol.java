@@ -2,6 +2,11 @@ package fr.liris.cima.comm.protocol;
 
 import java.lang.reflect.Field;
 
+/**
+ * {@code AbstractProtocol} implements generic methods of {@code Protocol} interface.
+ * @author remi
+ *
+ */
 public abstract class AbstractProtocol implements Protocol {
 
 	@Override
