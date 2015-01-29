@@ -26,9 +26,7 @@
 	</parent>
 
 	<modules>
-		<module>fr.liris.cima.nscl.controller</module>
 		<module>fr.liris.cima.nscl.avatarbuilder</module>
-		<module>fr.liris.cima.nscl.proto</module>
 		<module>fr.liris.cima.nscl.commons</module>
 		<module>fr.liris.cima.nscl.device.service</module>
 		<module>fr.liris.cima.nscl.administration</module>
