@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright (c) 2013-2014 LAAS-CNRS (www.laas.fr) 7 Colonel Roche 31077 
 	Toulouse - France All rights reserved. This program and the accompanying 
 	materials are made available under the terms of the Eclipse Public License 
@@ -10,28 +9,24 @@
 	Khalil Drira - Management and initial specification. Yassine Banouar - Initial 
 	specification, conception, implementation, test and documentation. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.liris.cima.nscl</groupId>
-	<artifactId>fr.liris.cima.nscl</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>fr.liris.cima.nscl :: cima nscl nscl</name>
-	<description>fr.liris.cima.nscl parent</description>
-
+	<artifactId>fr.liris.cima.comm.protocol</artifactId>
+	<packaging>eclipse-plugin</packaging>
+	<name>fr.liris.cima :: comm protocol</name>
+	<description>fr.liris.cima :: comm protocol</description>
 	<parent>
 		<groupId>org.eclipse.om2m</groupId>
 		<artifactId>org.eclipse.om2m</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<modules>
-		<module>fr.liris.cima.nscl.avatarbuilder</module>
-		<module>fr.liris.cima.nscl.commons</module>
-		<module>fr.liris.cima.nscl.device.service</module>
-		<module>fr.liris.cima.nscl.administration</module>
-		<module>fr.liris.cima.nscl.mgmtdevice</module>
-		<module>fr.liris.cima.nscl.core</module>
-	</modules>
+<!--	<dependencies>
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom2</artifactId>
+			<version>2.0.5</version>
+		</dependency>
+	</dependencies>-->
 
 </project>

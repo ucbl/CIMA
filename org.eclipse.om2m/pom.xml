@@ -233,6 +233,7 @@
     <module>org.eclipse.om2m.site.gscl</module>
     <module>fr.liris.cima.gscl</module>
     <module>fr.liris.cima.nscl</module>
+    <module>fr.liris.cima.comm.protocol</module>
     <module>fr.liris.cima.comm.http</module>
   </modules>
 

@@ -62,7 +62,7 @@ public class Device {
 
 	public Device(DeviceDescription deviceDescription) {
 		this.deviceDescription = deviceDescription;
-		contactInfo = new ContactInfo(deviceDescription.getId(), PortGenerator.generatePort());
+//		contactInfo = new ContactInfo(deviceDescription.getId(), PortGenerator.generatePort());
 		capabilities = new ArrayList<>();
 		this.configuration = Configuration.AUTOMATIC;
 	}
@@ -84,7 +84,7 @@ public class Device {
 
 		sb.append(deviceDescription);
 		sb.append(", ");
-		sb.append(contactInfo);
+//		sb.append(contactInfo);
 		sb.append(", ");
 		sb.append(capabilities);
 		sb.append("]\n");

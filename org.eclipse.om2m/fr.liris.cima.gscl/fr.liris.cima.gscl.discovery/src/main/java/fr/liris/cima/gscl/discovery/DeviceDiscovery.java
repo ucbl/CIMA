@@ -1,6 +1,7 @@
 package fr.liris.cima.gscl.discovery;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +13,16 @@ import org.eclipse.om2m.comm.service.RestClientService;
 import org.eclipse.om2m.commons.resource.StatusCode;
 import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import fr.liris.cima.gscl.commons.Capability;
 import fr.liris.cima.gscl.commons.Device;
 import fr.liris.cima.gscl.commons.Encoder;
 import fr.liris.cima.gscl.commons.DeviceDescription;
 import fr.liris.cima.gscl.commons.ExecuteShellComand;
+import fr.liris.cima.gscl.commons.Protocol;
 import fr.liris.cima.gscl.commons.constants.*;
 import fr.liris.cima.gscl.commons.parser.*;
 import fr.liris.cima.gscl.commons.util.*;
@@ -33,7 +38,7 @@ public class DeviceDiscovery implements DiscoveryService{
 
 	private static Log LOGGER = LogFactory.getLog(DeviceDiscovery.class);
 	public static final String ADMIN_REQUESTING_ENTITY = System.getProperty("org.eclipse.om2m.adminRequestingEntity","admin/admin");
-	
+
 	public static final String FORWARD_PORT = System.getProperty("fr.liris.cima.gscl.forwardPort");
 	public static final String CIMA_ADDRESS = System.getProperty("fr.liris.cima.gscl.adress");
 	public static final String DEFAULT_DEVICE_PATH_INFOS = System.getProperty("fr.liris.cima.gscl.adress.defaultDevicePathInfos");
@@ -43,7 +48,7 @@ public class DeviceDiscovery implements DiscoveryService{
 	private RestClientService clientService;
 	// A device managed service
 	private ManagedDeviceService deviceService;
-	
+
 	private CIMAInternalCommunication cimaInternalCommunication ;
 
 	/**
@@ -65,9 +70,19 @@ public class DeviceDiscovery implements DiscoveryService{
 	 * this map store the unknown adress for configuration.
 	 */
 	private Map<String, String> mapConfiguredAddresses;
-	
-	Map<Integer, Pair<Integer, Integer>>mapPortManager;
 
+
+	/**
+	 * key : deviceId_capabilityPort
+	 * Value : generate port  by c part for contacting object from cloud 
+	 */
+	Map<String, Integer>mapConnectionPortForwarding;
+	
+	/**
+	 * key : deviceId_capabilityPort
+	 * Value : status that indicate if port opening in the c part is closing or not 
+	 */
+	Map<String, String>mapDisconnectionPortForwarding;
 
 	public DeviceDiscovery() {
 
@@ -85,9 +100,10 @@ public class DeviceDiscovery implements DiscoveryService{
 		this.mapConfiguredAddresses = new HashMap<>();
 
 		this.mapConnectedAddresses= new HashMap<>();
-		
-		this.mapPortManager = new HashMap<>();
-		
+
+		this.mapConnectionPortForwarding = new HashMap<>();
+		this.mapDisconnectionPortForwarding = new HashMap<>();
+
 		cimaInternalCommunication = new CIMAInternalCommunication();
 	}
 
@@ -118,8 +134,6 @@ public class DeviceDiscovery implements DiscoveryService{
 		/**
 		 * Send notification to Infrasctrucure controller
 		 */
-
-		new CIMAInternalCommunication().sendInfos("d"+Utils.extractIpAdress(deviceDescription.getUri()));
 
 		ResponseConfirm responseConfirm = clientService.sendRequest(requestIndication);
 		return responseConfirm;
@@ -167,6 +181,24 @@ public class DeviceDiscovery implements DiscoveryService{
 				LOGGER.info("***deviceDescription*** = "+deviceDescription);
 				notifyDisconnectionToInfController(deviceDescription);
 
+				// Get ids that identifying  specifics ports to devices, in port forwarding part
+//				List<String> ids = new ArrayList<>();
+//				ids.addAll(mapConnectionPortForwarding.keySet());
+				
+				// Generate port forwarding ids
+				List<String> ids = generateIdsPortForwardingIds(device);
+				
+				// Send disconnection notification to port forwarding part
+				String responseDisconnection = cimaInternalCommunication.sendInfos(Encoder.JsonDeviceDisconnectionInfoToPortForwading(ids));
+				mapDisconnectionPortForwarding = Encoder.decodeResponseDisconnection(responseDisconnection);
+				for(Map.Entry<String, String> entry : mapDisconnectionPortForwarding.entrySet() ) {
+					if(! entry.getValue().equals("OK")) {
+						String portForwadingId = entry.getKey();
+						int cloudPort =  mapConnectionPortForwarding.get(portForwadingId);
+						LOGGER.info("Error for disconnecting port "+cloudPort + " in port forwarding part");
+					}
+				}
+				
 				// update mapConnectedAddresses by removing the device address
 				LOGGER.info(" Le device viens de se deconnecter  " + address);
 				mapConnectedAddresses.remove(address);
@@ -176,8 +208,8 @@ public class DeviceDiscovery implements DiscoveryService{
 			boolean deviceCreated = false;
 			try {
 				// Create connected device
-				if(this.createDevice(address, requestIndication, ":8080/infos")){}
-				//	else if(this.createDevice(address, requestIndication, ":8080/simu/infos")){}
+				if(this.handleNewDeviceConnection(address, requestIndication, ":8080/infos")){}
+				//	else if(this.handleNewDeviceConnection(address, requestIndication, ":8080/simu/infos")){}
 				else {
 					LOGGER.info(" UNKNOWN DEVICE "+address);
 					if( !mapConfiguredAddresses.containsKey(address)) {
@@ -197,20 +229,31 @@ public class DeviceDiscovery implements DiscoveryService{
 		}
 	}
 
-	protected boolean createDevice(String address, RequestIndication requestIndication, String targetId){
+	/**
+	 * This method handle new device connection by sending a request for discovery of potential device.
+	 * @param address
+	 * @param requestIndication
+	 * @param targetId
+	 * @return
+	 */
+	protected boolean handleNewDeviceConnection(String address, RequestIndication requestIndication, String targetId){
 		requestIndication.setTargetID(targetId);
 		ResponseConfirm responseConfirm = null ;
 
 		responseConfirm = clientService.sendRequest(requestIndication);
 		LOGGER.info("device requestIndication = "+requestIndication);
-		// TODO 
+
 		if(!(responseConfirm.getStatusCode() == null) && (responseConfirm.getStatusCode().equals(StatusCode.STATUS_OK) || 
 				responseConfirm.getStatusCode().equals(StatusCode.STATUS_ACCEPTED)) ) {
 			String representation = responseConfirm.getRepresentation();
 
 
+			// Create device from its xml representation
 			Device device = Parser.parseXmlToDevice(representation);
+			// Adding device to the device manager
 			deviceService.addDevice(device);
+			
+			// Notify NSCL 
 			//deviceService.sendDeviceToNSCL(device, clientService);
 
 			LOGGER.info("rep = "+Encoder.encodeDeviceToObix(device));
@@ -223,18 +266,21 @@ public class DeviceDiscovery implements DiscoveryService{
 			client.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);
 			client.setRepresentation( Encoder.encodeDeviceToObix(device));
 
-			/**
-			 * Envoi des infos du device au controleur du nscl
-			 */
+			// Send notification request to the nscl
 			clientService.sendRequest(client);
 
-			//TODO
+			// Add the (key = IP address of the device, value = deviceId) to the map 
 			mapConnectedAddresses.put(address, device.getId());
-			mapKnownAddresses.put(address, device.getId());
-
-			// Envoi des infos du device a la partie C de CIMA : ipAdress-TCP-PORT
-			LOGGER.info("***********extractIpAdress*************"+Utils.extractIpAdress(device.getUri()));
-			new CIMAInternalCommunication().sendInfos("c"+Utils.extractIpAdress(device.getUri()) + ":8080"+ "-UDP-" +device.getContactInfo().getCloud_port());
+			
+			// Encode connection data to json for the c part
+			String data = Encoder.encodeDeviceToJSONPortForwarding(device);
+			
+			// send connection data to the c part
+			String cResponse = cimaInternalCommunication.sendInfos(data);
+			
+			// Decode connection response from c part 
+			mapConnectionPortForwarding = Encoder.decodeJson(cResponse);
+			
 			return true;
 		} else return false;
 	}
@@ -252,23 +298,15 @@ public class DeviceDiscovery implements DiscoveryService{
 		return false;
 	}
 	
-	public void test(Device device) {
+	// Generates a list of id for the port forwarding section
+	//each identifier is like deviceId_protocolPort
+	private List<String> generateIdsPortForwardingIds(Device device) {
+		List<String> ids = new ArrayList<>();
 		
-		int countNbconnectedCapability = 0;
-	//	String infos
-		
-		List<Capability> capabilities = device.getCapabilities();
-		for(Capability capability : capabilities) {
+		for(Capability capability : device.getCapabilities()) {
 			int port = Integer.parseInt(capability.getProtocol().getParameterValue("port"));
-			if( !mapPortManager.containsKey(port)) {
-				cimaInternalCommunication.sendInfos(data);
-				mapPortManager.put(port, new Pair<>(1, second));
-			}
-			else {
-				
-			}
+			ids.add(device.getId() + "_" + port);
 		}
-	
-		
+		return ids;
 	}
 }
