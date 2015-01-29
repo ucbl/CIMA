@@ -3,6 +3,7 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
 	
 	$rootScope.loading = true;
 	$scope.devices = new Array();
+	$scope.predicate = '-configuration';
 
 	/* Calling the DeviceFactory for changing the devices list */
 	$scope.loadDevices = function(){

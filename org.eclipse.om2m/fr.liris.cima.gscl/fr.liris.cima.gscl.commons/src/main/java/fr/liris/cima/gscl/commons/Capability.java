@@ -28,11 +28,18 @@ public class Capability {
 	/** Configuration's type of the Capability(automatic or manual) */
 	private Configuration configuration;
  
-	public Capability(String name, Protocol protocol, List<String> keywords) {
+	public Capability(String name, Protocol protocol, List<String> keywords, int cloudPort) {
 		this.name = name;
 		this.protocol = protocol;
 		this.keywords = keywords;
 		this.configuration = Configuration.AUTOMATIC;
+                this.cloudPort=cloudPort;
+		
+	}
+          public Capability(String name, Protocol protocol, List<String> keywords) {
+		this.name = name;
+		this.protocol = protocol;
+		this.keywords = keywords;
 		
 	}
 	

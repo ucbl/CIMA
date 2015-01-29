@@ -13,6 +13,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
+import fr.liris.cima.comm.protocol.Protocol;
+import fr.liris.cima.comm.protocol.ProtocolResolver;
 import fr.liris.cima.nscl.device.service.ManagedDeviceService;
 /**
  *  Manages the starting and stopping of the bundle.
@@ -25,13 +27,22 @@ public class Activator implements BundleActivator {
 	private ServiceTracker<Object, Object> sclServiceTracker;
 	
 	private ServiceRegistration serviceRegistration;
-
+	private ProtocolResolver protocolResolver;
+	private Protocol pHttp;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		Dictionary props=new Properties();
 		props.put("fr.liris.cima.comm.plateform", "cima");
         this.serviceRegistration = bundleContext.registerService(RestClientService.class.getName(), new CIMARestHttpClient(), props);
+        
+     	// Now we add the HTTP protocol to the available protocols
+    	ServiceReference refServ = bundleContext.getServiceReference(ProtocolResolver.class.getName());
+    	if(refServ != null) {
+    	    this.protocolResolver = (ProtocolResolver) bundleContext.getService(refServ);
+    	    this.pHttp = new HTTP();
+    	    this.protocolResolver.addProtocol(HTTP.class.getSimpleName().toLowerCase(), HTTP.class);
+    	}
 		logger.info("registered RestClientService cima Http");
 	}
 
@@ -39,5 +50,6 @@ public class Activator implements BundleActivator {
 	public void stop(BundleContext bundleContext) throws Exception {
 		logger.error("Unregistered RestClientService cima Http");
 		serviceRegistration.unregister();
+		this.protocolResolver.removeProtocol(HTTP.class.getSimpleName().toLowerCase());
 	}
 }
