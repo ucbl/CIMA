@@ -1,6 +1,49 @@
 <!--Devices view-->
 <div ng-hide='loading'>
-    <div class="panel panel-primary" >
+<div class="panel panel-primary left">         
+    <div class="panel-heading">
+        <h2 class="panel-title">Filters</h2>         
+    </div> 
+    <div class="panel-body"> 
+
+<section  style="border-right:1px">  
+    <div class="filter">
+    <b>Configuration</b>
+    <div>
+        <div ng-repeat="config in configGroup">
+            <b><input type="checkbox" ng-model="useConfig[config]"/>{{config}}</b>
+            <span>({{(filteredDevices | filter:config).length}})</span>
+        </div>
+    </div>
+    </div>
+    
+    <div class="filter">
+    <b>Connection mode </b>
+    <div>
+        <div ng-repeat="mode in modeGroup">
+            <b><input type="checkbox" ng-model="useMode[mode]"/>{{mode}}</b>
+            <span>({{(filteredDevices | filter:mode).length}})</span>
+        </div>
+    </div>
+    </div>
+
+    <div class="filter">
+    <b>Key words </b>
+    <div>
+        <div ng-repeat="caps in keyGroup">
+            <div ng-repeat="cap in caps">
+             <div ng-repeat="keyword in cap.keywords| unique : 'keyword'">
+            <b><input type="checkbox" ng-model="useKeys[keyword]"/>{{keyword}}</b>
+            <span>({{(filteredDevices | filter:keyword).length}})</span>
+            </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+</div>
+</div>
+    <div class="panel panel-primary right" >
         <div class="panel-heading">
             <h2 class="panel-title">Unrecognized devices list</h2>
         </div>
@@ -39,5 +82,5 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </div> 
 </div>            

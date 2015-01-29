@@ -35,3 +35,28 @@ h1 {
     vertical-align:middle;
     margin-right:-4px;
 }
+.left {
+    display:      inline;
+    float:        left;
+    margin-left:  10px;
+    margin-right: 10px;
+    width:        20%;
+}
+.right{
+    display:      inline;
+    float:        left;
+    margin-left:  10px;
+    margin-right: 10px;
+    width:        60%;    
+}
+.top {
+    border-bottom: thick solid rgb(11, 112, 178);
+}
+.left {
+    margin:5px;
+    border-right: thin solid gray;
+}
+.filter {
+    margin:10px;
+    border-bottom: thin solid rgb(218, 218, 218);
+}
