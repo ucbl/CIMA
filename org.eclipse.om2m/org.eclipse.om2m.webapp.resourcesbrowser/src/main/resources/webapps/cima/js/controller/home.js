@@ -34,7 +34,7 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
 
 	/* Set an intervall to refresh and call the function to load device list */
 	var interval = setInterval( function(){ $scope.loadDevices(); }, DEVICE_REFRESH);
-
+  /*return the filtered lists*/
   $scope.$watch(function () {
         return {
             devices: $scope.devices,
@@ -44,7 +44,7 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
         }
     }, function (value) {
         var selected;
-        
+        /*configGroup contains the list of unique configuration items {'manual','automatic'}*/
         $scope.configGroup = uniqueItems($scope.devices, 'configuration');
         var filterAfterConfig = [];        
         selected = false;
@@ -83,7 +83,7 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
             filterAfterModes = filterAfterConfig;
         } 
 
-        $scope.keyGroup = uniqueItems(filterAfterModes, 'capabilities');
+        $scope.keyGroup = uniqueItemsKeys(filterAfterModes, 'capabilities');
         var filterAfterKeys = []; 
         var temp = [];       
         selected = false;
@@ -95,9 +95,7 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
                    	var caps = p.capabilities;
                    	for (var l = 0; l < caps.length; l++) { 
                     for(var s in caps[l]['keywords']){
-                    		value = caps[l]['keywords'];
-                    		//alert(value);
-                    		//value = caps[l]['keywords']
+                    		value = caps[l]['keywords']; 
                     if (i == value[s]) {  
                         filterAfterKeys.push(p);
                         break;
@@ -111,7 +109,7 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
             filterAfterKeys = filterAfterModes;
         }        
 
-        $scope.filteredDevices= filterAfterKeys;        
+        $scope.filteredDevices= filterAfterKeys;      
     }, true);
     
     
@@ -120,27 +118,13 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
             console.log(newValue.length);
         }
     }, true);    
-});
-/*function List_search(what, where){
- var exists = false; 
+}); 
 
-	for( var i = 0; i < where.length; i++){ 
-		//if (where[elt]==what){
-	if (where.indexOf(what, i) != -1){
-
-			exists =  true;
+function include(arr,obj) { 
+	if(arr.indexOf(obj) != -1){ 
+       return true;
 	}
-		//}
-	} 
-	return exists;
-};*/
-function include(arr,obj) {
-	var time = 0;
-
-	if(arr.indexOf(obj) != -1){
-       time ++;
-	}
-    return time;
+    return false;
 };
 var uniqueItems = function (data, key) {
     var result = new Array();
@@ -154,46 +138,25 @@ var uniqueItems = function (data, key) {
     }
     return result;
 };  
-app.filter('unique', function() {
-    return function(input, key) {
-        var unique = {};
-        var uniqueList = [];
-        var tempList =[];
-        for(var i = 0; i < input.length; i++){
-            //alert(input[i]); 
-          // if(typeof unique[input[i]] == "undefined"){
-          	//if(input[i] =='wiki'){
-               // alert(unique[input[i]]); 
-              ///  unique[input[i]] = ""; 
-            
-            tempList.push(input[i]); 
-           // alert(input[i]); 
-            
-         
-        //}
-        //alert(tempList); 
-       // for (var i = 0; i < input.length; i++){
-        	 //  if (!List_search(input[i],tempList)){
-          	if(include(tempList, input[i])==1){
+var uniqueItemsKeys = function (data, key) {
 
-            	//alert(input[i]); 
-            	//unique[input[i][key]] = "";
-                uniqueList.push(input[i]);
-            }
+    var result = new Array();
+    var tempList =[]; 
+    for (var j in data) {
+            var caps = data[j][key];   
+        for (var j = 0; j < caps.length; j++) {
+           keywords = caps[j].keywords;  
+            
+            for(var s in keywords){  
+                value = keywords[s];
+                tempList.push(value);        
+                }
+    
         }
-        return uniqueList;
-    };
+    } 
+var unique=tempList.filter(function(itm,i,a){
+    return i==tempList.indexOf(itm);
 });
-/*app.filter('unique', function() {
-    return function(input, key) {
-        var unique = {};
-        var uniqueList = [];
-        for(var i = 0; i < input.length; i++){
-            if(typeof unique[input[i][key]] == "undefined"){
-                unique[input[i][key]] = "";
-                uniqueList.push(input[i]);
-            }
-        }
-        return uniqueList;
-    };
-});*/
+    result = unique;
+    return result;
+}; 

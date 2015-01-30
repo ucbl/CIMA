@@ -12,7 +12,7 @@
                 "id" : "ev3Back",
                 "configuration" : "automatic",
                 "protocol": {
-                    "protocolName" : "HTTP",
+                    "protocolName" : "USB",
                     "parameters" : [
                         {
                             "name" : "method",
@@ -38,7 +38,7 @@
                 "id" : "ev3Back",
                 "configuration" : "manual",
                 "protocol": {
-                    "protocolName" : "HTTP",
+                    "protocolName" : "USB",
                     "parameters" : [
                         {
                             "name" : "method",
@@ -58,7 +58,7 @@
                         }
                     ]
                 },
-                "keywords" : ["ev3","reculer","back","robot","mouvement"]
+                "keywords" : ["ev3","reculer","back","robot","mouvement","left"]
             }
         ]
     },
@@ -94,7 +94,7 @@
                         }
                     ]
                 },
-                "keywords" : ["ev3","back","robot","mouvement"]
+                "keywords" : ["ev3","back","robot","mouvement", "wiki"]
 
             }
         ]

@@ -30,13 +30,10 @@
     <div class="filter">
     <b>Key words </b>
     <div>
-        <div ng-repeat="caps in keyGroup">
-            <div ng-repeat="cap in caps">
-             <div ng-repeat="keyword in cap.keywords| unique : 'keyword'">
+        <div ng-repeat="keyword in keyGroup"> 
             <b><input type="checkbox" ng-model="useKeys[keyword]"/>{{keyword}}</b>
             <span>({{(filteredDevices | filter:keyword).length}})</span>
-            </div>
-            </div>
+
         </div>
     </div>
     </div>
@@ -66,7 +63,7 @@
                 </tr>
                 </thead>
                 <!-- Devices table -->
-                <tbody ng-repeat="device in devices | filter:query | orderBy:predicate:reverse">
+                <tbody ng-repeat="device in filteredDevices | filter:query | orderBy:predicate:reverse">
                 <tr>
                     <td class="text-center">{{device.configuration}}</td>
                     <td class="text-center">{{device.id}}</td>
