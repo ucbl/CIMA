@@ -47,7 +47,8 @@ h1 {
     float:        left;
     margin-left:  10px;
     margin-right: 10px;
-    width:        60%;    
+    margin-top: 5px;
+    width:        70%;    
 }
 .top {
     border-bottom: thick solid rgb(11, 112, 178);

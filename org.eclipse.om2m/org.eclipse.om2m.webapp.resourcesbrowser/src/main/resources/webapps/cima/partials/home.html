@@ -12,7 +12,7 @@
     <div>
         <div ng-repeat="config in configGroup">
             <b><input type="checkbox" ng-model="useConfig[config]"/>{{config}}</b>
-            <span>({{(filteredDevices | filter:config).length}})</span>
+            <!--<span>({{(filteredDevices | filter:config).length}})</span>--> 
         </div>
     </div>
     </div>
@@ -22,7 +22,7 @@
     <div>
         <div ng-repeat="mode in modeGroup">
             <b><input type="checkbox" ng-model="useMode[mode]"/>{{mode}}</b>
-            <span>({{(filteredDevices | filter:mode).length}})</span>
+            <!--<span>({{(filteredDevices | filter:mode).length}})</span>--> 
         </div>
     </div>
     </div>
@@ -32,7 +32,7 @@
     <div>
         <div ng-repeat="keyword in keyGroup"> 
             <b><input type="checkbox" ng-model="useKeys[keyword]"/>{{keyword}}</b>
-            <span>({{(filteredDevices | filter:keyword).length}})</span>
+           <!--<span>({{(filteredDevices | filter:keyword).length}})</span>-->
 
         </div>
     </div>
@@ -42,7 +42,7 @@
 </div>
     <div class="panel panel-primary right" >
         <div class="panel-heading">
-            <h2 class="panel-title">Unrecognized devices list</h2>
+            <h2 class="panel-title"> Devices list</h2>
         </div>
         <div class="panel-body">
             <th colspan="5">

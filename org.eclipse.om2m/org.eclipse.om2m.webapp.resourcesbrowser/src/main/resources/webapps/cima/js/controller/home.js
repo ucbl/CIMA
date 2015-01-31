@@ -46,6 +46,7 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
         var selected;
         /*configGroup contains the list of unique configuration items {'manual','automatic'}*/
         $scope.configGroup = uniqueItems($scope.devices, 'configuration');
+        /*filter by configuration mode*/
         var filterAfterConfig = [];        
         selected = false;
         for (var j in $scope.devices) {
@@ -63,8 +64,9 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
         if (!selected) {
             filterAfterConfig = $scope.devices;
         }
-
+        /*modeGroup contains the list of unique connection mode items {'USB','HTTP', ...}*/
         $scope.modeGroup = uniqueItems(filterAfterConfig, 'modeConnection');
+         /*filter by connection mode*/
         var filterAfterModes = [];        
         selected = false;
         for (var j in filterAfterConfig) {
@@ -82,8 +84,9 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
         if (!selected) {
             filterAfterModes = filterAfterConfig;
         } 
-
+        /*keyGroup contains the list of unique keywords {'ev3','movement', ...}*/
         $scope.keyGroup = uniqueItemsKeys(filterAfterModes, 'capabilities');
+        /*flter by keywords*/
         var filterAfterKeys = []; 
         var temp = [];       
         selected = false;
@@ -108,55 +111,51 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
         if (!selected) {
             filterAfterKeys = filterAfterModes;
         }        
-
+        /*return the filtered devices depending on the previous filters*/
         $scope.filteredDevices= filterAfterKeys;      
     }, true);
-    
-    
-    $scope.$watch('filtered', function (newValue) {
-        if (angular.isArray(newValue)) {
-            console.log(newValue.length);
-        }
-    }, true);    
+     
 }); 
-
-function include(arr,obj) { 
-	if(arr.indexOf(obj) != -1){ 
-       return true;
-	}
-    return false;
-};
-var uniqueItems = function (data, key) {
-    var result = new Array();
-    for (var i = 0; i < data.length; i++) {
-        var value = data[i][key];
- 
-        if (result.indexOf(value) == -1) {
-            result.push(value);
+    /*function returns true if an object is in the list and false otherwise*/
+    function include(arr,obj) { 
+    	if(arr.indexOf(obj) != -1){ 
+           return true;
+    	}
+        return false;
+    };
+    /*return unique items from a data object*/
+    var uniqueItems = function (data, key) {
+        var result = new Array();
+        for (var i = 0; i < data.length; i++) {
+            var value = data[i][key];
+     
+            if (result.indexOf(value) == -1) {
+                result.push(value);
+            }
+        
         }
-    
-    }
-    return result;
-};  
-var uniqueItemsKeys = function (data, key) {
+        return result;
+    };  
+    /*return unique keywords*/
+    var uniqueItemsKeys = function (data, key) {
 
-    var result = new Array();
-    var tempList =[]; 
-    for (var j in data) {
-            var caps = data[j][key];   
-        for (var j = 0; j < caps.length; j++) {
-           keywords = caps[j].keywords;  
-            
-            for(var s in keywords){  
-                value = keywords[s];
-                tempList.push(value);        
-                }
-    
-        }
-    } 
-var unique=tempList.filter(function(itm,i,a){
-    return i==tempList.indexOf(itm);
-});
-    result = unique;
-    return result;
-}; 
+        var result = new Array();
+        var tempList =[]; 
+        for (var j in data) {
+                var caps = data[j][key];   
+            for (var j = 0; j < caps.length; j++) {
+               keywords = caps[j].keywords;  
+                
+                for(var s in keywords){  
+                    value = keywords[s];
+                    tempList.push(value);        
+                    }
+        
+            }
+        } 
+    var unique=tempList.filter(function(itm,i,a){
+        return i==tempList.indexOf(itm);
+    });
+        result = unique;
+        return result;
+    }; 

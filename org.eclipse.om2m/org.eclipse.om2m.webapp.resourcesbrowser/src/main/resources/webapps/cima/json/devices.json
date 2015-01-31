@@ -6,11 +6,11 @@
         "configuration" : "automatic",
         "uri" : "http://192.168.0.2",
         "dateConnection" : "10/10/14",
-        "modeConnection" : "HTTP",
+        "modeConnection" : "USB",
         "capabilities": [
             {
                 "id" : "ev3Back",
-                "configuration" : "automatic",
+                "configurationc" : "automatic",
                 "protocol": {
                     "protocolName" : "USB",
                     "parameters" : [
@@ -32,11 +32,11 @@
                         }
                     ]
                 },
-                "keywords" : ["ev3","back","robot","mouvement"]
+                "keywords" : ["ev3","back","robot","mouvement","right"]
             },
             {
                 "id" : "ev3Back",
-                "configuration" : "manual",
+                "configurationc" : "manual",
                 "protocol": {
                     "protocolName" : "USB",
                     "parameters" : [
@@ -72,7 +72,7 @@
         "capabilities": [
             {
                 "id" : "ev3Back",
-                "configuration" : "automatic",
+                "configurationc" : "automatic",
                 "protocol": {
                     "protocolName" : "HTTP",
                     "parameters" : [
@@ -109,7 +109,7 @@
         "capabilities": [
             {
                 "id" : "ev3Back",
-                "configuration" : "manual",
+                "configurationc" : "manual",
                 "protocol": {
                     "protocolName" : "HTTP",
                     "parameters" : [
@@ -145,7 +145,7 @@
         "capabilities": [
             {
                 "id" : "ev3Back",
-                "configuration" : "manual",
+                "configurationc" : "manual",
                 "protocol": {
                     "protocolName" : "HTTP",
                     "parameters" : [
