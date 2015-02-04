@@ -411,7 +411,7 @@ public class Parser {
 		protocol.addParameter("port", protocolObj.get("port").getStr());
 		protocol.addParameter("uri", protocolObj.get("uri").getStr());
 
-		int cloudPort = Integer.parseInt(capabilityObj.get("cloudPort").getStr());
+		int cloudPort = (int) capabilityObj.get("cloudPort").getInt();
                 
 		Obj [] objs = capabilityObj.get("keywords").list();
 		List<String> keywords = new ArrayList<>();

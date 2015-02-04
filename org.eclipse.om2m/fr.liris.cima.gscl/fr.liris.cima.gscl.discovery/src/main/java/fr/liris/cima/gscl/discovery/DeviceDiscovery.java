@@ -41,7 +41,7 @@ public class DeviceDiscovery implements DiscoveryService{
 
 	public static final String FORWARD_PORT = System.getProperty("fr.liris.cima.gscl.forwardPort");
 	public static final String CIMA_ADDRESS = System.getProperty("fr.liris.cima.gscl.adress");
-	public static final String DEFAULT_DEVICE_PATH_INFOS = System.getProperty("fr.liris.cima.gscl.adress.defaultDevicePathInfos");
+	public static final String DEFAULT_DEVICE_PATH_INFOS = System.getProperty("fr.liris.cima.gscl.defaultDevicePathInfos");
 	public static final String DISCOVERY_WAITING_TIMER = System.getProperty("fr.liris.cima.gscl.discoveryWaitingTimer");
 
 	// A rest client service
@@ -186,6 +186,7 @@ public class DeviceDiscovery implements DiscoveryService{
 //				ids.addAll(mapConnectionPortForwarding.keySet());
 				
 				// Generate port forwarding ids
+				Device device =deviceService.getDeviceByAddress(address);
 				List<String> ids = generateIdsPortForwardingIds(device);
 				
 				// Send disconnection notification to port forwarding part
@@ -247,6 +248,7 @@ public class DeviceDiscovery implements DiscoveryService{
 				responseConfirm.getStatusCode().equals(StatusCode.STATUS_ACCEPTED)) ) {
 			String representation = responseConfirm.getRepresentation();
 
+			LOGGER.info("***************handleNewDeviceConnection*******************");
 
 			// Create device from its xml representation
 			Device device = Parser.parseXmlToDevice(representation);
@@ -255,8 +257,9 @@ public class DeviceDiscovery implements DiscoveryService{
 			
 			// Notify NSCL 
 			//deviceService.sendDeviceToNSCL(device, clientService);
+			
+			LOGGER.info("**SEND NOTIFICATION TO THE NSCL 1**");
 
-			LOGGER.info("rep = "+Encoder.encodeDeviceToObix(device));
 
 			RequestIndication client = new RequestIndication();
 
@@ -264,7 +267,12 @@ public class DeviceDiscovery implements DiscoveryService{
 			client.setBase("http://127.0.0.1:8080/om2m");
 			client.setTargetID("/nscl/applications/CIMANSCL/devices");
 			client.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);
+			LOGGER.info("**SEND NOTIFICATION TO THE NSCL**");
 			client.setRepresentation( Encoder.encodeDeviceToObix(device));
+			LOGGER.info("**SEND NOTIFICATION TO THE NSCL in obix**");
+			
+			
+
 
 			// Send notification request to the nscl
 			clientService.sendRequest(client);
@@ -276,10 +284,10 @@ public class DeviceDiscovery implements DiscoveryService{
 			String data = Encoder.encodeDeviceToJSONPortForwarding(device);
 			
 			// send connection data to the c part
-			String cResponse = cimaInternalCommunication.sendInfos(data);
+			//String cResponse = cimaInternalCommunication.sendInfos(data);
 			
 			// Decode connection response from c part 
-			mapConnectionPortForwarding = Encoder.decodeJson(cResponse);
+		//	mapConnectionPortForwarding = Encoder.decodeJson(cResponse);
 			
 			return true;
 		} else return false;

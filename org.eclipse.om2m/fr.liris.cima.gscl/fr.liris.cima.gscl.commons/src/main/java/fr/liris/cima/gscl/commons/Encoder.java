@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -26,6 +28,9 @@ import obix.io.ObixEncoder;
  *
  */
 public class Encoder {
+	
+	private static Log LOGGER = LogFactory.getLog(Encoder.class);
+
 
 	static Map<String, List<Capability>>mapPortManager = new HashMap<>();
 
@@ -67,6 +72,7 @@ public class Encoder {
 
 	public static String encodeDeviceToObix(Device device) {
 
+		LOGGER.info("******************dans encoder ***********");
 		Obj objDevice = new Obj("device");
 		Obj obj = new Obj();
 
@@ -78,6 +84,8 @@ public class Encoder {
 		objDevice.add(new Str("modeConnection", deviceDescription.getModeConnection()));
 		objDevice.add(new Str("dateConnection", deviceDescription.getDateConnection()));
 
+		LOGGER.info("******************dans encoder capabilities ***********");
+
 		obix.List obixCapabilities = new obix.List("capabilities");
 		for(Capability capability : device.getCapabilities()) {
 			obixCapabilities.add(encodeCapabilityToObixObj(capability));
@@ -85,7 +93,7 @@ public class Encoder {
 
 		objDevice.add(obixCapabilities);
 		obj.add(objDevice);
-		objDevice.add(encodeContactInfoToObixObj(device.getContactInfo()));
+		//objDevice.add(encodeContactInfoToObixObj(device.getContactInfo()));
 
 		return ObixEncoder.toString(obj);
 	}

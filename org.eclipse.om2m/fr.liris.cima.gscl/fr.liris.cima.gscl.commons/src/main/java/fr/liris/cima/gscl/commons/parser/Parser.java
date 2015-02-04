@@ -122,16 +122,16 @@ public class Parser {
 
 	public static Protocol elementToProtocol(Element protocolElement) throws JDOMException, IOException {
 
-		Class http = protocolResolver.getProtocol("http");;
-		Protocol protocol = null;
-		try {
-			protocol = (Protocol) http.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-			return null;
-		}
+//		Class http = protocolResolver.getProtocol("http");;
+//		Protocol protocol = null;
+//		try {
+//			protocol = (Protocol) http.newInstance();
+//		} catch (InstantiationException | IllegalAccessException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
 
-		//Protocol protocol = new Protocol();
+		Protocol protocol = new Protocol();
 
 		List<Element> childrenElement = protocolElement.getChildren();
 		for(Element element : childrenElement) {
@@ -297,17 +297,17 @@ public class Parser {
 
 		Device device = null;
 		String id = "",  name = "", uri = "",  modeConnection=""; 
-		// Protocol protocol = new Protocol();
+		 Protocol protocol = new Protocol();
 		Date dateConnection = null;
 		
-		Class http = protocolResolver.getProtocol("http");;
-		Protocol protocol = null;
-		try {
-			protocol = (Protocol) http.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-			return null;
-		}
+//		Class http = protocolResolver.getProtocol("http");;
+//		Protocol protocol = null;
+//		try {
+//			protocol = (Protocol) http.newInstance();
+//		} catch (InstantiationException | IllegalAccessException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
 
 		Obj capabilityObj = ObixDecoder.fromString(obixFormat);
 
