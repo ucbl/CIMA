@@ -41,6 +41,7 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 		$rootScope.loading = false; 
 
 	}, function(msg){
+		//error
 		alert(msg);
 	})
 
@@ -69,7 +70,8 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 
 			DeviceFactory.addCapability($scope.id,cap).then(function(){
 				$scope.capabilities.push(cap);
-			}, function(){
+			}, function(msg){
+				//error
 				alert('Votre capability n\'a pas pu être ajoutée');
 			});
 			$scope.newCapability = {}; 
@@ -100,7 +102,8 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 			
 			DeviceFactory.addCapability($scope.id,cap).then(function(){
 				$scope.capabilities.push(cap);
-			}, function(){
+			}, function(msg){
+				//error
 				alert('Votre capability n\'a pas pu être ajoutée');
 			});
 			$scope.newCapability = {}; 
@@ -118,7 +121,8 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
             	$scope.capabilities.splice(index, 1);
         	}
         	$scope.EditIsOpen= false;
-		}, function(){
+		}, function(msg){
+			//error
 			alert('Votre capability n\'a pas pu être supprimé');
 		});
 		}
@@ -134,7 +138,8 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 		
 		DeviceFactory.testCapability($scope.id, cap).then(function(){
 
-		}, function(){
+		}, function(msg){
+			//error
 			alert('Votre capability n\'a pas pu être testé');
 		});
 	}
@@ -153,7 +158,8 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 
 		DeviceFactory.saveDevice(device).then(function(){
 
-		}, function(){
+		}, function(msg){
+			//error
 			alert('Votre device n\'a pas pu être sauvegardé');
 		});
 	}
@@ -166,7 +172,8 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 		cap.protocol.parameters = capability.protocol.parameters;
 		DeviceFactory.modifyCapability($scope.id, cap).then(function(){
 
-		}, function(){
+		}, function(msg){
+			//error
 			alert('Votre capability n\'a pas pu être modifié');
 		});
 	}

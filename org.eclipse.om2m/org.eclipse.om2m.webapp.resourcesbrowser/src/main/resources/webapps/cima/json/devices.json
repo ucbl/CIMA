@@ -10,7 +10,7 @@
         "capabilities": [
             {
                 "id" : "ev3Back",
-                "configurationc" : "automatic",
+                "configuration" : "automatic",
                 "protocol": {
                     "protocolName" : "USB",
                     "parameters" : [
@@ -36,7 +36,7 @@
             },
             {
                 "id" : "ev3Back",
-                "configurationc" : "manual",
+                "configuration" : "manual",
                 "protocol": {
                     "protocolName" : "USB",
                     "parameters" : [
@@ -72,7 +72,7 @@
         "capabilities": [
             {
                 "id" : "ev3Back",
-                "configurationc" : "automatic",
+                "configuration" : "automatic",
                 "protocol": {
                     "protocolName" : "HTTP",
                     "parameters" : [
@@ -109,7 +109,7 @@
         "capabilities": [
             {
                 "id" : "ev3Back",
-                "configurationc" : "manual",
+                "configuration" : "manual",
                 "protocol": {
                     "protocolName" : "HTTP",
                     "parameters" : [
@@ -145,7 +145,7 @@
         "capabilities": [
             {
                 "id" : "ev3Back",
-                "configurationc" : "manual",
+                "configuration" : "manual",
                 "protocol": {
                     "protocolName" : "HTTP",
                     "parameters" : [
