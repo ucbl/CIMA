@@ -216,8 +216,11 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 	$scope.openAndEditCapability = function(capability){
 		if($scope.EditIsOpen){
 			$scope.EditIsOpen = false;
+			$scope.ShowIsOpen = false;
+
 		}else{
 			$scope.EditIsOpen = true;
+			$scope.ShowIsOpen = false;
 			$scope.editedCapability = JSON.parse(JSON.stringify(capability));
 		    //Not to have same reference
 		    for (i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
@@ -252,8 +255,10 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
   		/*Function for show capability*/
 	$scope.openAndShowCapability = function(capability){
 		if($scope.ShowIsOpen){
+			$scope.EditIsOpen = false;
 			$scope.ShowIsOpen = false;
 		}else{
+			$scope.EditIsOpen = false;
 			$scope.ShowIsOpen = true;
 			$scope.editedCapability = JSON.parse(JSON.stringify(capability));
 		    //Not to have same reference
