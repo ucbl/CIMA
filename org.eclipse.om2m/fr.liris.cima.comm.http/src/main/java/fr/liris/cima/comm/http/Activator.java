@@ -41,7 +41,7 @@ public class Activator implements BundleActivator {
     	if(refServ != null) {
     	    this.protocolResolver = (ProtocolResolver) bundleContext.getService(refServ);
     	    this.pHttp = new HTTP();
-    	    this.protocolResolver.addProtocol(HTTP.class.getSimpleName().toLowerCase(), HTTP.class);
+    	    this.protocolResolver.addProtocol("http", HTTP.class);
     	}
 		logger.info("registered RestClientService cima Http");
 	}
@@ -50,6 +50,6 @@ public class Activator implements BundleActivator {
 	public void stop(BundleContext bundleContext) throws Exception {
 		logger.error("Unregistered RestClientService cima Http");
 		serviceRegistration.unregister();
-		this.protocolResolver.removeProtocol(HTTP.class.getSimpleName().toLowerCase());
+		this.protocolResolver.removeProtocol("http");
 	}
 }
