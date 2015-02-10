@@ -184,7 +184,7 @@ public class DeviceDiscovery implements DiscoveryService{
 				// Get ids that identifying  specifics ports to devices, in port forwarding part
 //				List<String> ids = new ArrayList<>();
 //				ids.addAll(mapConnectionPortForwarding.keySet());
-				
+				Device device = deviceService.getDeviceByAddress(address);
 				// Generate port forwarding ids
 				List<String> ids = generateIdsPortForwardingIds(device);
 				

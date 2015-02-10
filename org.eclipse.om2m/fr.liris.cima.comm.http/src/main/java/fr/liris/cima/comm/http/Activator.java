@@ -15,7 +15,6 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import fr.liris.cima.comm.protocol.Protocol;
 import fr.liris.cima.comm.protocol.ProtocolResolver;
-import fr.liris.cima.nscl.device.service.ManagedDeviceService;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author hady

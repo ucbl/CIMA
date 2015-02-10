@@ -21,6 +21,9 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
+		logger.info("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
+		
+		
 		protocolResolverServiceClientTracker=  new ServiceTracker<Object, Object>(bundleContext, ProtocolResolver.class.getName(), null) {
 			public void removedService(ServiceReference<Object> reference, Object service) {
 				logger.info("ProtocolResolver removed");
@@ -42,6 +45,7 @@ public class Activator implements BundleActivator {
 			}
 		};
 		protocolResolverServiceClientTracker.open();
+		logger.info("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
 	}
 
 	@Override
