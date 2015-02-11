@@ -159,7 +159,9 @@ public class InfrastructureController implements IpuService{
 				else if(infos[length - 1].equals(Constants.APOCPATH_DEVICES)){
 					LOGGER.error("Creating a device in infrastrucure controller and sending contact information to all subscribers");
                   
+					LOGGER.info("********Representation********"+representation);
 					Device device = Parser.parseObixToDevice(representation);
+					LOGGER.info("********device********"+device);
 					managerImpl.addDevice(device);
 					LOGGER.info("device = " + device);
 					

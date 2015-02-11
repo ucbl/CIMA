@@ -36,6 +36,16 @@ public class Device {
 	/** Configuration's type of the Device(automatic or manual) */
 	private Configuration configuration;
 	
+	private boolean known;
+
+	public boolean isKnown() {
+		return known;
+	}
+
+	public void setKnown(boolean known) {
+		this.known = known;
+	}
+	
 
 	public Set<Capability> getCapabilities() {
 		return capabilities;

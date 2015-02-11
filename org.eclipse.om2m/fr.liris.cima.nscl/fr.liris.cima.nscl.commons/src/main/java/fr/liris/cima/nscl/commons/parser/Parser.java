@@ -76,6 +76,8 @@ public class Parser {
 				.get("dateConnection")));
 		obj_Device.add(new Str("modeConnection", (String) jsonObject
 				.get("modeConnection")));
+		obj_Device.add(new Str("configuration", (String)jsonObject.get("configuration")));
+
 		obix.List list = new obix.List("Capabilities");
 
 		try {
@@ -471,6 +473,8 @@ public class Parser {
 		Device device;
 		Set<Capability> capabilities = new HashSet<Capability>();
 		String id = null, name = null, uri = null, modeConnection = null, dateConnection = null, configuration;
+		boolean known;
+		
 		ContactInfo contactInfo = null;
 
 		Obj objRoot = ObixDecoder.fromString(obixFormat);
@@ -482,6 +486,7 @@ public class Parser {
 		modeConnection = ObjDevice.get("modeConnection").getStr();
 		dateConnection  = ObjDevice.get("dateConnection").getStr();
 		configuration = ObjDevice.get("configuration").getStr();
+		known =  ObjDevice.get("known").getBool();
 
 		DeviceDescription deviceDescription = new DeviceDescription(id,name, uri, modeConnection, dateConnection);
 		deviceDescription.setId(id);
@@ -509,7 +514,8 @@ public class Parser {
 		
 		device = new Device(deviceDescription, contactInfo);
 		device.setCapabilities(capabilities);
-		
+		device.setConfiguration(Configuration.valueOf(configuration));
+		device.setKnown(known);
 		return device;	
 	}
 

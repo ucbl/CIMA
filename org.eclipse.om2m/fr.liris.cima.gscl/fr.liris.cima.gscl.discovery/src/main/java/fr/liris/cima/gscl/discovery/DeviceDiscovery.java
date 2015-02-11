@@ -158,8 +158,7 @@ public class DeviceDiscovery implements DiscoveryService{
 		Set<String> addresses = lookUp();
 		LOGGER.info("addresses = " + addresses);
 
-//		for(String address : addresses) {
-			String address = "192.168.0.2";
+		for(String address : addresses) {
 			requestIndication.setBase(address);
 
 			// Check if device is in the network local network
@@ -176,7 +175,7 @@ public class DeviceDiscovery implements DiscoveryService{
 				if (checkKnownDeviceConnection(requestIndication)) {
 					// The device is always connected.
 					LOGGER.info("CONTINUE  " + address);
-//					continue;
+					continue;
 				}
 				// The device is disconnected.
 				//send notification to the Infrasctructure Controller.
@@ -232,7 +231,7 @@ public class DeviceDiscovery implements DiscoveryService{
 				}
 			}catch(Exception e) {
 			}
-//		}
+		}
 	}
 
 	/**

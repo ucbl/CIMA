@@ -16,6 +16,7 @@ import org.json.simple.parser.ParseException;
 
 import fr.liris.cima.gscl.commons.parser.Parser;
 import fr.liris.cima.gscl.commons.util.Utils;
+import obix.Bool;
 import obix.Int;
 import obix.Obj;
 import obix.Str;
@@ -83,8 +84,8 @@ public class Encoder {
 		objDevice.add(new Str("uri",deviceDescription.getUri()));
 		objDevice.add(new Str("modeConnection", deviceDescription.getModeConnection()));
 		objDevice.add(new Str("dateConnection", deviceDescription.getDateConnection()));
-		objDevice.add(new Str("configuration", device.getConfiguration().name()));
-
+		objDevice.add(new Str("configuration", "AUTOMATIC"));
+		objDevice.add(new Bool("known", device.isKnown()));
 		
 
 		LOGGER.info("******************dans encoder capabilities ***********");
@@ -133,7 +134,6 @@ public class Encoder {
 		LOGGER.info("*********************************************** ADD CAPA 2");
 		obj.add(new Int("cloudPort",capability.getCloudPort()));
 		LOGGER.info("*********************************************** ADD CAPA 3");
-//		obj.add(new Str("configuration", capability.getConfiguration().name()));
 		obj.add(new Str("configuration", "AUTOMATIC"));
 		LOGGER.info("*********************************************** ADD CAPA 4");
 

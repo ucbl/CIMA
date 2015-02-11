@@ -128,7 +128,7 @@ public class CIMARestHttpClient implements RestClientService{
 			LOGGER.error(url+ " Not Found"+responseConfirm,e);
 		} finally {
 			LOGGER.error(" **********HTTP METHOD*******" + httpMethod);
-			httpMethod.releaseConnection();
+			//httpMethod.releaseConnection();
 		}
 
 		return responseConfirm;
