@@ -63,7 +63,7 @@
                 </tr>
                 </thead>
                 <!-- Devices table -->
-                <tbody ng-repeat="device in filteredDevices | filter:query | orderBy:predicate:reverse">
+                <tbody ng-repeat="device in filteredDevices | filter:query | orderBy:predicate:reverse track by $index">
                 <tr>
                     <td class="text-center">{{device.configuration}}</td>
                     <td class="text-center">{{device.id}}</td>

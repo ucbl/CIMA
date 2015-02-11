@@ -114,10 +114,10 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
             }    
         }
         if (!selected) {
-            filterAfterKeys = filterAfterModes;
+            filterAfterKeys = filterAfterModes; 
         }        
         /*return the filtered devices depending on the previous filters*/
-        $scope.filteredDevices= filterAfterKeys;      
+        $scope.filteredDevices= unique(filterAfterKeys);      
     }, true);
      
 }); 
@@ -164,3 +164,23 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
         result = unique;
         return result;
     }; 
+/*Function returns unique elements of a list*/
+var unique = function(origArr) {
+    var newArr = [],
+        origLen = origArr.length,
+        found, x, y;
+
+    for (x = 0; x < origLen; x++) {
+        found = undefined;
+        for (y = 0; y < newArr.length; y++) {
+            if (origArr[x] === newArr[y]) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            newArr.push(origArr[x]);
+        }
+    }
+    return newArr;
+}
