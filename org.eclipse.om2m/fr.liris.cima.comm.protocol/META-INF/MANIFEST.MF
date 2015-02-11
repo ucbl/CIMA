@@ -9,11 +9,7 @@ Require-Bundle: org.eclipse.om2m.core.service,
  org.apache.commons.codec,
  org.eclipse.om2m.commons,
  org.eclipse.osgi,
- org.apache.commons.logging,
- org.eclipse.om2m.ipu.service,
- org.eclipse.om2m.comm.service,
- fr.liris.cima.nscl.commons,
- fr.liris.cima.nscl.device.service
+ org.eclipse.om2m.comm.service
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .
 Export-Package: fr.liris.cima.comm.protocol
