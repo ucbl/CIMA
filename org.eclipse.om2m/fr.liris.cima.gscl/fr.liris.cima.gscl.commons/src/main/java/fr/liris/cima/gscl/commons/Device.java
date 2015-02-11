@@ -38,6 +38,16 @@ public class Device {
 	
 	/** Configuration's type of the Device(automatic or manual) */
 	private Configuration configuration;
+	
+	private boolean known;
+
+	public boolean isKnown() {
+		return known;
+	}
+
+	public void setKnown(boolean known) {
+		this.known = known;
+	}
 
 	public List<Capability> getCapabilities() {
 		return capabilities;
@@ -58,13 +68,15 @@ public class Device {
 
 	public Device() {
 		this(new DeviceDescription());
+		this.known = false;
 	}
 
 	public Device(DeviceDescription deviceDescription) {
 		this.deviceDescription = deviceDescription;
 //		contactInfo = new ContactInfo(deviceDescription.getId(), PortGenerator.generatePort());
 		capabilities = new ArrayList<>();
-		this.configuration = Configuration.AUTOMATIC;
+		this.setConfiguration(Configuration.AUTOMATIC);
+		this.known = false;
 	}
 	public final String getId() {
 		return this.deviceDescription.getId();
@@ -83,6 +95,10 @@ public class Device {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(deviceDescription);
+		sb.append(", ");
+		sb.append(this.known);
+		sb.append(", ");
+		sb.append(this.configuration);
 		sb.append(", ");
 //		sb.append(contactInfo);
 		sb.append(", ");
@@ -158,5 +174,13 @@ public class Device {
 
 	public void setDeviceDescription(DeviceDescription deviceDescription) {
 		this.deviceDescription = deviceDescription;
+	}
+
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
 	}
 }

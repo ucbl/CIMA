@@ -52,6 +52,7 @@ public class CIMARestHttpClient implements RestClientService{
 			case "GET" :
 			case "RETRIEVE" :
 				httpMethod =  new GetMethod(url);
+				LOGGER.info("RETRIEVE--- + "+httpMethod);
 				break;
 			case "CREATE":
 				httpMethod = new PostMethod(url);
@@ -124,8 +125,9 @@ public class CIMARestHttpClient implements RestClientService{
 			LOGGER.info("Http Client > "+responseConfirm);
 
 		}catch(IOException e){
-		//	LOGGER.error(url+ " Not Found"+responseConfirm,e);
+			LOGGER.error(url+ " Not Found"+responseConfirm,e);
 		} finally {
+			LOGGER.error(" **********HTTP METHOD*******" + httpMethod);
 			httpMethod.releaseConnection();
 		}
 

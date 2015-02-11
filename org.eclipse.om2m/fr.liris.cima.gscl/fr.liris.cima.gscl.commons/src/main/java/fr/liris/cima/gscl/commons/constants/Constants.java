@@ -2,7 +2,7 @@ package fr.liris.cima.gscl.commons.constants;
 
 public class Constants {
 
-	public static final String COMMAND_ARP_FOR_IP = "sudo arp-scan --interface=wlan0 192.168.0.1/24";
+	public static final String COMMAND_ARP_FOR_IP = "sudo arp-scan --interface=wlp2s0 192.168.0.1/24";
 	public static final  String IP_PREFIX = "192.168";
 	public static final  String MOD_IP= "ip";
 	
@@ -20,6 +20,8 @@ public class Constants {
 	public final static String PATH_CAPABILITIES = "capabilities";
 	public final static String PATH_INVOKE = "invoke";
 	public static final String PATH_UNKNOWN_DEVICES="unknown";
+	public static final String PATH_DEVICES_ALL="all";
+
 	
 	public static final String UNKNOWN_DEVICES_URI="/gscl/applications/CIMA/devices/unknown";
 	public final static String PATH_TEST_INVOKE = "test"; 

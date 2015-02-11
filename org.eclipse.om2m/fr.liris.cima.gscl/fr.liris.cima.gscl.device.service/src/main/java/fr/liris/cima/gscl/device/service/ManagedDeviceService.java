@@ -7,7 +7,6 @@ import java.util.Set;
 import org.eclipse.om2m.comm.service.RestClientService;
 import org.eclipse.om2m.commons.rest.RequestIndication;
 
-
 import fr.liris.cima.gscl.commons.Capability;
 import fr.liris.cima.gscl.commons.Device;
 
@@ -52,6 +51,12 @@ public interface ManagedDeviceService {
 	 * Start the manager
 	 */
 	public void start();
+	
+	public List<Capability> getDeviceCapabilities(String deviceId);
+	
+	public List<Device> getDevices(boolean all);
+	
+	public Capability getCapabilityDevice(String deviceId, String capabilityName);	
 
 	public void addKnownDevice(Device device);
 
@@ -73,16 +78,15 @@ public interface ManagedDeviceService {
 	public boolean switchUnknownToKnownDevice(Device device);
 
 	public void sendDeviceToNSCL(Device device, RestClientService clientService);
-	public String unknownDevicesToObixFormat();
+	public String devicesToObixFormat();
 	public Device getUnknownDevice(String deviceId);
 	public void invokeCapability(String deviceId, Capability capability,
 			RestClientService clientService);
 	public List< Capability> getUnknownDeviceCapabilities(String deviceId);
 	public String capabilitiesToObixFormat(List<Capability> capabilities);
 	String devicesToObixFormat(List<Device> devices);
-	Capability getCapabilityToUnknownDevice(String deviceId, String capabilityId);
-	boolean removeCapabilityToUnknownDevice(String deviceId, String capabilityId);
-	public Capability updateUnknownDeviceCapability(String deviceId,
-			Capability capability);
+	//Capability getCapabilityDevice(String deviceId, String capabilityId);
+	boolean removeCapabilityDevice(String deviceId, String capabilityId);
+	public Capability updateDeviceCapability(String deviceId,Capability capability);
 
 }

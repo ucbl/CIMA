@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -26,6 +28,9 @@ import obix.io.ObixEncoder;
  *
  */
 public class Encoder {
+	
+	private static Log LOGGER = LogFactory.getLog(Encoder.class);
+
 
 	static Map<String, List<Capability>>mapPortManager = new HashMap<>();
 
@@ -67,6 +72,7 @@ public class Encoder {
 
 	public static String encodeDeviceToObix(Device device) {
 
+		LOGGER.info("******************dans encoder ***********");
 		Obj objDevice = new Obj("device");
 		Obj obj = new Obj();
 
@@ -77,16 +83,23 @@ public class Encoder {
 		objDevice.add(new Str("uri",deviceDescription.getUri()));
 		objDevice.add(new Str("modeConnection", deviceDescription.getModeConnection()));
 		objDevice.add(new Str("dateConnection", deviceDescription.getDateConnection()));
+		objDevice.add(new Str("configuration", device.getConfiguration().name()));
+
+		
+
+		LOGGER.info("******************dans encoder capabilities ***********");
 
 		obix.List obixCapabilities = new obix.List("capabilities");
 		for(Capability capability : device.getCapabilities()) {
+			LOGGER.info("*********************************************** BOUCLE FOR" + capability.getName());
 			obixCapabilities.add(encodeCapabilityToObixObj(capability));
 		}
+		LOGGER.info("*********************************************** F I N  FOR");
 
 		objDevice.add(obixCapabilities);
 		obj.add(objDevice);
-		objDevice.add(encodeContactInfoToObixObj(device.getContactInfo()));
-
+		//objDevice.add(encodeContactInfoToObixObj(device.getContactInfo()));
+		LOGGER.info("*********************************************** F I N   E N C O D E R");
 		return ObixEncoder.toString(obj);
 	}
 
@@ -110,19 +123,35 @@ public class Encoder {
 
 
 	public static Obj encodeCapabilityToObixObj(Capability capability) {
+
+		LOGGER.info("*********************************************** ADD CAPA");
 		Obj obj = new Obj();
 
+		LOGGER.info("*********************************************** ADD CAPA 1");
+
 		obj.add(new Str("id",capability.getName()));
+		LOGGER.info("*********************************************** ADD CAPA 2");
 		obj.add(new Int("cloudPort",capability.getCloudPort()));
+		LOGGER.info("*********************************************** ADD CAPA 3");
+//		obj.add(new Str("configuration", capability.getConfiguration().name()));
+		obj.add(new Str("configuration", "AUTOMATIC"));
+		LOGGER.info("*********************************************** ADD CAPA 4");
+
 		//obj.add(capability.getProtocol().toObj());
+		LOGGER.info("*********************************************** ADD CAPA PRE ENCODE");
 		obj.add(encodeProtocolObixObj(capability.getProtocol()));
+		LOGGER.info("*********************************************** ADD CAPA POST ENCODE");
 		obix.List keywords = new obix.List("keywords");
 		obix.Str sK = null;
+
+		LOGGER.info("*********************************************** ADD CAPA KEYWORDS");
 		for(String k : capability.getKeywords()){
 			sK = new Str(k);
 			keywords.add(sK);
 		}
 		obj.add(keywords);
+
+	LOGGER.info("*********************************************** FIN ADD CAPAs");
 		return obj;
 	}
 
@@ -173,7 +202,7 @@ public class Encoder {
 	}	
 
 	@SuppressWarnings("unchecked")
-	public static String encodeToJson(Map<String, Object> parameters) {
+	public static JSONObject encodeToJson(Map<String, Object> parameters) {
 
 		JSONObject jsonObject = new JSONObject();
 
@@ -181,7 +210,7 @@ public class Encoder {
 			jsonObject.put( entry.getKey(), entry.getValue());
 		}
 
-		return jsonObject.toJSONString();		
+		return jsonObject;		
 	}
 
 	public static void main(String args[]) {
@@ -191,7 +220,7 @@ public class Encoder {
 		parameters.put("name", "nom");
 		parameters.put("port", 8080);
 
-		System.out.println(encodeToJson(parameters));
+		//System.out.println(encodeToJson(parameters));
 
 		String representation = "<device>"+
 				"<name>ev3</name>"+
@@ -246,9 +275,9 @@ public class Encoder {
 		//	System.out.println(encodeCapabilitiesToObix(capabilities));
 
 
-
-		System.out.println(encodeDeviceToJSONPortForwarding(device));
-		System.out.println(mapPortManager);
+//
+//		System.out.println(encodeDeviceToJSONPortForwarding(device));
+//		System.out.println(mapPortManager);
 		// Protocol
 
 		// ContactInfo
@@ -257,14 +286,18 @@ public class Encoder {
 
 		//	System.out.println(encodeContactInfoToObix(contactInfo));
 
-		//		Device device = new Device(deviceDescription);
-		//		device.addCapability(capability);
-		//		System.out.println(encodeDeviceToObix(device));
+				 device = new Device(deviceDescription);
+				device.addCapability(capability);
+				System.out.println(encodeDeviceToObix(device));
 
 		//		String xmlFormat = "<device><id>DEVICE_0</id><name>ev3</name><uri>http://192.168.0.02:/infos/</uri> "
 		//				+ "<modeConnection>ip</modeConnection></device>";
 		//		System.out.println(Parser.parseXmlDevice(xmlFormat));
 		//		System.out.println(deviceMetaDataToXml(device));
+//		
+//		List<String> listeIds = new ArrayList<>();
+//		listeIds.add("DEVICE_0_8080");
+//		System.out.println(JsonDeviceDisconnectionInfoToPortForwading(listeIds));
 	}
 
 
@@ -273,7 +306,6 @@ public class Encoder {
 
 		JSONParser parser = new JSONParser();
 
-		String response; 
 		int countNbconnectedCapability = 0;
 
 		JSONObject jsonObjectConnection = new JSONObject();

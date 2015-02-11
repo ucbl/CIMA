@@ -209,7 +209,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		return devices.add(device);
 	}
 	
-	@Override
+	//@Override
 	public Capability getCapabilityToUnknownDevice(String deviceId, String capabilityId) {
 		return configManagerImpl.getCapabilityToDevice(deviceId, capabilityId);
 	}
@@ -220,13 +220,12 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 	}
 	
 	@Override
-	public boolean removeCapabilityToUnknownDevice(String deviceId, String capabilityId) {
+	public boolean removeCapabilityDevice(String deviceId, String capabilityId) {
 		return configManagerImpl.removeCapabilityDevice(deviceId, capabilityId);
 	}
 	
-	
 	@Override
-	public Capability updateUnknownDeviceCapability(String deviceId, Capability capability)  {
+	public Capability updateDeviceCapability(String deviceId, Capability capability)  {
 		this.capabilityManager.add(capability);
 		return configManagerImpl.updateCapability(deviceId, capability);
 	}
@@ -310,11 +309,11 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 	}
 	
 	@Override
-	public  String unknownDevicesToObixFormat() {
+	public  String devicesToObixFormat() {
 		obix.List obixDevices = new obix.List("devices");
 		Obj obj = new Obj();
 		
-		for(Device device : unknownDevices) {
+		for(Device device : devices) {
 			//obixDevices.add(device.toIntrinsequeObix());
 			obixDevices.add(Encoder.encodeDeviceToObixObj(device));
 		}
@@ -384,7 +383,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		
 	}
 	
-	public static String unknownDevicesToObixFormat1() {
+	public static String devicesToObixFormat1() {
 		obix.List obixDevices = new obix.List("devices");
 		Obj obj = new Obj();
 		
@@ -397,43 +396,36 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 	}
 	
 	
-	public static void main(String args[]) {
-		String obixFormat = "<obj>"+
-				"<obj name=\"device\">" +
-				"<str name=\"id\" val=\"DEVICE_0\"/>"+
-				"<str name=\"name\" val=\"http\"/>"+
-				"<str name=\"uri\" val=\"192.168.43.34:/device/capabilities/\"/>"+
-				"<str name=\"dateConnection\" val=\"mercredi, oct. 22, 2014 13:52:20 PM\"/>"+
-				"<str name=\"modeConnection\" val=\"ip\"/>"+
-				"<list name=\"capabilities\">"+
-				"<obj>"+
-				"<str name=\"id\" val=\"ev3Back\"/>"+
-				"<obj name=\"protocol\">"+
-				"<str name=\"protocoleName\" val=\"http\"/>"+
-				"<str name=\"method\" val=\"post\"/>"+
-				"<str name=\"port\" val=\"8080\"/>"+
-				"<str name=\"uri\" val=\"uri\"/>"+
-				"</obj>"+
-				"</obj>"+
-				"<obj>"+
-				"<str name=\"id\" val=\"phone\"/>"+
-				"<obj name=\"protocol\">"+
-				"<str name=\"protocoleName\" val=\"http\"/>"+
-				"<str name=\"method\" val=\"post\"/>"+
-				"<str name=\"port\" val=\"8080\"/>"+
-				"<str name=\"uri\" val=\"uri\"/>"+
-				"</obj>"+
-				"</obj>"+
-				"</list>"+                
-				"</obj>"+
-				"</obj>";
-		
-		Device device = Parser.parseObixToDevice(obixFormat);
-		unknownDevices = new ArrayList<>();
-		unknownDevices.add(device);
-		System.out.println(unknownDevicesToObixFormat1());
-		
+	@Override
+	public List<Device> getDevices(boolean all) {
+		List<Device> devices = new ArrayList<>();
+		if (all) {
+			return devices;
+		}
+		else {
+			for( Device device : devices) {
+				if(device.isKnown()) {
+					devices.add(device);
+				}
+			}
+		}
+		return devices;
+	}	
+	
 
+	@Override
+	public List<Capability> getDeviceCapabilities(String deviceId) {
+		return this.getDevice(deviceId).getCapabilities();
+	}
+	
+	public Capability getCapabilityDevice(String deviceId, String capabilityName) {
+		Device device = getDevice(deviceId);
+		for(Capability capability : device.getCapabilities()) {
+			if(capability.getName().equals(capabilityName)) {
+				return capability;
+			}
+		}
+		return null;
 	}
 	
 	

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jdom2.Document;
@@ -18,6 +19,7 @@ import obix.xml.XElem;
 import obix.xml.XParser;
 
 import java.io.FileReader;
+import java.lang.reflect.Field;
 import java.util.Iterator;
 
 import obix.Int;
@@ -31,11 +33,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import fr.liris.cima.comm.protocol.AbstractProtocol;
+import fr.liris.cima.comm.protocol.ProtocolResolver;
 import fr.liris.cima.nscl.commons.Protocol;
 import fr.liris.cima.nscl.commons.Capability;
 import fr.liris.cima.nscl.commons.Device;
 import fr.liris.cima.nscl.commons.DeviceDescription;
 import fr.liris.cima.nscl.commons.ContactInfo;
+import fr.liris.cima.nscl.commons.constants.Configuration;
 import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
 
 import java.util.Iterator;
@@ -115,6 +120,8 @@ public class Parser {
 			String name = capability.get("id").toString();
 			obj_capability.add(new Str("id", (String) capability.get("id")));
 			obj_capability.add(new Int("id", (int) capability.get("cloudPort")));
+			obj_capability.add(new Str("configuration", (String)  capability.get("configuration")));
+
 			
 			obj_capability.add(parseJSONToObixProtocol((JSONObject) capability
 					.get("protocol")));
@@ -340,7 +347,39 @@ public class Parser {
 		}
 		return jsonDeviceObject;
 	}
-	/**
+	
+
+	public static String parseProtocolsToJSONString(ProtocolResolver protocolResolver) {
+		JSONArray jsonProtocols = new JSONArray();
+		
+		Map<String, Class<? extends AbstractProtocol>> listProtocols = protocolResolver.getAllProtocol();
+		JSONObject jsonProtocol = null;
+		JSONArray jsonParameters = null;
+		JSONObject jsonParameter = null;
+		for(String protocol : listProtocols.keySet()){
+			jsonProtocol = new JSONObject();
+			jsonParameters = new JSONArray();
+			
+			jsonProtocol.put("protocolName", protocol);
+			for(Field param : listProtocols.get(protocol).getDeclaredFields()){
+				jsonParameter = new JSONObject();
+				
+				if(!param.getName().contains("this$")){
+					System.out.println("ajout de " + param.getName());
+					jsonParameter.put("name", param.getName());
+					jsonParameter.put("value", "");
+					
+					jsonParameters.add(jsonParameter);
+				}
+			}
+			jsonProtocol.put("parameters", jsonParameters);
+			
+			jsonProtocols.add(jsonProtocol);
+		}
+		
+		return jsonProtocols.toJSONString();
+	}
+	/*
 	public static Device parseObixToDevice(String obixFormat) {
 
 		Device device = null;
@@ -411,7 +450,9 @@ public class Parser {
 		protocol.addParameter("port", protocolObj.get("port").getStr());
 		protocol.addParameter("uri", protocolObj.get("uri").getStr());
 
-		int cloudPort = Integer.parseInt(capabilityObj.get("cloudPort").getStr());
+		int cloudPort = (int) capabilityObj.get("cloudPort").getInt();
+		String configuration = (String) capabilityObj.get("configuration").getStr();
+		
                 
 		Obj [] objs = capabilityObj.get("keywords").list();
 		List<String> keywords = new ArrayList<>();
@@ -420,13 +461,16 @@ public class Parser {
 		}
 
 		name = capabilityObj.get("id").getStr();
-		return new Capability(name, protocol, keywords,cloudPort);
+		Capability capability = new Capability(name, protocol, keywords,cloudPort);
+		capability.setConfiguration(Configuration.valueOf(configuration));
+		
+		return capability;
 	}
 	
 	public static Device parseObixToDevice(String obixFormat) {
 		Device device;
 		Set<Capability> capabilities = new HashSet<Capability>();
-		String id = null, name = null, uri = null, modeConnection = null, dateConnection = null;
+		String id = null, name = null, uri = null, modeConnection = null, dateConnection = null, configuration;
 		ContactInfo contactInfo = null;
 
 		Obj objRoot = ObixDecoder.fromString(obixFormat);
@@ -437,6 +481,7 @@ public class Parser {
 		uri = ObjDevice.get("uri").getStr();
 		modeConnection = ObjDevice.get("modeConnection").getStr();
 		dateConnection  = ObjDevice.get("dateConnection").getStr();
+		configuration = ObjDevice.get("configuration").getStr();
 
 		DeviceDescription deviceDescription = new DeviceDescription(id,name, uri, modeConnection, dateConnection);
 		deviceDescription.setId(id);
@@ -499,7 +544,7 @@ public class Parser {
 		return null;
 	}
 
-	/**
+	/*
 	 * public static Device parseXmlToDevice(String representation) {
 	 * 
 	 * try { SAXBuilder sb = new SAXBuilder(); Document doc = sb.build(new
@@ -522,7 +567,7 @@ public class Parser {
 	 * 
 	 * }
 	 **/
-	/**
+	/*
 	 * public static ContactInfo parseXmlToGatewayInfo(String representation) {
 	 * SAXBuilder sb = new SAXBuilder(); Document doc; String url = null; try {
 	 * doc = sb.build(new StringReader(representation)); Element root =
@@ -554,115 +599,32 @@ public class Parser {
 	}
 
 	public static void main(String args[]) throws Exception {
-		//		String strClient = "<subscriber> <url>localhost</url></subscriber>";
-		//		String representation = "<infos>" + "<device>" + "<id>DEVICE_0</id>"
-		//				+ "<url>192.168.43.34:/infos/</url>"
-		//				+ "<protocol>http</protocol>" + "</device>" + "<gateway>"
-		//				+ "<url>http://localhost:8282</url>" + "</gateway>"
-		//				+ "</infos>";
-		//
-		//		String obixFormat = "<obj>"
-		//				+ "<obj name=\"device\">"
-		//				+ "<str name=\"id\" val=\"DEVICE_0\"/>"
-		//				+ "<str name=\"protocol\" val=\"http\"/>"
-		//				+ "<str name=\"url\" val=\"192.168.43.34:/device/capabilities/\"/>"
-		//				+ "</obj>" + "<obj name=\"contactInfo\">"
-		//				+ "<str name=\"deviceId\" val=\"DEVICE_0\"/>"
-		//				+ "<int name=\"cloud_port\" val=\"6000\"/>" + "</obj>"
-		//				+ "</obj>";
 
-		String jsconCapa = "{" +
-				"\"id\" : \"ev3Back\"," +
-				"\"protocol\": {" +
-				"\"protocolName\" : \"http\"," +
-				"\"parameters\" : [" +
-				"{" +
-				"\"name\" : \"method\"," +
-				"\"value\" : \"post\"" +
-				"}," +
-				"{" +
-				"\"name\" : \"port\"," +
-				"\"value\" : \"8080\"" +
-				"}," +
-				"{" +
-				"\"name\" : \"uri\"," +
-				"\"value\" : \"/capability\"" + 
-				"}," +
-				"{" +
-				"\"name\" : \"body\"," +
-				"\"value\" : \"YmFjaw==\"" +
-				"}" +
-				"]" +
-				"}," +
-				"\"keywords\" : [\"ev3\",\"reculer\",\"back\",\"robot\",\"mouvement\"]" +
-				"}";
-
-		//		parseObixToContactInfo(obixFormat);
-		//		parseObixToDevice(obixFormat.trim());
-		//		System.out.println(parseXmlToClientSubscriber(strClient));
-		// System.out.println(parseXmlToDevice(representation));
-		// System.out.println(parseXmlToGatewayInfo(representation));
-		// parseObix();
-		System.out.println("json depart : " + jsconCapa);
-//		String obixCapa = ObixEncoder.toString(parseJSONToObixCapability(jsconCapa));
-//		System.out.println("OBIX capa : \n" + obixCapa);
-//		System.out.println("JSON capa : \n" + parseObixToJSONStringCapability(obixCapa));
-		
-		
-		String obixFormat = "<obj>"+
-				"<obj name=\"device\">" +
-				"<str name=\"id\" val=\"DEVICE_0\"/>"+
-				"<str name=\"name\" val=\"http\"/>"+
-				"<str name=\"uri\" val=\"192.168.43.34:/device/capabilities/\"/>"+
-				"<str name=\"dateConnection\" val=\"mercredi, oct. 22, 2014 13:52:20 PM\"/>"+
-				"<str name=\"modeConnection\" val=\"ip\"/>"+
-				"<list name=\"capabilities\">"+
-				"<obj>"+
-				"<str name=\"id\" val=\"ev3Back\"/>"+
-				"<obj name=\"protocol\">"+
-				"<str name=\"protocoleName\" val=\"http\"/>"+
-				"<str name=\"method\" val=\"post\"/>"+
-				"<str name=\"port\" val=\"8080\"/>"+
-				"<str name=\"uri\" val=\"uri\"/>"+
-				"</obj>"+
-				"<list name=\"keywords\">"+
-				"<str val=\"ev3\" />"+
-				"<str val=\"back\" />"+
-				"</list>"+
-				"</obj>"+
-				"<obj>"+
-				"<str name=\"id\" val=\"phone\"/>"+
-				"<obj name=\"protocol\">"+
-				"<str name=\"protocoleName\" val=\"http\"/>"+
-				"<str name=\"method\" val=\"post\"/>"+
-				"<str name=\"port\" val=\"8080\"/>"+
-				"<str name=\"uri\" val=\"uri\"/>"+
-				"</obj>"+
-				"<list name=\"keywords\">"+
-				"<str val=\"ev3\" />"+
-				"<str val=\"back\" />"+
-				"</list>"+
-				"</obj>"+
-				"</list>"+  
-				"<obj name=\"contactInfo\">"+
-			     " <str name=\"deviceId\" val=\"DEVICE_0\"/>"+
-			     " <int name=\"cloud_port\" val=\"14948\"/> " +
-			    "</obj>" +
-				"</obj>"+
-				"</obj>";
-
-		System.out.println(parseObixToDevice(obixFormat));
-		
-		Protocol protocol = new Protocol("http");
-		protocol.addParameter("method", "post");
-		
-		
+		ProtocolResolver protoTest = new ProtocolResolver();
+		protoTest.addProtocol("http", ProtoTest.class);
+		System.out.println(parseProtocolsToJSONString(protoTest));
 
 
 	}
+	
+	protected class ProtoTest extends AbstractProtocol{
+		private String aStr;
+		private Object anObj;
+		@Override
+		public String getName() {
+			// TODO Auto-generated method stub
+			return "test";
+		}
+
+		@Override
+		public void sendMessage(String message) {
+			System.out.println(message);
+		}
+		
+	}
 }
 
-/**
+/*
  * <obj> <str name="id" val="DEVICE_0"/> <str name="protocol" val="http"/> <str
  * name="url"
  * val="http://localhost:8080/om2m/nscl/applications/DEVICE_PROTO/proto"/>
