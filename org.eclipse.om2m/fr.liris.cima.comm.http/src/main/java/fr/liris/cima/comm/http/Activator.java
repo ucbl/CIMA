@@ -33,7 +33,7 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Dictionary props=new Properties();
 		props.put("fr.liris.cima.comm.plateform", "cima");
-        this.serviceRegistration = bundleContext.registerService(RestClientService.class.getName(), new CIMARestHttpClient(), props);
+        //this.serviceRegistration = bundleContext.registerService(RestClientService.class.getName(), new CIMARestHttpClient(), props);
         
      	// Now we add the HTTP protocol to the available protocols
     	ServiceReference refServ = bundleContext.getServiceReference(ProtocolResolver.class.getName());

@@ -262,7 +262,7 @@ public class DeviceDiscovery implements DiscoveryService{
 			// Notify NSCL 
 			//deviceService.sendDeviceToNSCL(device, clientService);
 			
-			LOGGER.info("**SEND NOTIFICATION TO THE NSCL 1**");
+			LOGGER.info("**SEND NOTIFICATION TO THE NSCL 1**" + device);
 
 
 			RequestIndication client = new RequestIndication();
@@ -271,8 +271,10 @@ public class DeviceDiscovery implements DiscoveryService{
 			client.setBase("http://127.0.0.1:8080/om2m");
 			client.setTargetID("/nscl/applications/CIMANSCL/devices");
 			client.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);
-			LOGGER.info("**SEND NOTIFICATION TO THE NSCL**");
-			client.setRepresentation( Encoder.encodeDeviceToObix(device));
+			String encod = Encoder.encodeDeviceToObix(device);
+			LOGGER.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" + encod);
+			client.setRepresentation(encod);
+			LOGGER.info("YYYYYYYYYYYYYYYYYYYY D E V I C E YYYYYYYYYYYYYYYYYYYY" + device);
 			LOGGER.info("**SEND NOTIFICATION TO THE NSCL in obix**");
 			
 			

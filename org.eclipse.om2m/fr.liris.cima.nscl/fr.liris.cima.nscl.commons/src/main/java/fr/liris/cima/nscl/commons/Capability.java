@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import fr.liris.cima.nscl.commons.constants.Configuration;
 import obix.Contract;
 import obix.Obj;
 import obix.Op;
@@ -23,13 +24,16 @@ public class Capability {
 	private Protocol protocol;
 	private List<String> keywords;
 	private int cloudPort;
+	
+	/** Configuration's type of the Capability(automatic or manual) */
+	private Configuration configuration;
 
  
 	public Capability(String name, Protocol protocol, List<String> keywords, int cloudPort) {
 		this.name = name;
 		this.protocol = protocol;
 		this.keywords = keywords;
-                this.cloudPort=cloudPort;
+                this.setCloudPort(cloudPort);
 		
 	}
         public Capability(String name, Protocol protocol, List<String> keywords) {
@@ -97,5 +101,17 @@ public class Capability {
 	
 	public String toString() {
 		return "capabilities (" + name + ", "  + protocol + ", " + keywords + ")";
+	}
+	public int getCloudPort() {
+		return cloudPort;
+	}
+	public void setCloudPort(int cloudPort) {
+		this.cloudPort = cloudPort;
+	}
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
 	}
 }

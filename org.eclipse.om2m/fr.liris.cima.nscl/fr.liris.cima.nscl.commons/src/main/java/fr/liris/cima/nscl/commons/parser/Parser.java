@@ -40,6 +40,7 @@ import fr.liris.cima.nscl.commons.Capability;
 import fr.liris.cima.nscl.commons.Device;
 import fr.liris.cima.nscl.commons.DeviceDescription;
 import fr.liris.cima.nscl.commons.ContactInfo;
+import fr.liris.cima.nscl.commons.constants.Configuration;
 import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
 
 import java.util.Iterator;
@@ -119,6 +120,8 @@ public class Parser {
 			String name = capability.get("id").toString();
 			obj_capability.add(new Str("id", (String) capability.get("id")));
 			obj_capability.add(new Int("id", (int) capability.get("cloudPort")));
+			obj_capability.add(new Str("configuration", (String)  capability.get("configuration")));
+
 			
 			obj_capability.add(parseJSONToObixProtocol((JSONObject) capability
 					.get("protocol")));
@@ -448,6 +451,8 @@ public class Parser {
 		protocol.addParameter("uri", protocolObj.get("uri").getStr());
 
 		int cloudPort = (int) capabilityObj.get("cloudPort").getInt();
+		String configuration = (String) capabilityObj.get("configuration").getStr();
+		
                 
 		Obj [] objs = capabilityObj.get("keywords").list();
 		List<String> keywords = new ArrayList<>();
@@ -456,13 +461,16 @@ public class Parser {
 		}
 
 		name = capabilityObj.get("id").getStr();
-		return new Capability(name, protocol, keywords,cloudPort);
+		Capability capability = new Capability(name, protocol, keywords,cloudPort);
+		capability.setConfiguration(Configuration.valueOf(configuration));
+		
+		return capability;
 	}
 	
 	public static Device parseObixToDevice(String obixFormat) {
 		Device device;
 		Set<Capability> capabilities = new HashSet<Capability>();
-		String id = null, name = null, uri = null, modeConnection = null, dateConnection = null;
+		String id = null, name = null, uri = null, modeConnection = null, dateConnection = null, configuration;
 		ContactInfo contactInfo = null;
 
 		Obj objRoot = ObixDecoder.fromString(obixFormat);
@@ -473,6 +481,7 @@ public class Parser {
 		uri = ObjDevice.get("uri").getStr();
 		modeConnection = ObjDevice.get("modeConnection").getStr();
 		dateConnection  = ObjDevice.get("dateConnection").getStr();
+		configuration = ObjDevice.get("configuration").getStr();
 
 		DeviceDescription deviceDescription = new DeviceDescription(id,name, uri, modeConnection, dateConnection);
 		deviceDescription.setId(id);

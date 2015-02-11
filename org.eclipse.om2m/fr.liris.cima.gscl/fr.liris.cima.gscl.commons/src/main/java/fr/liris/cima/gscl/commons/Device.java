@@ -96,6 +96,10 @@ public class Device {
 
 		sb.append(deviceDescription);
 		sb.append(", ");
+		sb.append(this.known);
+		sb.append(", ");
+		sb.append(this.configuration);
+		sb.append(", ");
 //		sb.append(contactInfo);
 		sb.append(", ");
 		sb.append(capabilities);

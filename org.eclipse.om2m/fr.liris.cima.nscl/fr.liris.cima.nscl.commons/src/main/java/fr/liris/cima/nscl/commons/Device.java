@@ -3,6 +3,9 @@ package fr.liris.cima.nscl.commons;
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.liris.cima.nscl.commons.constants.Configuration;
+
+
 //import org.apache.commons.logging.Log;
 //import org.apache.commons.logging.LogFactory;
 
@@ -29,6 +32,10 @@ public class Device {
 
 	/** A simple device description*/
 	private DeviceDescription deviceDescription;
+	
+	/** Configuration's type of the Device(automatic or manual) */
+	private Configuration configuration;
+	
 
 	public Set<Capability> getCapabilities() {
 		return capabilities;
@@ -117,5 +124,13 @@ public class Device {
 		sb.append(capabilities);
 		sb.append("]\n");
 		return sb.toString();
+	}
+
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
 	}
 }
