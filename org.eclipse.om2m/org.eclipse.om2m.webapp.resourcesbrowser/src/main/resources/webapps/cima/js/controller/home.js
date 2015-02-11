@@ -1,5 +1,5 @@
 /* Controller page home.html */
-app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,$interval,$timeout){
+app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,$interval,$timeout, ngToast){
 	
 	$rootScope.loading = true;
 	$scope.devices = new Array();
@@ -16,11 +16,16 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
 			if(devices.length != count){
 				$scope.devices = devices;
 				$rootScope.loading = false;
+                ngToast.create((devices.length-count)+" new devices detected.");
 			}
-			
+
 
 		}, function(msg){
 			$rootScope.requestInfo = msg;
+            ngToast.create({
+                content: "Unable to get devices : "+msg,
+                className: "danger"
+            });
 		})
 	};
 

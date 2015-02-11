@@ -20,6 +20,8 @@ public class Constants {
 	public final static String PATH_CAPABILITIES = "capabilities";
 	public final static String PATH_INVOKE = "invoke";
 	public static final String PATH_UNKNOWN_DEVICES="unknown";
+	public static final String PATH_DEVICES_ALL="all";
+
 	
 	public static final String UNKNOWN_DEVICES_URI="/gscl/applications/CIMA/devices/unknown";
 	public final static String PATH_TEST_INVOKE = "test"; 

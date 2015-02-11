@@ -1,6 +1,6 @@
 
 /* Controller page device.html */
-app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams) {
+app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast) {
 
 	$rootScope.loading = true;
 	$scope.EditIsOpen = false;
@@ -11,6 +11,9 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 	/*retrieve information about the device and add them to the view*/
 	DeviceFactory.get($routeParams.id).then(function(device){
 		
+        ngToast.create("Device loaded.");
+
+
 		$scope.id = device.id;
 		$scope.name = device.name;
 		$scope.dateConnection = device.dateConnection;
@@ -41,18 +44,26 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 		$rootScope.loading = false; 
 
 	}, function(msg){
-		alert(msg);
+		//error
+		ngToast.create({
+            content: "Unable to get device : "+msg,
+            className: "danger"
+        });
 	})
 
 	/*retrieve the available protocols and add them to the view*/
 	ProtocolsFactory.find().then(function(protocols){
+		ngToast.create("Protocols loaded.");
 		$scope.protocols = protocols;
 		//List of protocol from an existing capability (obliged to abort cross config problem between new cap and cap from existiong)
 		$scope.protocolsFromExisting = JSON.parse(JSON.stringify(protocols));
 		$scope.protocolsFromEdited = JSON.parse(JSON.stringify(protocols));
 
 	}, function(msg){
-		alert(msg);
+		ngToast.create({
+            content: "Unable to get protocols : "+msg,
+            className: "danger"
+        });	
 	})
 	
 	/*Add the capability to the model and to the view if it's a success*/
@@ -69,8 +80,14 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 
 			DeviceFactory.addCapability($scope.id,cap).then(function(){
 				$scope.capabilities.push(cap);
-			}, function(){
-				alert('Votre capability n\'a pas pu être ajoutée');
+				ngToast.create("Capability added.");
+
+			}, function(msg){
+				//error
+				ngToast.create({
+            		content: "Unable to add capability : "+msg,
+            		className: "danger"
+        		});	
 			});
 			$scope.newCapability = {}; 
 		}
@@ -79,14 +96,13 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 	/* Add a capability from an existing capability. Need specific control */
 	$scope.addCapabilityFromExisting = function(newCapability){
 		var add = true;
+		//Test if id change
 		if($scope.existingCapability.id === newCapability.id){
-			//alert('id ddnt change -> problem');
 			add = false;
-			//alert('you must specified other ID because you change protocol')
 			$scope.idrequired = true;
-
 		}
 
+		//If id change -> add
 		if(newCapability.id !=null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null && add){			
 			
 			$scope.idrequired = false;
@@ -100,8 +116,13 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 			
 			DeviceFactory.addCapability($scope.id,cap).then(function(){
 				$scope.capabilities.push(cap);
-			}, function(){
-				alert('Votre capability n\'a pas pu être ajoutée');
+				ngToast.create("Capability added.");
+			}, function(msg){
+				//error
+				ngToast.create({
+            		content: "Unable to add capability : "+msg,
+            		className: "danger"
+        		});	
 			});
 			$scope.newCapability = {}; 
 		}
@@ -117,10 +138,15 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
         	if (index !== -1) {
             	$scope.capabilities.splice(index, 1);
         	}
+        	ngToast.create("Capability removed.");
         	$scope.EditIsOpen= false;
-		}, function(){
-			alert('Votre capability n\'a pas pu être supprimé');
-		});
+			}, function(msg){
+				//error
+				ngToast.create({
+            		content: "Unable to remove capability : "+msg,
+            		className: "danger"
+        		});				
+			});
 		}
     }
 
@@ -133,9 +159,14 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 		cap.protocol.parameters = newCapability.protocol.parameters;
 		
 		DeviceFactory.testCapability($scope.id, cap).then(function(){
+		ngToast.create("Capability tested.");
 
-		}, function(){
-			alert('Votre capability n\'a pas pu être testé');
+		}, function(msg){
+			//error
+			ngToast.create({
+            	content: "Unable to test capability : "+msg,
+            	className: "danger"
+        	});		
 		});
 	}
 
@@ -152,9 +183,14 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 		device.capabilities = $scope.capabilities;
 
 		DeviceFactory.saveDevice(device).then(function(){
+			ngToast.create("Device saved.");
 
-		}, function(){
-			alert('Votre device n\'a pas pu être sauvegardé');
+		}, function(msg){
+			//error
+			ngToast.create({
+            	content: "Unable to save device : "+msg,
+            	className: "danger"
+        	});
 		});
 	}
 	/*Function for modifing a device */
@@ -165,9 +201,14 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 		cap.protocol.protocolName = capability.protocol.protocolName;
 		cap.protocol.parameters = capability.protocol.parameters;
 		DeviceFactory.modifyCapability($scope.id, cap).then(function(){
+			ngToast.create("Capability modified.");
 
-		}, function(){
-			alert('Votre capability n\'a pas pu être modifié');
+		}, function(msg){
+			//error
+			ngToast.create({
+            	content: "Unable to modify capability : "+msg,
+            	className: "danger"
+        	});		
 		});
 	}
 
@@ -175,8 +216,11 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 	$scope.openAndEditCapability = function(capability){
 		if($scope.EditIsOpen){
 			$scope.EditIsOpen = false;
+			$scope.ShowIsOpen = false;
+
 		}else{
 			$scope.EditIsOpen = true;
+			$scope.ShowIsOpen = false;
 			$scope.editedCapability = JSON.parse(JSON.stringify(capability));
 		    //Not to have same reference
 		    for (i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
@@ -211,8 +255,10 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
   		/*Function for show capability*/
 	$scope.openAndShowCapability = function(capability){
 		if($scope.ShowIsOpen){
+			$scope.EditIsOpen = false;
 			$scope.ShowIsOpen = false;
 		}else{
+			$scope.EditIsOpen = false;
 			$scope.ShowIsOpen = true;
 			$scope.editedCapability = JSON.parse(JSON.stringify(capability));
 		    //Not to have same reference

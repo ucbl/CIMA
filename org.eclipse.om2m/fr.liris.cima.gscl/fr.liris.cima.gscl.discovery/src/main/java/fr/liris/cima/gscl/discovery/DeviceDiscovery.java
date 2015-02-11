@@ -135,9 +135,9 @@ public class DeviceDiscovery implements DiscoveryService{
 		 * Send notification to Infrasctrucure controller
 		 */
 		Device device = deviceService.getDevice(deviceDescription.getId());
-		String data = Encoder.JsonDeviceDisconnectionInfoToPortForwading(device);
+	//	String data = Encoder.JsonDeviceDisconnectionInfoToPortForwading(device);
 		
-		cimaInternalCommunication.sendInfos(data);
+	//	cimaInternalCommunication.sendInfos(data);
 
 		ResponseConfirm responseConfirm = clientService.sendRequest(requestIndication);
 		return responseConfirm;
@@ -188,9 +188,9 @@ public class DeviceDiscovery implements DiscoveryService{
 				// Get ids that identifying  specifics ports to devices, in port forwarding part
 //				List<String> ids = new ArrayList<>();
 //				ids.addAll(mapConnectionPortForwarding.keySet());
-				
+				Device device = deviceService.getDeviceByAddress(address);
 				// Generate port forwarding ids
-				Device device =deviceService.getDeviceByAddress(address);
+				//Device device =deviceService.getDeviceByAddress(address);
 				List<String> ids = generateIdsPortForwardingIds(device);
 				
 				// Send disconnection notification to port forwarding part

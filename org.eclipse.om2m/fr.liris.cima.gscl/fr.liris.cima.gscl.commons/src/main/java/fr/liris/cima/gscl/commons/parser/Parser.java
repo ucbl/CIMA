@@ -345,6 +345,7 @@ public class Parser {
 		uri = objDevice.get("uri").getStr();
 		modeConnection = objDevice.get("modeConnection").getStr();
 		dateConnection  = objDevice.get("dateConnection").getStr();
+		
 
 		DeviceDescription deviceDescription = new DeviceDescription(name, uri, modeConnection);
 		if(id != null) {

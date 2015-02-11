@@ -5,14 +5,17 @@
     <!--Loading css style sheets-->
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/ngToast.min.css">
 	<link rel="stylesheet" type="text/css" href="css/appStyle.css">
 	<link rel="stylesheet" href="css/ng-tags-input.min.css" />
 
 	<title></title>
 	</head>
 	
+
 	<body >
 
+		<toast></toast>
 
 		<div ng-show='loading'>Chargement...</div>
 
@@ -32,9 +35,10 @@
 		<script src="js/service/modal.js"></script>
 		<script src="js/controller/device.js"></script>
 		<script src="js/controller/home.js"></script> 
-		
 
-      
+		<script src="lib/angular-animate.min.js"></script>
+		<script src="lib/angular-sanitize.min.js"></script>
+		<script src="lib/ngToast.min.js"></script>
 
 	</body>
 </html>

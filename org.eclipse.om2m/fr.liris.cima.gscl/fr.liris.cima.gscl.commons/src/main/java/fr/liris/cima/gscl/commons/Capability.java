@@ -24,31 +24,31 @@ public class Capability {
 	private Protocol protocol;
 	private List<String> keywords;
 	private int cloudPort;
-	
+
 	/** Configuration's type of the Capability(automatic or manual) */
 	private Configuration configuration;
- 
+
 	public Capability(String name, Protocol protocol, List<String> keywords, int cloudPort) {
 		this.name = name;
 		this.protocol = protocol;
 		this.keywords = keywords;
-		this.configuration = Configuration.AUTOMATIC;
-                this.cloudPort=cloudPort;
-		
+		this.setConfiguration(Configuration.AUTOMATIC);
+		this.cloudPort=cloudPort;
+
 	}
-          public Capability(String name, Protocol protocol, List<String> keywords) {
+	public Capability(String name, Protocol protocol, List<String> keywords) {
 		this.name = name;
 		this.protocol = protocol;
 		this.keywords = keywords;
-		
+
 	}
-	
+
 	public  Capability(String name) {
 		this.name = name;
 		protocol = new Protocol();
 		keywords = new ArrayList<String>();
 	}
-	
+
 	public  Capability() {
 		protocol = new Protocol();
 		keywords = new ArrayList<String>();
@@ -69,7 +69,7 @@ public class Capability {
 	}
 
 
-	
+
 	public Op toObix(String sclId, String appId, String apocPath) {
 
 		// OP Hello
@@ -83,25 +83,25 @@ public class Capability {
 		return op;
 	}
 
-//	public String toObixFormat() {
-//		return ObixEncoder.toString(this.toObj());
-//	}
-//	
-//	public Obj toObj() {
-//		Obj obj = new Obj();
-//
-//		obj.add(new Str("id",name));
-//		obj.add(protocol.toObj());
-//		obix.List keywords = new obix.List("keywords");
-//		obix.Str sK = null;
-//		for(String k : this.keywords){
-//			sK = new Str(k);
-//			keywords.add(sK);
-//		}
-//		obj.add(keywords);
-//		return obj;
-//	}
-	
+	//	public String toObixFormat() {
+	//		return ObixEncoder.toString(this.toObj());
+	//	}
+	//	
+	//	public Obj toObj() {
+	//		Obj obj = new Obj();
+	//
+	//		obj.add(new Str("id",name));
+	//		obj.add(protocol.toObj());
+	//		obix.List keywords = new obix.List("keywords");
+	//		obix.Str sK = null;
+	//		for(String k : this.keywords){
+	//			sK = new Str(k);
+	//			keywords.add(sK);
+	//		}
+	//		obj.add(keywords);
+	//		return obj;
+	//	}
+
 	public String toString() {
 		return "capabilities (" + name + ", "  + protocol + ", " + keywords + ")";
 	}
@@ -113,23 +113,23 @@ public class Capability {
 	public void setProtocol(Protocol protocol) {
 		this.protocol = protocol;
 	}	
-	
+
 	public List<String> getKeywords(){
 		return this.keywords;
 	}
-	
+
 	public void addKeyword(String keyword){
 		this.keywords.add(keyword);
 	}
-	
+
 	public void addKeyword(List<String> keywords){
 		this.keywords.addAll(keywords);
 	}
-	
+
 	public void setKeywords(List<String>keywords){
 		this.keywords = keywords;
 	}
-	
+
 	public static void main(String args[]) {
 		Capability capability = new Capability("ev3");
 		Protocol protocol = new Protocol("http");
@@ -141,8 +141,8 @@ public class Capability {
 		k.add("robot");
 		capability.setKeywords(k);
 
-//		System.out.println(ObixEncoder.toString(capability.toObj()));
-	//	System.out.println(capability.toObixFormat());
+		//		System.out.println(ObixEncoder.toString(capability.toObj()));
+		//	System.out.println(capability.toObixFormat());
 	}
 
 	public int getCloudPort() {
@@ -151,5 +151,11 @@ public class Capability {
 
 	public void setCloudPort(int cloudPort) {
 		this.cloudPort = cloudPort;
+	}
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
 	}
 }

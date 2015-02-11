@@ -62,6 +62,7 @@ public class Encoder {
 		objDevice.add(new Str("uri",deviceDescription.getUri()));
 		objDevice.add(new Str("modeConnection", deviceDescription.getModeConnection()));
 		objDevice.add(new Str("dateConnection", deviceDescription.getDateConnection()));
+		objDevice.add(new Str("dateConnection", deviceDescription.getDateConnection()));
 
 		return ObixEncoder.toString(objDevice);
 	}
@@ -83,6 +84,9 @@ public class Encoder {
 		objDevice.add(new Str("uri",deviceDescription.getUri()));
 		objDevice.add(new Str("modeConnection", deviceDescription.getModeConnection()));
 		objDevice.add(new Str("dateConnection", deviceDescription.getDateConnection()));
+		objDevice.add(new Str("configuration", device.getConfiguration().name()));
+
+		
 
 		LOGGER.info("******************dans encoder capabilities ***********");
 
@@ -122,6 +126,8 @@ public class Encoder {
 
 		obj.add(new Str("id",capability.getName()));
 		obj.add(new Int("cloudPort",capability.getCloudPort()));
+		obj.add(new Str("configuration", capability.getConfiguration().name()));
+
 		//obj.add(capability.getProtocol().toObj());
 		obj.add(encodeProtocolObixObj(capability.getProtocol()));
 		obix.List keywords = new obix.List("keywords");
@@ -199,7 +205,7 @@ public class Encoder {
 		parameters.put("name", "nom");
 		parameters.put("port", 8080);
 
-		System.out.println(encodeToJson(parameters));
+		//System.out.println(encodeToJson(parameters));
 
 		String representation = "<device>"+
 				"<name>ev3</name>"+
@@ -254,9 +260,9 @@ public class Encoder {
 		//	System.out.println(encodeCapabilitiesToObix(capabilities));
 
 
-
-		System.out.println(encodeDeviceToJSONPortForwarding(device));
-		System.out.println(mapPortManager);
+//
+//		System.out.println(encodeDeviceToJSONPortForwarding(device));
+//		System.out.println(mapPortManager);
 		// Protocol
 
 		// ContactInfo
@@ -265,18 +271,18 @@ public class Encoder {
 
 		//	System.out.println(encodeContactInfoToObix(contactInfo));
 
-		//		Device device = new Device(deviceDescription);
-		//		device.addCapability(capability);
-		//		System.out.println(encodeDeviceToObix(device));
+				 device = new Device(deviceDescription);
+				device.addCapability(capability);
+				System.out.println(encodeDeviceToObix(device));
 
 		//		String xmlFormat = "<device><id>DEVICE_0</id><name>ev3</name><uri>http://192.168.0.02:/infos/</uri> "
 		//				+ "<modeConnection>ip</modeConnection></device>";
 		//		System.out.println(Parser.parseXmlDevice(xmlFormat));
 		//		System.out.println(deviceMetaDataToXml(device));
-		
-		List<String> listeIds = new ArrayList<>();
-		listeIds.add("DEVICE_0_8080");
-		System.out.println(JsonDeviceDisconnectionInfoToPortForwading(listeIds));
+//		
+//		List<String> listeIds = new ArrayList<>();
+//		listeIds.add("DEVICE_0_8080");
+//		System.out.println(JsonDeviceDisconnectionInfoToPortForwading(listeIds));
 	}
 
 

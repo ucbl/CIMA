@@ -108,7 +108,7 @@ public class DeviceController implements IpuService{
 		String lastInfo = infos[infos.length - 1];
 
 		if(lastInfo.equals(Constants.PATH_CAPABILITIES)){
-			if(infos[infos.length - 2].equals(Constants.PATH_UNKNOWN_DEVICES)){
+			if(infos[infos.length - 2].equals(Constants.PATH_DEVICES_ALL)){
 				// filter on capabilities
 				Map<String, List <String>> params = requestIndication.getParameters();
 				List<String> lFilter = params.get("filter");
@@ -133,27 +133,27 @@ public class DeviceController implements IpuService{
 				}
 			}
 		}
-		else if(infos[infos.length - 1].equals(Constants.PATH_UNKNOWN_DEVICES)){
+		else if(infos[infos.length - 1].equals(Constants.PATH_DEVICES_ALL)){
 			//device
-			String format = managerImpl.unknownDevicesToObixFormat();
+			String format = managerImpl.devicesToObixFormat();
 			LOGGER.info("******** /manualconfiguration/device/ ***********");
 
 			ResponseConfirm confirm = new ResponseConfirm(StatusCode.STATUS_OK, format);
 			return confirm;
 		}
 
-		else if(infos[infos.length - 2].equals(Constants.PATH_UNKNOWN_DEVICES)){
+		else if(infos[infos.length - 2].equals(Constants.PATH_DEVICES_ALL)){
 			//if(lastInfo.equals("capability")) {
 			LOGGER.info("******** /manualconfiguration/device/<id d'un device>***********");
 			//}
-
 		}
 
-		else if(infos[infos.length - 3].equals(Constants.PATH_UNKNOWN_DEVICES)){
+		else if(infos[infos.length - 3].equals(Constants.PATH_DEVICES_ALL)){
 			if(lastInfo.equals("capability")) {
-				LOGGER.info("******** /manualconfiguration/device/<id d'un device>/capability***********");
+				LOGGER.info("******** /administration/device/<id d'un device>/capability***********");
 				String deviceId = infos[infos.length - 2];
-				List<Capability> capabilities = managerImpl.getUnknownDeviceCapabilities(deviceId);
+			//	List<Capability> capabilities = managerImpl.getUnknownDeviceCapabilities(deviceId);
+				List<Capability> capabilities = managerImpl.getDeviceCapabilities(deviceId);
 				//String representation = managerImpl.capabilitiesToObixFormat(capabilities);
 				String representation = Encoder.encodeCapabilitiesToObix(capabilities);
 
@@ -161,13 +161,14 @@ public class DeviceController implements IpuService{
 			}
 		}
 
-		else if(infos[infos.length - 4].equals(Constants.PATH_UNKNOWN_DEVICES )){
+		else if(infos[infos.length - 4].equals(Constants.PATH_DEVICES_ALL )){
 			if(infos[infos.length - 2].equals("capability")) {
 				LOGGER.info("********  /manualconfiguration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
 				String deviceId = infos[infos.length - 3];
 				String capabilityId = infos[infos.length - 1];
 				String representation; 
-				Capability capability = managerImpl.getCapabilityToUnknownDevice(deviceId, capabilityId);
+			//	Capability capability = managerImpl.getCapabilityToUnknownDevice(deviceId, capabilityId);
+				Capability capability = managerImpl.getCapabilityDevice(deviceId,  capabilityId);
 				//representation = capability.toObixFormat();
 				representation = Encoder.encodeCapabilityToObix(capability);
 
@@ -213,12 +214,12 @@ public class DeviceController implements IpuService{
 
 		ResponseConfirm confirm = new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST, ""));
 
-		if(infos[infos.length - 2].equals(Constants.PATH_UNKNOWN_DEVICES)){
+		if(infos[infos.length - 2].equals(Constants.PATH_DEVICES_ALL)){
 
-			LOGGER.info("*********PATH_UNKNOWN_DEVICES ****");
+			LOGGER.info("*********PATH_DEVICES_ALL ****");
 
 			String representation = requestIndication.getRepresentation();
-			LOGGER.info("PATH_UNKNOWN_DEVICES == "+representation);
+			LOGGER.info("PATH_DEVICES_ALL == "+representation);
 
 			//Device device = Parser.ParseJsonToDevice(representation);
 			Device device = Parser.parseObixToDevice(representation);
@@ -226,8 +227,10 @@ public class DeviceController implements IpuService{
 				return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND, "No device with this information"));
 			}
 			LOGGER.info("DEVICE CAPABILITIES == "+device.getCapabilities());
-			boolean validate = managerImpl.switchUnknownToKnownDevice(device);
-			if(validate == true) {
+		//	boolean validate = managerImpl.switchUnknownToKnownDevice(device);
+			device.setKnown(true);
+
+			if(device.isKnown() == true) {
 				confirm = new ResponseConfirm(StatusCode.STATUS_OK, "Device is now known ");
 			}
 			else {
@@ -235,13 +238,14 @@ public class DeviceController implements IpuService{
 			}
 
 		}
-		else if(infos[infos.length - 4].equals(Constants.PATH_UNKNOWN_DEVICES )){
+		else if(infos[infos.length - 4].equals(Constants.PATH_DEVICES_ALL )){
 			if(infos[infos.length - 2].equals("capability")) {
 				LOGGER.info("******** UPDATE  /manualconfiguration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
 				String deviceId = infos[infos.length - 3];
 				String capabilityId = infos[infos.length - 1];
 				String representation; 
-				Capability capability = managerImpl.getCapabilityToUnknownDevice(deviceId, capabilityId);
+				//Capability capability = managerImpl.getCapabilityToUnknownDevice(deviceId, capabilityId);
+				Capability capability = managerImpl.getCapabilityDevice(deviceId, capabilityId);
 				Capability upCapability = Parser.parseObixToCapability(requestIndication.getRepresentation());
 				
 				//TODO edit la capability
@@ -250,7 +254,7 @@ public class DeviceController implements IpuService{
 				if (upCapability.getName() != null) capability.setName(upCapability.getName());
 				if (upCapability.getKeywords() != null) capability.setKeywords(upCapability.getKeywords());
 				if (upCapability.getProtocol() != null) capability.setProtocol(upCapability.getProtocol());
-				managerImpl.updateUnknownDeviceCapability(deviceId, capability);				
+				managerImpl.updateDeviceCapability(deviceId, capability);				
 				return new ResponseConfirm(StatusCode.STATUS_OK, "Capability updated or created");
 
 			}
@@ -268,13 +272,13 @@ public class DeviceController implements IpuService{
 		String []infos = requestIndication.getTargetID().split("/");
 		String lastInfo = infos[infos.length - 1];
 
-		if(infos[infos.length - 4].equals(Constants.PATH_UNKNOWN_DEVICES )){
+		if(infos[infos.length - 4].equals(Constants.PATH_DEVICES_ALL )){
 			if(infos[infos.length - 2].equals("capability")) {
 				LOGGER.info("******** DELETE  /manualconfiguration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
 				String deviceId = infos[infos.length - 3];
 				String capabilityId = infos[infos.length - 1];
 				String representation; 
-				boolean valid = managerImpl.removeCapabilityToUnknownDevice(deviceId, capabilityId);
+				boolean valid = managerImpl.removeCapabilityDevice(deviceId, capabilityId);
 				if(valid)				
 					return new ResponseConfirm(StatusCode.STATUS_OK, "Capability deleted");
 				else 
@@ -306,10 +310,11 @@ public class DeviceController implements IpuService{
 				managerImpl.addDevice(device);
 			}
 		}
-		else if(infos[infos.length - 3].equals(Constants.PATH_UNKNOWN_DEVICES)){
+		else if(infos[infos.length - 3].equals(Constants.PATH_DEVICES_ALL)){
 			if(lastInfo.equals("test")) {
 				String deviceId = infos[infos.length - 2];
-				Device device = managerImpl.getUnknownDevice(deviceId);
+			//	Device device = managerImpl.getUnknownDevice(deviceId);
+				Device device = managerImpl.getDevice(deviceId);
 				if(device != null) {
 					Capability capability = Parser.parseObixToCapability(representation);
 					managerImpl.invokeCapability(deviceId, capability, restClientService);

@@ -2,7 +2,7 @@
 
     {
         "id" : "0123456789",
-        "name" : "monObjet",
+        "name" : "EV3",
         "configuration" : "automatic",
         "uri" : "http://192.168.0.2",
         "dateConnection" : "10/10/14",
@@ -10,7 +10,7 @@
         "capabilities": [
             {
                 "id" : "ev3Back",
-                "configurationc" : "automatic",
+                "configuration" : "automatic",
                 "protocol": {
                     "protocolName" : "USB",
                     "parameters" : [
@@ -35,8 +35,8 @@
                 "keywords" : ["ev3","back","robot","mouvement","right"]
             },
             {
-                "id" : "ev3Back",
-                "configurationc" : "manual",
+                "id" : "ev3Front",
+                "configuration" : "manual",
                 "protocol": {
                     "protocolName" : "USB",
                     "parameters" : [
@@ -71,8 +71,8 @@
         "modeConnection" : "HTTP",
         "capabilities": [
             {
-                "id" : "ev3Back",
-                "configurationc" : "automatic",
+                "id" : "CapObjet1",
+                "configuration" : "automatic",
                 "protocol": {
                     "protocolName" : "HTTP",
                     "parameters" : [
@@ -101,7 +101,7 @@
     },
     {
         "id" : "0918273645",
-        "name" : "LObjet",
+        "name" : "Android2202",
         "configuration" : "automatic",
         "uri" : "http://192.168.0.3",
         "dateConnection" : "08/10/14",
@@ -109,7 +109,7 @@
         "capabilities": [
             {
                 "id" : "ev3Back",
-                "configurationc" : "manual",
+                "configuration" : "manual",
                 "protocol": {
                     "protocolName" : "HTTP",
                     "parameters" : [
@@ -137,7 +137,7 @@
     },
     {
         "id" : "hdhhdhdhdh",
-        "name" : "LObjet",
+        "name" : "Motorola005",
         "configuration" : "automatic",
         "uri" : "http://192.168.0.3",
         "dateConnection" : "08/10/14",
@@ -145,7 +145,7 @@
         "capabilities": [
             {
                 "id" : "ev3Back",
-                "configurationc" : "manual",
+                "configuration" : "manual",
                 "protocol": {
                     "protocolName" : "HTTP",
                     "parameters" : [
