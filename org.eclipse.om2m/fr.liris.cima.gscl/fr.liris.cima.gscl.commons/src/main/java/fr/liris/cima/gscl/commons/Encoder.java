@@ -133,7 +133,8 @@ public class Encoder {
 		LOGGER.info("*********************************************** ADD CAPA 2");
 		obj.add(new Int("cloudPort",capability.getCloudPort()));
 		LOGGER.info("*********************************************** ADD CAPA 3");
-		obj.add(new Str("configuration", capability.getConfiguration().name()));
+//		obj.add(new Str("configuration", capability.getConfiguration().name()));
+		obj.add(new Str("configuration", "AUTOMATIC"));
 		LOGGER.info("*********************************************** ADD CAPA 4");
 
 		//obj.add(capability.getProtocol().toObj());
