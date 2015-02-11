@@ -17,5 +17,6 @@ Require-Bundle: org.eclipse.om2m.core.service,
  fr.liris.cima.nscl.device.service
 Bundle-ClassPath: .
 Export-Package: fr.liris.cima.nscl.administration
-Import-Package: org.eclipse.om2m.commons.resource,
+Import-Package: fr.liris.cima.comm.protocol,
+ org.eclipse.om2m.commons.resource,
  org.eclipse.om2m.commons.rest

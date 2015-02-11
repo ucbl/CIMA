@@ -1,6 +1,7 @@
 package fr.liris.cima.nscl.administration;
 
 import java.util.Dictionary;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -14,6 +15,9 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
+import fr.liris.cima.comm.protocol.AbstractProtocol;
+import fr.liris.cima.comm.protocol.ProtocolResolver;
+import fr.liris.cima.nscl.commons.parser.Parser;
 import fr.liris.cima.nscl.device.service.ManagedDeviceService;
 /**
  *  Manages the starting and stopping of the bundle.
@@ -24,6 +28,7 @@ public class Activator implements BundleActivator {
 	private static Log logger = LogFactory.getLog(Activator.class);
 	/** Rest service  client tracker */
 	private ServiceTracker<Object, Object> restServiceClientTracker;
+	private ServiceTracker<Object, Object> protocolResolverServiceClientTracker;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -46,8 +51,24 @@ public class Activator implements BundleActivator {
 				return restClientService;
 			}
 		};
-		logger.info("open)  restServiceClient .");
+		logger.info("open restServiceClient .");
 		restServiceClientTracker.open();
+		
+		protocolResolverServiceClientTracker=  new ServiceTracker<Object, Object>(bundleContext, ProtocolResolver.class.getName(), null) {
+			public void removedService(ServiceReference<Object> reference, Object service) {
+				logger.info("ProtocolResolver removed");
+			}
+
+			public Object addingService(ServiceReference<Object> reference) {
+				logger.info("ProtocolResolver  in cima gscl commons");
+				final ProtocolResolver protocolResolver = (ProtocolResolver) this.context.getService(reference);
+				AdministrationServer.protocolResolver = protocolResolver;
+				return protocolResolver;
+			}
+		};
+
+		logger.info("open restServiceClient .");
+		protocolResolverServiceClientTracker.open();
 	}
 
 	@Override
