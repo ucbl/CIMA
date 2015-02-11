@@ -181,7 +181,7 @@ public class Encoder {
 	}	
 
 	@SuppressWarnings("unchecked")
-	public static String encodeToJson(Map<String, Object> parameters) {
+	public static JSONObject encodeToJson(Map<String, Object> parameters) {
 
 		JSONObject jsonObject = new JSONObject();
 
@@ -189,7 +189,7 @@ public class Encoder {
 			jsonObject.put( entry.getKey(), entry.getValue());
 		}
 
-		return jsonObject.toJSONString();		
+		return jsonObject;		
 	}
 
 	public static void main(String args[]) {
@@ -273,6 +273,10 @@ public class Encoder {
 		//				+ "<modeConnection>ip</modeConnection></device>";
 		//		System.out.println(Parser.parseXmlDevice(xmlFormat));
 		//		System.out.println(deviceMetaDataToXml(device));
+		
+		List<String> listeIds = new ArrayList<>();
+		listeIds.add("DEVICE_0_8080");
+		System.out.println(JsonDeviceDisconnectionInfoToPortForwading(listeIds));
 	}
 
 
@@ -281,7 +285,6 @@ public class Encoder {
 
 		JSONParser parser = new JSONParser();
 
-		String response; 
 		int countNbconnectedCapability = 0;
 
 		JSONObject jsonObjectConnection = new JSONObject();

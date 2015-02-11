@@ -134,6 +134,10 @@ public class DeviceDiscovery implements DiscoveryService{
 		/**
 		 * Send notification to Infrasctrucure controller
 		 */
+		Device device = deviceService.getDevice(deviceDescription.getId());
+		String data = Encoder.JsonDeviceDisconnectionInfoToPortForwading(device);
+		
+		cimaInternalCommunication.sendInfos(data);
 
 		ResponseConfirm responseConfirm = clientService.sendRequest(requestIndication);
 		return responseConfirm;
