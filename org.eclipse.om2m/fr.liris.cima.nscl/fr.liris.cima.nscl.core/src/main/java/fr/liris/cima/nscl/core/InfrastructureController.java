@@ -78,11 +78,10 @@ public class InfrastructureController implements IpuService{
 			LOGGER.info("********************REPRESENTATION*******"+requestIndication.getUrl());
 			LOGGER.info("********************GET CAPABILITIES*******");
 			Device device = managerImpl.getDevice(infos[length-2]);
-			Set<Capability> capabilities = device.getCapabilities();
+			List<Capability> capabilities = device.getCapabilities();
 			requestIndication.setRepresentation(JsonEncoder.capabilitiesToJSONStr(capabilities));
 			responseConfirm = new ResponseConfirm(StatusCode.STATUS_OK, JsonEncoder.capabilitiesToJSONStr(capabilities));
 			return responseConfirm;
-			
 		}
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST, ""));
 	}
@@ -159,13 +158,15 @@ public class InfrastructureController implements IpuService{
 				else if(infos[length - 1].equals(Constants.APOCPATH_DEVICES)){
 					LOGGER.error("Creating a device in infrastrucure controller and sending contact information to all subscribers");
                   
+					LOGGER.info("********Representation********"+representation);
 					Device device = Parser.parseObixToDevice(representation);
+					LOGGER.info("********device********"+device);
 					managerImpl.addDevice(device);
 					LOGGER.info("device = " + device);
 					
 					for(ClientSubscriber subscriber : managerImpl.getSubscribers()){
 						requestIndication.setBase(subscriber.getUrl());
-						requestIndication.setRepresentation(JsonEncoder.contactInfoToJSONStr(device.getContactInfo()));
+						requestIndication.setRepresentation(JsonEncoder.deviceToJSONStr(device));
 						restClientService.sendRequest(requestIndication);
 					}				
 					return new ResponseConfirm(StatusCode.STATUS_ACCEPTED, representation);

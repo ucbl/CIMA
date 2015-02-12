@@ -137,8 +137,9 @@ public class Parser {
 		for(Element element : childrenElement) {
 			if(element.getName().equals("protocolName")) {
 				protocol.setName(element.getText());
+			} else {
+				protocol.addParameter(element.getName(), element.getText());
 			}
-			protocol.addParameter(element.getName(), element.getText());
 		}
 		return protocol;
 	}
@@ -318,7 +319,7 @@ public class Parser {
 		protocol.addParameter("uri", protocolObj.get("uri").getStr());
 		protocol.addParameter("body", protocolObj.get("body").getStr());
 
-		int cloudPort=Integer.parseInt(capabilityObj.get("cloudPort").getStr());
+		int cloudPort = (int) capabilityObj.get("cloudPort").getInt();
 
 		Obj [] objs = capabilityObj.get("keywords").list();
 		List<String> keywords = new ArrayList<>();

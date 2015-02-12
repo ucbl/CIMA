@@ -158,8 +158,7 @@ public class DeviceDiscovery implements DiscoveryService{
 		Set<String> addresses = lookUp();
 		LOGGER.info("addresses = " + addresses);
 
-//		for(String address : addresses) {
-			String address = "192.168.0.2";
+		for(String address : addresses) {
 			requestIndication.setBase(address);
 
 			// Check if device is in the network local network
@@ -176,7 +175,7 @@ public class DeviceDiscovery implements DiscoveryService{
 				if (checkKnownDeviceConnection(requestIndication)) {
 					// The device is always connected.
 					LOGGER.info("CONTINUE  " + address);
-//					continue;
+					continue;
 				}
 				// The device is disconnected.
 				//send notification to the Infrasctructure Controller.
@@ -226,13 +225,15 @@ public class DeviceDiscovery implements DiscoveryService{
 						deviceDescription.setModeConnection(Constants.MOD_IP);
 						deviceDescription.setUri(address);
 						Device device = new Device(deviceDescription);
-						deviceService.addUnknownDevice(device);
+						device.setKnown(false);
+						deviceService.addDevice(device);
+					//	deviceService.addUnknownDevice(device);
 						mapConfiguredAddresses.put(address, deviceDescription.getId());
 					}
 				}
 			}catch(Exception e) {
 			}
-//		}
+		}
 	}
 
 	/**
@@ -257,6 +258,8 @@ public class DeviceDiscovery implements DiscoveryService{
 
 			// Create device from its xml representation
 			Device device = Parser.parseXmlToDevice(representation);
+			device.setKnown(true);
+			device.setConfiguration("AUTOMATIC");
 			// Adding device to the device manager
 			deviceService.addDevice(device);
 			
@@ -303,7 +306,7 @@ public class DeviceDiscovery implements DiscoveryService{
 	private  boolean checkKnownDeviceConnection(RequestIndication requestIndication) {
 		requestIndication.setTargetID(":8080"+DEFAULT_DEVICE_PATH_INFOS);
 		ResponseConfirm responseConfirm = clientService.sendRequest(requestIndication);
-		LOGGER.info("***********isAlwaysConnected*************"+responseConfirm.getStatusCode());
+		LOGGER.info("***********isAlwaysConnected*************"+requestIndication.getUrl());
 		if(responseConfirm.getStatusCode() != null && responseConfirm.getStatusCode().equals(StatusCode.STATUS_OK)) {
 			String representation = responseConfirm.getRepresentation();
 			LOGGER.info("device is connected");

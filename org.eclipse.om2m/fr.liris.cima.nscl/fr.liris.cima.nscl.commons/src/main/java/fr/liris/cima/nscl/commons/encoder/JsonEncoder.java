@@ -52,9 +52,9 @@ public class JsonEncoder {
 			capabilitiesJson.add(jsonObject);
 		}
 		obj.put("capabilities", capabilitiesJson);
-		ContactInfo contactInfo = device.getContactInfo();
-		obj.put("deviceId", contactInfo.getDeviceId());
-		obj.put("cloud_port", contactInfo.getCloud_port());
+		DeviceDescription deviceDescription = device.getDeviceDescription();
+		obj.put("deviceId", deviceDescription.getId());
+		obj.put("cloud_port", "-1");
 		
 		return obj.toJSONString();
 	}
@@ -134,7 +134,7 @@ public class JsonEncoder {
 		return obj.toJSONString();
 	}
 
-	public static String capabilitiesToJSONStr(Set<Capability> capabilities) {
+	public static String capabilitiesToJSONStr(List<Capability> capabilities) {
 		//TODO return a list of Capability
 		JSONObject obj = new JSONObject();
 		JSONArray array = new JSONArray();
@@ -191,7 +191,7 @@ public class JsonEncoder {
 		ContactInfo contact = new ContactInfo("DEVICE_0", 6000);
 		
 
-		DeviceDescription deviceDescription = new DeviceDescription("DEVICE_0", "ev3", "uri", "modeConnection", "dateConnection");
+		DeviceDescription deviceDescription = new DeviceDescription("DEVICE_0", "uri", "modeConnection");
 
 		System.out.println(contactInfoToJSONStr(contact));
 		
@@ -207,7 +207,7 @@ public class JsonEncoder {
 		
 		System.out.println(capabilityToJSONStr(capability));
 		
-		Device device = new Device(deviceDescription, contact);
+		Device device = new Device(deviceDescription);
 		device.addCapability(capability);
 		System.out.println(deviceToJSONStr(device));
 		

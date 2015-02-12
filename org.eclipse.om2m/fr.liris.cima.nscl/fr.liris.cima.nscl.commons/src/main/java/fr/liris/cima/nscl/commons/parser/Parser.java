@@ -76,6 +76,8 @@ public class Parser {
 				.get("dateConnection")));
 		obj_Device.add(new Str("modeConnection", (String) jsonObject
 				.get("modeConnection")));
+		obj_Device.add(new Str("configuration", ((jsonObject.get("configuration")!= null)?(String)jsonObject.get("configuration"):"manual")));
+
 		obix.List list = new obix.List("Capabilities");
 
 		try {
@@ -114,13 +116,13 @@ public class Parser {
 	}
 
 	public static Obj parseJSONToObixCapability(JSONObject capability) {
-		Obj obj_capability = new Obj("capability");
+		Obj obj_capability = new Obj();
 
 		try {
 			String name = capability.get("id").toString();
 			obj_capability.add(new Str("id", (String) capability.get("id")));
-			obj_capability.add(new Int("id", (int) capability.get("cloudPort")));
-			obj_capability.add(new Str("configuration", (String)  capability.get("configuration")));
+			obj_capability.add(new Int("cloudPort", Integer.valueOf((String) ((capability.get("cloudPort") != null)?capability.get("cloudPort"):"-1") )));
+			obj_capability.add(new Str("configuration", ((capability.get("configuration") != null)?(String) capability.get("configuration"):"manual") ));
 
 			
 			obj_capability.add(parseJSONToObixProtocol((JSONObject) capability
@@ -196,7 +198,7 @@ public class Parser {
 				// System.out.println(courant.getChildren());
 				JSONObject json_paramet = new JSONObject();
 				if (!courant.getAttributeValue("name").equalsIgnoreCase(
-						"protocoleName")) {
+						"protocolName")) {
 					// System.out.println("**"+courant.getAttributeValue("name")+"   "+courant.getAttributeValue("val")+"***");
 					json_paramet.put("name", courant.getAttributeValue("name"));
 					json_paramet.put("value", courant.getAttributeValue("val"));
@@ -208,8 +210,8 @@ public class Parser {
 				}
 
 			}
-			// System.out.println("**"+data+"***");
 			jsonObject.put("parameters", json_paramets);
+			System.out.println("**"+jsonObject.toJSONString()+"***");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -462,15 +464,17 @@ public class Parser {
 
 		name = capabilityObj.get("id").getStr();
 		Capability capability = new Capability(name, protocol, keywords,cloudPort);
-		capability.setConfiguration(Configuration.valueOf(configuration));
+		capability.setConfiguration(configuration);
 		
 		return capability;
 	}
 	
 	public static Device parseObixToDevice(String obixFormat) {
 		Device device;
-		Set<Capability> capabilities = new HashSet<Capability>();
+		List<Capability> capabilities = new ArrayList<Capability>();
 		String id = null, name = null, uri = null, modeConnection = null, dateConnection = null, configuration;
+		boolean known;
+		
 		ContactInfo contactInfo = null;
 
 		Obj objRoot = ObixDecoder.fromString(obixFormat);
@@ -482,8 +486,9 @@ public class Parser {
 		modeConnection = ObjDevice.get("modeConnection").getStr();
 		dateConnection  = ObjDevice.get("dateConnection").getStr();
 		configuration = ObjDevice.get("configuration").getStr();
+		known =  ObjDevice.get("known").getBool();
 
-		DeviceDescription deviceDescription = new DeviceDescription(id,name, uri, modeConnection, dateConnection);
+		DeviceDescription deviceDescription = new DeviceDescription();
 		deviceDescription.setId(id);
 		deviceDescription.setName(name);
 		deviceDescription.setUri(uri);
@@ -507,9 +512,10 @@ public class Parser {
 			contactInfo = new ContactInfo(id, (int)cloudPort);
 		}
 		
-		device = new Device(deviceDescription, contactInfo);
+		device = new Device(deviceDescription);
 		device.setCapabilities(capabilities);
-		
+		device.setConfiguration(configuration);
+		device.setKnown(known);
 		return device;	
 	}
 

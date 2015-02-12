@@ -110,7 +110,7 @@ public class Activator implements BundleActivator {
 				final DiscoveryService discoveryService = (DiscoveryService) this.context.getService(reference);
 				new Thread(){
 					public void run(){
-//						while(true) {
+						while(true) {
 							try {
 								Thread.sleep(1000) ;
 								discoveryService.doDiscovery();
@@ -118,7 +118,7 @@ public class Activator implements BundleActivator {
 							} catch (Exception e) {
 								logger.error("Error for discovering devices", e);
 							}
-//						}
+						}
 					}
 				}.start();
 				return discoveryService;

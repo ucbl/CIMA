@@ -72,11 +72,6 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		unknownDevices = new ArrayList<>();
 		configManagerImpl = new ConfigManagerImpl();
 		capabilityManager = new CapabilityManagerImpl();
-		
-
-		DeviceDescription deviceDescription = new DeviceDescription("ev3", "http://192.168.0.02:/infos/", "ip");
-		Device device = new Device(deviceDescription);
-		devices.add(device);
 	}
 	
 	public static void init(SclService scl) {
