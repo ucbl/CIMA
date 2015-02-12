@@ -84,7 +84,7 @@
                                 <strong>{{parameter.name}}</strong> : {{parameter.value}}
                             </li>
                             <br>   
-                            <strong>Key words :</strong>
+                            <strong>Keywords :</strong>
                             <li ng-repeat="word in editedCapability.keywords">
                                 {{word.text}}
                             </li>
@@ -123,7 +123,7 @@
                                         <input class="form-control"  style="width: 40%" type="text" ng-model="parameter.value">
                             </li>
                             <br>   
-                            <li> Key words </li> 
+                            <li> Keywords </li> 
                              <tags-input   ng-model="editedCapability.keywords"></tags-input> 
 
                             <br>
@@ -173,7 +173,7 @@
                                 <input class="form-control"  type="text" ng-model="parameter.value">
                             </li>
                             <br>
-                             <strong>Key words </strong>
+                             <strong>Keywords </strong>
                              <tags-input ng-model="tags"></tags-input>                   
                              <!-- Reset capability button -->
                             <button ng-click="NewFromExistingCapability='';tags=null" type="button" class="btn btn-primary pull-left" >Reset</button>
@@ -204,7 +204,7 @@
                             </li>
                             <br>        
 
-                             <strong>Key words </strong>
+                             <strong>Keywords </strong>
                              <tags-input ng-model="tags"></tags-input> 
                              <br>                
                              <!-- Reset capability button -->
