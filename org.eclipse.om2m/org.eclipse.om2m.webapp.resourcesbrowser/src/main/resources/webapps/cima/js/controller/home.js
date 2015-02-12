@@ -6,7 +6,7 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
 	$scope.predicate = '-configuration';
 	$scope.useConfig = {};
     $scope.useMode = {};
-    $scope.useKeys = {}; 
+    $scope.useKeys = {};  
 
 	/* Calling the DeviceFactory for changing the devices list */
 	$scope.loadDevices = function(){
@@ -38,8 +38,7 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
 	$scope.loadDevices();
 
 	/* Set an intervall to refresh and call the function to load device list */
-	var interval = setInterval( function(){ $scope.loadDevices(); }, DEVICE_REFRESH);
-  /*return the filtered lists*/
+	var interval = setInterval( function(){ $scope.loadDevices(); }, DEVICE_REFRESH); 
   $scope.$watch(function () {
         return {
             devices: $scope.devices,
@@ -119,7 +118,6 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
         /*return the filtered devices depending on the previous filters*/
         $scope.filteredDevices= unique(filterAfterKeys);      
     }, true);
-     
 }); 
     /*function returns true if an object is in the list and false otherwise*/
     function include(arr,obj) { 
@@ -183,4 +181,12 @@ var unique = function(origArr) {
         }
     }
     return newArr;
-}
+}; 
+describe('factories', function() {
+it('should check both checkBoxes', function() {
+  expect(element(by.id('checkSlave')).getAttribute('checked')).toBeFalsy();
+  element(by.model('master')).click();
+  expect(element(by.id('checkSlave')).getAttribute('checked')).toBeTruthy();
+}); 
+}); 
+     

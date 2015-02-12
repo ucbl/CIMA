@@ -7,11 +7,12 @@
     <div class="panel-body"> 
 
 <section  style="border-right:1px">  
-    <div class="filter">
+    <div class="filter"> 
+      <b><input type="checkbox" ng-model="master" ng-change="check()">Select All<b><br/>
     <b>Configuration</b>
     <div>
         <div ng-repeat="config in configGroup">
-            <b><input type="checkbox" ng-model="useConfig[config]"/>{{config}}</b>
+            <b><input id="checkSlave" type="checkbox" ng-checked="master" ng-model="useConfig[config]"/>{{config}}</b>
             <!--<span>({{(filteredDevices | filter:config).length}})</span>--> 
         </div>
     </div>
@@ -21,7 +22,7 @@
     <b>Connection mode </b>
     <div>
         <div ng-repeat="mode in modeGroup">
-            <b><input type="checkbox" ng-model="useMode[mode]"/>{{mode}}</b>
+            <b><input id="checkSlave" type="checkbox" ng-checked="master" ng-model="useMode[mode]"/>{{mode}}</b>
             <!--<span>({{(filteredDevices | filter:mode).length}})</span>--> 
         </div>
     </div>
@@ -31,7 +32,7 @@
     <b>Key words </b>
     <div>
         <div ng-repeat="keyword in keyGroup"> 
-            <b><input type="checkbox" ng-model="useKeys[keyword]"/>{{keyword}}</b>
+            <b><input id="checkSlave" type="checkbox" ng-checked="master" ng-model="useKeys[keyword]"/>{{keyword}}</b>
            <!--<span>({{(filteredDevices | filter:keyword).length}})</span>-->
 
         </div>
