@@ -136,7 +136,7 @@ public class DeviceController implements IpuService{
 		else if(infos[infos.length - 1].equals(Constants.PATH_DEVICES_ALL)){
 			//device
 			String format = managerImpl.devicesToObixFormat();
-			LOGGER.info("******** /manualconfiguration/device/ ***********");
+			LOGGER.info("******** /administration/device/ ***********");
 
 			ResponseConfirm confirm = new ResponseConfirm(StatusCode.STATUS_OK, format);
 			return confirm;
@@ -144,7 +144,7 @@ public class DeviceController implements IpuService{
 
 		else if(infos[infos.length - 2].equals(Constants.PATH_DEVICES_ALL)){
 			//if(lastInfo.equals("capability")) {
-			LOGGER.info("******** /manualconfiguration/device/<id d'un device>***********");
+			LOGGER.info("******** /administration/device/<id d'un device>***********");
 			//}
 		}
 
@@ -163,7 +163,7 @@ public class DeviceController implements IpuService{
 
 		else if(infos[infos.length - 4].equals(Constants.PATH_DEVICES_ALL )){
 			if(infos[infos.length - 2].equals("capability")) {
-				LOGGER.info("********  /manualconfiguration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
+				LOGGER.info("********  /administration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
 				String deviceId = infos[infos.length - 3];
 				String capabilityId = infos[infos.length - 1];
 				String representation; 
@@ -178,12 +178,12 @@ public class DeviceController implements IpuService{
 		}
 		
 		else if(lastInfo.equals("protocol")) {
-			LOGGER.info("********  /manualconfiguration/protocol  ***********");
+			LOGGER.info("********  /administration/protocol  ***********");
 			
 		}
 		
 		else if(lastInfo.contains("capabilities?filter=")) {
-			LOGGER.info("********  /manualconfiguration/capabilities?filter=<filter>  ***********");
+			LOGGER.info("********  /administration/capabilities?filter=<filter>  ***********");
 			String filter = lastInfo.split("=")[1];
 			LOGGER.info("filter = " + filter);
 			
@@ -240,7 +240,7 @@ public class DeviceController implements IpuService{
 		}
 		else if(infos[infos.length - 4].equals(Constants.PATH_DEVICES_ALL )){
 			if(infos[infos.length - 2].equals("capability")) {
-				LOGGER.info("******** UPDATE  /manualconfiguration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
+				LOGGER.info("******** UPDATE  /administration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
 				String deviceId = infos[infos.length - 3];
 				String capabilityId = infos[infos.length - 1];
 				String representation; 
@@ -274,7 +274,7 @@ public class DeviceController implements IpuService{
 
 		if(infos[infos.length - 4].equals(Constants.PATH_DEVICES_ALL )){
 			if(infos[infos.length - 2].equals("capability")) {
-				LOGGER.info("******** DELETE  /manualconfiguration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
+				LOGGER.info("******** DELETE  /administration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
 				String deviceId = infos[infos.length - 3];
 				String capabilityId = infos[infos.length - 1];
 				String representation; 
@@ -320,7 +320,7 @@ public class DeviceController implements IpuService{
 					managerImpl.invokeCapability(deviceId, capability, restClientService);
 				}
 
-				LOGGER.info("********  /manualconfiguration/device/<id d'un device>/test  ***********");
+				LOGGER.info("********  /administration/device/<id d'un device>/test  ***********");
 			}
 		} else if(infos[infos.length - 3].equals(Constants.PATH_CAPABILITIES) && infos[infos.length - 2].equals(Constants.PATH_INVOKE)){
 			String deviceId = infos[infos.length - 4];

@@ -37,7 +37,7 @@ public class Device {
 	private DeviceDescription deviceDescription;
 	
 	/** Configuration's type of the Device(automatic or manual) */
-	private Configuration configuration;
+	private String configuration = "MANUAL";
 	
 	private boolean known;
 
@@ -75,7 +75,7 @@ public class Device {
 		this.deviceDescription = deviceDescription;
 //		contactInfo = new ContactInfo(deviceDescription.getId(), PortGenerator.generatePort());
 		capabilities = new ArrayList<>();
-		this.setConfiguration(Configuration.AUTOMATIC);
+//		this.configuration = "MANUAL";
 		this.known = false;
 	}
 	public final String getId() {
@@ -176,11 +176,11 @@ public class Device {
 		this.deviceDescription = deviceDescription;
 	}
 
-	public Configuration getConfiguration() {
+	public String getConfiguration() {
 		return configuration;
 	}
 
-	public void setConfiguration(Configuration configuration) {
+	public void setConfiguration(String configuration) {
 		this.configuration = configuration;
 	}
 }

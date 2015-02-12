@@ -84,23 +84,20 @@ public class Encoder {
 		objDevice.add(new Str("uri",deviceDescription.getUri()));
 		objDevice.add(new Str("modeConnection", deviceDescription.getModeConnection()));
 		objDevice.add(new Str("dateConnection", deviceDescription.getDateConnection()));
-		objDevice.add(new Str("configuration", "AUTOMATIC"));
+		objDevice.add(new Str("configuration", device.getConfiguration()));
 		objDevice.add(new Bool("known", device.isKnown()));
 		
 
-		LOGGER.info("******************dans encoder capabilities ***********");
+//		LOGGER.info("******************dans encoder capabilities ***********");
 
 		obix.List obixCapabilities = new obix.List("capabilities");
 		for(Capability capability : device.getCapabilities()) {
-			LOGGER.info("*********************************************** BOUCLE FOR" + capability.getName());
 			obixCapabilities.add(encodeCapabilityToObixObj(capability));
 		}
-		LOGGER.info("*********************************************** F I N  FOR");
 
 		objDevice.add(obixCapabilities);
 		obj.add(objDevice);
 		//objDevice.add(encodeContactInfoToObixObj(device.getContactInfo()));
-		LOGGER.info("*********************************************** F I N   E N C O D E R");
 		return ObixEncoder.toString(obj);
 	}
 
@@ -125,33 +122,23 @@ public class Encoder {
 
 	public static Obj encodeCapabilityToObixObj(Capability capability) {
 
-		LOGGER.info("*********************************************** ADD CAPA");
 		Obj obj = new Obj();
 
-		LOGGER.info("*********************************************** ADD CAPA 1");
-
 		obj.add(new Str("id",capability.getName()));
-		LOGGER.info("*********************************************** ADD CAPA 2");
 		obj.add(new Int("cloudPort",capability.getCloudPort()));
-		LOGGER.info("*********************************************** ADD CAPA 3");
 		obj.add(new Str("configuration", "AUTOMATIC"));
-		LOGGER.info("*********************************************** ADD CAPA 4");
 
 		//obj.add(capability.getProtocol().toObj());
-		LOGGER.info("*********************************************** ADD CAPA PRE ENCODE");
 		obj.add(encodeProtocolObixObj(capability.getProtocol()));
-		LOGGER.info("*********************************************** ADD CAPA POST ENCODE");
 		obix.List keywords = new obix.List("keywords");
 		obix.Str sK = null;
 
-		LOGGER.info("*********************************************** ADD CAPA KEYWORDS");
 		for(String k : capability.getKeywords()){
 			sK = new Str(k);
 			keywords.add(sK);
 		}
 		obj.add(keywords);
 
-	LOGGER.info("*********************************************** FIN ADD CAPAs");
 		return obj;
 	}
 

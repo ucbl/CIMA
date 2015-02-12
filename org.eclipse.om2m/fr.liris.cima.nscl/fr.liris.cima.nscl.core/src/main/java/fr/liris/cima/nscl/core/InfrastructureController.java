@@ -82,7 +82,6 @@ public class InfrastructureController implements IpuService{
 			requestIndication.setRepresentation(JsonEncoder.capabilitiesToJSONStr(capabilities));
 			responseConfirm = new ResponseConfirm(StatusCode.STATUS_OK, JsonEncoder.capabilitiesToJSONStr(capabilities));
 			return responseConfirm;
-			
 		}
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST, ""));
 	}
