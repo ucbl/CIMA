@@ -126,8 +126,8 @@ public class Encoder {
 
 		obj.add(new Str("id",capability.getName()));
 		obj.add(new Int("cloudPort",capability.getCloudPort()));
-		obj.add(new Str("configuration", "AUTOMATIC"));
-
+		obj.add(new Str("configuration", "automatic"));
+		LOGGER.info("***************** ADD a Capability");
 		//obj.add(capability.getProtocol().toObj());
 		obj.add(encodeProtocolObixObj(capability.getProtocol()));
 		obix.List keywords = new obix.List("keywords");
@@ -180,7 +180,7 @@ public class Encoder {
 	public static Obj encodeProtocolObixObj(Protocol protocol) {
 		Obj objProtocol = new Obj("protocol");
 
-		//	objProtocol.add(new Str("protocolName", protocol.getName()));
+		objProtocol.add(new Str("protocolName", protocol.getName()));
 		for(Entry<String, String> entry : protocol.getParameters().entrySet()) {
 			System.out.println("parameter = '"+entry.getValue().trim()+"'");
 			objProtocol.add(new Str(entry.getKey(),entry.getValue().trim()));

@@ -26,13 +26,13 @@ public class Capability {
 	private int cloudPort;
 
 	/** Configuration's type of the Capability(automatic or manual) */
-	private Configuration configuration;
+	private String configuration;
 
 	public Capability(String name, Protocol protocol, List<String> keywords, int cloudPort) {
 		this.name = name;
 		this.protocol = protocol;
 		this.keywords = keywords;
-		this.setConfiguration(Configuration.AUTOMATIC);
+		this.setConfiguration("automatic");
 		this.cloudPort=cloudPort;
 
 	}
@@ -152,10 +152,10 @@ public class Capability {
 	public void setCloudPort(int cloudPort) {
 		this.cloudPort = cloudPort;
 	}
-	public Configuration getConfiguration() {
+	public String getConfiguration() {
 		return configuration;
 	}
-	public void setConfiguration(Configuration configuration) {
+	public void setConfiguration(String configuration) {
 		this.configuration = configuration;
 	}
 }

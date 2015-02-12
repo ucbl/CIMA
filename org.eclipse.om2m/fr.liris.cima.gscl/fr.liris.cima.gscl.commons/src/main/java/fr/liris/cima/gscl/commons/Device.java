@@ -37,7 +37,7 @@ public class Device {
 	private DeviceDescription deviceDescription;
 	
 	/** Configuration's type of the Device(automatic or manual) */
-	private String configuration = "MANUAL";
+	private String configuration = "automatic";
 	
 	private boolean known;
 

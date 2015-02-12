@@ -78,7 +78,7 @@ public class InfrastructureController implements IpuService{
 			LOGGER.info("********************REPRESENTATION*******"+requestIndication.getUrl());
 			LOGGER.info("********************GET CAPABILITIES*******");
 			Device device = managerImpl.getDevice(infos[length-2]);
-			Set<Capability> capabilities = device.getCapabilities();
+			List<Capability> capabilities = device.getCapabilities();
 			requestIndication.setRepresentation(JsonEncoder.capabilitiesToJSONStr(capabilities));
 			responseConfirm = new ResponseConfirm(StatusCode.STATUS_OK, JsonEncoder.capabilitiesToJSONStr(capabilities));
 			return responseConfirm;
@@ -166,7 +166,7 @@ public class InfrastructureController implements IpuService{
 					
 					for(ClientSubscriber subscriber : managerImpl.getSubscribers()){
 						requestIndication.setBase(subscriber.getUrl());
-						requestIndication.setRepresentation(JsonEncoder.contactInfoToJSONStr(device.getContactInfo()));
+						requestIndication.setRepresentation(JsonEncoder.deviceToJSONStr(device));
 						restClientService.sendRequest(requestIndication);
 					}				
 					return new ResponseConfirm(StatusCode.STATUS_ACCEPTED, representation);

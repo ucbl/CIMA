@@ -4,6 +4,8 @@ package fr.liris.cima.gscl.core;
 import java.util.List;
 import java.util.Map;
 
+import javax.security.auth.login.Configuration;
+
 import obix.io.ObixEncoder;
 
 import org.apache.commons.logging.Log;
@@ -254,9 +256,9 @@ public class DeviceController implements IpuService{
 				if (upCapability.getName() != null) capability.setName(upCapability.getName());
 				if (upCapability.getKeywords() != null) capability.setKeywords(upCapability.getKeywords());
 				if (upCapability.getProtocol() != null) capability.setProtocol(upCapability.getProtocol());
+				capability.setConfiguration("manual");
 				managerImpl.updateDeviceCapability(deviceId, capability);				
 				return new ResponseConfirm(StatusCode.STATUS_OK, "Capability updated or created");
-
 			}
 		}
 		return confirm;

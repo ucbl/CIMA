@@ -1,37 +1,35 @@
 package fr.liris.cima.nscl.commons;
 
-/**
- * Defines a minimal required information for a device
- * @author madiallo
- *
- */
+import java.util.Date;
+
+import fr.liris.cima.nscl.commons.util.Utils;
+
 public class DeviceDescription {
 
-	/** Device's id	 */
 	private String id;
-	
-	/** Device's name*/
 	private String name;
-	
-	/** Device's uri */
 	private String uri;
-	
-	/** Connection mode required to communicate with device (like ip, usb, etc ...)*/
 	private String modeConnection;
-	
-	/** Device date connection */
 	private String dateConnection;
 
-	public DeviceDescription(String id, String name, String uri, String modeConnection, String dateConnection) {
-		this.id = id;
+
+	public DeviceDescription() {
+		this.id = new UID().getUid();
+		this.dateConnection = Utils.dateToStr(new Date());
+	} 
+	
+	public DeviceDescription(String name, String uri, String modeConnection) {
+		this.id = new UID().getUid();
 		this.name = name;
 		this.uri = uri;
 		this.modeConnection = modeConnection;
-		this.dateConnection = dateConnection;
+		this.dateConnection = Utils.dateToStr(new Date());
+		
+
 	}
 	
 	public String getId() {
-		return id;
+		return (id != null) ? id : "";
 	}
 	
 	public void setId(String id) {
@@ -39,7 +37,7 @@ public class DeviceDescription {
 	}
 	
 	public String getName() {
-		return name;
+		return (name != null) ? name : "";
 	}
 	
 	public void setName(String name) {
@@ -47,14 +45,14 @@ public class DeviceDescription {
 	}
 	
 	public String getUri() {
-		return uri;
+		return (uri != null) ? uri : "";
 	}
 	public void setUri(String uri) {
 		this.uri = uri;
 	}
 
 	public String getModeConnection() {
-		return modeConnection;
+		return (modeConnection != null) ? modeConnection : "";
 	}
 
 	public void setModeConnection(String modeConnection) {
@@ -62,7 +60,7 @@ public class DeviceDescription {
 	}
 
 	public String getDateConnection() {
-		return dateConnection;
+		return (dateConnection != null) ? dateConnection : "";
 	}
 
 	public void setDateConnection(String dateConnection) {
@@ -82,4 +80,6 @@ public class DeviceDescription {
 		
 		return sb.toString();
 	}
+	
+	
 }
