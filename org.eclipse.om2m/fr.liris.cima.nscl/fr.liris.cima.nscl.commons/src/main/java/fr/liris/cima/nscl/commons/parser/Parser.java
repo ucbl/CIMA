@@ -292,14 +292,14 @@ public class Parser {
 			SAXBuilder sxb = new SAXBuilder();
 			Document document = sxb.build(new StringReader(obj_info));
 			Element racine = document.getRootElement();
-			List<Element> list_obj = racine.getChildren().get(0).getChildren().get(0).getChildren();
+			List<Element> list_obj = racine.getChildren().get(0).getChildren();
 			Iterator<Element> noeudObj = list_obj.iterator();
 			Element objCourant;
 			String s;
 			while (noeudObj.hasNext()) {
-				objCourant = (Element) noeudObj.next();
-				s = new XMLOutputter()
-				.outputString(objCourant);
+				objCourant = ((Element) noeudObj.next()).getChild("obj");
+				s = new XMLOutputter().outputString(objCourant);
+				System.out.println("************************* device : " + s + "*************************");
 				jsonDevices.add(parseObixToJSONDevice(s));
 			}
 

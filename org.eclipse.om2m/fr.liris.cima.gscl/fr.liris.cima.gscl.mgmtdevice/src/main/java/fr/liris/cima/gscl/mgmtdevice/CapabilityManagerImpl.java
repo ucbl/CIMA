@@ -59,7 +59,7 @@ public class CapabilityManagerImpl implements CapabilityManager {
 		Collection<Capability> capabilities = this.capabilities.values();
 		String [] filters = filter.split("\\+");
 		List<String> capabilityKeywords = new ArrayList<>();
-		boolean isFiltred = true;
+		boolean isFiltred = false;
 		for(Capability c : capabilities){
 			//init keywords list
 			capabilityKeywords.add(c.getName());
@@ -67,8 +67,13 @@ public class CapabilityManagerImpl implements CapabilityManager {
 			
 			for(String f : filters){
 				// if a keyword filter is not in the capability keywords then the capability is not filtred
-				if(!capabilityKeywords.contains(f)){
-					isFiltred = false;
+//				if(!capabilityKeywords.contains(f)){
+//					isFiltred = false;
+//				}
+				for(String k : capabilityKeywords){
+					if(k.toLowerCase().contains(f.toLowerCase())){
+						isFiltred = true;
+					}
 				}
 			}
 			if(isFiltred){
@@ -76,7 +81,7 @@ public class CapabilityManagerImpl implements CapabilityManager {
 			}
 			// reinit
 			capabilityKeywords.clear();
-			isFiltred = true;
+			isFiltred = false;
 		}
 		
 		return filtredCapabilities;

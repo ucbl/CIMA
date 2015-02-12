@@ -126,7 +126,7 @@ public class Encoder {
 
 		obj.add(new Str("id",capability.getName()));
 		obj.add(new Int("cloudPort",capability.getCloudPort()));
-		obj.add(new Str("configuration", "automatic"));
+		obj.add(new Str("configuration", ((capability.getConfiguration()!=null)?capability.getConfiguration():"automatic")));
 		LOGGER.info("***************** ADD a Capability");
 		//obj.add(capability.getProtocol().toObj());
 		obj.add(encodeProtocolObixObj(capability.getProtocol()));

@@ -112,7 +112,7 @@ public class Activator implements BundleActivator {
 					public void run(){
 						while(true) {
 							try {
-								Thread.sleep(1000) ;
+								Thread.sleep(5000) ;
 								discoveryService.doDiscovery();
 								logger.info("do discovery ...");
 							} catch (Exception e) {

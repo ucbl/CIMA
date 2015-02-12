@@ -105,10 +105,11 @@ public class DeviceController implements IpuService{
 	@Override
 	public ResponseConfirm doRetrieve(RequestIndication requestIndication) {
 
-		LOGGER.info("*********Retrieve in DEVICE CONTROLLER ****");
+		LOGGER.info("*********Retrieve in DEVICE CONTROLLER **** " + requestIndication.getTargetID());
 		String []infos = requestIndication.getTargetID().split("/");
 		String lastInfo = infos[infos.length - 1];
-
+		LOGGER.info("********* LAST INFOS **** " + lastInfo);
+		LOGGER.info("********* INFO - 2 **** " + infos[infos.length - 2]);
 		if(lastInfo.equals(Constants.PATH_CAPABILITIES)){
 			if(infos[infos.length - 2].equals(Constants.PATH_DEVICES_ALL)){
 				// filter on capabilities
@@ -120,6 +121,8 @@ public class DeviceController implements IpuService{
 				}
 				filter = filter.substring(0, filter.length() - 1);
 				List<Capability> capabilites = capabilityManager.getCapabilities(filter);
+				
+				return new ResponseConfirm(StatusCode.STATUS_OK, Encoder.encodeCapabilitiesToObix(capabilites));
 			} else {
 				String deviceId = infos[infos.length - 2];
 				Device device = managerImpl.getDevice(deviceId);
@@ -231,7 +234,13 @@ public class DeviceController implements IpuService{
 			LOGGER.info("DEVICE CAPABILITIES == "+device.getCapabilities());
 		//	boolean validate = managerImpl.switchUnknownToKnownDevice(device);
 			device.setKnown(true);
-
+			Device existDev = managerImpl.getDevice(device.getId());
+			if(existDev == null){
+				managerImpl.addDevice(device);
+			} else {
+				managerImpl.updateDevice(device.getId(), device);
+			}
+			
 			if(device.isKnown() == true) {
 				confirm = new ResponseConfirm(StatusCode.STATUS_OK, "Device is now known ");
 			}

@@ -102,6 +102,9 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 	@Override
 	public void addDevice(Device device) {
 		devices.add(device);
+		for(Capability capability : device.getCapabilities()){
+			this.capabilityManager.add(capability);
+		}
 	}
 
 	@Override
@@ -301,6 +304,9 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		Device device = getDevice(deviceId);
 		device.setCapabilities(newDevice.getCapabilities());
 		device.setDeviceDescription(newDevice.getDeviceDescription());
+		for(Capability capability : device.getCapabilities()){
+			this.capabilityManager.add(capability);
+		}
 	}
 	
 	@Override

@@ -1,5 +1,7 @@
 package fr.liris.cima.nscl.administration;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.om2m.comm.service.RestClientService;
@@ -63,7 +65,15 @@ public class AdministrationServer implements IpuService{
 //				}
 				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"protocolName\" : \"http\",\"parameters\" : [{\"name\" : \"method\",\"value\" : \"\" },{\"name\" : \"port\",\"value\" : \"\"},{\"name\" : \"uri\",\"value\" : \"\" },{\"name\" : \"body\",\"value\" : \"\"}]}]");
 			case "capabilities" :
-				requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/capabilities");
+				List<String> filters = requestIndication.getParameters().get("filter");
+				String sFilters = "";
+				boolean first = true;
+				for(String sFilter : filters){
+					if(first == true) first = false;
+					else sFilter+="+";
+					sFilters += sFilter;
+				}
+				requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/all/capabilities?filter="+sFilters);
 				resp = restClientService.sendRequest(requestIndication);
 				resp.setRepresentation(Parser.parseObixToJSONStringCapabilities(resp.getRepresentation()));
 				return resp;
