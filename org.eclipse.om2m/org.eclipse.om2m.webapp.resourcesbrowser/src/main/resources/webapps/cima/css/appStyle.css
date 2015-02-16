@@ -64,3 +64,6 @@ h1 {
 .ng-toast.ng-toast--right .ng-toast__list {
     margin-right:50px;
 }
+.bs-header h1 {
+    color: #fff;
+}

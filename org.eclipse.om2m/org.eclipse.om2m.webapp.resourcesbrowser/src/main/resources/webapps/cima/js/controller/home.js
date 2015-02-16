@@ -1,7 +1,7 @@
 /* Controller page home.html */
 app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,$interval,$timeout, ngToast){
 	
-	$rootScope.loading = true;
+	$rootScope.loading = false;
 	$scope.devices = new Array();
 	$scope.predicate = '-configuration';
 	$scope.useConfig = {};
@@ -9,13 +9,14 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
     $scope.useKeys = {};  
 
 	/* Calling the DeviceFactory for changing the devices list */
+    $scope.check = function(){
 	$scope.loadDevices = function(){
 		var count = $scope.devices.length;
 		DeviceFactory.find().then(function(devices){
 			
 			if(devices.length != count){
 				$scope.devices = devices;
-				$rootScope.loading = false;
+				//$rootScope.loading = true;
                 ngToast.create((devices.length-count)+" new devices detected.");
 			}
 
@@ -28,17 +29,18 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
             });
 		})
 	};
+        /* Call once to first load the list */
+        $scope.loadDevices();
+        /* Stop refresh the device list */
+    $scope.stopRefreshDevices = function(){
+        clearInterval(interval);
+    }; 
+    /* Set an intervall to refresh and call the function to load device list */
+    var interval = setInterval( function(){ $scope.loadDevices(); }, DEVICE_REFRESH); 
+};
 
-	/* Stop refresh the device list */
-	$scope.stopRefreshDevices = function(){
-		clearInterval(interval);
-	}; 
+	
 
-	/* Call once to first load the list */
-	$scope.loadDevices();
-
-	/* Set an intervall to refresh and call the function to load device list */
-	var interval = setInterval( function(){ $scope.loadDevices(); }, DEVICE_REFRESH); 
   $scope.$watch(function () {
         return {
             devices: $scope.devices,
