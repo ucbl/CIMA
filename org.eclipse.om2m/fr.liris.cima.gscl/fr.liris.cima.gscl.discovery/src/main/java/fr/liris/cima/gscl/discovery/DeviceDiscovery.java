@@ -259,7 +259,7 @@ public class DeviceDiscovery implements DiscoveryService{
 			// Create device from its xml representation
 			Device device = Parser.parseXmlToDevice(representation);
 			device.setKnown(true);
-			device.setConfiguration("AUTOMATIC");
+			device.setConfiguration("automatic");
 			// Adding device to the device manager
 			deviceService.addDevice(device);
 			

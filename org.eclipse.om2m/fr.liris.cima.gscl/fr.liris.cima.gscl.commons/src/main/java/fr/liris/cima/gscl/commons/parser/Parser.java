@@ -317,7 +317,8 @@ public class Parser {
 		protocol.addParameter("method", protocolObj.get("method").getStr());
 		protocol.addParameter("port", protocolObj.get("port").getStr());
 		protocol.addParameter("uri", protocolObj.get("uri").getStr());
-		protocol.addParameter("body", protocolObj.get("body").getStr());
+		String bodySTR = (protocolObj.get("body") != null) ? protocolObj.get("body").getStr() : "";
+		protocol.addParameter("body", bodySTR);
 
 		int cloudPort = (int) capabilityObj.get("cloudPort").getInt();
 
@@ -328,7 +329,12 @@ public class Parser {
 		}
 
 		name = capabilityObj.get("id").getStr();
-		return new Capability(name, protocol, keywords,cloudPort);
+		Capability capa = new Capability(name, protocol, keywords,cloudPort);
+		System.out.println("***************************************************");
+		System.out.println(capabilityObj.get("configuration").getStr());
+		System.out.println("***************************************************");
+		capa.setConfiguration(capabilityObj.get("configuration").getStr());
+		return capa;
 	}
 
 	public static Device parseObixToDevice(String obixFormat) {
@@ -362,9 +368,13 @@ public class Parser {
 		device = new Device(deviceDescription);
 
 		obix.List obixCapabilities = (obix.List)objDevice.get("capabilities");
+		if(obixCapabilities == null) obixCapabilities = (obix.List)objDevice.get("Capabilities");
 
 		if(obixCapabilities != null) {
+			System.out.println("OBJ HAVE CAPABILITIES");
+			System.out.println(ObixEncoder.toString(obixCapabilities));
 			for(Obj objCapability : obixCapabilities.list()) {
+				System.out.println(ObixEncoder.toString(objCapability));
 				Capability capability = parseObixToCapability(ObixEncoder.toString(objCapability));
 				if(capability != null) {
 					device.addCapability(capability);
