@@ -262,8 +262,9 @@ public class Encoder {
 		//	System.out.println(encodeCapabilitiesToObix(capabilities));
 
 
-//
-//		System.out.println(encodeDeviceToJSONPortForwarding(device));
+
+		System.out.println("*************************************************");
+		System.out.println(encodeDeviceToJSONPortForwarding(device));
 //		System.out.println(mapPortManager);
 		// Protocol
 
@@ -309,8 +310,8 @@ public class Encoder {
 
 				parameters.put("id", device.getId()+ "_"+port);
 				parameters.put("ip", Utils.extractIpAdress(device.getUri()));
-				parameters.put("port", port);
-				parameters.put("transport", "UDP");
+				parameters.put("port", ""+port);
+				parameters.put("transport", "TCP");
 
 				jsonArrayConnection.add(Encoder.encodeToJson(parameters));
 

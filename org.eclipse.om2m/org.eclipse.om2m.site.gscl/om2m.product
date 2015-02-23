@@ -107,8 +107,8 @@
       <property name="org.eclipse.om2m.webInterfaceContext" value="/" />
       <property name="org.eclipse.om2m.coap.port" value="5684" />
 
-      <property name="fr.liris.cima.gscl.forwardPort" value="8888" />
-      <property name="fr.liris.cima.gscl.adress" value="192.168.0.2" />
+      <property name="fr.liris.cima.gscl.forwardPort" value="8000" />
+      <property name="fr.liris.cima.gscl.adress" value="127.0.0.1" />
       <property name="fr.liris.cima.gscl.defaultDevicePathInfos" value="/infos" />
       <property name="fr.liris.cima.gscl.discoveryWaitingTimer" value="1000" />
       

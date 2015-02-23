@@ -294,10 +294,10 @@ public class DeviceDiscovery implements DiscoveryService{
 			String data = Encoder.encodeDeviceToJSONPortForwarding(device);
 			
 			// send connection data to the c part
-			//String cResponse = cimaInternalCommunication.sendInfos(data);
+			String cResponse = cimaInternalCommunication.sendInfos(data);
 			
-			// Decode connection response from c part 
-		//	mapConnectionPortForwarding = Encoder.decodeJson(cResponse);
+// 			Decode connection response from c part 
+			mapConnectionPortForwarding = Encoder.decodeJson(cResponse);
 			
 			return true;
 		} else return false;

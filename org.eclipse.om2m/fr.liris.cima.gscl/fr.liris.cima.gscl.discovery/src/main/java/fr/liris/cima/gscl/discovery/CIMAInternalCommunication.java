@@ -35,16 +35,24 @@ public class CIMAInternalCommunication {
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
             // send connection  data to the c part
+
+			System.out.println("EEEEEEEEEEE send connection  data to the c part");
+			System.out.println(data);
 			out.print(data);
 			out.flush();
 			
 			// Read server c response 
-			String inputLine = in.readLine();
-			
+//			String inputLine = in.readLine();
+			String inputLine,rep="";
+			while((inputLine = in.readLine()) != null){
+				rep += inputLine;
+			}
+			System.out.println("REP :");
+			System.out.println(rep);
 	        in.close(); 
             out.close();
             
-			return inputLine;
+			return rep;
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
