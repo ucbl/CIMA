@@ -25,7 +25,8 @@ function launchCima {
 
 function installCima {
 	cd $localLocation/org.eclipse.om2m
-	sudo mvn clean; mvn install
+#	sudo mvn clean; mvn install
+	sudo  mvn  install
 }
 
 function usage {

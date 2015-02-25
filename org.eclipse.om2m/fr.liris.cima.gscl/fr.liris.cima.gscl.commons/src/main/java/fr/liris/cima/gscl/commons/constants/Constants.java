@@ -2,7 +2,7 @@ package fr.liris.cima.gscl.commons.constants;
 
 public class Constants {
 
-	public static final String COMMAND_ARP_FOR_IP = "sudo arp-scan --interface=wlp2s0 192.168.0.1/24";
+	public static final String COMMAND_ARP_FOR_IP = "sudo arp-scan --interface=wlan0 192.168.0.1/24";
 	public static final  String IP_PREFIX = "192.168";
 	public static final  String MOD_IP= "ip";
 	
