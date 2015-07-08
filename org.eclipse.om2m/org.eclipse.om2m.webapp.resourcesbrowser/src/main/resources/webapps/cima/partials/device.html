@@ -1,15 +1,49 @@
 <!--Device view-->
 <div  ng-hide='loading' ng-controller="DeviceCtrl">
-	<div >
-        <a class="btn btn-warning" href="#/"> < Devices list</a>
-        <!-- Applying changes button-->
-        <button class="btn btn-success pull-right" ng-click="saveDevice()">
-        <i class="glyphicon glyphicon-ok"></i>
-            Apply changes
-        </button>
+	<div class="col-sm-12 col-md-12 col-lg-12">
+		<div class="col-sm-12 col-md-12 col-lg-12">
+			<a class="btn btn-warning" href="#/"> < Devices list</a>
+			<!-- Applying changes button-->
+			<button class="btn btn-success pull-right" ng-click="saveDevice()">
+			<i class="glyphicon glyphicon-ok"></i>
+				Apply changes
+			</button>
+		</div>
+		<br>
 		<hr>
+		<div class="fil_ariane">
+			<a class="fil_ariane_a">
+				Index
+			</a>
+			&nbsp;&raquo;&nbsp;
+			<a class="fil_ariane_a">
+				Devices
+			</a>
+			&nbsp;&raquo;&nbsp;
+			<a class="fil_ariane_a_final">
+				Device : {{id}}
+			</a>
+			<br>
+		</div>
+		
+		<!--<div class="fil_ariane">
+			<a class="fil_ariane_a">
+				Index
+			</a>
+			&nbsp;&raquo;&nbsp;
+			<a class="fil_ariane_a">
+				Devices
+			</a>
+			&nbsp;&raquo;&nbsp;
+			<a class="fil_ariane_a_final">
+				Device : {{id}}
+			</a>
+			<p>
+				<br>
+			</p>
+		</div>-->
 		<!-- Infos sur le device -->
-        <div class="panel panel-primary">
+        <div class="panel panel-primary col-sm-12 col-md-12 col-lg-12">
             <div class="panel-heading">
                 <h2 class="panel-title">Device ID : {{id}}</h2>
             </div>
@@ -69,11 +103,11 @@
 
 
         <!-- SHOW CAPACBILITY -->
-                <div class="panel panel-warning" id="edit" ng-show="ShowIsOpen">
-                    <div class="panel-heading">
-                        <h2 class="panel-title">Show capability</h2>
+                <div class="panel panel-warning col-sm-12 col-md-12 col-lg-12" id="edit" ng-show="ShowIsOpen">
+                    <div class="panel-heading col-sm-12 col-md-12 col-lg-12">
+                        <h2 class="panel-title col-sm-12 col-md-12 col-lg-12">Show capability</h2>
                     </div>
-                    <div class="panel-body">                
+                    <div class="panel-body col-sm-12 col-md-12 col-lg-12">                
                             <strong>ID : {{editedCapability.id}} </strong>
                             <br><br>
                             <li>
@@ -101,11 +135,11 @@
 
 
             	<!-- EDIT CAPACBILITY -->
-                <div class="panel panel-warning" id="edit" ng-show="EditIsOpen">
-                    <div class="panel-heading">
-                        <h2 class="panel-title">Edit capability</h2>
+                <div class="panel panel-warning col-sm-12 col-md-12 col-lg-12" id="edit" ng-show="EditIsOpen">
+                    <div class="panel-heading col-sm-12 col-md-12 col-lg-12">
+                        <h2 class="panel-title col-sm-12 col-md-12 col-lg-12">Edit capability</h2>
                     </div>
-                    <div class="panel-body">                
+                    <div class="panel-body col-sm-12 col-md-12 col-lg-12">                
                         <form ng-submit="modifyCapability(editedCapability)">
                             <strong>ID : {{editedCapability.id}} </strong>
                             <br><br>
@@ -145,11 +179,11 @@
         </div>
 
         <!-- ADD CAPABILITY -->
-        <div class="addCapability panel panel-info">
-            <div class="panel-heading">
-                <h2 class="panel-title">Add a capability</h2>
+        <div class="addCapability panel panel-info col-sm-12 col-md-12 col-lg-12">
+            <div class="panel-heading col-sm-12 col-md-12 col-lg-12">
+                <h2 class="panel-title col-sm-12 col-md-12 col-lg-12">Add a capability</h2>
             </div>
-            <div class="panel-body">               
+            <div class="panel-body col-sm-12 col-md-12 col-lg-12">               
                 <accordion>
                     <accordion-group>
                         <accordion-heading>
