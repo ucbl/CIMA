@@ -67,9 +67,10 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 	})
 	
 	/*Add the capability to the model and to the view if it's a success*/
-	$scope.addCapability = function(newCapability){
-		
-		if(newCapability.id !=null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null){			
+	$scope.addCapability = function(newCapability)
+	{		
+		if(newCapability.id !=null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null)
+		{			
 			var cap = {};
 			cap.id = newCapability.id;
 			cap.protocol = {};
@@ -77,12 +78,55 @@ app.controller('DeviceCtrl', function($http, $scope, $rootScope, DeviceFactory, 
 			cap.protocol.parameters = newCapability.protocol.parameters;
 			cap.configuration='manual';
 			cap.isEditable=true;
+			cap.hydra = "http://www.w3.org/ns/hydra/core#";
+			cap.rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+			cap.rdfs = "http://www.w3.org/2000/01/rdf-schema#";
+			cap.xsd = "http://www.w3.org/2001/XMLSchema#";
+			cap.owl = "http://www.w3.org/2002/07/owl#";
+			cap.vs = "http://www.w3.org/2003/06/sw-vocab-status/ns#";
+			cap.defines = { "@reverse": "rdfs:isDefinedBy" };
+			cap.comment = "rdfs:comment";
+			cap.label = "rdfs:label";
+			cap.domain = { "@id": "rdfs:domain", "@type": "@id" };
+			cap.range = { "@id": "rdfs:range", "@type": "@id" };
+			cap.subClassOf = { "@id": "rdfs:subClassOf", "@type": "@id", "@container": "@set" };
+			cap.subPropertyOf = { "@id": "rdfs:subPropertyOf", "@type": "@id", "@container": "@set" };
+			cap.seeAlso = { "@id": "rdfs:seeAlso", "@type": "@id" };
+			cap.status = "vs:term_status";
+			console.log("cap = "+JSON.stringify(cap));
+			/*var doc = {
+			  "http://schema.org/name": "Manu Sporny",
+			  "http://schema.org/url": {"@id": "http://manu.sporny.org/"},
+			  "http://schema.org/image": {"@id": "http://manu.sporny.org/images/manu.png"}
+			};
+			var context = {
+				"hydra": "http://www.w3.org/ns/hydra/core#",
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "xsd": "http://www.w3.org/2001/XMLSchema#",
+                "owl": "http://www.w3.org/2002/07/owl#",
+                "vs": "http://www.w3.org/2003/06/sw-vocab-status/ns#",
+                "defines": { "@reverse": "rdfs:isDefinedBy" },
+                "comment": "rdfs:comment",
+                "label": "rdfs:label",
+                "domain": { "@id": "rdfs:domain", "@type": "@id" },
+                "range": { "@id": "rdfs:range", "@type": "@id" },
+                "subClassOf": { "@id": "rdfs:subClassOf", "@type": "@id", "@container": "@set" },
+                "subPropertyOf": { "@id": "rdfs:subPropertyOf", "@type": "@id", "@container": "@set" },
+                "seeAlso": { "@id": "rdfs:seeAlso", "@type": "@id" },
+                "status": "vs:term_status"
+			};*/
 
+			// compact a document according to a particular context
+			// see: http://json-ld.org/spec/latest/json-ld/#compacted-document-form
+			/*jsonld.compact(doc, context, function(err, compacted) {
+			  console.log(JSON.stringify(compacted, null, 2));
+			});*/
 			DeviceFactory.addCapability($scope.id,cap).then(function(){
 				$scope.capabilities.push(cap);
 				ngToast.create("Capability added.");
-
 			}, function(msg){
+
 				//error
 				ngToast.create({
             		content: "Unable to add capability : "+msg,

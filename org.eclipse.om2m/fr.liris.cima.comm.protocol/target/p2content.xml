@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<units size='1'>
+  <unit id='fr.liris.cima.comm.protocol' version='1.0.0.20150730-1023' singleton='false'>
+    <update id='fr.liris.cima.comm.protocol' range='[0.0.0,1.0.0.20150730-1023)' severity='0'/>
+    <properties size='4'>
+      <property name='org.eclipse.equinox.p2.name' value='comm-protocol-service'/>
+      <property name='maven-groupId' value='org.eclipse.om2m'/>
+      <property name='maven-artifactId' value='fr.liris.cima.comm.protocol'/>
+      <property name='maven-version' value='1.0.0-SNAPSHOT'/>
+    </properties>
+    <provides size='4'>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='fr.liris.cima.comm.protocol' version='1.0.0.20150730-1023'/>
+      <provided namespace='osgi.bundle' name='fr.liris.cima.comm.protocol' version='1.0.0.20150730-1023'/>
+      <provided namespace='java.package' name='fr.liris.cima.comm.protocol' version='0.0.0'/>
+      <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
+    </provides>
+    <requires size='6'>
+      <required namespace='osgi.bundle' name='org.eclipse.om2m.core.service' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.apache.commons.httpclient' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.apache.commons.codec' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.om2m.commons' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.osgi' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.om2m.comm.service' range='0.0.0'/>
+    </requires>
+    <artifacts size='1'>
+      <artifact classifier='osgi.bundle' id='fr.liris.cima.comm.protocol' version='1.0.0.20150730-1023'/>
+    </artifacts>
+    <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
+    <touchpointData size='1'>
+      <instructions size='1'>
+        <instruction key='manifest'>
+          Bundle-SymbolicName: fr.liris.cima.comm.protocol&#xA;Bundle-Version: 1.0.0.20150730-1023&#xA;
+        </instruction>
+      </instructions>
+    </touchpointData>
+  </unit>
+</units>

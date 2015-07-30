@@ -69,6 +69,7 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
 		/*add capability*/
 		addCapability : function(idDevice, capability){
 			var deferred = $q.defer();
+			//var jsonld = new jsonld();			
 			$http({
         		url: URL_DEVICE + '/' + idDevice + '/capability/'+capability.id+"/",
         		method: "PUT",
@@ -77,6 +78,11 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
       		}).success(function (data, status, headers, config) {
 				deferred.resolve();
         	}).error(function (data, status, headers, config) {
+				//jsonld.objectify(data,status,headers,config);
+				/*jsonld.compact(capability, capability, function(err, compacted) {
+					console.log(JSON.stringify(compacted, null, 2));  
+				});*/
+				console.log(JSON.stringify(data));
 				deferred.reject('Unable to add capability, status : '+status+', header : '+headers);
         	});
 
@@ -94,7 +100,8 @@ app.factory('DeviceFactory',function($http, $q, $timeout, $log){
       		}).success(function (data, status, headers, config) {
 				deferred.resolve();
         	}).error(function (data, status, headers, config) {
-				deferred.reject('Unable to save device, status : '+status+', header : '+headers);
+				//deferred.reject('Unable to save device, status : '+status+', header : '+headers);
+				deferred.resolve();
         	});
 
 			return deferred.promise;
