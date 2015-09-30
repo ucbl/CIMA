@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fr.liris.cima.gscl.commons.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.om2m.comm.service.RestClientService;
@@ -17,12 +18,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import fr.liris.cima.gscl.commons.Capability;
-import fr.liris.cima.gscl.commons.Device;
-import fr.liris.cima.gscl.commons.Encoder;
-import fr.liris.cima.gscl.commons.DeviceDescription;
-import fr.liris.cima.gscl.commons.ExecuteShellComand;
-import fr.liris.cima.gscl.commons.Protocol;
 import fr.liris.cima.gscl.commons.constants.*;
 import fr.liris.cima.gscl.commons.parser.*;
 import fr.liris.cima.gscl.commons.util.*;
@@ -112,7 +107,10 @@ public class DeviceDiscovery implements DiscoveryService{
 	 * @return
 	 */
 	private Set<String> lookUp() {
-		return ExecuteShellComand.getAllIpAddress(Constants.COMMAND_ARP_FOR_IP, Constants.IP_PREFIX);
+		// Removed by Maxime on 30/09/2015 : allow usage of the new IP search system
+		//return ExecuteShellComand.getAllIpAddress(Constants.COMMAND_ARP_FOR_IP, Constants.IP_PREFIX);
+		IPFinderManager.startIfNotStarted();
+		return IPFinderManager.getAccesiblesIP();
 	}
 
 	/**
