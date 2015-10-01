@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashSet;
+import java.util.Enumeration;
 
 import fr.liris.cima.gscl.commons.*;
 import org.apache.commons.logging.Log;
@@ -23,6 +25,11 @@ import fr.liris.cima.gscl.commons.parser.*;
 import fr.liris.cima.gscl.commons.util.*;
 import fr.liris.cima.gscl.device.service.discovery.DiscoveryService;
 import fr.liris.cima.gscl.device.service.*;
+
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+
 
 /**
  * Specific device discover, for discovering a device in the local network
@@ -79,6 +86,7 @@ public class DeviceDiscovery implements DiscoveryService{
 	 */
 	Map<String, String>mapDisconnectionPortForwarding;
 
+	
 	public DeviceDiscovery() {
 
 	}
@@ -102,15 +110,42 @@ public class DeviceDiscovery implements DiscoveryService{
 		cimaInternalCommunication = new CIMAInternalCommunication();
 	}
 
+	// Created by Quan-Khanh LU 01-Oct-2015
+    public static Set<String> getIpsFromActualMachine() {
+        Set<String> ips = new HashSet<String>();
+        Enumeration e;
+        try {
+            e = NetworkInterface.getNetworkInterfaces();
+            while(e.hasMoreElements()) {
+                NetworkInterface n = (NetworkInterface) e.nextElement();
+                Enumeration ee = n.getInetAddresses();
+                while (ee.hasMoreElements()) {
+                    InetAddress i = (InetAddress) ee.nextElement();
+
+                    // if (i instanceof Inet4Address)
+                        ips.add(i.getHostAddress());
+                }
+            }
+        } catch (SocketException ex) {
+            
+        }
+        
+        return ips;
+
+    }
+
 	/**
 	 * Lookup a connected address in the local network by arp scan
 	 * @return
 	 */
 	private Set<String> lookUp() {
-		// Removed by Maxime on 30/09/2015 : allow usage of the new IP search system
 		//return ExecuteShellComand.getAllIpAddress(Constants.COMMAND_ARP_FOR_IP, Constants.IP_PREFIX);
 		IPFinderManager.startIfNotStarted();
-		return IPFinderManager.getAccesiblesIP();
+		
+		Set<String> addresses = IPFinderManager.getAccesiblesIP();
+		addresses.removeAll(getIpsFromActualMachine());
+		LOGGER.info("****************After removing some IPs : " + addresses.toString());
+		return addresses;
 	}
 
 	/**
@@ -141,6 +176,8 @@ public class DeviceDiscovery implements DiscoveryService{
 		return responseConfirm;
 	}
 
+
+
 	/**
 	 * disocvery  devices in the local network.
 	 */
@@ -155,6 +192,8 @@ public class DeviceDiscovery implements DiscoveryService{
 		// Retrieve all connected address in local network
 		Set<String> addresses = lookUp();
 		LOGGER.info("addresses = " + addresses);
+
+
 
 		for(String address : addresses) {
 			requestIndication.setBase(address);
@@ -244,14 +283,16 @@ public class DeviceDiscovery implements DiscoveryService{
 	protected boolean handleNewDeviceConnection(String address, RequestIndication requestIndication, String targetId){
 		requestIndication.setTargetID(targetId);
 		ResponseConfirm responseConfirm = null ;
-
+		LOGGER.info("*****Client Service ******* : " + clientService);
 		responseConfirm = clientService.sendRequest(requestIndication);
+
 		LOGGER.info("device requestIndication = "+requestIndication);
 
 		if(!(responseConfirm.getStatusCode() == null) && (responseConfirm.getStatusCode().equals(StatusCode.STATUS_OK) || 
 				responseConfirm.getStatusCode().equals(StatusCode.STATUS_ACCEPTED)) ) {
 			String representation = responseConfirm.getRepresentation();
-
+			representation = representation.replace("<!--home oage-->\n", "");
+			LOGGER.info("***************Representation******************* : \n" + representation);
 			LOGGER.info("***************handleNewDeviceConnection*******************");
 
 			// Create device from its xml representation
