@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Enumeration;
+
 
 import fr.liris.cima.gscl.commons.*;
 import org.apache.commons.logging.Log;
@@ -26,9 +26,7 @@ import fr.liris.cima.gscl.commons.util.*;
 import fr.liris.cima.gscl.device.service.discovery.DiscoveryService;
 import fr.liris.cima.gscl.device.service.*;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
+
 
 
 /**
@@ -110,30 +108,6 @@ public class DeviceDiscovery implements DiscoveryService{
 		cimaInternalCommunication = new CIMAInternalCommunication();
 	}
 
-	// Created by Quan-Khanh LU 01-Oct-2015
-    public static Set<String> getIpsFromActualMachine() {
-        Set<String> ips = new HashSet<String>();
-        Enumeration e;
-        try {
-            e = NetworkInterface.getNetworkInterfaces();
-            while(e.hasMoreElements()) {
-                NetworkInterface n = (NetworkInterface) e.nextElement();
-                Enumeration ee = n.getInetAddresses();
-                while (ee.hasMoreElements()) {
-                    InetAddress i = (InetAddress) ee.nextElement();
-
-                    // if (i instanceof Inet4Address)
-                        ips.add(i.getHostAddress());
-                }
-            }
-        } catch (SocketException ex) {
-            
-        }
-        
-        return ips;
-
-    }
-
 	/**
 	 * Lookup a connected address in the local network by arp scan
 	 * @return
@@ -143,8 +117,7 @@ public class DeviceDiscovery implements DiscoveryService{
 		IPFinderManager.startIfNotStarted();
 		
 		Set<String> addresses = IPFinderManager.getAccesiblesIP();
-		addresses.removeAll(getIpsFromActualMachine());
-		LOGGER.info("****************After removing some IPs : " + addresses.toString());
+		
 		return addresses;
 	}
 

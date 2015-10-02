@@ -42,15 +42,16 @@ public class IPFinder extends TimerTask {
                     if(inetAddress.isSiteLocalAddress())
                     {
                         String myAdress = inetAddress.getHostAddress();
-                        String myAdreesSplited[] = myAdress.split("\\.");
-                        String adressStart = myAdreesSplited[0] +"."+ myAdreesSplited[1]+"." + myAdreesSplited[2]+".";
+                        String myAdressSplited[] = myAdress.split("\\.");
+                        String adressStart = myAdressSplited[0] +"."+ myAdressSplited[1]+"." + myAdressSplited[2]+".";
 
                         //We try all ips started by myIp and ended by [0,255] (yes, myIP too)
                         for(int i = 0; i!= 256; i++)
                         {
 
                             String adder = adressStart + i;
-                            threadPool.submit(new IPChecker(this, adder));
+                            if (!adder.equals(myAdress))
+                                threadPool.submit(new IPChecker(this, adder));
                         }
                     }
                 }
