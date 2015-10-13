@@ -1,0 +1,5 @@
+clean up everything listed (enumerated) in home.txt. After that, do the following stuffs:
+/** TODO :
+    Integrate grunt.js and use its available powerful script
+    Improve the interface by using Materialize
+*/

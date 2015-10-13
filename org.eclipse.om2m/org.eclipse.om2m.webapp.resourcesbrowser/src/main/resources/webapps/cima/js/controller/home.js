@@ -1,54 +1,67 @@
 /* Controller page home.html */
-app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,$interval,$timeout, ngToast){
-	
-	$rootScope.loading = false;
-	$scope.devices = new Array();
-	$scope.predicate = '-configuration';
-	$scope.useConfig = {};
+app.controller('HomeCtrl', ['$scope', '$rootScope', 'DeviceFactory', '$interval', 'ngToast', '$timeout', function($scope, $rootScope ,DeviceFactory, $interval,  ngToast, $timeout){
+    
+    $rootScope.loading = false;
+    $scope.devices = [];
+    $scope.predicate = '-configuration';
+    $scope.useConfig = {};
     $scope.useMode = {};
     $scope.useKeys = {};  
+    $scope.master = true;
 
-	/* Calling the DeviceFactory for changing the devices list */
+    /* Calling the DeviceFactory for changing the devices list */
     $scope.check = function(){
-	$scope.loadDevices = function(){
-		var count = $scope.devices.length;
-		DeviceFactory.find().then(function(devices){
-			
-			if(devices.length != count){
-				$scope.devices = devices;
-				//$rootScope.loading = true;
-                ngToast.create((devices.length-count)+" new devices detected.");
-			}
+        $scope.loadDevices = function(){
+            console.log('This is loadDevices');
+            var count = $scope.devices.length;
+            DeviceFactory.find().then(function(devices){
+                
+                if(devices.length != count){
+                    $scope.devices = devices;
+                    
+                    //$rootScope.loading = true;
+                    ngToast.create((devices.length-count)+" new devices detected.");
+                    console.log("In if length - count: " + devices.length + "-" + count);
+                } else {
+                    console.log("In else length - count: " + devices.length + "-" + count);
+                }
 
 
-		}, function(msg){
-			$rootScope.requestInfo = msg;
-            ngToast.create({
-                content: "Unable to get devices : "+msg,
-                className: "danger"
-            });
-		})
-	};
+            }, function(msg){
+                $rootScope.requestInfo = msg;
+                ngToast.create({
+                    content: "Unable to get devices : "+msg,
+                    className: "danger"
+                });
+            })
+        };
+
         /* Call once to first load the list */
         $scope.loadDevices();
+
         /* Stop refresh the device list */
-    $scope.stopRefreshDevices = function(){
-        clearInterval(interval);
-    }; 
-    /* Set an intervall to refresh and call the function to load device list */
-    var interval = setInterval( function(){ $scope.loadDevices(); }, DEVICE_REFRESH); 
-};
+        $scope.stopRefreshDevices = function(){
+            console.log('This is stopRefreshDevices');
+            $interval.cancel(interval);
+        }; 
 
-	
+        /* Set an interval to refresh and call the function to load device list */
+        var interval = $interval(function(){
+            $scope.loadDevices(); 
+        }, DEVICE_REFRESH); 
+    };
 
-  $scope.$watch(function () {
+    $scope.check();
+    
+
+    $scope.$watch(function() {
         return {
             devices: $scope.devices,
             useConfig: $scope.useConfig,
             useMode: $scope.useMode,
             useKeys: $scope.useKeys
         }
-    }, function (value) {
+    }, function(value) {
         var selected;
         /*configGroup contains the list of unique configuration items {'manual','automatic'}*/
         $scope.configGroup = uniqueItems($scope.devices, 'configuration');
@@ -101,16 +114,16 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
             for (var i in $scope.useKeys) {
                 if ($scope.useKeys[i]) {
                     selected = true;  
-                   	var caps = p.capabilities;
-                   	for (var l = 0; l < caps.length; l++) { 
-                    for(var s in caps[l]['keywords']){
-                    		value = caps[l]['keywords']; 
-                    if (i == value[s]) {  
-                        filterAfterKeys.push(p);
-                        break;
-                    } 
-                }
-                }
+                    var caps = p.capabilities;
+                    for (var l = 0; l < caps.length; l++) { 
+                        for(var s in caps[l]['keywords']){
+                            value = caps[l]['keywords']; 
+                            if (i == value[s]) {  
+                                filterAfterKeys.push(p);
+                                break;
+                            } 
+                        }
+                    }
                 }
             }    
         }
@@ -120,50 +133,53 @@ app.controller('HomeCtrl', function($scope, $rootScope,$location ,DeviceFactory,
         /*return the filtered devices depending on the previous filters*/
         $scope.filteredDevices= unique(filterAfterKeys);      
     }, true);
-}); 
-    /*function returns true if an object is in the list and false otherwise*/
-    function include(arr,obj) { 
-    	if(arr.indexOf(obj) != -1){ 
-           return true;
-    	}
-        return false;
-    };
-    /*return unique items from a data object*/
-    var uniqueItems = function (data, key) {
-        var result = new Array();
-        for (var i = 0; i < data.length; i++) {
-            var value = data[i][key];
-     
-            if (result.indexOf(value) == -1) {
-                result.push(value);
-            }
-        
-        }
-        return result;
-    };  
-    /*return unique keywords*/
-    var uniqueItemsKeys = function (data, key) {
+    
+    $scope.filters = {};
 
-        var result = new Array();
-        var tempList =[]; 
-        for (var j in data) {
-                var caps = data[j][key];   
-            for (var j = 0; j < caps.length; j++) {
-               keywords = caps[j].keywords;  
-                
-                for(var s in keywords){  
-                    value = keywords[s];
-                    tempList.push(value);        
-                    }
-        
+}]); 
+/*function returns true if an object is in the list and false otherwise*/
+function include(arr,obj) { 
+    if(arr.indexOf(obj) != -1){ 
+       return true;
+    }
+    return false;
+}
+/*return unique items from a data object*/
+var uniqueItems = function(data, key) {
+    var result = [];
+    for (var i = 0; i < data.length; i++) {
+        var value = data[i][key];
+ 
+        if (result.indexOf(value) == -1) {
+            result.push(value);
+        }
+    
+    }
+    return result;
+};  
+/*return unique keywords*/
+var uniqueItemsKeys = function(data, key){
+
+    var result = [];
+    var tempList =[]; 
+    for (var j in data) {
+            var caps = data[j][key];   
+        for (var j = 0; j < caps.length; j++) {
+            keywords = caps[j].keywords;  
+            
+            for (var s in keywords) {   
+                value = keywords[s];
+                tempList.push(value);        
             }
-        } 
+    
+        }
+    } 
     var unique=tempList.filter(function(itm,i,a){
         return i==tempList.indexOf(itm);
     });
-        result = unique;
-        return result;
-    }; 
+    result = unique;
+    return result;
+}; 
 /*Function returns unique elements of a list*/
 var unique = function(origArr) {
     var newArr = [],
@@ -184,11 +200,4 @@ var unique = function(origArr) {
     }
     return newArr;
 }; 
-describe('factories', function() {
-it('should check both checkBoxes', function() {
-  expect(element(by.id('checkSlave')).getAttribute('checked')).toBeFalsy();
-  element(by.model('master')).click();
-  expect(element(by.id('checkSlave')).getAttribute('checked')).toBeTruthy();
-}); 
-}); 
      

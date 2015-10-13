@@ -1,11 +1,9 @@
 /*css style file*/
 html, body {
-    height: 100%;
     background-color: lightblue;
-    margin-left: 20px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0.8%;
 } 
 h1 {
     color: navy;
@@ -29,8 +27,60 @@ h1 {
 }
 
 .vertical-center {
-   float:none;
+    float:none;
     display:inline-block;
     vertical-align:middle;
     margin-right:-4px;
+}
+
+.fil_ariane {
+    float:        left;
+    margin-left:  8%;
+    margin-right: 8%;
+	margin-bottom:10px;
+    width:        84%;
+	font-style:   italic;
+	display:	  inline;
+}
+
+.fil_ariane_a {
+	cursor:       pointer;
+}
+
+.fil_ariane_a_final {
+	cursor:       pointer;
+	font-weight:  bold;
+}
+
+.left {
+    display:      inline;
+    float:        left;
+    margin-left:  0px;
+    margin-right: 0px;
+    width:        20%;
+}
+.right{
+    display:      inline;
+    float:        left;
+    margin-left:  10px;
+    margin-right: 10px;
+    margin-top:   5px;
+    width:        70%;    
+}
+.top {
+    border-bottom: thick solid rgb(11, 112, 178);
+}
+/*.left {
+    margin:5px;
+    border-right: thin solid gray;
+}*/
+.filter {
+    margin:10px;
+    border-bottom: thin solid rgb(218, 218, 218);
+}
+.ng-toast.ng-toast--right .ng-toast__list {
+    margin-right:50px;
+}
+.bs-header h1 {
+    color: #fff;
 }
