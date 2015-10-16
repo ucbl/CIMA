@@ -11,10 +11,18 @@ import org.eclipse.om2m.ipu.service.IpuService;
 import fr.liris.cima.nscl.avatarbuilder.AvatarFactory;
 import fr.liris.cima.nscl.avatarbuilder.constants.Constants;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 public class AvatarController implements IpuService{
 
 	/** Logger */
-	private static Log LOGGER = LogFactory.getLog(AvatarController.class);
+	private static Logger LOGGER = Logger.getLogger(AvatarController.class.getName());
+	private  static  Handler fh ;
 
 	/** Returns the implemented Application Point of Contact id */
 	@Override
@@ -28,7 +36,7 @@ public class AvatarController implements IpuService{
 		 * http://localhost:8181/om2m/gscl/applications/CIMA/devices/DEVICE_0/capabilities/goOn
 		 */
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_IMPLEMENTED,requestIndication.getMethod()+" Method not Implemented"));
-		
+
 	}
 
 	@Override

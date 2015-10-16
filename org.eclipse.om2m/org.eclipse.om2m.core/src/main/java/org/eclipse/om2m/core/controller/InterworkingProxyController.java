@@ -34,6 +34,13 @@ import org.eclipse.om2m.core.constants.Constants;
 import org.eclipse.om2m.core.dao.DAOFactory;
 import org.eclipse.om2m.ipu.service.IpuService;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 /**
  * Forwards REST requests to the corresponding InterworkingProxy Unit depending on the aPoCPath.
  *
@@ -93,7 +100,7 @@ public class InterworkingProxyController extends Controller {
                 return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,"No IPU found for path "+aPoCPath.getPath())) ;
             }
         }catch (Exception e) {
-            LOGGER.error("IPU Internal Exception", e);
+            LOGGER.log(Level.SEVERE, "IPU Internal Exception", e);
             return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_INTERNAL_SERVER_ERROR,"IPU Internal Exception")) ;
         }
     }
@@ -104,6 +111,12 @@ public class InterworkingProxyController extends Controller {
      * @return The generic returned response.
      */
     public ResponseConfirm doRetrieve (RequestIndication requestIndication) {
+try{
+    fh = new FileHandler("log/core.log", true);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException ex){}
+
 
         ResponseConfirm errorResponse = new ResponseConfirm();
         String sclId = requestIndication.getTargetID().split("/")[0];
@@ -111,7 +124,7 @@ public class InterworkingProxyController extends Controller {
         String path = requestIndication.getTargetID().split("/")[3];
         String applicationUri = sclId+"/applications/"+applicationId;
 
-        
+
         // Check ApplicationResource Existence
             Application application= DAOFactory.getApplicationDAO().find(applicationUri);
             if (application == null) {
@@ -137,7 +150,8 @@ public class InterworkingProxyController extends Controller {
                 			return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,"No IPU found for path "+aPoCPath.getPath())) ;
                 		}
                 	}catch (Exception e) {
-                		LOGGER.error("IPU Internal Exception", e);
+                    LOGGER.log(Level.SEVERE, "IPU Internal Exception", e);
+
                 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_INTERNAL_SERVER_ERROR,"IPU Internal Exception")) ;
                 	}
        /** }
@@ -150,6 +164,12 @@ public class InterworkingProxyController extends Controller {
      * @return The generic returned response.
      */
     public ResponseConfirm doUpdate (RequestIndication requestIndication) {
+try{
+        fh = new FileHandler("log/controller.log", true);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException ex){}
+
 
         ResponseConfirm errorResponse = new ResponseConfirm();
         String sclId = requestIndication.getTargetID().split("/")[0];
@@ -182,7 +202,8 @@ public class InterworkingProxyController extends Controller {
                 return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,"No IPU found for path "+aPoCPath.getPath())) ;
             }
         }catch (Exception e) {
-            LOGGER.error("IPU Internal Exception", e);
+            LOGGER.log(Level.SEVERE, "IPU Internal Exception", e);
+
             return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_INTERNAL_SERVER_ERROR,"IPU Internal Exception")) ;
         }
     }
@@ -193,6 +214,12 @@ public class InterworkingProxyController extends Controller {
      * @return The generic returned response.
      */
     public ResponseConfirm doDelete (RequestIndication requestIndication) {
+try{
+        fh = new FileHandler("log/controller.log", true);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException ex){}
+
 
         ResponseConfirm errorResponse = new ResponseConfirm();
         String sclId = requestIndication.getTargetID().split("/")[0];
@@ -225,7 +252,8 @@ public class InterworkingProxyController extends Controller {
                 return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,"No IPU found for path "+aPoCPath.getPath())) ;
             }
         }catch (Exception e) {
-            LOGGER.error("IPU Internal Exception", e);
+            LOGGER.log(Level.SEVERE, "IPU Internal Exception", e);
+
             return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_INTERNAL_SERVER_ERROR,"IPU Internal Exception")) ;
         }
     }
@@ -236,6 +264,12 @@ public class InterworkingProxyController extends Controller {
      * @return The generic returned response.
      */
     public ResponseConfirm doExecute (RequestIndication requestIndication) {
+      try{
+        fh = new FileHandler("log/controller.log", true);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException ex){}
+
 
         ResponseConfirm errorResponse = new ResponseConfirm();
         String sclId = requestIndication.getTargetID().split("/")[0];
@@ -268,7 +302,8 @@ public class InterworkingProxyController extends Controller {
                 return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,"No IPU found for path "+aPoCPath.getPath())) ;
             }
         }catch (Exception e) {
-            LOGGER.error("IPU Internal Exception", e);
+            LOGGER.log(Level.SEVERE, "IPU Internal Exception", e);
+
             return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_INTERNAL_SERVER_ERROR,"IPU Internal Exception")) ;
         }
     }

@@ -25,6 +25,12 @@ import fr.liris.cima.gscl.commons.constants.Constants;
 import fr.liris.cima.gscl.commons.parser.Parser;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
 import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 
 /**
  * Specific device controller to perform requests on devices.
@@ -34,7 +40,8 @@ import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
 public class DeviceController implements IpuService{
 
 	/** Logger */
-	private static Log LOGGER = LogFactory.getLog(DeviceController.class);
+	private static Logger LOGGER = Logger.getLogger(DeviceController.class.getName());
+	private  static  Handler fh ;
 
 	/** managed device service*/
 	private  ManagedDeviceService managerImpl;
@@ -47,6 +54,12 @@ public class DeviceController implements IpuService{
 	public DeviceController(ManagedDeviceService deviceManagerImpl, CapabilityManager capabilityManager) {
 		this.managerImpl = deviceManagerImpl;
 		this.capabilityManager = capabilityManager;
+		try{
+			fh = new FileHandler("log/gsclCore.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
 	}
 
 	/** Returns the implemented Application Point of Contact id */
@@ -62,6 +75,7 @@ public class DeviceController implements IpuService{
 	 */
 	@Override
 	public ResponseConfirm doExecute(RequestIndication requestIndication) {
+
 		LOGGER.info("*********Execute in DEVICE CONTROLLER ****");
 
 		/**
@@ -80,21 +94,22 @@ public class DeviceController implements IpuService{
 					//requestIndication.setBase(device.getUri());
 					Capability capability = device.getCapability(capabilityName);
 					managerImpl.invokeCapability(deviceId, capability, restClientService);
-					
+
 				//	requestIndication.setTargetID("");
 					//	requestIndication.setTargetID("/"+Constants.PATH_CAPABILITIES+"/"+Constants.PATH_INVOKE+"/"+capabilityName);
 			//		requestIndication.setProtocol(device.getModeConnection());
 					LOGGER.info("send request for executing capabilities");
 					//ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
-						ResponseConfirm responseConfirm = new ResponseConfirm(StatusCode.STATUS_ACCEPTED); 
+						ResponseConfirm responseConfirm = new ResponseConfirm(StatusCode.STATUS_ACCEPTED);
 					return responseConfirm;
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.error("IPU Device Error",e);
+			LOGGER.log(Level.SEVERE,"IPU Device Error", e);
+
 			return new ResponseConfirm(StatusCode.STATUS_NOT_IMPLEMENTED,"IPU Device Error");
 		}
-		return new ResponseConfirm(StatusCode.STATUS_BAD_REQUEST,"Bad request ...");	
+		return new ResponseConfirm(StatusCode.STATUS_BAD_REQUEST,"Bad request ...");
 	}
 
 	/**
@@ -104,6 +119,7 @@ public class DeviceController implements IpuService{
 	 */
 	@Override
 	public ResponseConfirm doRetrieve(RequestIndication requestIndication) {
+
 
 		LOGGER.info("*********Retrieve in DEVICE CONTROLLER **** " + requestIndication.getTargetID());
 		String []infos = requestIndication.getTargetID().split("/");
@@ -121,14 +137,14 @@ public class DeviceController implements IpuService{
 				}
 				filter = filter.substring(0, filter.length() - 1);
 				List<Capability> capabilites = capabilityManager.getCapabilities(filter);
-				
+
 				return new ResponseConfirm(StatusCode.STATUS_OK, Encoder.encodeCapabilitiesToObix(capabilites));
 			} else {
 				String deviceId = infos[infos.length - 2];
 				Device device = managerImpl.getDevice(deviceId);
 				LOGGER.info("*********LAST INFO ****"+deviceId);
-	
-	
+
+
 				if(device != null) {
 					LOGGER.info("*********Constant INFO = = = ****"+Constants.PATH_CAPABILITIES);
 					String representation = Encoder.encodeCapabilitiesToObix(device.getCapabilities());
@@ -171,7 +187,7 @@ public class DeviceController implements IpuService{
 				LOGGER.info("********  /administration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
 				String deviceId = infos[infos.length - 3];
 				String capabilityId = infos[infos.length - 1];
-				String representation; 
+				String representation;
 			//	Capability capability = managerImpl.getCapabilityToUnknownDevice(deviceId, capabilityId);
 				Capability capability = managerImpl.getCapabilityDevice(deviceId,  capabilityId);
 				//representation = capability.toObixFormat();
@@ -181,17 +197,17 @@ public class DeviceController implements IpuService{
 
 			}
 		}
-		
+
 		else if(lastInfo.equals("protocol")) {
 			LOGGER.info("********  /administration/protocol  ***********");
-			
+
 		}
-		
+
 		else if(lastInfo.contains("capabilities?filter=")) {
 			LOGGER.info("********  /administration/capabilities?filter=<filter>  ***********");
 			String filter = lastInfo.split("=")[1];
 			LOGGER.info("filter = " + filter);
-			
+
 			// TODO Le filtre sur les capabilities
 			// TODO Où stocke-t-on les capabilities ?
 			List<Capability> fCapabilities = this.capabilityManager.getCapabilities(filter);
@@ -240,7 +256,7 @@ public class DeviceController implements IpuService{
 			} else {
 				managerImpl.updateDevice(device.getId(), device);
 			}
-			
+
 			if(device.isKnown() == true) {
 				confirm = new ResponseConfirm(StatusCode.STATUS_OK, "Device is now known ");
 			}
@@ -254,11 +270,11 @@ public class DeviceController implements IpuService{
 				LOGGER.info("******** UPDATE  /administration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
 				String deviceId = infos[infos.length - 3];
 				String capabilityId = infos[infos.length - 1];
-				String representation; 
+				String representation;
 				//Capability capability = managerImpl.getCapabilityToUnknownDevice(deviceId, capabilityId);
 				Capability capability = managerImpl.getCapabilityDevice(deviceId, capabilityId);
 				Capability upCapability = Parser.parseObixToCapability(requestIndication.getRepresentation());
-				
+
 				//TODO edit la capability
 				// si la capability n'existe pas on en créé une nouvelle
 				if(capability == null) capability = new Capability(capabilityId);
@@ -266,7 +282,7 @@ public class DeviceController implements IpuService{
 				if (upCapability.getKeywords() != null) capability.setKeywords(upCapability.getKeywords());
 				if (upCapability.getProtocol() != null) capability.setProtocol(upCapability.getProtocol());
 				capability.setConfiguration("manual");
-				managerImpl.updateDeviceCapability(deviceId, capability);				
+				managerImpl.updateDeviceCapability(deviceId, capability);
 				return new ResponseConfirm(StatusCode.STATUS_OK, "Capability updated or created");
 			}
 		}
@@ -288,12 +304,12 @@ public class DeviceController implements IpuService{
 				LOGGER.info("******** DELETE  /administration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
 				String deviceId = infos[infos.length - 3];
 				String capabilityId = infos[infos.length - 1];
-				String representation; 
+				String representation;
 				boolean valid = managerImpl.removeCapabilityDevice(deviceId, capabilityId);
-				if(valid)				
+				if(valid)
 					return new ResponseConfirm(StatusCode.STATUS_OK, "Capability deleted");
-				else 
-					return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST," No capability to delete"));				
+				else
+					return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST," No capability to delete"));
 			}
 		}
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST," "));

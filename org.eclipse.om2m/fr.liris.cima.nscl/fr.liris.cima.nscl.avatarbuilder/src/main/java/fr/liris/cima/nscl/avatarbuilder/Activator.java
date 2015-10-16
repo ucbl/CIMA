@@ -30,6 +30,13 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import fr.liris.cima.nscl.avatarbuilder.service.AvatarService;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author <ul>
@@ -39,12 +46,20 @@ import fr.liris.cima.nscl.avatarbuilder.service.AvatarService;
  */
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Log logger = LogFactory.getLog(Activator.class);
+	private static Logger logger = Logger.getLogger(Activator.class.getName());
+	private  static  Handler fh ;
 	/** SCL service tracker */
 	private ServiceTracker<Object, Object> sclServiceTracker;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
+		try{
+		fh = new FileHandler("log/nsclAvatarBuilder.log", false);
+		logger.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
+
 		logger.info("Register AvatarService ...");
 		bundleContext.registerService(AvatarService.class.getName(), new AvatarFactory(), null);
 		bundleContext.registerService(IpuService.class.getName(), new AvatarController(), null);

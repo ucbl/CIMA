@@ -37,6 +37,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.FrameworkUtil;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 /**
  * The Graphical User Interface of the IPU sample.
  *
@@ -47,7 +54,8 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class GUI extends JFrame {
     /** Logger */
-    static Log LOGGER = LogFactory.getLog(GUI.class);
+    private static Logger LOGGER = Logger.getLogger(GUI.class.getName());
+    private  static  Handler fh ;
     /** Serial Version UID */
     private static final long serialVersionUID = 1L;
     /** GUI Content Panel */
@@ -81,7 +89,13 @@ public class GUI extends JFrame {
                     frame = new GUI();
                     frame.setVisible(true);
                 } catch (Exception e) {
-                    LOGGER.error("GUI init Error", e);
+                  try{
+                      fh = new FileHandler("log/ipu.log", true);
+                    LOGGER.addHandler(fh);
+                    fh.setFormatter(new SimpleFormatter());}
+                    catch(IOException ex){}
+
+                    LOGGER.log(Level.SEVERE, "GUI init Error", e);
                 }
             }
         });

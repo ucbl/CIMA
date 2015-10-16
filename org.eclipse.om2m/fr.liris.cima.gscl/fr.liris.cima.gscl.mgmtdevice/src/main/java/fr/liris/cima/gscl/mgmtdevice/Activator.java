@@ -31,6 +31,12 @@ import org.osgi.util.tracker.ServiceTracker;
 import fr.liris.cima.gscl.device.service.ConfigManager;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
 import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author <ul>
@@ -40,14 +46,21 @@ import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
  */
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Log logger = LogFactory.getLog(Activator.class);
+	private static Logger logger = Logger.getLogger(Activator.class.getName());
+	private  static  Handler fh ;
 	/** SCL service tracker */
 	private ServiceTracker<Object, Object> sclServiceTracker;
-	
+
 	private ServiceRegistration serviceRegistration;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
+		try{
+		fh = new FileHandler("log/gsclMgmtDevice.log", false);
+		logger.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
 
 		sclServiceTracker = new ServiceTracker<Object, Object>(bundleContext, SclService.class.getName(), null) {
 			public void removedService(ServiceReference<Object> reference, Object service) {
@@ -72,7 +85,7 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		logger.error("Unregistered ManagedDeviceService");
+		logger.severe("Unregistered ManagedDeviceService");
 		serviceRegistration.unregister();
 	}
 }

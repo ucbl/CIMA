@@ -63,6 +63,13 @@ import com.db4o.defragment.Defragment;
 import com.db4o.defragment.DefragmentConfig;
 import com.db4o.ext.Db4oException;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 
 /**
  * DBClientConnection satisfy the singleton design pattern.
@@ -77,7 +84,9 @@ import com.db4o.ext.Db4oException;
  */
 
 public class DBClientConnection {
-    private static Log LOGGER = LogFactory.getLog(DBClientConnection.class);
+    private static Logger LOGGER = Logger.getLogger(DBClientConnection.class.getName());
+    private  static  Handler fh ;
+
 
     private static ObjectContainer db;
 
@@ -86,15 +95,23 @@ public class DBClientConnection {
      * Open the connection with the DataBase
      */
     private DBClientConnection(){
-    		
+try{
+    fh = new FileHandler("log/core.log", true);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException ex){}
+
+
             try {
                 db = Db4oEmbedded.openFile(getConfiguration(true), Constants.DB_FILE);
             } catch (Db4oException e) {
-                LOGGER.error("Database File locked",e);
+                LOGGER.log(Level.SEVERE, "Database File locked", e);
+
             }
             if(Constants.DB_DEFRAGMENT_PERIOD!=-1){
-            	LOGGER.error("Defragment DB enabled each "+ Constants.DB_DEFRAGMENT_PERIOD+" ms");
-				new Thread() {
+                LOGGER.log(Level.SEVERE, "Defragment DB enabled each "+ Constants.DB_DEFRAGMENT_PERIOD+" ms", new Db4oException());
+
+                new Thread() {
 					public void run() {
 						while (true) {
 							try {
@@ -102,7 +119,7 @@ public class DBClientConnection {
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-	
+
 							Router.readWriteLock.writeLock().lock();
 							LOGGER.info("DB Defragmenting..");
 							DAO.DB.close();
@@ -121,7 +138,7 @@ public class DBClientConnection {
 					}
 				}.start();
             }else{
-            	LOGGER.error("Defragment DB disabled");
+                LOGGER.log(Level.SEVERE, "Defragment DB disabled", new Db4oException());
             }
     }
 
@@ -144,7 +161,7 @@ public class DBClientConnection {
             db.close();
         }
     }
-    
+
     public EmbeddedConfiguration getConfiguration(boolean isIndex){
     	EmbeddedConfiguration configuration = Db4oEmbedded.newConfiguration();
         configuration.common().objectClass(Resource.class).objectField("uri").indexed(isIndex);

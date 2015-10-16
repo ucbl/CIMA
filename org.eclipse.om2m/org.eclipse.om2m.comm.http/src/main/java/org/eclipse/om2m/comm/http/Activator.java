@@ -29,6 +29,13 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author <ul>
@@ -38,7 +45,8 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class Activator implements BundleActivator {
     /** Logger */
-    private static Log LOGGER = LogFactory.getLog(Activator.class);
+    private static Logger LOGGER = Logger.getLogger(Activator.class.getName());
+    private  static  Handler fh ;
     /** HTTP service tracker */
     private ServiceTracker<Object, Object> httpServiceTracker;
     /** SCL service tracker */
@@ -48,6 +56,13 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext bundleContext) throws Exception {
+      try{
+        fh = new FileHandler("log/commHttp.log", false);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException ex){}
+
+
         // Register the Rest HTTP Client
         LOGGER.info("Register HTTP RestClientService..");
         bundleContext.registerService(RestClientService.class.getName(), new RestHttpClient(), null);
@@ -61,7 +76,8 @@ public class Activator implements BundleActivator {
                     LOGGER.info("Unregister "+sclBaseContext+" http context");
                     ((HttpService) service).unregister(sclBaseContext);
                 } catch (IllegalArgumentException e) {
-                    LOGGER.error("Error unregistring SclServlet",e);
+                    LOGGER.log(Level.SEVERE, "Error unregistring SclServlet", e);
+
                 }
             }
 
@@ -72,7 +88,9 @@ public class Activator implements BundleActivator {
                     LOGGER.info("Register "+sclBaseContext+" context");
                     httpService.registerServlet(sclBaseContext, new RestHttpServlet(), null,null);
                 } catch (Exception e) {
-                    LOGGER.error("Error registering SclServlet",e);
+                    LOGGER.log(Level.SEVERE, "Error registring SclServlet", e);
+
+
                 }
                 return httpService;
             }
@@ -86,7 +104,8 @@ public class Activator implements BundleActivator {
                 try {
                     RestHttpServlet.setScl((SclService) service);
                 } catch (IllegalArgumentException e) {
-                    LOGGER.error("Error removing SclService",e);
+                    LOGGER.log(Level.SEVERE, "Error removing SclService", e);
+
                 }
             }
 
@@ -96,7 +115,7 @@ public class Activator implements BundleActivator {
                 try {
                     RestHttpServlet.setScl(scl);
                 } catch (Exception e) {
-                    LOGGER.error("Error adding SclService",e);
+                    LOGGER.log(Level.SEVERE, "Error adding SclService", e);
 
                 }
                 return scl;

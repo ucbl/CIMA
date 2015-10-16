@@ -40,6 +40,13 @@ import org.eclipse.om2m.commons.resource.StatusCode;
 import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 /**
  *  Provides methods to create groups to switchON/OFF all lamps and send switch request to specific lamp.
  *  @author <ul>
@@ -49,7 +56,8 @@ import org.eclipse.om2m.commons.rest.ResponseConfirm;
  */
 public class Switchs {
     /** Logger */
-    private static Log LOGGER = LogFactory.getLog(Switchs.class);
+    private static Logger LOGGER = Logger.getLogger(Switchs.class.getName());
+    private  static  Handler fh;
     /** AppId */
     public final static String APP_ID = "LAMP_ALL";
     /** GrouON ID */
@@ -111,6 +119,12 @@ public class Switchs {
      * @return Obix XML representation
      */
     public static String getDescriptorRep(String sclId, String appId, String type, String location, String stateCont) {
+      try{
+        fh = new FileHandler("log/ipu.log", true);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException ex){}
+
         LOGGER.info("Descriptor Representation Construction");
         // oBIX
         Obj obj = new Obj();

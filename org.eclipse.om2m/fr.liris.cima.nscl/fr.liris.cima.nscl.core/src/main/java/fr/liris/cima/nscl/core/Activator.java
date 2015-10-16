@@ -11,20 +11,37 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import fr.liris.cima.nscl.device.service.ManagedDeviceService;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
+
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author madiallo
  */
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Log logger = LogFactory.getLog(Activator.class);
-	/** Managed device service tracker */	
+	private static Logger logger = Logger.getLogger(Activator.class.getName());
+	private  static  Handler fh ;
+	/** Managed device service tracker */
 	private ServiceTracker<Object, Object> mgmtDeviceServiceTracker;
 	/** Rest service  client tracker */
 	private ServiceTracker<Object, Object> restServiceClientTracker;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
+		try{
+			fh = new FileHandler("log/nsclCore.log", false);
+			logger.addHandler(fh);
+			fh.setFormatter(new SimpleFormatter());
+		}
+		catch(IOException ex){
+
+		}
 
 		logger.info("get  ManagedDeviceService .");
 
@@ -43,7 +60,7 @@ public class Activator implements BundleActivator {
 						try {
 							managedDeviceService.start();
 						} catch (Exception e) {
-							logger.error("IpuMonitor Sample error", e);
+							logger.log(Level.SEVERE,"IpuMonitor Sample error", e);
 						}
 					}
 				}.start();
@@ -71,10 +88,10 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		logger.error("Stop IPU Phidgets monitor");
+		logger.severe("Stop IPU Phidgets monitor");
 		try {
 		} catch (Exception e) {
-			logger.error("Stop Phidgets error", e);
+			logger.log(Level.SEVERE, "Stop Phidgets error", e);
 		}
 	}
 }

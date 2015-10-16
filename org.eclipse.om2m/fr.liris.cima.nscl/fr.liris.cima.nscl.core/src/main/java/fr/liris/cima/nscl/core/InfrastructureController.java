@@ -21,6 +21,13 @@ import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
 import fr.liris.cima.nscl.commons.encoder.JsonEncoder;
 import fr.liris.cima.nscl.device.service.ManagedDeviceService;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 /**
  * Specific Infrasctructure controller to perform requests on devices, manage clients subscriptions
  * @author madiallo
@@ -29,12 +36,13 @@ import fr.liris.cima.nscl.device.service.ManagedDeviceService;
 public class InfrastructureController implements IpuService{
 
 	/** Logger */
-	private static Log LOGGER = LogFactory.getLog(InfrastructureController.class);
+	private static Logger LOGGER = Logger.getLogger(InfrastructureController.class.getName());
+	private  static  Handler fh ;
 	/** managed device service*/
 	private  ManagedDeviceService managerImpl;
 	/** rest client service*/
 	public static RestClientService restClientService;
-	
+
 	public InfrastructureController(ManagedDeviceService deviceManagerImpl) {
 		this.managerImpl = deviceManagerImpl;
 	}
@@ -61,12 +69,18 @@ public class InfrastructureController implements IpuService{
      */
 	@Override
 	public ResponseConfirm doRetrieve(RequestIndication requestIndication) {
-		
+try{
+	fh = new FileHandler("log/nsclCore.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
+
 		String[] infos = requestIndication.getTargetID().split("/");
 		int length = infos.length;
 		ResponseConfirm responseConfirm = null;
 		String representation = JsonEncoder.devicesToJSONStr(managerImpl.getDevices());
-	
+
 		if(infos[length - 1].equals(Constants.APOCPATH_DEVICES)){
 			LOGGER.info("********************REPRESENTATION*******"+requestIndication.getUrl());
 			requestIndication.setRepresentation(representation);
@@ -103,6 +117,12 @@ public class InfrastructureController implements IpuService{
      */
 	@Override
 	public ResponseConfirm doDelete(RequestIndication requestIndication) {
+		try{
+			fh = new FileHandler("log/nsclCore.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
 		String[] infos = requestIndication.getTargetID().split("/");
 		int length = infos.length;
 		String deviceId = infos[length - 1];
@@ -113,10 +133,10 @@ public class InfrastructureController implements IpuService{
 			Device device = managerImpl.removeDevice(deviceId);
 			// Send notification to all subscribers
 			notifyAllSubscribers(requestIndication, device);
-			
+
 			responseConfirm = new ResponseConfirm(StatusCode.STATUS_DELETED, "suppression avec succes");
 		}
-		
+
 		return responseConfirm;
 	}
 
@@ -127,6 +147,12 @@ public class InfrastructureController implements IpuService{
      */
 	@Override
 	public ResponseConfirm doCreate(RequestIndication requestIndication) {
+		try{
+			fh = new FileHandler("log/nsclCore.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
 
 		String[] infos = requestIndication.getTargetID().split("/");
 		int length = infos.length;
@@ -135,7 +161,7 @@ public class InfrastructureController implements IpuService{
 
 		if(representation != null) {
 			try {
-				
+
 				if(infos[length - 1].equals(Constants.APOCPATH_SUBSCRIBERS)){
 					ClientSubscriber subscriber = Parser.parseXmlToClientSubscriber(representation);
 					int success = managerImpl.addSubscriber(subscriber);
@@ -156,19 +182,19 @@ public class InfrastructureController implements IpuService{
 					}
 				}
 				else if(infos[length - 1].equals(Constants.APOCPATH_DEVICES)){
-					LOGGER.error("Creating a device in infrastrucure controller and sending contact information to all subscribers");
-                  
+					LOGGER.severe("Creating a device in infrastrucure controller and sending contact information to all subscribers");
+
 					LOGGER.info("********Representation********"+representation);
 					Device device = Parser.parseObixToDevice(representation);
 					LOGGER.info("********device********"+device);
 					managerImpl.addDevice(device);
 					LOGGER.info("device = " + device);
-					
+
 					for(ClientSubscriber subscriber : managerImpl.getSubscribers()){
 						requestIndication.setBase(subscriber.getUrl());
 						requestIndication.setRepresentation(JsonEncoder.deviceToJSONStr(device));
 						restClientService.sendRequest(requestIndication);
-					}				
+					}
 					return new ResponseConfirm(StatusCode.STATUS_ACCEPTED, representation);
 				}
 			} catch (Exception e) {
@@ -177,13 +203,13 @@ public class InfrastructureController implements IpuService{
 		}
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST, " Impossible to create device with this request"));
 	}
-	
+
 	private void notifyAllSubscribers(RequestIndication requestIndication, Device device) {
 		for(ClientSubscriber subscriber : managerImpl.getSubscribers()){
 			requestIndication.setBase(subscriber.getUrl());
 			requestIndication.setRepresentation(JsonEncoder.contactInfoToJSONStr(device.getContactInfo()));
 			requestIndication.setTargetID("");
-			
+
 			restClientService.sendRequest(requestIndication);
 		}
 	}

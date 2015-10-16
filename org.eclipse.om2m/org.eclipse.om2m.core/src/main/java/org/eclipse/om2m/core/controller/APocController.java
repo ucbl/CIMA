@@ -6,6 +6,13 @@ import org.eclipse.om2m.commons.rest.ResponseConfirm;
 import org.eclipse.om2m.core.comm.RestClient;
 import org.eclipse.om2m.core.dao.DAOFactory;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 /** allows the choice of the controller based on the aPoC of the application**/
 public class APocController extends Controller{
 
@@ -60,12 +67,19 @@ public class APocController extends Controller{
         String applicationId = requestIndication.getTargetID().split("/")[2];
         String applicationUri = sclId+"/applications/"+applicationId;
         Application application= DAOFactory.getApplicationDAO().find(applicationUri);
-        
+
         /****** DEBUG *******/
+        try{
+            fh = new FileHandler("log/core.log", true);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException ex){}
+
+
         LOGGER.info("Application URI : " + applicationUri);
         /****** /DEBUG ******/
-        
-        
+
+
         String aPoCPath = application.getAPoCPaths().getAPoCPath().get(0).getPath();
         if (aPoCPath.matches(".*://.*")){
             String targetID = requestIndication.getTargetID().split(applicationId)[1];

@@ -1,20 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2013-2014 LAAS-CNRS (www.laas.fr) 
+ * Copyright (c) 2013-2014 LAAS-CNRS (www.laas.fr)
  * 7 Colonel Roche 31077 Toulouse - France
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
- *     Thierry Monteil (Project co-founder) - Management and initial specification, 
+ *     Thierry Monteil (Project co-founder) - Management and initial specification,
  * 		conception and documentation.
- *     Mahdi Ben Alaya (Project co-founder) - Management and initial specification, 
+ *     Mahdi Ben Alaya (Project co-founder) - Management and initial specification,
  * 		conception, implementation, test and documentation.
  *     Christophe Chassot - Management and initial specification.
  *     Khalil Drira - Management and initial specification.
- *     Yassine Banouar - Initial specification, conception, implementation, test 
+ *     Yassine Banouar - Initial specification, conception, implementation, test
  * 		and documentation.
  ******************************************************************************/
 package org.eclipse.om2m.webapp.resourcesbrowser;
@@ -26,28 +26,42 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author <ul>
  * 		   <li>Mahdi Ben Alaya < ben.alaya@laas.fr > < benalaya.mahdi@gmail.com ></li>
- *         <li>Yassine Banouar < ybanouar@laas.fr > < yassine.banouar@gmail.com ></li>         
+ *         <li>Yassine Banouar < ybanouar@laas.fr > < yassine.banouar@gmail.com ></li>
  *         </ul>
  */
 public class Activator implements BundleActivator {
 	/** logger */
-	private static Log LOGGER = LogFactory.getLog(Activator.class);
+	private static Logger LOGGER = Logger.getLogger(Activator.class.getName());
+	private  static  Handler fh ;
 	public static String globalContext = System.getProperty("org.eclipse.om2m.globalContext","");
 	public static String uiContext = System.getProperty("org.eclipse.om2m.webInterfaceContext","/");
 	public static String sep ="/";
 	/** HTTP service tracker */
 	private ServiceTracker<Object, Object> httpServiceTracker;
-	
+
 	@Override
 	public void start(BundleContext context) throws Exception {
+try{
+		fh = new FileHandler("log/resourcesBrowser.log", false);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
+
 		if(uiContext.equals("/")){
 			sep="";
 		}
-		
+
 		httpServiceTracker = new ServiceTracker<Object, Object>(context, HttpService.class.getName(), null) {
 	      public void removedService(ServiceReference<Object> reference, Object service) {
 			LOGGER.info("HttpService removed");
@@ -55,7 +69,7 @@ public class Activator implements BundleActivator {
 				LOGGER.info("Unregister "+uiContext+sep+" http context");
 	           ((HttpService) service).unregister(uiContext+sep);
 	        } catch (IllegalArgumentException e) {
-		        LOGGER.error("Error unregistring webapp servlet",e);
+						LOGGER.log(Level.SEVERE, "Error unregistring webapp servlet", e);
 	        }
 	      }
 
@@ -69,17 +83,16 @@ public class Activator implements BundleActivator {
 			  httpService.registerResources(uiContext+sep+"welcome", uiContext+sep+"webapps", null);
 			  httpService.registerResources(uiContext+sep+"cima", uiContext+sep+"webapps/cima", null);
 	        } catch (Exception e) {
-	          LOGGER.error("Error registring webapp servlet",e);
+						LOGGER.log(Level.SEVERE, "Error registring webapp servlet", e);
+
 	        }
 	        return httpService;
 	      }
 	    };
 	    httpServiceTracker.open();
 	  }
-	
+
 	@Override
 	public void stop(BundleContext context) throws Exception {
 	}
 }
-
-

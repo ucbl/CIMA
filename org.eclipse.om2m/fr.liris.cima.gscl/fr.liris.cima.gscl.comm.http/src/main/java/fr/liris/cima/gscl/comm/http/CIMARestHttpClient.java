@@ -24,16 +24,30 @@ import org.eclipse.om2m.comm.service.RestClientService;
 import org.eclipse.om2m.commons.resource.StatusCode;
 import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 
 public class CIMARestHttpClient implements RestClientService{
 
 	/** Logger */
-	private static Log LOGGER = LogFactory.getLog(CIMARestHttpClient.class);
+	private static Logger LOGGER = Logger.getLogger(CIMARestHttpClient.class.getName());
+	private  static  Handler fh ;
 	/** implemented specific protocol name */
 	private static String protocol ="http";
 
 	@Override
 	public ResponseConfirm sendRequest(RequestIndication requestIndication) {
+		try{
+			fh = new FileHandler("log/gsclHttp.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
+
 		LOGGER.info("Http Client > "+requestIndication);
 		HttpClient httpclient = new HttpClient();
 
@@ -43,12 +57,12 @@ public class CIMARestHttpClient implements RestClientService{
 		if(!url.startsWith(protocol+"://")){
 			url=protocol+"://"+url;
 		}
-		
+
 		LOGGER.info("URL : " + url);
 		try {
 			LOGGER.info("Method  : '"+requestIndication.getMethod() + "'");
 			switch (requestIndication.getMethod()){
-			
+
 			case "GET" :
 			case "RETRIEVE" :
 				httpMethod =  new GetMethod(url);
@@ -60,7 +74,7 @@ public class CIMARestHttpClient implements RestClientService{
 				((PostMethod)httpMethod).setRequestEntity(new StringRequestEntity(requestIndication.getRepresentation(),"application/xml", "UTF8"));
 				break;
 			case "PUT":
-				
+
 				LOGGER.info("PUT");
 			case "UPDATE":
 				LOGGER.info("UPDATE");
@@ -80,8 +94,8 @@ public class CIMARestHttpClient implements RestClientService{
 
 			HttpMethodRetryHandler myretryhandler = new HttpMethodRetryHandler() {
 				public boolean retryMethod(
-						final HttpMethod method, 
-						final IOException exception, 
+						final HttpMethod method,
+						final IOException exception,
 						int executionCount) {
 					if (executionCount >= 0) {
 						// Do not retry if over max retry count
@@ -103,7 +117,7 @@ public class CIMARestHttpClient implements RestClientService{
 			};
 
 			httpMethod.getParams().
-			setParameter(HttpMethodParams.RETRY_HANDLER, myretryhandler);		
+			setParameter(HttpMethodParams.RETRY_HANDLER, myretryhandler);
 
 
 			if(requestIndication.getRequestingEntity() != null)	httpMethod.addRequestHeader("Authorization", "Basic "+new String(Base64.encodeBase64(requestIndication.getRequestingEntity().getBytes())));
@@ -127,7 +141,7 @@ public class CIMARestHttpClient implements RestClientService{
 		}catch(IOException e){
 			//LOGGER.error(url+ " Not Found"+responseConfirm,e);
 		} finally {
-			LOGGER.error(" **********HTTP METHOD*******" + httpMethod);
+			LOGGER.severe(" **********HTTP METHOD*******" + httpMethod);
 			//httpMethod.releaseConnection();
 		}
 

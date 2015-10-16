@@ -45,6 +45,13 @@ import org.eclipse.om2m.core.constants.Constants;
 import org.eclipse.om2m.core.dao.DAOFactory;
 import org.xml.sax.SAXException;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 /**
  * Controller class contains generic and abstract Create, Retrieve, Update, Delete and Execute
  * methods to handle generic REST request that will be implemented in extended-to classes.
@@ -56,7 +63,8 @@ import org.xml.sax.SAXException;
  */
 public abstract class Controller {
     /** Logger */
-    protected static Log LOGGER = LogFactory.getLog(Controller.class);
+    protected static Logger LOGGER = Logger.getLogger(Controller.class.getName());
+    protected  static  Handler fh ;
 
     /**
      * Abstract Create method to handle generic REST request.
@@ -100,13 +108,29 @@ public abstract class Controller {
      * @return the error with a specific status code if the representation is wrong otherwise null
      */
     public ResponseConfirm checkMessageSyntax(String resourceRepresentation, String xsd) {
+        try{
+            fh = new FileHandler("log/core.log", true);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException ex){}
+
+
         try {
             XmlValidator.getInstance().validate(resourceRepresentation, xsd);
         } catch (SAXException e) {
-            LOGGER.debug("Resource representation syntax error",e);
+            //LOGGER.debug("Resource representation syntax error",e);
+            //LOGGER.debug("Resource representation syntax error");
+            LOGGER.log(Level.SEVERE,"Resource representation syntax error", e);
+
+
             return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST,"Resource representation syntax error: "+e.getMessage())) ;
         } catch (IOException e) {
-            LOGGER.debug("XSD not found",e);
+            //LOGGER.debug("XSD not found",e);
+            //LOGGER.debug("XSD not found");
+            LOGGER.log(Level.SEVERE,"XSD not found", e);
+
+
+
             return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST,"XSD not found: "+e.getMessage())) ;
         }
         return null;

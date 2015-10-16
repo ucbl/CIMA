@@ -16,11 +16,18 @@ import org.eclipse.om2m.core.service.SclService;
 import fr.liris.cima.gscl.commons.Capability;
 import fr.liris.cima.gscl.commons.constants.Constants;
 import fr.liris.cima.gscl.device.service.ConfigManager;
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 
 public class ConfigManagerImpl implements ConfigManager{
 
 
-	private static Log LOGGER = LogFactory.getLog(ConfigManagerImpl.class);
+	private static Logger LOGGER = Logger.getLogger(ConfigManagerImpl.class.getName());
+	private  static  Handler fh ;
 
 	public final static String DESC = "DESCRIPTOR";
 
@@ -39,9 +46,16 @@ public class ConfigManagerImpl implements ConfigManager{
 		SCL = sclService;
 		createManagerResources("manualconfig", "config");
 	}
-	
+
 	@Override
 	public void start() {
+		try{
+			fh = new FileHandler("log/gsclDeviceManualConfig.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
+
 		LOGGER.info("config waiting for attachement..");
 		createManagerResources("manualconfig", "devices");
 	}

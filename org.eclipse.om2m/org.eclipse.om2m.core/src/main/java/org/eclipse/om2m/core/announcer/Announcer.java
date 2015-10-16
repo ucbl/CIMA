@@ -39,6 +39,13 @@ import org.eclipse.om2m.core.comm.RestClient;
 import org.eclipse.om2m.core.constants.Constants;
 import org.eclipse.om2m.core.dao.DAOFactory;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 /**
  *Announces/De-Announces resources for which the announcement attribute is activated for each Creation/Delete.
  *
@@ -50,7 +57,8 @@ import org.eclipse.om2m.core.dao.DAOFactory;
 
 public class Announcer {
     /** Logger */
-    private static Log LOGGER = LogFactory.getLog(Announcer.class);
+    private static Logger LOGGER = Logger.getLogger(Announcer.class.getName());
+    private  static  Handler fh ;
 
     /**
      * Announces the created resource.
@@ -65,7 +73,7 @@ public class Announcer {
             String resourceId = uri.split("/")[uri.split("/").length - 1];
             String parentUri = uri.split("/"+resourceId)[0];
             String parentId = parentUri.split("/")[parentUri.split("/").length - 1];
-          
+
 
             // Retrieve the scls from the SclList without redundancies
             final ArrayList<String> uniqueReferencesList = new ArrayList<String>(
@@ -148,6 +156,13 @@ public class Announcer {
                     final String targetId = scl.getLink() + partialPath;
                     new Thread() {
                         public void run() {
+                          try{
+                              fh = new FileHandler("log/core.log", true);
+                            LOGGER.addHandler(fh);
+                            fh.setFormatter(new SimpleFormatter());}
+                            catch(IOException ex){}
+
+
                             // Set the request Base
                             String base = scl.getPocs().getReference().get(0)+ "/";
                             sclnewList.getReference().add(hostingScl);
@@ -244,6 +259,12 @@ public class Announcer {
                     final String targetId = scl.getLink()+partialPath;
                     new Thread() {
                         public void run() {
+                          try{
+                              fh = new FileHandler("log/core.log", true);
+                            LOGGER.addHandler(fh);
+                            fh.setFormatter(new SimpleFormatter());}
+                            catch(IOException ex){}
+
                             // Set the request Base
                             String base = scl.getPocs().getReference().get(0)+ "/";
                             // Set the Request

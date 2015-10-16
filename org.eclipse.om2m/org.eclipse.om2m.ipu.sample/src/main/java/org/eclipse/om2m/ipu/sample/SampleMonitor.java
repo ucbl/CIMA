@@ -42,9 +42,17 @@ import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 import org.eclipse.om2m.core.service.SclService;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 public class SampleMonitor {
     /** Logger */
-    private static Log LOGGER = LogFactory.getLog(SampleMonitor.class);
+    private static Logger LOGGER = Logger.getLogger(SampleMonitor.class.getName());
+    private  static  Handler fh ;
     /** Sclbase id */
     public final static String SCLID = System.getProperty("org.eclipse.om2m.sclBaseId","");
     /** Admin requesting entity */
@@ -73,6 +81,13 @@ public class SampleMonitor {
      * Starts monitoring and creating resources on the SCL
      */
     public void start() {
+      try{
+          fh = new FileHandler("log/ipu.log", true);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException ex){}
+
+
         LOGGER.info("Lamps waiting for attachement..");
         // Create initial resources for the 2 lamps
         for(int i=0; i<2; i++) {

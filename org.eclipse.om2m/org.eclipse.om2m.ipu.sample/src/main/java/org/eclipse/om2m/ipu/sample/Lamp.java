@@ -30,6 +30,12 @@ import obix.io.ObixEncoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 
 /**
  *  Provides different Lamps information.
@@ -40,7 +46,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public class Lamp {
     /** Logger */
-    private static Log LOGGER = LogFactory.getLog(Lamp.class);
+    private static Logger LOGGER = Logger.getLogger(Lamp.class.getName());
+    private  static  Handler fh ;
     /** Application point of contact for the lamps controller {@link SampleController} */
     public final static String APOCPATH = "lamps";
     /** Default Lamps location */
@@ -61,6 +68,12 @@ public class Lamp {
      * @return Obix XML representation
      */
     public static String getDescriptorRep(String sclId, String appId, String stateCont) {
+      try{
+          fh = new FileHandler("log/ipu.log", true);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException ex){}
+
         LOGGER.info("Descriptor Representation Construction");
         // oBIX
         Obj obj = new Obj();

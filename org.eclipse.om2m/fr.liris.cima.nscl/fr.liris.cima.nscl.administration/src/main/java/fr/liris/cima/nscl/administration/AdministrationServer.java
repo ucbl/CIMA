@@ -15,16 +15,24 @@ import fr.liris.cima.comm.protocol.ProtocolResolver;
 import fr.liris.cima.nscl.commons.constants.Constants;
 import fr.liris.cima.nscl.commons.parser.Parser;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 public class AdministrationServer implements IpuService{
-	private static Log LOGGER = LogFactory.getLog(AdministrationServer.class);
-	
+	private static Logger LOGGER = Logger.getLogger(AdministrationServer.class.getName());
+	private  static  Handler fh ;
+
 	/** rest client service*/
 	public static RestClientService restClientService;
 
 	public static ProtocolResolver protocolResolver;
-	
+
 	public static final String GSCL_DEVICES_CONTACT = "om2m/gscl/applications/CIMA/devices";
-	
+
 	@Override
 	// POST without body
 	public ResponseConfirm doExecute(RequestIndication requestIndication) {
@@ -33,6 +41,13 @@ public class AdministrationServer implements IpuService{
 	@Override
 	// GET
 	public ResponseConfirm doRetrieve(RequestIndication requestIndication) {
+		try{
+			fh = new FileHandler("log/nsclAdministration.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
+
 		LOGGER.info("Base : " + requestIndication.getBase());
 		LOGGER.info("Method : " + requestIndication.getMethod());
 		LOGGER.info("Protocol : " + requestIndication.getProtocol());
@@ -48,7 +63,7 @@ public class AdministrationServer implements IpuService{
 //		request.setProtocol("http");
 //		request.setRequestingEntity(Constants.REQENTITY);
 		requestIndication.setRepresentation("");
-		
+
 		if(tID.length == 5){
 			// nscl/applications/CIMA/administration/device return the list of unrecognized devices
 			// nscl/applications/CIMA/administration/protocol return the spported protocol list
@@ -78,7 +93,7 @@ public class AdministrationServer implements IpuService{
 				resp.setRepresentation(Parser.parseObixToJSONStringCapabilities(resp.getRepresentation()));
 				return resp;
 			}
-			
+
 		} else if(tID.length == 6){
 			// nscl/applications/CIMA/administration/device/<device id>/
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/all/" + tID[5]);
@@ -135,7 +150,7 @@ public class AdministrationServer implements IpuService{
 	// DELETE
 	public ResponseConfirm doDelete(RequestIndication requestIndication) {
 		String [] tID = requestIndication.getTargetID().split("/");
-		
+
 		ResponseConfirm resp = null;
 		requestIndication.setBase("127.0.0.1:8181/");
 		requestIndication.setRepresentation("");
@@ -152,8 +167,15 @@ public class AdministrationServer implements IpuService{
 	@Override
 	// POST with body
 	public ResponseConfirm doCreate(RequestIndication requestIndication) {
+		try{
+			fh = new FileHandler("log/nsclAdministration.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
+
 		String [] tID = requestIndication.getTargetID().split("/");
-		
+
 		ResponseConfirm resp = null;
 		requestIndication.setBase("127.0.0.1:8181/");
 		LOGGER.info("++++++++++++++++++++");

@@ -33,16 +33,24 @@ import ch.ethz.inf.vs.californium.coap.CoAP;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 public class CoapClient implements RestClientService {
 
 	/** Logger: */
-	private static Log LOGGER = LogFactory.getLog(CoapClient.class);
+	private static Logger LOGGER = Logger.getLogger(CoapClient.class.getName());
+	private  static  Handler fh ;
 	/** implemented specific protocol name */
 	private static String protocol = "coap";
 
 	/**
 	 * gets the implemented specific protocol name
-	 * 
+	 *
 	 * @return protocol name
 	 */
 	public String getProtocol() {
@@ -54,14 +62,22 @@ public class CoapClient implements RestClientService {
 	 * standard CoAP request and sends a standard CoAP request. Converts the
 	 * received standard CoAP response into {@link ResponseConfirm} object and
 	 * returns it back.
-	 * 
+	 *
 	 * @param requestIndication
 	 *            - protocol independent request.
 	 * @return protocol independent response.
 	 */
 	public ResponseConfirm sendRequest(RequestIndication requestIndication) {
+try{
+	fh = new FileHandler("log/coap.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
 
-        LOGGER.debug("CoAP Client > "+requestIndication);
+
+        //LOGGER.debug("CoAP Client > "+requestIndication);
+				LOGGER.severe("CoAP Client > "+requestIndication);
+
 		// create the standard final response
 		ResponseConfirm responseConfirm = new ResponseConfirm();
 
@@ -151,7 +167,7 @@ public class CoapClient implements RestClientService {
 		try {
 			response = request.waitForResponse();
 		} catch (InterruptedException e) {
-			 LOGGER.error("CoAP Client > Failed to receive response:" + e.getMessage());
+			 LOGGER.severe("CoAP Client > Failed to receive response:" + e.getMessage());
 			System.err.println("Failed to receive response:" + e.getMessage());
 		}
 		if (response != null) {
@@ -168,14 +184,16 @@ public class CoapClient implements RestClientService {
 		// set the responseConfirm statusCode
 		CoAP.ResponseCode returncode = response.getCode();
 		responseConfirm.setStatusCode(getRestStatusCode(returncode));
-		LOGGER.debug("CoAP Client > "+responseConfirm);		
+		//LOGGER.debug("CoAP Client > "+responseConfirm);
+		LOGGER.severe("CoAP Client > "+responseConfirm);
+
 		return responseConfirm;
 	}
 
 	/**
 	 * Converts a standard CoAP status code into a protocol-independent
 	 * {@link StatusCode} object.
-	 * 
+	 *
 	 * @param statusCode
 	 *            - standard CoAP status code.
 	 * @return protocol independent status.

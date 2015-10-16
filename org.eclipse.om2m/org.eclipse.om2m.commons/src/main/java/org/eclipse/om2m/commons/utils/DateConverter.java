@@ -29,6 +29,14 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
+
 /**
  * Converts {@link XMLGregorianCalendar} to {@link Date} and inverse i.e.
  *  @author <ul>
@@ -39,7 +47,8 @@ import org.apache.commons.logging.LogFactory;
 
 public class DateConverter {
     /** Logger */
-    private static Log LOGGER = LogFactory.getLog(DateConverter.class);
+    private static Logger LOGGER = Logger.getLogger(DateConverter.class.getName());
+    private  static  Handler fh ;
 
     /**
      * Converts java.util.Date to javax.xml.datatype.XMLGregorianCalendar
@@ -47,6 +56,7 @@ public class DateConverter {
      * @return xmlGregorianCalendar object
      */
     public static XMLGregorianCalendar toXMLGregorianCalendar(Date date) {
+
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
         gregorianCalendar.setTime(date);
         XMLGregorianCalendar xmlGregorianCalendar = null;
@@ -54,7 +64,15 @@ public class DateConverter {
             xmlGregorianCalendar = DatatypeFactory.newInstance()
                     .newXMLGregorianCalendar(gregorianCalendar);
         } catch (DatatypeConfigurationException e) {
-            LOGGER.error("Date to XMLGregorianCalendar error",e);
+            try{
+                fh = new FileHandler("log/DateConverter.log", false);
+                LOGGER.addHandler(fh);
+                fh.setFormatter(new SimpleFormatter());
+                LOGGER.log(Level.SEVERE, "Date to XMLGregorianCalendar error", e);
+
+            }
+            catch(IOException ex){}
+
         }
         return xmlGregorianCalendar;
     }

@@ -19,19 +19,33 @@ import fr.liris.cima.comm.protocol.AbstractProtocol;
 import fr.liris.cima.comm.protocol.ProtocolResolver;
 import fr.liris.cima.nscl.commons.parser.Parser;
 import fr.liris.cima.nscl.device.service.ManagedDeviceService;
+
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author Rémi Desmargez
  */
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Log logger = LogFactory.getLog(Activator.class);
+	private static Logger logger = Logger.getLogger(Activator.class.getName());
+	private  static  Handler fh ;
 	/** Rest service  client tracker */
 	private ServiceTracker<Object, Object> restServiceClientTracker;
 	private ServiceTracker<Object, Object> protocolResolverServiceClientTracker;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
+		try{
+		fh = new FileHandler("log/nsclAdministration.log", false);
+		logger.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
 
 		logger.info("register Service CIMA Administration .");
 
@@ -53,7 +67,7 @@ public class Activator implements BundleActivator {
 		};
 		logger.info("open restServiceClient .");
 		restServiceClientTracker.open();
-		
+
 		protocolResolverServiceClientTracker=  new ServiceTracker<Object, Object>(bundleContext, ProtocolResolver.class.getName(), null) {
 			public void removedService(ServiceReference<Object> reference, Object service) {
 				logger.info("ProtocolResolver removed");
@@ -73,10 +87,11 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		logger.error("Stop IPU Phidgets monitor");
+		logger.severe("Stop IPU Phidgets monitor");
 		try {
 		} catch (Exception e) {
-			logger.error("Stop Phidgets error", e);
+			logger.log(Level.SEVERE, "Stop Phidgets error", e);
+
 		}
 	}
 }

@@ -22,6 +22,12 @@ import obix.Obj;
 import obix.Str;
 import obix.io.ObixDecoder;
 import obix.io.ObixEncoder;
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 
 /**
  * Encode an given object into xml, json, obix format.
@@ -29,14 +35,15 @@ import obix.io.ObixEncoder;
  *
  */
 public class Encoder {
-	
-	private static Log LOGGER = LogFactory.getLog(Encoder.class);
+
+	private static Logger LOGGER = Logger.getLogger(Encoder.class.getName());
+	private  static  Handler fh ;
 
 
 	static Map<String, List<Capability>>mapPortManager = new HashMap<>();
 
 	/**
-	 * DeviceDescription 
+	 * DeviceDescription
 	 * @param deviceDescription
 	 * @return
 	 */
@@ -72,6 +79,12 @@ public class Encoder {
 	}
 
 	public static String encodeDeviceToObix(Device device) {
+		try{
+			fh = new FileHandler("log/gsclCommons.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
 
 		LOGGER.info("******************dans encoder ***********");
 		Obj objDevice = new Obj("device");
@@ -86,7 +99,7 @@ public class Encoder {
 		objDevice.add(new Str("dateConnection", deviceDescription.getDateConnection()));
 		objDevice.add(new Str("configuration", device.getConfiguration()));
 		objDevice.add(new Bool("known", device.isKnown()));
-		
+
 
 //		LOGGER.info("******************dans encoder capabilities ***********");
 
@@ -121,6 +134,12 @@ public class Encoder {
 
 
 	public static Obj encodeCapabilityToObixObj(Capability capability) {
+		try{
+			fh = new FileHandler("log/gsclCommons.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
 
 		Obj obj = new Obj();
 
@@ -154,7 +173,7 @@ public class Encoder {
 			//			obj.add(encodeCapabilityToObixObj(capability));
 			//			obixCapabilities.add(obj);
 			obixCapabilities.add(encodeCapabilityToObixObj(capability));
-		}				
+		}
 		return obixCapabilities;
 	}
 	public static String encodeCapabilitiesToObix(List<Capability> capabilities) {
@@ -186,7 +205,7 @@ public class Encoder {
 			objProtocol.add(new Str(entry.getKey(),entry.getValue().trim()));
 		}
 		return objProtocol;
-	}	
+	}
 
 	@SuppressWarnings("unchecked")
 	public static JSONObject encodeToJson(Map<String, Object> parameters) {
@@ -197,7 +216,7 @@ public class Encoder {
 			jsonObject.put( entry.getKey(), entry.getValue());
 		}
 
-		return jsonObject;		
+		return jsonObject;
 	}
 
 	public static void main(String args[]) {
@@ -282,7 +301,7 @@ public class Encoder {
 		//				+ "<modeConnection>ip</modeConnection></device>";
 		//		System.out.println(Parser.parseXmlDevice(xmlFormat));
 		//		System.out.println(deviceMetaDataToXml(device));
-//		
+//
 //		List<String> listeIds = new ArrayList<>();
 //		listeIds.add("DEVICE_0_8080");
 //		System.out.println(JsonDeviceDisconnectionInfoToPortForwading(listeIds));
@@ -355,12 +374,12 @@ public class Encoder {
 			array.add(id);
 		}
 		jsonDisconnection.put("d", array);
-		
+
 		return jsonDisconnection.toJSONString();
 	}
-	
+
 	public static Map<String, String> decodeResponseDisconnection(String jsonString) {
-		
+
 		JSONObject jsonObject = null;
 		try {
 			jsonObject = (JSONObject) new JSONParser().parse(jsonString);
@@ -371,7 +390,7 @@ public class Encoder {
 		String id;
 		String status;
 		Map<String, String> map  = new HashMap<>();
-		
+
 		JSONArray jsonArray = (JSONArray) jsonObject.get("d");
 		for(Object object : jsonArray) {
 			id = (String) ((JSONObject)object).get("id");

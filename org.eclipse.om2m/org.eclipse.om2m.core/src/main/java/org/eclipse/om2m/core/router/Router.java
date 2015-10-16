@@ -80,6 +80,13 @@ import org.eclipse.om2m.core.notifier.Notifier;
 import org.eclipse.om2m.core.redirector.Redirector;
 import org.eclipse.om2m.core.service.SclService;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 /**
  * Routes a generic request to the appropriate resource controller to handle it based on the request method and URI.
  * @author <ul>
@@ -91,7 +98,9 @@ import org.eclipse.om2m.core.service.SclService;
 
 public class Router implements SclService {
     /** Logger */
-    private static Log LOGGER = LogFactory.getLog(Router.class);
+    private static Logger LOGGER = Logger.getLogger(Router.class.getName());
+    private  static  Handler fh ;
+
     public static ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     /** Resource id pattern. */
     private static String idPattern="(?!(sclBase|scls|scl|applications|application|applicationAnnc|containers|container|content|subscriptions|subscription|"
@@ -109,7 +118,7 @@ public class Router implements SclService {
 
     /** Scls resource uri pattern. */
     private static Pattern  sclsPattern= Pattern.compile(sclBasePattern+"/+scls/*");
-    
+
     //private static Pattern ipuPattern2= Pattern.compile("("+Constants.SCL_ID+"/*"+"|"+Constants.SCL_ID+"/*"+"/+scls/*"+"/+"+idPattern+"/*"+")"+"/+applications/*"+"/+"+idPattern+"(?<!Annc)/*"+"/"+idPattern+"/*.*");
 
     /** Scl resource uri pattern. */
@@ -123,7 +132,7 @@ public class Router implements SclService {
 
     /** Interworking proxy unit uri pattern. */
     private static Pattern ipuPattern= Pattern.compile(applicationPattern+"/"+idPattern+"/*.*");
-    
+
     /** Coap Comm uri pattern. */
     private static Pattern coapCommPattern= Pattern.compile("coap/"+applicationPattern+"/"+idPattern+"/*.*");
 
@@ -255,7 +264,16 @@ public class Router implements SclService {
      */
 
     public ResponseConfirm doRequest(RequestIndication requestIndication) {
-         LOGGER.info(requestIndication);
+
+        try{
+            fh = new FileHandler("log/core.log", true);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException e){
+
+        }
+
+         LOGGER.info(requestIndication.toString());
          ResponseConfirm  responseConfirm = new ResponseConfirm();
 
          // Check requesting entity not null.
@@ -301,7 +319,8 @@ public class Router implements SclService {
                              break;
                          }
                      }catch(Exception e){
-                         LOGGER.error("Controller Internal Error",e);
+                         LOGGER.log(Level.SEVERE, "Controller Internal Error", e);
+
                          responseConfirm =  new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_INTERNAL_SERVER_ERROR,"Controller Internal Error"));
                      }
              }else{
@@ -310,7 +329,7 @@ public class Router implements SclService {
          }
          readWriteLock.readLock().unlock();
 
-         LOGGER.info(responseConfirm);
+         LOGGER.info(responseConfirm.toString());
          return responseConfirm;
      }
 

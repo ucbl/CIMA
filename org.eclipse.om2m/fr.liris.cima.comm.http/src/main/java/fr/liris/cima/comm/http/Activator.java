@@ -15,26 +15,43 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import fr.liris.cima.comm.protocol.Protocol;
 import fr.liris.cima.comm.protocol.ProtocolResolver;
+
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author hady
  */
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Log logger = LogFactory.getLog(Activator.class);
+	private static Logger LOGGER = Logger.getLogger(Activator.class.getName());
+	private  static  Handler fh ;
+
 	/** SCL service tracker */
 	private ServiceTracker<Object, Object> sclServiceTracker;
-	
+
 	private ServiceRegistration serviceRegistration;
 	private ProtocolResolver protocolResolver;
 	private Protocol pHttp;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
+		try{
+		fh = new FileHandler("log/http.log", false);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
+
+
 		Dictionary props=new Properties();
 		props.put("fr.liris.cima.comm.plateform", "cima");
         this.serviceRegistration = bundleContext.registerService(RestClientService.class.getName(), new CIMARestHttpClient(), props);
-        
+
      	// Now we add the HTTP protocol to the available protocols
     	ServiceReference refServ = bundleContext.getServiceReference(ProtocolResolver.class.getName());
     	if(refServ != null) {
@@ -42,12 +59,15 @@ public class Activator implements BundleActivator {
     	    this.pHttp = new HTTP();
     	    this.protocolResolver.addProtocol("http", HTTP.class);
     	}
-		logger.info("registered RestClientService cima Http");
+		LOGGER.info("registered RestClientService cima Http");
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		logger.error("Unregistered RestClientService cima Http");
+		//LOGGER.log(Level.SEVERE,"Unregistered RestClientService cima Http", null);
+		LOGGER.severe("Unregistered RestClientService cima Http");
+
+
 		serviceRegistration.unregister();
 		this.protocolResolver.removeProtocol("http");
 	}

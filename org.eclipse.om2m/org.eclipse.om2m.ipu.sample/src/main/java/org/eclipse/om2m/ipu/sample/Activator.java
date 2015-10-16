@@ -27,6 +27,13 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
+
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author <ul>
@@ -36,12 +43,20 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class Activator implements BundleActivator {
     /** Logger */
-    private static Log logger = LogFactory.getLog(Activator.class);
+    private static Logger logger = Logger.getLogger(Activator.class.getName());
+    private  static  Handler fh ;
     /** SCL service tracker */
     private ServiceTracker<Object, Object> sclServiceTracker;
 
     @Override
     public void start(BundleContext bundleContext) throws Exception {
+      try{
+        fh = new FileHandler("log/ipu.log", false);
+        logger.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException ex){}
+
+
         logger.info("Register IpuService..");
         bundleContext.registerService(IpuService.class.getName(), new SampleController(), null);
         logger.info("IpuService is registered.");
@@ -60,7 +75,7 @@ public class Activator implements BundleActivator {
                         try {
                             ipuMonitor.start();
                         } catch (Exception e) {
-                            logger.error("IpuMonitor Sample error", e);
+                            logger.log(Level.SEVERE, "IpuMonitor Sample error", e);
                         }
                     }
                 }.start();
@@ -72,12 +87,18 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext bundleContext) throws Exception {
-        logger.error("Stop IPU Phidgets monitor");
+      try{
+        fh = new FileHandler("log/ipu.log", true);
+        logger.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException ex){}
+
+        logger.severe("Stop IPU Phidgets monitor");
         try {
             SampleMonitor.stop();
 
         } catch (Exception e) {
-            logger.error("Stop Phidgets error", e);
+            logger.log(Level.SEVERE, "Stop Phidgets error", e);
         }
     }
 

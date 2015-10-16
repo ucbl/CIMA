@@ -25,17 +25,34 @@ import org.eclipse.om2m.commons.resource.StatusCode;
 import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 
 public class CIMARestHttpClient implements RestClientService{
 
 	/** Logger */
-	private static Log LOGGER = LogFactory.getLog(CIMARestHttpClient.class);
+	private static Logger LOGGER = Logger.getLogger(CIMARestHttpClient.class.getName());
+	private  static  Handler fh ;
 	/** implemented specific protocol name */
 	private static String protocol ="http";
 
 	@Override
 	public ResponseConfirm sendRequest(RequestIndication requestIndication) {
-		LOGGER.debug("Http Client > "+requestIndication);
+		try{
+		fh = new FileHandler("log/http.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
+
+		//LOGGER.debug("Http Client > "+requestIndication);
+		LOGGER.severe("Http Client > "+requestIndication);
+
 		HttpClient httpclient = new HttpClient();
 
 		ResponseConfirm responseConfirm = new ResponseConfirm();

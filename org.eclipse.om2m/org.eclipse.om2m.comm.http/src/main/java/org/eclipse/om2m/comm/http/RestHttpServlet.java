@@ -41,6 +41,13 @@ import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 import org.eclipse.om2m.core.service.SclService;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 /**
  *  Provides mapping from a HTTP-specific request to a protocol-independent request.
  *
@@ -52,7 +59,8 @@ import org.eclipse.om2m.core.service.SclService;
  */
 public class RestHttpServlet extends HttpServlet {
     /** Logger */
-    private static Log LOGGER = LogFactory.getLog(RestHttpServlet.class);
+    private static Logger LOGGER = Logger.getLogger(RestHttpServlet.class.getName());
+    private  static  Handler fh ;
     /** Serial Version UID */
     private static final long serialVersionUID = 1L;
     /** Discovered SCL service */
@@ -64,6 +72,15 @@ public class RestHttpServlet extends HttpServlet {
      */
     @Override
     protected void service(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
+
+      try{
+          fh = new FileHandler("log/commHttp.log", true);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());
+      }
+        catch(IOException ex){}
+
+
         //Construct a requestIndication Object from the http request
         RequestIndication requestIndication = new RequestIndication();
         //Get the targetID
@@ -74,7 +91,7 @@ public class RestHttpServlet extends HttpServlet {
         try {
             representation = convertStreamToString(httpServletRequest.getInputStream());
         } catch (IOException e) {
-            LOGGER.error("Error reading httpServletRequest InputStream",e);
+            LOGGER.log(Level.SEVERE, "Error reading httpServletRequest InputStream", e);
         }
         requestIndication.setRepresentation(representation);
         //Get the method
@@ -125,7 +142,7 @@ public class RestHttpServlet extends HttpServlet {
         try {
             out = httpServletResponse.getWriter();
         } catch (IOException e) {
-            LOGGER.error("Error reading httpServletResponse Writer",e);
+            LOGGER.log(Level.SEVERE, "Error reading httpServletResponse Writer", e);
         }
         out.println(body);
         out.close();

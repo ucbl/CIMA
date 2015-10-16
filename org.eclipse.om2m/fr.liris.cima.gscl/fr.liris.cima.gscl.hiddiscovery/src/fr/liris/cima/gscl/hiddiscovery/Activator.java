@@ -7,25 +7,39 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
 import fr.liris.cima.gscl.device.service.discovery.DiscoveryService;
 
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Log logger = LogFactory.getLog(Activator.class);	
+	private static Logger logger = Logger.getLogger(Activator.class.getName());
+	private  static  Handler fh ;
 	private ServiceRegistration serviceRegistration;
-	
+
 
 	/** Device Managed tracker */
 	private ServiceTracker<Object, Object> deviceServiceServiceTracker;
 
 	/** a device managed service*/
 	private ManagedDeviceService managedDeviceService;
-	
+
 	public void start(BundleContext context) throws Exception {
+		try{
+		fh = new FileHandler("log/gsclHidDiscovery.log", false);
+		logger.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
+
 		System.out.println("Hello World!!");
-		
+
 		       // track the managed device service
 				deviceServiceServiceTracker = new ServiceTracker<Object, Object>(context, ManagedDeviceService.class.getName(), null) {
 					public void removedService(ServiceReference<Object> reference, Object service) {
@@ -47,7 +61,7 @@ public class Activator implements BundleActivator {
 				deviceServiceServiceTracker.open();
 
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)

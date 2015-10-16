@@ -32,11 +32,18 @@ import fr.liris.cima.gscl.commons.parser.Parser;
 import fr.liris.cima.gscl.commons.util.Utils;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
 import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 
 public class DeviceManagerImpl implements ManagedDeviceService {
 
 	/** Logger */
-	private static Log LOGGER = LogFactory.getLog(DeviceManagerImpl.class);
+	private static Logger LOGGER = Logger.getLogger(DeviceManagerImpl.class.getName());
+	private  static  Handler fh ;
 
 	public final static String DATA = "DATA";
 	/** Descriptor container id */
@@ -48,24 +55,24 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 	/** Discovered SCL service*/
 	static SclService SCL;
 
-	
+
 	static List<Device> devices;
-	
+
 	static List<Device> unknownDevices;
-	
+
 	static ConfigManagerImpl configManagerImpl;
-	
+
 	static CapabilityManager capabilityManager;
-	
+
 	public DeviceManagerImpl() {
 		devices = new ArrayList<>();
 		unknownDevices = new ArrayList<>();
 		configManagerImpl = new ConfigManagerImpl();
 		capabilityManager = new CapabilityManagerImpl();
-		
+
 
 	}
-	
+
 	public DeviceManagerImpl(SclService scl){
 		SCL = scl;
 		devices = new ArrayList<>();
@@ -73,7 +80,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		configManagerImpl = new ConfigManagerImpl();
 		capabilityManager = new CapabilityManagerImpl();
 	}
-	
+
 	public static void init(SclService scl) {
 		SCL = scl;
 		devices = new ArrayList<>();
@@ -91,7 +98,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 
 	@Override
 	public Device getDeviceByAddress(String address) {
-		
+
 		for(Device device : devices) {
 			String ipAddress = Utils.extractIpAdress(device.getDeviceDescription().getUri());
 			if(ipAddress.equals(address)) return device;
@@ -118,14 +125,20 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 	public void removeDevice(Device device) {
 		devices.remove(device);
 	}
-	
+
 	@Override
 	public void start() {
+		try{
+			fh = new FileHandler("log/gsclMgmtDevice.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
 		LOGGER.info("Devices waiting for attachement..");
 		createManagerResources("CIMA", "devices");
 	}
-	
-	
+
+
 	/**
 	 * create a manager resources
 	 * @param appId
@@ -148,7 +161,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 			//Device.getDescriptorRep(SCLID, appId);
 			targetID= Constants.SCLID+"/applications/"+appId+"/containers/"+DESC+"/contentInstances";
 			SCL.doRequest(new RequestIndication(Constants.METHOD_CREATE,targetID,Constants.REQENTITY,new ContentInstance(content.getBytes())));
-				
+
 		}
 	}
 
@@ -159,7 +172,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 
 	@Override
 	public void removeKnownDevice(Device device) {
-		devices.remove(device);		
+		devices.remove(device);
 	}
 
 	@Override
@@ -173,12 +186,12 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 
 	@Override
 	public void removeUnknownDevice(Device device) {
-		unknownDevices.remove(device);				
+		unknownDevices.remove(device);
 	}
 
 	@Override
 	public void addUnknownDevice(Device device) {
-		unknownDevices.add(device);		
+		unknownDevices.add(device);
 	}
 
 	@Override
@@ -188,7 +201,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 			unknownDevices.remove(device);
 		}
 	}
-	
+
 	@Override
 	public Device getUnknownDevice(String deviceId) {
 		for(Device device: unknownDevices) {
@@ -201,36 +214,36 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 	@Override
 	public boolean switchUnknownToKnownDevice(Device device) {
 		LOGGER.info("******"+unknownDevices);
-		if(!unknownDevices.contains(device)) 
+		if(!unknownDevices.contains(device))
 			return false;
 		unknownDevices.remove(device);
 		return devices.add(device);
 	}
-	
+
 	//@Override
 	public Capability getCapabilityToUnknownDevice(String deviceId, String capabilityId) {
 		return configManagerImpl.getCapabilityToDevice(deviceId, capabilityId);
 	}
-	
+
 	@Override
 	public List<Capability> getUnknownDeviceCapabilities(String deviceId) {
 		return configManagerImpl.getDeviceCapabilities(deviceId);
 	}
-	
+
 	@Override
 	public boolean removeCapabilityDevice(String deviceId, String capabilityId) {
 		return configManagerImpl.removeCapabilityDevice(deviceId, capabilityId);
 	}
-	
+
 	@Override
 	public Capability updateDeviceCapability(String deviceId, Capability capability)  {
 		this.capabilityManager.add(capability);
 		return configManagerImpl.updateCapability(deviceId, capability);
 	}
-	
-	
+
+
 	private void populate() {
-		
+
 		String obixFormat = "<obj>"+
 				"<obj name=\"device\">" +
 				"<str name=\"id\" val=\"DEVICE_0\"/>"+
@@ -257,15 +270,15 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 				"<str name=\"uri\" val=\"uri\"/>"+
 				"</obj>"+
 				"</obj>"+
-				"</list>"+                
+				"</list>"+
 				"</obj>"+
 				"</obj>";
-		
-		
+
+
 		DeviceDescription deviceDescription = new DeviceDescription("ev3", "http://192.168.0.2", "http");
 		deviceDescription.setId("DEVICE_0");
 		Device device = new Device(deviceDescription);
-		
+
 		//Device device = Parser.parseObixToDevice(obixFormat);
 		unknownDevices.add(device);
 		LOGGER.info("size unknown = "+unknownDevices.size());
@@ -285,7 +298,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		requestIndication.setBase("http://127.0.0.1:8080/om2m");
 		requestIndication.setTargetID("/nscl/applications/CIMANSCL/devices");
 		requestIndication.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);
-		
+
 		/**
 		 * Envoi des infos du device au controleur du nscl
 		 */
@@ -308,55 +321,55 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 			this.capabilityManager.add(capability);
 		}
 	}
-	
+
 	@Override
 	public  String devicesToObixFormat() {
 		obix.List obixDevices = new obix.List("devices");
 		Obj obj = new Obj();
-		
+
 		for(Device device : devices) {
 			//obixDevices.add(device.toIntrinsequeObix());
 			obixDevices.add(Encoder.encodeDeviceToObixObj(device));
 		}
 		obj.add(obixDevices);
-				
+
 		return ObixEncoder.toString(obj);
 	}
-	
+
 	@Override
 	public  String devicesToObixFormat(List<Device> devices) {
 		obix.List obixDevices = new obix.List("devices");
 		Obj obj = new Obj();
-		
+
 		for(Device device : devices) {
 			//obixDevices.add(device.toIntrinsequeObix());
 		}
 		obj.add(obixDevices);
-				
+
 		return ObixEncoder.toString(obj);
 	}
-	
-	
+
+
 	@Override
 	public  String capabilitiesToObixFormat(List<Capability> capabilities) {
 		obix.List obixCapabilities = new obix.List("capabilities");
 		Obj obj = new Obj();
-		
+
 		for(Capability capability : capabilities) {
 			obixCapabilities.add(Encoder.encodeCapabilityToObixObj(capability));
 		}
 		obj.add(obixCapabilities);
-				
+
 		return ObixEncoder.toString(obj);
 	}
-	
-	
+
+
 	@Override
 	public void invokeCapability(String deviceId, Capability capability, RestClientService clientService) {
 		RequestIndication requestIndication = new RequestIndication();
 		Protocol protocol = capability.getProtocol();
 		String base = "";
-		
+
 		if(getDevice(deviceId) != null) base = getDevice(deviceId).getUri();
 		else if(getUnknownDevice(deviceId) != null){
 			base = getUnknownDevice(deviceId).getUri();
@@ -379,24 +392,24 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		requestIndication.setTargetID("");
 		requestIndication.setRepresentation(capability.getProtocol().getParameterValue("body"));
 	//	requestIndication.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);
-		
+
 		clientService.sendRequest(requestIndication);
-		
+
 	}
-	
+
 	public static String devicesToObixFormat1() {
 		obix.List obixDevices = new obix.List("devices");
 		Obj obj = new Obj();
-		
+
 		for(Device device : unknownDevices) {
 			obixDevices.add(Encoder.encodeDeviceToObixObj(device));
-			
+
 		}
 		obj.add(obixDevices);
 		return ObixEncoder.toString(obj);
 	}
-	
-	
+
+
 	@Override
 	public List<Device> getDevices(boolean all) {
 		List<Device> devices = new ArrayList<>();
@@ -411,14 +424,14 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 			}
 		}
 		return devices;
-	}	
-	
+	}
+
 
 	@Override
 	public List<Capability> getDeviceCapabilities(String deviceId) {
 		return this.getDevice(deviceId).getCapabilities();
 	}
-	
+
 	public Capability getCapabilityDevice(String deviceId, String capabilityName) {
 		Device device = getDevice(deviceId);
 		for(Capability capability : device.getCapabilities()) {
@@ -428,6 +441,6 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		}
 		return null;
 	}
-	
-	
+
+
 }

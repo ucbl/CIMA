@@ -27,25 +27,39 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 
 public class Activator  implements BundleActivator{
-	
+
 	   /** Logger */
-	   private static Log LOGGER = LogFactory.getLog(Activator.class);	       
+	private static Logger LOGGER = Logger.getLogger(Activator.class.getName());
+	private  static  Handler fh ;
 	   /** SCL service tracker */
-	   private ServiceTracker<Object, Object> sclServiceTracker;	    
+	   private ServiceTracker<Object, Object> sclServiceTracker;
 	   /**the coap server*/
 	   CoapServer server;
 
 	   public void start(BundleContext bundleContext) throws Exception {
-	    	
-	    	// Register the Rest CoAP Client 
+			 try{
+		   fh = new FileHandler("log/coap.log", false);
+		   LOGGER.addHandler(fh);
+		   fh.setFormatter(new SimpleFormatter());
+		 }
+		 catch(IOException ex){}
+
+
+	    	// Register the Rest CoAP Client
 	        LOGGER.info("Register CoAP RestClientService..");
 	        bundleContext.registerService(RestClientService.class.getName(), new CoapClient(), null);
-	        LOGGER.info("CoAP RestClientService is registered.");	    
-	        
-	    	// Start the CoAP server 
-	        server= new CoapServer();	  	       
+	        LOGGER.info("CoAP RestClientService is registered.");
+
+	    	// Start the CoAP server
+	        server= new CoapServer();
 	        server.startServer();
 
 	        // Track the SCL service
@@ -55,7 +69,7 @@ public class Activator  implements BundleActivator{
 	                try {
 	                    CoapMessageDeliverer.setScl((SclService) service);
 	                } catch (IllegalArgumentException e) {
-	                    LOGGER.error("Error removing SclService",e);
+											LOGGER.log(Level.SEVERE, "Error removing SclService", e);
 	                }
 	            }
 	            public Object addingService(ServiceReference<Object> reference) {
@@ -64,18 +78,19 @@ public class Activator  implements BundleActivator{
 	                try {
 	                    CoapMessageDeliverer.setScl(scl);
 	                } catch (Exception e) {
-	                    LOGGER.error("Error adding SclService",e);
+											LOGGER.log(Level.SEVERE, "Error adding SclService", e);
+
 
 	                }
 	                return scl;
 	            }
 	        };
-	        
-	        // Open service trackers 
+
+	        // Open service trackers
 	        sclServiceTracker.open();
 	        LOGGER.info("SclService opened");
-	        
-         
+
+
 	    }
 	    @Override
 	    public void stop(BundleContext bundleContext) throws Exception {

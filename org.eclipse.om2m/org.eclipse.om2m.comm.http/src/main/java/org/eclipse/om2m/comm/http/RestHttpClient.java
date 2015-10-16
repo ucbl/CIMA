@@ -40,6 +40,13 @@ import org.eclipse.om2m.commons.resource.StatusCode;
 import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 /**
  *  Provides mapping from a protocol-independent request to a HTTP-specific request.
  *  @author <ul>
@@ -51,7 +58,8 @@ import org.eclipse.om2m.commons.rest.ResponseConfirm;
 
 public class RestHttpClient implements RestClientService {
     /** Logger */
-    private static Log LOGGER = LogFactory.getLog(RestHttpClient.class);
+    private static Logger LOGGER = Logger.getLogger(RestHttpClient.class.getName());
+    private  static  Handler fh ;
     /** implemented specific protocol name */
     private static String protocol ="http";
 
@@ -70,7 +78,17 @@ public class RestHttpClient implements RestClientService {
     * @return protocol independent response.
     */
     public ResponseConfirm sendRequest(RequestIndication requestIndication) {
-        LOGGER.debug("Http Client > "+requestIndication);
+      try{
+          fh = new FileHandler("log/commHttp.log", true);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());
+      }
+        catch(IOException ex){}
+
+
+        //LOGGER.debug("Http Client > "+requestIndication);
+        LOGGER.severe("Http Client > "+requestIndication);
+
         HttpClient httpclient = new HttpClient();
 
         ResponseConfirm responseConfirm = new ResponseConfirm();
@@ -117,10 +135,13 @@ public class RestHttpClient implements RestClientService {
                     responseConfirm.setResourceURI(httpMethod.getResponseHeader("Location").getValue());
                 }
             }
-            LOGGER.debug("Http Client > "+responseConfirm);
+            //LOGGER.debug("Http Client > "+responseConfirm);
+            LOGGER.severe("Http Client > "+responseConfirm);
+
 
         }catch(IOException e){
-            LOGGER.error(url+ " Not Found"+responseConfirm,e);
+            LOGGER.log(Level.SEVERE, url+ " Not Found"+responseConfirm, e);
+
         } finally {
             httpMethod.releaseConnection();
         }

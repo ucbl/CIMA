@@ -22,10 +22,18 @@ import fr.liris.cima.nscl.commons.constants.Constants;
 import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
 import fr.liris.cima.nscl.device.service.ManagedDeviceService;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 public class DeviceManagerImpl implements ManagedDeviceService{
 
 	/** Logger */
-	private static Log LOGGER = LogFactory.getLog(DeviceManagerImpl.class);
+	private static Logger LOGGER = Logger.getLogger(DeviceManagerImpl.class.getName());
+	private  static  Handler fh ;
 
 	public final static String DATA = "DATA";
 	/** Descriptor container id */
@@ -38,23 +46,23 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 	static SclService SCL;
 
 	static List<Device> devices;
-	
+
 	static Set<ClientSubscriber> subscribers;
-	
+
 	// deviceId, contactInfo
 	static Map<String, String> mapContactInfos;
 
 
 	public DeviceManagerImpl() {
 	}
-	
+
 	public DeviceManagerImpl(SclService scl){
 		SCL = scl;
 		devices = new ArrayList<>();
 		subscribers = new HashSet<>();
 		mapContactInfos = new HashMap<String, String>();
 	}
-	
+
 	public static void init(SclService scl) {
 		SCL = scl;
 		devices = new ArrayList<>();
@@ -71,12 +79,19 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 
 	@Override
 	public Device getDeviceByAddress(String address) {
-		
+
 		return null;
 	}
 
 	@Override
 	public void addDevice(Device device) {
+		try{
+			fh = new FileHandler("log/nsclMgmtDevice.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
+
 		devices.add(device);
 		LOGGER.info("Add device ..."+ device.getId());
 		LOGGER.info("Add device ..."+ devices.size());
@@ -94,36 +109,43 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 	public void removeDevice(Device device) {
 		devices.remove(device);
 	}
-	
+
 	@Override
 	public void start() {
+		try{
+			fh = new FileHandler("log/nsclMgmtDevice.log", true);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
+
 		LOGGER.info("Devices waiting for attachement..");
 		createManagerResources("CIMANSCL", "devices");
 		createManagerResources("CIMA", "administration");
 	}
-	
+
 	@Override
 	public List<Device> getDevices() {
 		return devices;
 	}
-	
+
 	@Override
 	public  int addSubscriber(ClientSubscriber subscriber) {
 		if(subscribers.contains(subscriber)) return 1;
 		else if(subscribers.add(subscriber)) return 0;
 		else return 2;
 	}
-	
+
 	@Override
 	public  boolean removeSubscriber(ClientSubscriber subscriber) {
 		return subscribers.remove(subscriber);
 	}
-	
+
 	@Override
 	public Set<ClientSubscriber> getSubscribers() {
 		return subscribers;
 	}
-	
+
 	public void createManagerResources(String appId, String aPoCPath) {
 		// Create the Application resource
 		ResponseConfirm response = SCL.doRequest(new RequestIndication(Constants.METHOD_CREATE,Constants.SCLID+"/applications",Constants.REQENTITY,new Application(appId,aPoCPath)));
@@ -140,8 +162,8 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 			content = "";
 			//Device.getDescriptorRep(SCLID, appId);
 			targetID= Constants.SCLID+"/applications/"+appId+"/containers/"+DESC+"/contentInstances";
-			SCL.doRequest(new RequestIndication(Constants.METHOD_CREATE,targetID,Constants.REQENTITY,new ContentInstance(content.getBytes())));	
+			SCL.doRequest(new RequestIndication(Constants.METHOD_CREATE,targetID,Constants.REQENTITY,new ContentInstance(content.getBytes())));
 		}
-	}	
+	}
 
 }

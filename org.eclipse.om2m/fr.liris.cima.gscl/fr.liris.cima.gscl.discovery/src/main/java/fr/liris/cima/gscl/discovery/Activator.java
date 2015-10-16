@@ -12,18 +12,32 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
 import fr.liris.cima.gscl.device.service.discovery.DiscoveryService;
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.File;
+
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author madiallo
  */
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Log logger = LogFactory.getLog(Activator.class);	
+	private static Logger logger = Logger.getLogger(Activator.class.getName());
+	private  static  Handler fh ;
 	private ServiceRegistration serviceRegistration;
-	
+
 	/** Rest client tracker */
 	private ServiceTracker<Object, Object> restClientServiceTracker;
-	
+
 	/** Device Managed tracker */
 	private ServiceTracker<Object, Object> deviceServiceServiceTracker;
 
@@ -32,6 +46,11 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
+		try{
+		fh = new FileHandler("log/gsclDiscovery.log", false);
+		logger.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
 
 
         // track the managed device service
@@ -75,7 +94,7 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		logger.error("Unregistered DiscoveryService");
+		logger.severe("Unregistered DiscoveryService");
 		serviceRegistration.unregister();
 	}
 }

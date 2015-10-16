@@ -63,6 +63,13 @@ import org.osgi.util.tracker.ServiceTracker;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author <ul>
@@ -72,43 +79,59 @@ import com.db4o.ObjectSet;
  */
 public class Activator implements BundleActivator {
     /** Logger */
-    private static Log LOGGER = LogFactory.getLog(Activator.class);
+    private static Logger LOGGER = Logger.getLogger(Activator.class.getName());
+    private  static  Handler fh ;
     /** IPU service tracker */
     private ServiceTracker<Object, Object> ipuServiceTracker;
     /** Rest Client service tracker */
     private ServiceTracker<Object, Object> restClientServiceTracker;
 
     public void start(BundleContext bundleContext) throws Exception {
+        try{
+        fh = new FileHandler("log/core.log", false);
+        LOGGER.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());}
+        catch(IOException ex){}
+
+
         //Initiate Scl
         LOGGER.info("Starting SCL..");
+
         try{
             initScl();
         }catch(Exception e){
-            LOGGER.error("SCL is Stopped",e);
+            LOGGER.log(Level.SEVERE,"SCL is Stopped", e);
         }
         LOGGER.info("SCL Started.");
 
 
+
         // Register Scl service
         LOGGER.info("Register SclService..");
+
         bundleContext.registerService(SclService.class.getName(), new Router(), null);
         LOGGER.info("SclService is registered.");
+
 
         // Track the Ipu service
         ipuServiceTracker = new ServiceTracker<Object, Object>(bundleContext, IpuService.class.getName(), null) {
             public void removedService(ServiceReference<Object> reference, Object service) {
                 LOGGER.info("IpuService removed");
+
                 IpuService ipu = (IpuService)service;
                 LOGGER.info("Remove IPU [ path = "+ipu.getAPOCPath()+" ]");
+
                 InterworkingProxyController.getIpUnits().remove(ipu.getAPOCPath());
             }
 
             public Object addingService(ServiceReference<Object> reference) {
                 LOGGER.info("IpuService discovered");
+
                 IpuService ipu = (IpuService) this.context.getService(reference);
                 LOGGER.info("Add IPU [ path = "+ipu.getAPOCPath()+" ]");
+
                 InterworkingProxyController.getIpUnits().put(ipu.getAPOCPath(), ipu);
-                       
+
                 return ipu;
             }
         };
@@ -118,15 +141,19 @@ public class Activator implements BundleActivator {
         restClientServiceTracker = new ServiceTracker<Object, Object>(bundleContext, RestClientService.class.getName(), null) {
             public void removedService(ServiceReference<Object> reference, Object service) {
                 LOGGER.info("RestClientService removed");
+
                 RestClientService restClient = (RestClientService)service;
                 LOGGER.info("Remove RestClientService [ protocol = "+restClient.getProtocol()+" ]");
+
                 RestClient.getRestClients().remove(restClient.getProtocol());
             }
 
             public Object addingService(ServiceReference<Object> reference) {
                 LOGGER.info("RestClientService discovered");
+
                 RestClientService sclClient = (RestClientService) this.context.getService(reference);
                 LOGGER.info("Add RestClientService  [ protocol = "+sclClient.getProtocol()+" ]");
+
                 RestClient.getRestClients().put(sclClient.getProtocol(),sclClient);
                 // Display to check on the discovered protocols
                 //Map <String, RestClientService> map=RestClient.getRestClients();
@@ -140,6 +167,7 @@ public class Activator implements BundleActivator {
     }
 
     public void stop(BundleContext bundleContext) throws Exception {
+        fh.close();
     }
 
     /**
@@ -151,24 +179,30 @@ public class Activator implements BundleActivator {
             if(Constants.RESET){
                 // Clear SCL DataBase
                 LOGGER.info("Clear SCL DataBase");
+
                 clearDB();
 
                 // Create SclBase resource
                 LOGGER.info("Create SclBase resource");
+
                 initSclBase();
 
                 // Create AccessRight resource
                 LOGGER.info("Create AccessRight resource");
+
                 initAccessRight();
             }
 
             // Create JAXBContext instance
-            LOGGER.info("Init XmlMapper");
-            XmlMapper.getInstance();
+        LOGGER.info("Init XmlMapper");
+
+
+        XmlMapper.getInstance();
 
             // Create SAXParserFactory instance
-            LOGGER.info("Init XmlValidator");
-            XmlValidator.getInstance();
+        LOGGER.info("Init XmlValidator");
+
+        XmlValidator.getInstance();
 
             // Manage registration in the case of a GSCL
             if("GSCL".equals(Constants.SCL_TYPE)){
@@ -189,7 +223,8 @@ public class Activator implements BundleActivator {
                     DBClientConnection.getInstance().delete(result.next());
                 }
             }catch(Exception e){
-                LOGGER.error("Error clearDB",e);
+                LOGGER.log(Level.SEVERE,"Error clearDB", e);
+
                 registerScl();
             }
         }
@@ -229,12 +264,13 @@ public class Activator implements BundleActivator {
             // Create RequestIndication
             final RequestIndication requestIndication = new RequestIndication();
             requestIndication.setMethod(Constants.METHOD_CREATE);
-            requestIndication.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);            
-            requestIndication.setTargetID(Constants.NSCL_ID+"/scls");
+            requestIndication.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);
+            requestIndication.setTargetID(Constants.NSCL_ID + "/scls");
             requestIndication.setRepresentation(XmlMapper.getInstance().objectToXml(gscl));
             requestIndication.setBase(base);
-            
+
             LOGGER.info("The requestIndication : " + requestIndication );
+
 
             // Start registration in a new Thread
             new Thread(){
@@ -245,19 +281,23 @@ public class Activator implements BundleActivator {
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e1) {
-                        LOGGER.error("Registration sleep error",e1);
+                        LOGGER.log(Level.SEVERE, "Registration sleep error", e1);
+
                     }
                     // Loop until registration succeed or already registered
                     while(!registred){
                         // Send GSCL registration to NSCL
                         LOGGER.info("Send GSCL registration to NSCL");
+
                         responseConfirm = new RestClient().sendRequest(requestIndication);
                         //Stop registration if success of GSCL already registered
                         if(responseConfirm.getStatusCode().equals(StatusCode.STATUS_CREATED)){
                             LOGGER.info("GSCL is successfully registered to NSCL");
+
                             registred=true;
                         }else if(responseConfirm.getStatusCode().equals(StatusCode.STATUS_CONFLICT)){
                             LOGGER.info("GSCL is already registered to NSCL");
+
                             registred=true;
                         }else{
                             try {
@@ -266,7 +306,8 @@ public class Activator implements BundleActivator {
                                 LOGGER.info("Retrying registration after: "+sleepTime+" ms");
                                 Thread.sleep(sleepTime);
                             } catch (InterruptedException e) {
-                                LOGGER.error("Registration sleep error",e);
+                                LOGGER.log(Level.SEVERE, "Registration sleep error", e);
+
                             }
                         }
                     }
@@ -274,6 +315,7 @@ public class Activator implements BundleActivator {
                 	Router.readWriteLock.readLock().lock();
 
                     LOGGER.info("Create NSCL registration on GSCL");
+
                     Scl nscl = new Scl();
                     nscl.setUri(Constants.SCL_ID+""+"/scls/"+Constants.NSCL_ID);
                     nscl.setSclId(Constants.NSCL_ID);
@@ -285,7 +327,7 @@ public class Activator implements BundleActivator {
                     searchStrings.getSearchString().add(Constants.SEARCH_STRING_RES_ID+Constants.NSCL_ID);
                     nscl.setSearchStrings(searchStrings);
                     AnyURIList pocs = new AnyURIList();
-                    pocs.getReference().add("http://"+Constants.NSCL_IP+":"+Constants.NSCL_PORT+Constants.NSCL_CONTEXT);
+                    pocs.getReference().add("http://" + Constants.NSCL_IP + ":" + Constants.NSCL_PORT + Constants.NSCL_CONTEXT);
                     //pocs.getReference().add("coap://"+Constants.NSCL_IP+":"+Constants.NSCL_COAP_PORT/*+Constants.SCL_CONTEXT*/);
 
                     nscl.setPocs(pocs);
@@ -294,20 +336,21 @@ public class Activator implements BundleActivator {
                     nscl.setOnlineStatus(OnlineStatus.ONLINE);
                     nscl.setServerCapability(true);
                     // Set References
-                    nscl.setContainersReference(nscl.getUri()+"/containers");
+                    nscl.setContainersReference(nscl.getUri() + "/containers");
                     nscl.setGroupsReference(nscl.getUri()+"/groups");
-                    nscl.setApplicationsReference(nscl.getUri()+"/applications");
-                    nscl.setAccessRightsReference(nscl.getUri()+"/accessRights");
-                    nscl.setSubscriptionsReference(nscl.getUri()+"/subscriptions");
+                    nscl.setApplicationsReference(nscl.getUri() + "/applications");
+                    nscl.setAccessRightsReference(nscl.getUri() + "/accessRights");
+                    nscl.setSubscriptionsReference(nscl.getUri() + "/subscriptions");
                     nscl.setMgmtObjsReference(nscl.getUri()+"/mgmtObjs");
-                    nscl.setNotificationChannelsReference(nscl.getUri()+"/notificationChannels");
+                    nscl.setNotificationChannelsReference(nscl.getUri() + "/notificationChannels");
                     nscl.setM2MPocsReference(nscl.getUri()+"/m2mPocs");
-                    nscl.setAttachedDevicesReference(nscl.getUri()+"/attachedDevices");
+                    nscl.setAttachedDevicesReference(nscl.getUri() + "/attachedDevices");
 
                     // Store scl
                     DAOFactory.getSclDAO().create(nscl);
 
                     LOGGER.info("NSCL is successfully registred on GSCL");
+
                     Router.readWriteLock.readLock().unlock();
                 }
             }.start();

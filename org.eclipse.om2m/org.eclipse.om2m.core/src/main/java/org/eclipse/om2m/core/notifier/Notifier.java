@@ -37,6 +37,13 @@ import org.eclipse.om2m.core.dao.DAOFactory;
 import org.eclipse.om2m.core.redirector.Redirector;
 import org.eclipse.om2m.core.router.Router;
 
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
+
 /**
  * Notifies subscribers when a change occurs on a resource according to their subscriptions.
  * @author <ul>
@@ -47,7 +54,9 @@ import org.eclipse.om2m.core.router.Router;
  */
 public class Notifier {
     /** Logger */
-    private static Log LOGGER = LogFactory.getLog(Notifier.class);
+    private static Logger LOGGER = Logger.getLogger(Notifier.class.getName());
+    private  static  Handler fh ;
+
 
     /**
      * Finds all resource subscribers and notifies them.
@@ -95,7 +104,7 @@ public class Notifier {
                     notify.getRepresentation().setValue(resource);
                 }
                 notify.setSubscriptionReference(subscription.getUri());
-                
+
                 final String contact =  subscription.getContact();
 
                 // Create a RequestIndication with the notify as representation
@@ -103,11 +112,18 @@ public class Notifier {
                 requestIndication.setMethod(Constants.METHOD_CREATE);
                 requestIndication.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);
                 requestIndication.setRepresentation(notify);
-                
+
 
                 // Send notification on a new Thread
                 new Thread() {
                     public void run() {
+                      try{
+                          fh = new FileHandler("log/core.log", true);
+                        LOGGER.addHandler(fh);
+                        fh.setFormatter(new SimpleFormatter());}
+                        catch(IOException ex){}
+
+
                         LOGGER.info("Notification Request:\n"+requestIndication);
                         ResponseConfirm responseConfirm = Notifier.notify(requestIndication,contact);
                         LOGGER.info("Notification Response:\n"+responseConfirm);
@@ -119,7 +135,7 @@ public class Notifier {
 
     public static ResponseConfirm notify(RequestIndication requestIndication, String contact){
     	// Check whether the subscription contact is protocol-dependent or not.
-    	if(contact.matches(".*://.*")){ 
+    	if(contact.matches(".*://.*")){
     		// Contact = protocol-dependent -> direct notification using the rest client.
         	requestIndication.setBase(contact);
         	requestIndication.setTargetID("");

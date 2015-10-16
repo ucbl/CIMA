@@ -43,6 +43,12 @@ import ch.ethz.inf.vs.californium.coap.CoAP.ResponseCode;
 import ch.ethz.inf.vs.californium.network.Exchange;
 import ch.ethz.inf.vs.californium.server.MessageDeliverer;
 import ch.ethz.inf.vs.californium.server.Server;
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 
 public class CoapServer {
 
@@ -61,13 +67,14 @@ public class CoapServer {
 
 		 server.start();
      }
-	 
-	 
+
+
 }
 
 class CoapMessageDeliverer implements MessageDeliverer {
 
-    private static Log LOGGER = LogFactory.getLog(CoapMessageDeliverer.class);
+    private static Logger LOGGER = Logger.getLogger(CoapMessageDeliverer.class.getName());
+    private  static  Handler fh ;
 
     private static SclService scl;
     private static String context = System.getProperty("org.eclipse.om2m.sclBaseContext","/om2m");
@@ -76,6 +83,13 @@ class CoapMessageDeliverer implements MessageDeliverer {
 
    @Override
    public void deliverRequest(Exchange exchange) {
+		 try{
+             fh = new FileHandler("log/coap.log", true);
+
+       LOGGER.addHandler(fh);
+       fh.setFormatter(new SimpleFormatter());}
+			 catch(IOException ex){}
+
 
        req = exchange.getRequest();
 
@@ -97,6 +111,12 @@ class CoapMessageDeliverer implements MessageDeliverer {
 
    @Override
    public void deliverResponse(Exchange rqst, Response rspns) {
+		 try{
+             fh = new FileHandler("log/coap.log", true);
+       LOGGER.addHandler(fh);
+       fh.setFormatter(new SimpleFormatter());}
+			 catch(IOException ex){}
+
 	   rqst.sendResponse(rspns);
        LOGGER.info("response= "+ rspns);
 
@@ -108,6 +128,13 @@ class CoapMessageDeliverer implements MessageDeliverer {
     */
 
    public Response service (Request request) throws SocketException, IOException {
+try{
+    fh = new FileHandler("log/coap.log", true);
+       LOGGER.addHandler(fh);
+       fh.setFormatter(new SimpleFormatter());}
+			 catch(IOException ex){}
+
+
        // store the MId and the Token
        int mid= request.getMID();
        byte[] token= request.getToken();
@@ -168,11 +195,11 @@ class CoapMessageDeliverer implements MessageDeliverer {
        if(parameters.containsKey("Authorization")){
     	   requestIndication.setRequestingEntity(parameters.get("Authorization").get(0));
        }
-       
+
        if(parameters.containsKey("authorization")){
     	   requestIndication.setRequestingEntity(parameters.get("authorization").get(0));
        }
-       
+
        //sending the standard request to the Scl and getting a standard response
        if(scl!=null){
            responseConfirm = scl.doRequest(requestIndication);
@@ -297,6 +324,13 @@ if(responseConfirm.getRepresentation()!=null){
     * @return standard CoAP status code.
     */
    public static double getCoapStatusCode(StatusCode statusCode, boolean isEmptyBody){
+		 try{
+             fh = new FileHandler("log/coap.log", true);
+       LOGGER.addHandler(fh);
+       fh.setFormatter(new SimpleFormatter());}
+			 catch(IOException ex){}
+
+
        LOGGER.info("The received code is "+statusCode);
        switch(statusCode){
        case STATUS_OK :

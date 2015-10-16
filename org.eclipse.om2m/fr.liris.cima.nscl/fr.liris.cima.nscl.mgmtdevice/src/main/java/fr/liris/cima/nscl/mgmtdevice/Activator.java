@@ -10,33 +10,46 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 import fr.liris.cima.nscl.device.service.ManagedDeviceService;
+
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author madiallo
  */
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Log logger = LogFactory.getLog(Activator.class);
+	private static Logger LOGGER = Logger.getLogger(Activator.class.getName());
+	private  static  Handler fh ;
 	/** SCL service tracker */
 	private ServiceTracker<Object, Object> sclServiceTracker;
-	
+
 	private ServiceRegistration serviceRegistration;
 
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
+try{
+		fh = new FileHandler("log/nsclMgmtDevice.log", false);
+		LOGGER.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
 
 		/** track scl service*/
 		sclServiceTracker = new ServiceTracker<Object, Object>(bundleContext, SclService.class.getName(), null) {
 			public void removedService(ServiceReference<Object> reference, Object service) {
-				logger.info("SclService removed in mgmtdevice");
+				LOGGER.info("SclService removed in mgmtdevice");
 			}
 
 			public Object addingService(ServiceReference<Object> reference) {
-				logger.info("SclService discovered in mgmtdevice");
+				LOGGER.info("SclService discovered in mgmtdevice");
 				SclService sclService = (SclService) this.context.getService(reference);
 				serviceRegistration = this.context.registerService(ManagedDeviceService.class.getName(), new DeviceManagerImpl(sclService) , null);
-				logger.info("ManagedDeviceService registered successfully");
+				LOGGER.info("ManagedDeviceService registered successfully");
 
 				return sclService;
 			}
@@ -48,7 +61,7 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		logger.error("Unregistered ManagedDeviceService");
+		LOGGER.severe("Unregistered ManagedDeviceService");
 		serviceRegistration.unregister();
 	}
 }

@@ -14,20 +14,34 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
+import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.io.*;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author hady
  */
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Log logger = LogFactory.getLog(Activator.class);
+	private static Logger logger = Logger.getLogger(Activator.class.getName());
+	private  static  Handler fh ;
 	/** SCL service tracker */
 	private ServiceTracker<Object, Object> sclServiceTracker;
-	
+
 	private ServiceRegistration serviceRegistration;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
+		try{
+		fh = new FileHandler("log/gsclHttp.log", false);
+		logger.addHandler(fh);
+		fh.setFormatter(new SimpleFormatter());}
+		catch(IOException ex){}
+
+
 		Dictionary props=new Properties();
 		props.put("fr.liris.cima.gscl.comm.plateform", "cima");
         this.serviceRegistration = bundleContext.registerService(RestClientService.class.getName(), new CIMARestHttpClient(), props);
@@ -36,7 +50,7 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		logger.error("Unregistered RestClientService Http");
+		logger.severe("Unregistered RestClientService Http");
 		serviceRegistration.unregister();
 	}
 }
