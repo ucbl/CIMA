@@ -1,3 +1,4 @@
+'use strict';
 /* Protocols model */
 app.factory('ProtocolsFactory', ['$http' ,'$q', function($http, $q) {
 

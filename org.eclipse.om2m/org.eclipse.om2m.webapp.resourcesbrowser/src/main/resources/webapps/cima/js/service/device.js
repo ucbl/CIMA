@@ -1,8 +1,6 @@
-
+'use strict';
 /*Device Model
 * Defining all methods to request the server*/
-
-    
 app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
 
     var factory = { 

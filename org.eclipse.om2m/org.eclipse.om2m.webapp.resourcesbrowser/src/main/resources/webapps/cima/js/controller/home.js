@@ -1,6 +1,9 @@
+'use strict';
 /* Controller page home.html */
-app.controller('HomeCtrl', ['$scope', '$rootScope', 'DeviceFactory', '$interval', 'ngToast', '$timeout', function($scope, $rootScope ,DeviceFactory, $interval,  ngToast, $timeout){
-    
+app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$interval', 'ngToast', '$timeout', function($scope, $rootScope ,DeviceFactory, $interval,  ngToast, $timeout){
+//app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$interval', 'ngToast', '$timeout', function($scope, $rootScope ,DeviceFactory, $interval,  ngToast, $timeout){       
+
+
     $rootScope.loading = false;
     $scope.devices = [];
     $scope.predicate = '-configuration';
@@ -8,51 +11,93 @@ app.controller('HomeCtrl', ['$scope', '$rootScope', 'DeviceFactory', '$interval'
     $scope.useMode = {};
     $scope.useKeys = {};  
     $scope.master = true;
-
+    var interval = '';
+    //$scope.interval = '';
     /* Calling the DeviceFactory for changing the devices list */
-    $scope.check = function(){
-        $scope.loadDevices = function(){
-            console.log('This is loadDevices');
-            var count = $scope.devices.length;
-            DeviceFactory.find().then(function(devices){
+    // $scope.check = function(){
+    //     $scope.loadDevices = function(){
+    //         console.log('This is loadDevices');
+    //         var count = $scope.devices.length;
+    //         DeviceFactory.find().then(function(devices){
                 
-                if(devices.length != count){
-                    $scope.devices = devices;
+    //             if(devices.length != count){
+    //                 $scope.devices = devices;
                     
-                    //$rootScope.loading = true;
-                    ngToast.create((devices.length-count)+" new devices detected.");
-                    console.log("In if length - count: " + devices.length + "-" + count);
-                } else {
-                    console.log("In else length - count: " + devices.length + "-" + count);
-                }
+    //                 //$rootScope.loading = true;
+    //                 ngToast.create((devices.length-count)+" new devices detected.");
+    //                 console.log("In if length - count: " + devices.length + "-" + count);
+    //             } else {
+    //                 console.log("In else length - count: " + devices.length + "-" + count);
+    //             }
 
 
-            }, function(msg){
-                $rootScope.requestInfo = msg;
-                ngToast.create({
-                    content: "Unable to get devices : "+msg,
-                    className: "danger"
-                });
-            })
-        };
+    //         }, function(msg){
+    //             $rootScope.requestInfo = msg;
+    //             ngToast.create({
+    //                 content: "Unable to get devices : "+msg,
+    //                 className: "danger"
+    //             });
+    //         });
+    //     };
 
-        /* Call once to first load the list */
-        $scope.loadDevices();
+    //     /* Call once to first load the list */
+    //     $scope.loadDevices();
 
-        /* Stop refresh the device list */
-        $scope.stopRefreshDevices = function(){
+    //     /* Stop refresh the device list */
+    //     $scope.stopRefreshDevices = function(){
+    //         console.log('This is stopRefreshDevices');
+    //         $interval.cancel(interval);
+    //     }; 
+
+    //     /* Set an interval to refresh and call the function to load device list */
+    //     var interval = $interval(function(){
+    //         $scope.loadDevices(); 
+    //     }, DEVICE_REFRESH); 
+    // };
+
+    // $scope.check();
+    $scope.countLoadDevices = 0;
+    var count = $scope.devices.length;
+    $scope.loadDevices = function() {
+        var count = $scope.devices.length;
+        $scope.countLoadDevices++;
+        DeviceFactory.find().then(function(devices){
+            if(devices.length != count){
+
+                $scope.devices = devices;
+                ngToast.create((devices.length-count)+" new devices detected.");
+                console.log("In if length - count: " + devices.length + "-" + count);
+            } else {
+                console.log("In else length - count: " + devices.length + "-" + count);
+            }
+
+
+        }, function(msg){
+            $rootScope.requestInfo = msg;
+            ngToast.create({
+                content: "Unable to get devices : "+msg,
+                className: "danger"
+            });
+        });
+    };
+    $scope.loadDevices();
+
+    
+    interval = $interval($scope.loadDevices, DEVICE_REFRESH);
+   
+    
+    $scope.stopRefreshDevices = function(){
+        if (angular.isDefined(interval)) {
             console.log('This is stopRefreshDevices');
             $interval.cancel(interval);
-        }; 
-
-        /* Set an interval to refresh and call the function to load device list */
-        var interval = $interval(function(){
-            $scope.loadDevices(); 
-        }, DEVICE_REFRESH); 
+            interval = undefined;
+        }
     };
 
-    $scope.check();
-    
+    $scope.$on('$destroy', function() {
+        $scope.stopRefreshDevices();
+    });
+
 
     $scope.$watch(function() {
         return {
@@ -62,6 +107,7 @@ app.controller('HomeCtrl', ['$scope', '$rootScope', 'DeviceFactory', '$interval'
             useKeys: $scope.useKeys
         }
     }, function(value) {
+        
         var selected;
         /*configGroup contains the list of unique configuration items {'manual','automatic'}*/
         $scope.configGroup = uniqueItems($scope.devices, 'configuration');
@@ -165,10 +211,10 @@ var uniqueItemsKeys = function(data, key){
     for (var j in data) {
             var caps = data[j][key];   
         for (var j = 0; j < caps.length; j++) {
-            keywords = caps[j].keywords;  
+            var keywords = caps[j].keywords;  
             
             for (var s in keywords) {   
-                value = keywords[s];
+                var value = keywords[s];
                 tempList.push(value);        
             }
     

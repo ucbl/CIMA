@@ -1,19 +1,20 @@
-/* Application moduls */
-var app = angular.module("MonApp", ["MonApp.routes", "MonApp.ui", "MonApp.tags", "MonApp.toast"]);
-
+'use strict';
+/* Application modules */
+//var app = angular.module('CIMA', ['CIMA.HomeController', 'CIMA.DeviceController', 'ngRoute', 'CIMA.ui', 'CIMA.tags', 'CIMA.toast'])
+var app = angular.module('CIMA', ['ngRoute', 'ui.bootstrap', 'ngTagsInput', 'ngToast']);
 /*routing URLs*/
-angular.module('MonApp.routes', ['ngRoute']).config(['$routeProvider', function($routeProvider){
+app.config(['$routeProvider', function($routeProvider){
 
   $routeProvider
-  .when('/', {templateUrl: 'partials/home.html', controller: 'HomeCtrl'})
-  .when('/device/:id', {templateUrl: 'partials/device.html'})
+  .when('/', {templateUrl: 'partials/home.html', controller: 'HomeController'})
+  .when('/device/:id', {templateUrl: 'partials/device.html', controller: 'DeviceController'})
   .otherwise({redirectTo : '/'});
 }]);
 
 /* bootstrap UI module */
-angular.module('MonApp.ui', ['ui.bootstrap']);
-angular.module('MonApp.tags', ['ngTagsInput']);
-angular.module('MonApp.toast', ['ngToast'])
+//angular.module('CIMA.ui', ['ui.bootstrap']);
+//angular.module('CIMA.tags', ['ngTagsInput']);
+angular.module('CIMA.toast', ['ngToast'])
   .config(['ngToastProvider', function(ngToast) {
     ngToast.configure({
       verticalPosition: 'top',
@@ -29,3 +30,6 @@ app.run(function($http){
 
 });
 
+// angular.module('test', []).controller('testcontroller', ['$scope', function($scope) {
+//   $scope.num = 0;
+// }]);

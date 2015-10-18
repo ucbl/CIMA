@@ -1,7 +1,7 @@
-
+'use strict';
 /* Controller page device.html */
-app.controller('DeviceCtrl', ['$http', '$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast) {
-
+//angular.module('CIMA.DeviceController', []).controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast) {
+app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast) {
     $rootScope.loading = true;
     $scope.EditIsOpen = false;
     $scope.idrequired = false;
@@ -148,11 +148,9 @@ app.controller('DeviceCtrl', ['$http', '$scope', '$rootScope', 'DeviceFactory', 
             add = false;
             $scope.idrequired = true;
         }
-        
-
-        //If id change -> add
         newCapability = newCapability || {};
         newCapability.protocol = newCapability.protocol || {};
+        //If id change -> add
         if(newCapability.id !=null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null && add){          
             
             $scope.idrequired = false;
@@ -276,8 +274,8 @@ app.controller('DeviceCtrl', ['$http', '$scope', '$rootScope', 'DeviceFactory', 
             $scope.ShowIsOpen = false;
             $scope.editedCapability = JSON.parse(JSON.stringify(capability));
             //Not to have same reference
-            for (i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
-                dataset = $scope.protocolsFromEdited[i];
+            for (var i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
+                var dataset = $scope.protocolsFromEdited[i];
                 if (dataset.protocolName == capability.protocol.protocolName) {
                     $scope.protocolsFromEdited[i].parameters = capability.protocol.parameters;
                     $scope.editedCapability.protocol = $scope.protocolsFromEdited[i];
@@ -318,8 +316,8 @@ app.controller('DeviceCtrl', ['$http', '$scope', '$rootScope', 'DeviceFactory', 
             $scope.ShowIsOpen = true;
             $scope.editedCapability = JSON.parse(JSON.stringify(capability));
             //Not to have same reference
-            for (i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
-                dataset = $scope.protocolsFromEdited[i];
+            for (var i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
+                var dataset = $scope.protocolsFromEdited[i];
                 if (dataset.protocolName == capability.protocol.protocolName) {
                     $scope.protocolsFromEdited[i].parameters = capability.protocol.parameters;
                     $scope.editedCapability.protocol = $scope.protocolsFromEdited[i];
@@ -340,8 +338,8 @@ app.controller('DeviceCtrl', ['$http', '$scope', '$rootScope', 'DeviceFactory', 
     $scope.onSelectCapability = function ($item, $model, $label) {
         $scope.existingCapability = JSON.parse(JSON.stringify($item));
         $scope.NewFromExistingCapability = $item;
-        for (i = $scope.protocolsFromExisting.length - 1; i >= 0; i--) {
-            dataset = $scope.protocolsFromExisting[i];
+        for (var i = $scope.protocolsFromExisting.length - 1; i >= 0; i--) {
+            var dataset = $scope.protocolsFromExisting[i];
             if (dataset.protocolName == $item.protocol.protocolName) {
                 $scope.protocolsFromExisting[i].parameters = $item.protocol.parameters;
                 $scope.NewFromExistingCapability.protocol = $scope.protocolsFromExisting[i];
