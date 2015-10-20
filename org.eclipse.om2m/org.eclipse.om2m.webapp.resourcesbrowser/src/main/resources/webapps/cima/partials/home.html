@@ -5,20 +5,7 @@
   <h1><center>CIMA Platform</center></h1>
   <h1><center>Couche d'Interopérabilité Matériel-Applications</center></h1>
 </div>
-<div class="fil_ariane">
-    <a class="fil_ariane_a">
-        Fil d'ariane
-    </a>
-    &nbsp;&raquo;&nbsp;
-    <a class="fil_ariane_a">
-        Toto
-    </a>
-    &nbsp;&raquo;&nbsp;
-    <a class="fil_ariane_a_final">
-        <b>Titi</b>
-    </a>
-    <br>
-</div>
+
 <div class="panel panel-primary col-sm-2 col-md-2 col-lg-2" style="padding:0px">         
     <div style="width:100%" class="panel-heading">
         <h2 class="panel-title">Filters</h2>         
@@ -32,7 +19,7 @@
                 <b>Configuration</b>
                 <div>
                     <div ng-repeat="config in configGroup">
-                        <b><input type="checkbox" ng-model="useConfig[config]" />{{config}}</b>
+                        <b><input type="checkbox" ng-model="useConfig[config]" ng-checked="master" ng-init="useConfig[config] = true" />{{config}}</b>
                         <!--<span>({{(filteredDevices | filter:config).length}})</span>--> 
                     </div>
                 </div>
@@ -41,7 +28,7 @@
                 <b>Connection mode</b>
                 <div>
                     <div ng-repeat="mode in modeGroup">
-                        <b><input type="checkbox" ng-checked="master" ng-model="useMode[mode]" />{{mode}}</b>
+                        <b><input type="checkbox" ng-checked="master" ng-model="useMode[mode]" ng-init="useMode[mode] = true" />{{mode}}</b>
                         <!--<span>({{(filteredDevices | filter:mode).length}})</span>--> 
                     </div>
                 </div>
@@ -50,7 +37,7 @@
             <b>Key words</b>
             <div>
                 <div ng-repeat="keyword in keyGroup"> 
-                    <b><input type="checkbox" ng-checked="master" ng-model="useKeys[keyword]" />{{keyword}}</b>
+                    <b><input type="checkbox" ng-checked="master" ng-model="useKeys[keyword]" ng-checked="master" ng-init="useKeys[keyword] = true" />{{keyword}}</b>
                    <!--<span>({{(filteredDevices | filter:keyword).length}})</span>-->
 
                 </div>
