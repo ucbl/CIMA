@@ -366,34 +366,64 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 
 	@Override
 	public void invokeCapability(String deviceId, Capability capability, RestClientService clientService) {
+		System.out.println("**************************************************************** Requete Test\n");
 		RequestIndication requestIndication = new RequestIndication();
 		Protocol protocol = capability.getProtocol();
-		String base = "";
+		Device device = null;
 
-		if(getDevice(deviceId) != null) base = getDevice(deviceId).getUri();
-		else if(getUnknownDevice(deviceId) != null){
-			base = getUnknownDevice(deviceId).getUri();
-			base += ":" + capability.getProtocol().getParameterValue("port");
+		String uri;
+		String base = "";
+		String protocolName = "http";		//TODO pas mettre en dur
+		//String protocolName = protocol.getParameterValue("protocolName");
+
+		if(getDevice(deviceId) != null) {
+			device = getDevice(deviceId);
+		} else if(getUnknownDevice(deviceId) != null){
+			device = getUnknownDevice(deviceId);
 		}
-		if(!base.endsWith("/")) base += "/";
-		LOGGER.info(base);
-		LOGGER.info(protocol.getParameterValue("protocolName"));
-		LOGGER.info(capability.getProtocol().getParameterValue("body"));
+
+		if (device.getUri().contains("://")) {
+			String tab[] = device.getUri().split("://");
+			base = tab[1];
+		} else {
+			base = device.getUri();
+		}
+
+		if (base.contains(":")) {
+			String tab[] = base.split(":");
+			base = tab[0];
+		}
+
+		uri = protocolName + "://" + base + ":" + protocol.getParameterValue("port");
+
 		String capabilityURI = capability.getProtocol().getParameterValue("uri");
-		LOGGER.info("capabilityURI = "+capabilityURI);
 		if(capabilityURI.startsWith("/")) {
 			capabilityURI = capabilityURI.substring(1);
 		}
+
+		uri += "/" + capabilityURI;
+
+		LOGGER.info(uri);
+		LOGGER.info(protocolName);
+		LOGGER.info(capability.getProtocol().getParameterValue("body"));
 		LOGGER.info("capabilityURI = "+capabilityURI);
 
-		requestIndication.setBase(base + capabilityURI);
+		requestIndication.setBase(uri);
 		requestIndication.setMethod(protocol.getParameterValue("method").trim());
-		requestIndication.setProtocol("http");
+		requestIndication.setProtocol(protocolName);
 		requestIndication.setTargetID("");
 		requestIndication.setRepresentation(capability.getProtocol().getParameterValue("body"));
 	//	requestIndication.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);
 
+		System.out.println(requestIndication.toString());
+
 		clientService.sendRequest(requestIndication);
+
+		System.out.println("**************************************** URI = " + uri);
+
+		System.out.println("**************************************** request " + requestIndication);
+
+		System.out.println("**************************************************************** Fin Requete Test\n");
 
 	}
 
