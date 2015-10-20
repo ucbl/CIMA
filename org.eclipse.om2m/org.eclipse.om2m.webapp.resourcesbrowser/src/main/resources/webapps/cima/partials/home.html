@@ -27,12 +27,12 @@
         <section  style="border-right:1px">  
             <div class="filter"> 
                 <b>
-                    <input id="select-all" type="checkbox" ng-model="master" />Select All
+                    <input type="checkbox" ng-model="master" />Select All
                 </b><br/>
                 <b>Configuration</b>
                 <div>
                     <div ng-repeat="config in configGroup">
-                        <b><input type="checkbox" ng-checked="master" ng-model="useConfig[config]" ng-init="useConfig[config] = true" />{{config}}</b>
+                        <b><input type="checkbox" ng-model="useConfig[config]" />{{config}}</b>
                         <!--<span>({{(filteredDevices | filter:config).length}})</span>--> 
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                 <b>Connection mode</b>
                 <div>
                     <div ng-repeat="mode in modeGroup">
-                        <b><input type="checkbox" ng-checked="master" ng-model="useMode[mode]" ng-init="useMode[mode] = true" />{{mode}}</b>
+                        <b><input type="checkbox" ng-checked="master" ng-model="useMode[mode]" />{{mode}}</b>
                         <!--<span>({{(filteredDevices | filter:mode).length}})</span>--> 
                     </div>
                 </div>
@@ -50,7 +50,7 @@
             <b>Key words</b>
             <div>
                 <div ng-repeat="keyword in keyGroup"> 
-                    <b><input type="checkbox" ng-checked="master" ng-model="useKeys[keyword]" ng-init="useKeys[keyword] = true" />{{keyword}}</b>
+                    <b><input type="checkbox" ng-checked="master" ng-model="useKeys[keyword]" />{{keyword}}</b>
                    <!--<span>({{(filteredDevices | filter:keyword).length}})</span>-->
 
                 </div>
@@ -59,26 +59,33 @@
         </section>
     </div>
 </div>
-    <div class="panel panel-primary col-sm-10 col-md-10 col-lg-10" style="padding:0px">
+    <div class="panel panel-primary col-sm-10 col-md-10 col-lg-10" style="padding:0px" ng-init='toggle = true;'>
         <div class="panel-heading">
             <h2 class="panel-title">Devices list</h2>
         </div>
         <div class="panel-body">
+
             <th colspan="5">
                 <div class="col-md-12">
-                    <input ng-model="query.$" class="form-control" placeholder="Search a device by any..." type="text" />
+                    <button ng-click='toggle = !toggle' class='btn btn-info'>Search</button>
                 </div>
-                
-                <div class="col-md-6">
-                    <input ng-model="query.configuration" class="form-control" placeholder="Search a device by configuration..." type="text" />
-                    <input ng-model="query.id" class="form-control" placeholder="Search a device by device id..." type="text" />
-                    <input ng-model="query.name" class="form-control" placeholder="Search a device by device name..." type="text" />
-                </div>
-                
-                <div class="col-md-6">
-                    <input ng-model="query.dateConnection" class="form-control" placeholder="Search a device by date..." type="text" />
-                    <input ng-model="query.modeConnection" class="form-control" placeholder="Search a device by connection mode..." type="text" />
-                    <input ng-model="query.uri" class="form-control" placeholder="Search a device by uri..." type="text" />
+                <div ng-show='toggle'>
+                    <div class="col-md-12">
+
+                        <input ng-model="query.$" class="form-control" placeholder="Search a device by any..." type="text" />
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <input ng-model="query.configuration" class="form-control" placeholder="Search a device by configuration..." type="text" />
+                        <input ng-model="query.id" class="form-control" placeholder="Search a device by device id..." type="text" />
+                        <input ng-model="query.name" class="form-control" placeholder="Search a device by device name..." type="text" />
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <input ng-model="query.dateConnection" class="form-control" placeholder="Search a device by date..." type="text" />
+                        <input ng-model="query.modeConnection" class="form-control" placeholder="Search a device by connection mode..." type="text" />
+                        <input ng-model="query.uri" class="form-control" placeholder="Search a device by uri..." type="text" />
+                    </div>
                 </div>
                 
             </th>
