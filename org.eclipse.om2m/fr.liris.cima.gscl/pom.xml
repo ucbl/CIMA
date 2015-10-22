@@ -40,6 +40,7 @@
 	<module>fr.liris.cima.gscl.discovery_ptut</module>
     <module>fr.liris.cima.gscl.comm.http</module>
     <module>fr.liris.cima.gscl.device.manualconfig</module>
+    <module>fr.liris.cima.gscl.usbdiscovery</module>
    </modules>
 
 </project>
