@@ -41,6 +41,8 @@
     <module>fr.liris.cima.gscl.comm.http</module>
     <module>fr.liris.cima.gscl.device.manualconfig</module>
     <module>fr.liris.cima.gscl.usbdiscovery</module>
-   </modules>
+    <module>fr.liris.cima.gscl.portforwarding</module>
+
+  </modules>
 
 </project>
