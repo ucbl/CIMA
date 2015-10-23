@@ -40,6 +40,7 @@ import fr.liris.cima.nscl.commons.Capability;
 import fr.liris.cima.nscl.commons.Device;
 import fr.liris.cima.nscl.commons.DeviceDescription;
 import fr.liris.cima.nscl.commons.ContactInfo;
+import fr.liris.cima.nscl.commons.Parameter;
 import fr.liris.cima.nscl.commons.constants.Configuration;
 import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
 
@@ -218,6 +219,46 @@ public class Parser {
 		}
 		return jsonObject;
 	}
+        
+        
+        
+        
+        
+        
+        
+	public static String parseObixToJSONStringParams(String obj_info) {
+		return parseObixToJSONCapabilities(obj_info).toJSONString();
+	}
+
+	public static JSONArray parseObixToJSONParams(String obj_info) {
+		JSONArray jsonObject = new JSONArray();
+		try {
+			SAXBuilder sxb = new SAXBuilder();
+			Document document = sxb.build(new StringReader(obj_info));
+			Element racine = document.getRootElement();
+			List<Element> list_obj = racine.getChildren();
+			Iterator<Element> noeudObj = list_obj.iterator();
+			Element courant;
+			String s;
+			while (noeudObj.hasNext()) {
+				courant = (Element) noeudObj.next();
+				s = new XMLOutputter()
+				.outputString(courant);
+				jsonObject.add(parseObixToJSONCapability(s));
+			}
+		} catch (JDOMException | IOException e) {
+			e.printStackTrace();
+		}
+		return jsonObject;
+	}
+        
+        
+        
+        
+        
+        
+        
+        
 
 	public static String parseObixToJSONStringCapabilities(String obj_info) {
 		return parseObixToJSONCapabilities(obj_info).toJSONString();
@@ -269,7 +310,11 @@ public class Parser {
 					String s = new XMLOutputter().outputString(courant);
 					jsonObject.put("protocol", parseObixToJSONProtocol(s));
 
-				} else {
+				} else if(courant.getAttributeValue("name") != null && courant.getAttributeValue("name").equalsIgnoreCase("params")){
+					String s = new XMLOutputter().outputString(courant);
+					jsonObject.put("params", parseObixToJSONParams(s));
+
+				}else {
 					jsonObject.put(courant.getAttributeValue("name"),
 							courant.getAttributeValue("val"));
 				}
@@ -451,6 +496,13 @@ public class Parser {
 		protocol.addParameter("method", protocolObj.get("method").getStr());
 		protocol.addParameter("port", protocolObj.get("port").getStr());
 		protocol.addParameter("uri", protocolObj.get("uri").getStr());
+                
+             /*  Obj [] objss = capabilityObj.get("params").list();
+		List<Parameter> params = new ArrayList<>();
+		for(Obj o : objss){
+                    
+			params.add(o.get("param"));
+		}*/
 
 		int cloudPort = (int) capabilityObj.get("cloudPort").getInt();
 		String configuration = (String) capabilityObj.get("configuration").getStr();
@@ -463,7 +515,7 @@ public class Parser {
 		}
 
 		name = capabilityObj.get("id").getStr();
-		Capability capability = new Capability(name, protocol, keywords,cloudPort);
+		Capability capability = new Capability(name, protocol, keywords,cloudPort,null,null);
 		capability.setConfiguration(configuration);
 		
 		return capability;
