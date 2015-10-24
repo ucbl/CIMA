@@ -4,27 +4,14 @@
         <div class="col-sm-12 col-md-12 col-lg-12">
             <a class="btn btn-warning" href="#/"> < Devices list</a>
             <!-- Applying changes button-->
-            <button class="btn btn-success pull-right" ng-click="saveDevice()">
+            <button class="btn btn-success pull-right" ng-click="saveDevice()" ng-show="isEditable">
             <i class="glyphicon glyphicon-ok"></i>
                 Apply changes
             </button>
         </div>
         <br>
         <hr>
-        <div class="fil_ariane">
-            <a class="fil_ariane_a">
-                Index
-            </a>
-            &nbsp;&raquo;&nbsp;
-            <a class="fil_ariane_a">
-                Devices
-            </a>
-            &nbsp;&raquo;&nbsp;
-            <a class="fil_ariane_a_final">
-                Device : {{id}}
-            </a>
-            <br>
-        </div>
+        
         
         <!--<div class="fil_ariane">
             <a class="fil_ariane_a">
@@ -75,31 +62,31 @@
 
                     </tr>
                     </thead>
-                    <tbody ng-repeat="capability in capabilities | orderBy:order">
-                    <tr>
-                        <td class="text-center">{{capability.configuration}}</td>
-                        <td class="text-center">{{capability.id}}</td>
-                        <td class="text-center">{{capability.protocol.protocolName}}</td>
-                        <td class="text-right">
+                    <tbody>
+                        <tr ng-repeat="capability in capabilities | orderBy:order">
+                            <td class="text-center">{{capability.configuration}}</td>
+                            <td class="text-center">{{capability.id}}</td>
+                            <td class="text-center">{{capability.protocol.protocolName}}</td>
+                            <td class="text-right">
 
-                       <button ng-show="!capability.isEditable" type="button" ng-click="openAndShowCapability(capability)" class="btn btn-sm btn btn-info">
-                            <i class="glyphicon glyphicon-show"></i>
-                            Show
-                        </button>
+                               <button ng-show="!capability.isEditable" type="button" ng-click="openAndShowCapability($index, capability)" class="btn btn-sm btn btn-info">
+                                    <i class="glyphicon glyphicon-show"></i>
+                                    Show
+                                </button>
 
-                        <button ng-show="capability.isEditable" type="button" ng-click="openAndEditCapability(capability)" class="btn btn-sm btn btn-info">
-                          <i class="glyphicon glyphicon-edit"></i>
-                          Edit
-                      </button>
+                                <button ng-show="capability.isEditable" type="button" ng-click="openAndEditCapability($index, capability)" class="btn btn-sm btn btn-info">
+                                  <i class="glyphicon glyphicon-edit"></i>
+                                  Edit
+                                </button>
 
-                        <button class="btn btn-sm btn-danger" ng-show="capability.isEditable" type="button" ng-click="removeCapability(capability)" class="btn btn-sm btn btn-info">
-                         <i class="glyphicon glyphicon-remove-circle"></i>
-                        Remove
-                      </button>
-                </td>
-             </tr>
-            </tbody>
-        </table>
+                                <button class="btn btn-sm btn-danger" ng-show="capability.isEditable" type="button" ng-click="removeCapability(capability)" class="btn btn-sm btn btn-info">
+                                 <i class="glyphicon glyphicon-remove-circle"></i>
+                                Remove
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
 
         <!-- SHOW CAPACBILITY -->
@@ -124,12 +111,40 @@
                             </li>
                             <br>
 
-                            <button class="btn btn-danger pull-left" type="button" ng-click="openAndShowCapability(null)" />
+                            <button class="btn btn-danger pull-left" type="button" ng-click="openAndShowCapability(indexOfShowingCapacity)" />
                                 Close
                             </button>
                             <!-- Test capability button -->
-                            <button ng-click="testCapability(editedCapability)" type="button" class="btn btn-primary pull-right">Test</button>
+                            <button ng-click="" type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#configParamsModal">Configure</button>
                             <br>
+                            <!-- Modal -->
+                            <div class="modal fade" id="configParamsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Configuration Of Parameters Modal</h4>
+                                  </div>
+                                  <div class="modal-body" ng-if="editedCapability.params.length <= 0">
+                                      Les params ne sont pas disponibles pour cette capabilité
+                                  </div>
+                                  <div class="modal-body" ng-repeat="param in editedCapability.params">
+                                    <!-- Implement a directive to solve this -->
+                                    <div class="input-group">
+                                      <span class="input-group-addon" id="sizing-addon2">{{param.idp}}</span>
+                                      <input type="number" class="form-control" ng-model="configParams[param.idp]" ng-if="param.type == 'int'" aria-describedby="sizing-addon2" />
+                                      <input type="text" class="form-control" ng-model="configParams[param.idp]" ng-if="param.type == 'string'" aria-describedby="sizing-addon2" />
+                                    </div>
+                                    
+                                    
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" ng-if="editedCapability.params.length > 0" ng-click="testCapability(editedCapability)">Submit</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                     </div>
                 </div>
 
@@ -190,7 +205,7 @@
                             From existing one
                         </accordion-heading>                
                         <!-- From Existing -->
-                        <input type="text" ng-model="NewFromExistingCapability" placeholder="search for a capability..." typeahead="capability as capability.id for capability in getCapability($viewValue) | filter:{id:$viewValue}" typeahead-loading="loadingCapabilities" typeahead-on-select="onSelectCapability($item, $model, $label)" class="form-control">
+                        <input type="text" ng-model="NewFromExistingCapability" placeholder="search for a capability..." typeahead="capability as capability.id for capability in getCapability($viewValue) | filter:{id:$viewValue}" typeahead-loading="loadingCapabilities" typeahead-on-select="onSelectCapability($item, $model, $label)" class="form-control" />
                         <i ng-show="loadingCapabilities" class="glyphicon glyphicon-refresh"></i>
                         <!--<pre>Model: {{NewFromExistingCapability | json}}</pre>-->
                         <form name = "addFromExisting" ng-submit="addCapabilityFromExisting(NewFromExistingCapability)" ng-show="(NewFromExistingCapability != '' && NewFromExistingCapability != null)">

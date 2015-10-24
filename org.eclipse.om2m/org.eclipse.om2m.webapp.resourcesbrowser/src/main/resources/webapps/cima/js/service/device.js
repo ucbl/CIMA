@@ -56,13 +56,17 @@ app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
         },
 
         /*test a device*/
-        testCapability : function(idDevice, capability){
+        testCapability : function(paramInfos){
+            console.log('*** Sending request ajax to test ***');
+            console.log('url : ' + paramInfos['url']);
+            console.log('method : ' + paramInfos['method']);
+            console.log(paramInfos['configParams']);
             var deferred = $q.defer();
             $http({
                 //url : URL_DEVICE + '/' + idDevice+'/test',    
-                url: URL_DEVICE + '/' + idDevice+'/test',
-                method: "POST",
-                data: capability,
+                url: paramInfos['url'],
+                method: paramInfos['method'],
+                data: paramInfos['configParams'],
                 headers: {'Content-Type': 'application/json'}
             }).success(function (data, status, headers, config) {
                     deferred.resolve();
@@ -83,38 +87,39 @@ app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
         /*add capability*/
         addCapability : function(idDevice, capability){
             var deferred = $q.defer();
-            //var jsonld = new jsonld();            
-            // $http({
-            //     url: URL_DEVICE + '/' + idDevice + '/capability/'+capability.id+"/",
-            //     method: "PUT",
-            //     data: capability,
-            //     headers: {'Content-Type': 'application/json'}
-            // }).success(function (data, status, headers, config) {
-            //     deferred.resolve();
-            // }).error(function (data, status, headers, config) {
-            //     //jsonld.objectify(data,status,headers,config);
-            //     /*jsonld.compact(capability, capability, function(err, compacted) {
-            //         console.log(JSON.stringify(compacted, null, 2));  
-            //     });*/
-            //     console.log(JSON.stringify(data));
-            //     deferred.reject('Unable to add capability, status : '+status+', header : '+headers);
-            // });
-            
-            $http.put(URL_DEVICE + '/' + idDevice + '/capability/' + capability.id + '/', {
-                data: capability
-            }).
-            success(function(data, status, headers, config) {
+            //var jsonld = new jsonld();  
+                      
+            $http({
+                url: URL_DEVICE + '/' + idDevice + '/capability/'+capability.id+"/",
+                method: "PUT",
+                data: capability,
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data, status, headers, config) {
                 deferred.resolve();
-            }).
-            error(function(data, status, headers, config) {
+            }).error(function (data, status, headers, config) {
+                //jsonld.objectify(data,status,headers,config);
+                /*jsonld.compact(capability, capability, function(err, compacted) {
+                    console.log(JSON.stringify(compacted, null, 2));  
+                });*/
                 console.log(JSON.stringify(data));
                 deferred.reject('Unable to add capability, status : '+status+', header : '+headers);
             });
             
             // $http.put(URL_DEVICE + '/' + idDevice + '/capability/' + capability.id + '/', {
             //     data: capability
+            // }).
+            // success(function(data, status, headers, config) {
+            //     deferred.resolve();
+            // }).
+            // error(function(data, status, headers, config) {
+            //     console.log(JSON.stringify(data));
+            //     deferred.reject('Unable to add capability, status : '+status+', header : '+headers);
+            // });
+            
+            // $http.put(URL_DEVICE + '/' + idDevice + '/capability/' + capability.id + '/', {
+            //     data: capability
             // }).then(function(response) {
-            //     deferred.resolve(response.data);
+            //     deferred.resolve();
             // }, function(error) {
             //     deferred.reject('Unable to add capability, error : ' + error);
             // });
@@ -139,7 +144,7 @@ app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
             // $http.put(URL_DEVICE+'/'+device.id+'/', {
             //     data: device
             // }).then(function(response) {
-            //     deferred.resolve(response.data);
+            //     deferred.resolve();
             // }, function(error) {
             //     deferred.reject('Unable to save device, error : ' + error);
             // });
@@ -165,7 +170,7 @@ app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
             // $http.put(URL_DEVICE + '/' + idDevice + '/capability/' + capability.id + '/', {
             //     data: capability
             // }).then(function(response) {
-            //     deferred.resolve(response.data);
+            //     deferred.resolve();
             // }, function(error) {
             //     deferred.reject('Unable to modify capability, error : ' + error);
             // });
@@ -175,29 +180,29 @@ app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
         /*deleting a capability*/
         removeCapability : function(idDevice, idCapability){
             var deferred = $q.defer();
-            // $http({
-            //     url: URL_DEVICE+'/'+idDevice+'/capability/'+idCapability+"/",
-            //     method: "DELETE",
-            //     data: "",
-            //     headers: {'Content-Type': 'application/json'}
-            // }).success(function (data, status, headers, config) {
-            //     deferred.resolve();
-            // }).error(function (data, status, headers, config) {
-            //     deferred.reject('Unable to delete capability, status : '+status+', header : '+headers);
-            // });
-            
-            $http.delete(URL_DEVICE + '/' + idDevice + '/capability/' + idCapability + '/').
-            success(function(data, status, headers, config) {
+            $http({
+                url: URL_DEVICE+'/'+idDevice+'/capability/'+idCapability+"/",
+                method: "DELETE",
+                data: "",
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data, status, headers, config) {
                 deferred.resolve();
-            }).
-            error(function(data, status, headers, config) {
-                
+            }).error(function (data, status, headers, config) {
                 deferred.reject('Unable to delete capability, status : '+status+', header : '+headers);
             });
             
             // $http.delete(URL_DEVICE + '/' + idDevice + '/capability/' + idCapability + '/').
+            // success(function(data, status, headers, config) {
+            //     deferred.resolve();
+            // }).
+            // error(function(data, status, headers, config) {
+                
+            //     deferred.reject('Unable to delete capability, status : '+status+', header : '+headers);
+            // });
+            
+            // $http.delete(URL_DEVICE + '/' + idDevice + '/capability/' + idCapability + '/').
             // then(function(response) {
-            //     deferred.resolve(response.data);
+            //     deferred.resolve();
             // }, function(error) {
             //     deferred.reject('Unable to delete capability, error : ' + error);
             // });

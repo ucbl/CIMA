@@ -7,7 +7,8 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
     $scope.idrequired = false;
     $scope.selected = undefined;
     $scope.ShowIsOpen = false;
-
+    $scope.indexOfShowingCapacity = -1;
+    $scope.configParams = {};
     /*retrieve information about the device and add them to the view*/
     DeviceFactory.get($routeParams.id).then(function(device){
         
@@ -197,27 +198,87 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
             });
         }
     }
-
+    function isEmpty(obj) {
+        return Object.keys(obj).length === 0;
+    }
     /*Testing capability function*/
     $scope.testCapability = function(newCapability){
-        var cap = {};
-        newCapability = newCapability || {};
-        newCapability.protocol = newCapability.protocol || {};
-        cap.id = newCapability.id;
-        cap.protocol = {};
-        cap.protocol.protocolName = newCapability.protocol.protocolName;
-        cap.protocol.parameters = newCapability.protocol.parameters;
-        
-        DeviceFactory.testCapability($scope.id, cap).then(function(){
-            ngToast.create("Capability tested.");
 
-        }, function(msg){
-            //error
-            ngToast.create({
-                content: "Unable to test capability : "+msg,
-                className: "danger"
-            });     
-        });
+        // var cap = {};
+        // newCapability = newCapability || {};
+        // newCapability.protocol = newCapability.protocol || {};
+        // cap.id = newCapability.id;
+        // cap.protocol = {};
+        // cap.protocol.protocolName = newCapability.protocol.protocolName;
+        // cap.protocol.parameters = newCapability.protocol.parameters;
+        // cap.params = newCapability.params;
+        
+        var filterParamsOn = function(params) {
+            var configParams = {};
+
+            for (var i = 0; i < params.length; i++) {
+                var param = params[i];
+                if ($scope.configParams[param.idp] != null)
+                    configParams[param.idp] = $scope.configParams[param.idp];
+                else {
+                    configParams = {};
+                    break;
+                }
+            }
+
+            return configParams;
+        };
+        
+        var newCapability = newCapability || {};
+        if (!isEmpty(newCapability)) {
+            var configParams = filterParamsOn(newCapability.params);
+            if (!isEmpty(configParams)) {
+
+
+                var protocol = newCapability.protocol;
+                var protocolName = protocol.protocolName.toLowerCase();
+                //var protocolName = $scope.modeConnection;
+                var host = $scope.uri;
+                var port = ''
+                    ,method = ''
+                    ,pathName = '';
+                
+                for (var i = 0; i < protocol.parameters.length; i++) {
+                    var parameter = protocol.parameters[i];
+                    switch(parameter.name) {
+                        case 'method':
+                            method = parameter.value;
+                        case 'port':
+                            port = parameter.value;
+                        case 'uri':
+                            pathName = parameter.value;
+                        default:
+                            break;
+                    }
+                }
+
+                var url = protocolName + '://' + host + ':' + port + pathName;
+                var paramInfos = {
+                    'method': method,
+                    'url': url,
+                    'configParams': configParams
+                };
+                DeviceFactory.testCapability(paramInfos).then(function(){
+                    ngToast.create("Capability tested.");
+
+                }, function(msg){
+                    //error
+                    ngToast.create({
+                        content: "Unable to test capability : "+msg,
+                        className: "danger"
+                    });     
+                });
+            } else {
+                alert('Entrez tous les champs vides s\'il vous plait !');
+            }
+            
+        }
+        
     }
 
     /*Function for saving a device */
@@ -263,27 +324,41 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         });
     }
 
-    /*Function for setting the capability to modify to the scope and display the edition section*/
-    $scope.openAndEditCapability = function(capability){
-        if($scope.EditIsOpen){
-            $scope.EditIsOpen = false;
-            $scope.ShowIsOpen = false;
-
-        }else{
-            $scope.EditIsOpen = true;
-            $scope.ShowIsOpen = false;
-            $scope.editedCapability = JSON.parse(JSON.stringify(capability));
-            //Not to have same reference
-            for (var i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
-                var dataset = $scope.protocolsFromEdited[i];
-                if (dataset.protocolName == capability.protocol.protocolName) {
-                    $scope.protocolsFromEdited[i].parameters = capability.protocol.parameters;
-                    $scope.editedCapability.protocol = $scope.protocolsFromEdited[i];
-                    break;
-                }
-            }   
+    var loadCapabilitiesIntoForm = function(index, capability) {
+        $scope.indexOfShowingCapacity = index;
+        $scope.editedCapability = JSON.parse(JSON.stringify(capability));
+        //Not to have same reference
+        for (var i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
+            var dataset = $scope.protocolsFromEdited[i];
+            if (dataset.protocolName == capability.protocol.protocolName) {
+                $scope.protocolsFromEdited[i].parameters = capability.protocol.parameters;
+                $scope.editedCapability.protocol = $scope.protocolsFromEdited[i];
+                break;
+            }
         }
+    };
+
+    /*Function for setting the capability to modify to the scope and display the edition section*/
+    $scope.openAndEditCapability = function(index, capability){
+        $scope.ShowIsOpen = false;
+        if ($scope.indexOfShowingCapacity != index || !$scope.EditIsOpen) {
+            $scope.EditIsOpen = true;
+            loadCapabilitiesIntoForm(index, capability);
+            
+        } else $scope.EditIsOpen = false;
     }
+
+    /*Function for show capability*/
+    $scope.openAndShowCapability = function(index, capability){
+        $scope.EditIsOpen = false;
+        if ($scope.indexOfShowingCapacity != index || !$scope.ShowIsOpen) {
+            $scope.ShowIsOpen = true;
+            loadCapabilitiesIntoForm(index, capability);
+        } else $scope.ShowIsOpen = false;
+        
+    };
+
+
 
     /*Function for closing the edition div*/
     $scope.CloseEditCapability = function(){
@@ -294,37 +369,17 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
 
     /*Auto Indent capabilities searching bloc*/
     $scope.getCapability = function(val) {
+        console.log(val);
         return $http.get(URL_CAPABILITIES, {
             params: {
                 filter: val
             }
         }).
         then(function(response){
-            console.log(response);
+            console.log(response.data);
             return response.data;
         });
         
-    };
-
-        /*Function for show capability*/
-    $scope.openAndShowCapability = function(capability){
-        if($scope.ShowIsOpen){
-            $scope.EditIsOpen = false;
-            $scope.ShowIsOpen = false;
-        }else{
-            $scope.EditIsOpen = false;
-            $scope.ShowIsOpen = true;
-            $scope.editedCapability = JSON.parse(JSON.stringify(capability));
-            //Not to have same reference
-            for (var i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
-                var dataset = $scope.protocolsFromEdited[i];
-                if (dataset.protocolName == capability.protocol.protocolName) {
-                    $scope.protocolsFromEdited[i].parameters = capability.protocol.parameters;
-                    $scope.editedCapability.protocol = $scope.protocolsFromEdited[i];
-                    break;
-                }
-            }   
-        }
     };
 
     /*Function for closing the edition div*/

@@ -14,12 +14,13 @@
         <section  style="border-right:1px">  
             <div class="filter"> 
                 <b>
-                    <input type="checkbox" ng-model="master" />Select All
+                    <input type="checkbox" ng-model="isSelectAll" ng-click="selectAll()" id="select-all" />Select All
                 </b><br/>
                 <b>Configuration</b>
                 <div>
                     <div ng-repeat="config in configGroup">
-                        <b><input type="checkbox" ng-model="useConfig[config]" ng-checked="master" ng-init="useConfig[config] = true" />{{config}}</b>
+                        <!-- <b><input type="checkbox" ng-model="useConfig[config]" ng-init="useConfig[config] = true" />{{config}}</b> -->
+                        <b><input type="checkbox" ng-model="filters['configuration'][config]" ng-init="filters['configuration'][config] = true" ng-click="notify()" id="{{config}}" />{{config}}</b>
                         <!--<span>({{(filteredDevices | filter:config).length}})</span>--> 
                     </div>
                 </div>
@@ -28,7 +29,8 @@
                 <b>Connection mode</b>
                 <div>
                     <div ng-repeat="mode in modeGroup">
-                        <b><input type="checkbox" ng-checked="master" ng-model="useMode[mode]" ng-init="useMode[mode] = true" />{{mode}}</b>
+                        <!-- <b><input type="checkbox" ng-model="useMode[mode]" ng-init="useMode[mode] = true" />{{mode}}</b> -->
+                        <b><input type="checkbox" ng-model="filters['modeConnection'][mode]" ng-init="filters['modeConnection'][mode] = true" ng-click="notify()" id="{{mode}}" />{{mode}}</b>
                         <!--<span>({{(filteredDevices | filter:mode).length}})</span>--> 
                     </div>
                 </div>
@@ -37,7 +39,7 @@
             <b>Key words</b>
             <div>
                 <div ng-repeat="keyword in keyGroup"> 
-                    <b><input type="checkbox" ng-checked="master" ng-model="useKeys[keyword]" ng-checked="master" ng-init="useKeys[keyword] = true" />{{keyword}}</b>
+                    <b><input type="checkbox" ng-model="filters['keywords'][keyword]" ng-init="filters['keywords'][keyword] = true" ng-click="notify()" id="{{keyword}}" />{{keyword}}</b>
                    <!--<span>({{(filteredDevices | filter:keyword).length}})</span>-->
 
                 </div>
@@ -52,13 +54,12 @@
         </div>
         <div class="panel-body">
 
-            <th colspan="5">
+            <th colspan="5" id="search-section">
                 <div class="col-md-12">
-                    <button ng-click='toggle = !toggle' class='btn btn-info'>Search</button>
+                    <button ng-click='toggle = !toggle' class='btn btn-info' id='search'>Search</button>
                 </div>
                 <div ng-show='toggle'>
                     <div class="col-md-12">
-
                         <input ng-model="query.$" class="form-control" placeholder="Search a device by any..." type="text" />
                     </div>
                     
@@ -91,19 +92,18 @@
                     </tr>
                     </thead>
                     <!-- Devices table -->
-                    <tbody ng-repeat="device in filteredDevices | filter:query | orderBy:predicate:reverse track by $index">
-                    <tr>
-                        <td class="text-center">{{device.configuration}}</td>
-                        <td class="text-center">{{device.id}}</td>
-                        <td class="text-center">{{device.name}}</td>
-                        <td class="text-center">{{device.dateConnection}}</td>
-                        <td class="text-center">{{device.modeConnection}}</td>
-                        <td class="text-center">{{device.uri}}</td>
-                        <td class="text-center">
-
-                            <a class="btn btn-sm btn-success" ng-click="stopRefreshDevices()" href="#/device/{{device.id}}">View</a>
-                        </td>
-                    </tr>
+                    <tbody>
+                        <tr ng-repeat="device in devices | filter:filterByDevice | filter:query | orderBy:predicate:reverse track by $index" class="deviceAfterFiltered">
+                            <td class="text-center">{{device.configuration}}</td>
+                            <td class="text-center">{{device.id}}</td>
+                            <td class="text-center">{{device.name}}</td>
+                            <td class="text-center">{{device.dateConnection}}</td>
+                            <td class="text-center">{{device.modeConnection}}</td>
+                            <td class="text-center">{{device.uri}}</td>
+                            <td class="text-center">
+                                <a class="btn btn-sm btn-success" ng-click="stopRefreshDevices()" href="#/device/{{device.id}}" id="viewDevice{{$index}}">View</a>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

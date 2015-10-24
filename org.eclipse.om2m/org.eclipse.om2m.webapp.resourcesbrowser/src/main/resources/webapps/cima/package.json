@@ -1,9 +1,14 @@
 {
   "devDependencies": {
+    "angular-websocket": "^1.0.14",
     "jasmine-core": "^2.2.0",
     "jasmine-expect": "^1.22.3",
     "karma": "^0.12.31",
     "karma-chrome-launcher": "^0.2.1",
-    "karma-jasmine": "^0.3.6"
+    "karma-jasmine": "^0.3.6",
+    "protractor": "^2.5.1"
+  },
+  "scripts": {
+    "teste2e": "node node_modules/.bin/protractor test/protractor.conf.js"
   }
 }

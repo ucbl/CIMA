@@ -1,16 +1,15 @@
 'use strict';
 
-describe('HomeController', function() {
+describe('DeviceFactory', function() {
+    var DeviceFactory, testUtils;
     beforeEach(module('CIMA'));
-    var $controller,
-        $scope;
-    var data = [
+    var devices = [
         {
             "id" : "0123456789",
             "name" : "EV3",
             "configuration" : "automatic",
             "uri" : "http://192.168.0.2",
-            "dateConnection" : "10/10/14",
+            "dateConnecti" : "10/10/14",
             "modeConnection" : "USB",
             "capabilities": [
                 {
@@ -177,54 +176,40 @@ describe('HomeController', function() {
             ]
         }
     ];
+    var $q,
+        deferred,
+        $scope;
+    beforeEach(inject(function(_DeviceFactory_, _$q_, _$rootScope_) {
+        $q = _$q_;
+        $scope = _$rootScope_.$new();
+        DeviceFactory = _DeviceFactory_;
+        deferred = $q.defer();
+        
+    }));
 
-    describe(' tests load devices', function() {
-        var  DeviceFactory,
-            deferred,
-            $q;
-        beforeEach(inject(function(_$controller_, _$rootScope_,  DeviceFactory, _$q_) {
-            $controller = _$controller_;
-            $scope = _$rootScope_.$new();
-            $q = _$q_;
-            deferred = _$q_.defer();
-            spyOn(DeviceFactory, 'find').and.returnValue(deferred.promise);
-            //deviceFactory = _DeviceFactory_;
-            
-            $controller('HomeController', {$scope: $scope, DeviceFactory: DeviceFactory});
-        }));
-
-        it(' should retrieve 4 devices', function() {
-            //$scope.loadDevices();
-            deferred.resolve(data);
-            $scope.$apply();
-            expect($scope.devices.length).toBe(4);
+    it(' should find 4 devices', function() {
+        var result  = {};
+        spyOn(DeviceFactory, "find").and.callFake(function() {
+            deferred.resolve(devices);
+            return deferred.promise;
         });
+        DeviceFactory.find().then(function(data) {
+            result = data;
+        });
+        $scope.$apply();
+        expect(result).toBe(devices);
     });
-    
-    describe(' tests $interval', function() {
-        var $interval,
-            $httpBackend;
-        beforeEach(inject(function(_$controller_, _$rootScope_, _$interval_, _$httpBackend_) {
-            $controller = _$controller_;
-            $httpBackend = _$httpBackend_;
-            $scope = _$rootScope_.$new();
-            //$intervalSpy = jasmine.createSpy('$interval', _$interval_).and.callThrough();
-            $interval = _$interval_;
-            $controller('HomeController', {$scope: $scope});
-            $httpBackend.when('GET', URL_DEVICE).respond(200, {devices: data});
-        }));
 
-
-        it(' tests if $interval is called 4 times', function() {
-            $interval.flush(15001);
-            expect($scope.countLoadDevices).toBe(4);
+    it(' should find the first device', function() {
+        var result  = {};
+        spyOn(DeviceFactory, "get").and.callFake(function() {
+            deferred.resolve(devices[0]);
+            return deferred.promise;
         });
-
-        it(' test filter', function() {
-            
-            expect($scope.devices).toBeEmptyArray();
-            $scope.selectAll();
-           //expect($scope.devices).not.toBeEmptyArray();
+        DeviceFactory.get().then(function(data) {
+            result = data;
         });
+        $scope.$apply();
+        expect(result).toBe(devices[0]);
     });
 });
