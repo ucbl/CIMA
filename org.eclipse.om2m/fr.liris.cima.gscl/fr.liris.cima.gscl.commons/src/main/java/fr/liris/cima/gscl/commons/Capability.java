@@ -24,34 +24,42 @@ public class Capability {
 	private Protocol protocol;
 	private List<String> keywords;
 	private int cloudPort;
+	private List<Parameter>  parameters;
+	private Result result;
 
 	/** Configuration's type of the Capability(automatic or manual) */
 	private String configuration;
 
-	public Capability(String name, Protocol protocol, List<String> keywords, int cloudPort) {
+	public Capability(String name, Protocol protocol, List<String> keywords, int cloudPort, List<Parameter> parameters, Result result) {
 		this.name = name;
 		this.protocol = protocol;
 		this.keywords = keywords;
 		this.setConfiguration("automatic");
 		this.cloudPort=cloudPort;
-
+		this.parameters = parameters;
+		this.result = result;
 	}
-	public Capability(String name, Protocol protocol, List<String> keywords) {
+	public Capability(String name, Protocol protocol, List<String> keywords, List<Parameter> parameters, Result result) {
 		this.name = name;
 		this.protocol = protocol;
 		this.keywords = keywords;
-
+		this.parameters = parameters;
+		this.result = result;
 	}
 
 	public  Capability(String name) {
 		this.name = name;
 		protocol = new Protocol();
 		keywords = new ArrayList<String>();
+		parameters = new ArrayList<Parameter>();
+		result = null;
 	}
 
 	public  Capability() {
 		protocol = new Protocol();
 		keywords = new ArrayList<String>();
+		parameters = new ArrayList<Parameter>();
+		result = null;
 	}
 
 	/**
@@ -103,7 +111,15 @@ public class Capability {
 	//	}
 
 	public String toString() {
-		return "capabilities (" + name + ", "  + protocol + ", " + keywords + ")";
+		String res = "capabilities (" + name + ", "  + protocol + ", " + keywords + ", ";
+		
+		for (Parameter p : parameters) {
+			res += p.toString() + ", ";
+		}
+
+		res += result.toString() + ")";
+
+		return  res;
 	}
 
 	public Protocol getProtocol() {
@@ -157,5 +173,25 @@ public class Capability {
 	}
 	public void setConfiguration(String configuration) {
 		this.configuration = configuration;
+	}
+
+	public List<Parameter> getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(List<Parameter> parameters) {
+		this.parameters = parameters;
+	}
+
+	public Result getResult() {
+		return result;
+	}
+
+	public void addParameter(Parameter param) {
+		parameters.add(param);
+	}
+
+	public void setResult(Result result) {
+		this.result = result;
 	}
 }

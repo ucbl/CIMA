@@ -94,14 +94,14 @@ public class CapabilityManagerImpl implements CapabilityManager {
 		l.add("k1");
 		l.add("k2");
 		l.add("k3");
-		Capability c = new Capability("test1", p, l);
+		Capability c = new Capability("test1", p, l, null, null);
 		capabilityManagerImpl.add(c);
 		l = new ArrayList<>();
 		l.add("k1");
 		l.add("k2");
 		l.add("k3");
 		l.add("k4");
-		c = new Capability("test2", p, l);
+		c = new Capability("test2", p, l, null, null);
 		capabilityManagerImpl.add(c);
 		
 		List<Capability> filtredCapa = capabilityManagerImpl.getCapabilities("k1");

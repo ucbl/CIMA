@@ -130,16 +130,12 @@ public class Encoder {
 		return ObixEncoder.toString(obj);
 	}
 
-
-
-
 	public static Obj encodeCapabilityToObixObj(Capability capability) {
 		try{
 			fh = new FileHandler("log/gsclCommons.log", true);
 		LOGGER.addHandler(fh);
 		fh.setFormatter(new SimpleFormatter());}
 		catch(IOException ex){}
-
 
 		Obj obj = new Obj();
 
@@ -158,7 +154,56 @@ public class Encoder {
 		}
 		obj.add(keywords);
 
+		obix.List obixParamaters = new obix.List("params");
+		for(Parameter p : capability.getParameters()){
+			obixParamaters.add(encodeParameterToObixObj(p));
+		}
+		obj.add(obixParamaters);
+
+		obj.add(encodeResultToObixObj(capability.getResult()));
+
 		return obj;
+	}
+
+	public static Obj encodeResultToObixObj(Result result) {
+		Obj obj = new Obj("result");
+
+		if (result != null) {
+			obj.add(new Str("type", result.getType()));
+			if (result.getDesc() != null)
+				obj.add(new Str("desc", result.getDesc()));
+			else
+				obj.add(new Str("desc", "null"));
+		}
+
+		return obj;
+	}
+
+	public static String encodeResultToObix(Result result) {
+		return ObixEncoder.toString(encodeResultToObixObj(result));
+	}
+
+	public static Obj encodeParameterToObixObj(Parameter parameter) {
+		try{
+			fh = new FileHandler("log/gsclCommons.log", true);
+			LOGGER.addHandler(fh);
+			fh.setFormatter(new SimpleFormatter());
+		} catch(IOException ex){}
+
+		Obj obj = new Obj();
+		obj.add(new Str("idp", parameter.getIdP()));
+		if (parameter.getDesc() == null) {
+			obj.add(new Str("desc", "null"));
+		 } else {
+			obj.add(new Str("desc", parameter.getDesc()));
+		}
+		obj.add(new Str("type", parameter.getType()));
+
+		return obj;
+	}
+
+	public static String encodeParameterToObix(Parameter parameter) {
+		return ObixEncoder.toString(encodeParameterToObixObj(parameter));
 	}
 
 	public static String encodeCapabilityToObix(Capability capability) {
@@ -176,6 +221,7 @@ public class Encoder {
 		}
 		return obixCapabilities;
 	}
+
 	public static String encodeCapabilitiesToObix(List<Capability> capabilities) {
 		return ObixEncoder.toString(encodeCapabilityToObixObj(capabilities));
 	}

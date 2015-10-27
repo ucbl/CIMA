@@ -36,6 +36,7 @@ public class Parser {
 		return "";
 	}
 
+	//NOT UPDATED after changement of capabilities (which now containts params and result), because it's not used anywhere
 	public static String parseSimpleXmlToObix(String representation, String newElement, String value) {
 		try {
 
@@ -62,6 +63,7 @@ public class Parser {
 		return null;
 	}
 
+	//NOT UPDATED after changement of capabilities (which now containts params and result), because it's not used anywhere
 	public static String parseSimpleXmlToObix(String representation) {
 		try {
 
@@ -162,8 +164,48 @@ public class Parser {
 			capability.setProtocol(elementToProtocol(elementProtocol));
 		}
 
+		Element elementParameters = capabilityElement.getChild("params");
+		if (elementParameters != null) {
+			for(Element paramElement : elementParameters.getChildren()) {
+				capability.addParameter(elementToParameter(paramElement));
+			}
+		}
+
+		Element elementResult = capabilityElement.getChild("result");
+		if (elementResult != null) {
+			capability.setResult(elementToResult(elementResult));
+		} else {
+			capability.setResult(null);
+		}
+
 		return capability;
 	}
+
+	public static Parameter elementToParameter(Element paramElement) throws JDOMException, IOException {
+
+		Parameter param = new Parameter();
+
+		param.setIdP(paramElement.getChildText("idp"));
+		param.setDesc(paramElement.getChildText("desc"));
+		param.setType(paramElement.getChildText("type"));
+
+		return param;
+	}
+
+	public static Result elementToResult(Element elementResult) throws JDOMException, IOException {
+
+		Result res = null;
+
+		if ("true".equals(elementResult.getAttributeValue("hasresult"))) {
+			res = new Result();
+
+			res.setType(elementResult.getChildText("type"));
+			res.setDesc(elementResult.getChildText("desc"));
+		}
+
+		return res;
+	}
+
 
 	public static Device parseXmlToDevice(String representation) {
 		DeviceDescription deviceDescription = new DeviceDescription();
@@ -298,7 +340,7 @@ public class Parser {
 
 		Device device = null;
 		String id = "",  name = "", uri = "",  modeConnection=""; 
-		 Protocol protocol = new Protocol();
+		Protocol protocol = new Protocol();
 		Date dateConnection = null;
 		
 //		Class http = protocolResolver.getProtocol("http");;
@@ -328,8 +370,21 @@ public class Parser {
 			keywords.add(o.getStr());
 		}
 
+		Obj [] objsParams = capabilityObj.get("params").list();
+		List<Parameter> params = new ArrayList<>();
+		for(Obj o : objsParams){
+			Parameter p = new Parameter(o.get("idp").getStr(), o.get("desc").getStr(), o.get("type").getStr());
+			params.add(p);
+		}
+
+		Obj objResult = capabilityObj.get("result");
+		Result r = null;
+		if (objResult != null) {
+			r = new Result(objResult.get("type").getStr(), objResult.get("desc").getStr());
+		}
+
 		name = capabilityObj.get("id").getStr();
-		Capability capa = new Capability(name, protocol, keywords,cloudPort);
+		Capability capa = new Capability(name, protocol, keywords,cloudPort, params, r);
 		System.out.println("***************************************************");
 		System.out.println(capabilityObj.get("configuration").getStr());
 		System.out.println("***************************************************");
