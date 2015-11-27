@@ -117,7 +117,13 @@ public class Capability {
 			res += p.toString() + ", ";
 		}
 
-		res += result.toString() + ")";
+		if (result != null) {
+			res += result.toString();
+		} else {
+			res = res.substring(0, res.length()-2); // if capability doesn't have the attribute result, we remove the last 2 characters ", "
+		}
+
+		res += ")";
 
 		return  res;
 	}
