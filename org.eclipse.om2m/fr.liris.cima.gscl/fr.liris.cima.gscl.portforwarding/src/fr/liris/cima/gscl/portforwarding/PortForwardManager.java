@@ -1,33 +1,23 @@
 package fr.liris.cima.gscl.portforwarding;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by dasilvafrederic on 22/10/15.
  */
-public class PortForwardManager {
+public class PortForwardManager implements PortForwardingInterface {
 
 
     private Map<String, Integer> PFmanager = new HashMap<String, Integer>();
-    private TcpManagerListener manager;
 
-    public PortForwardManager(){
-            manager = new TcpManagerListener(this);
-            manager.run();
-    }
+
 
     public void askNewPortForwarding(String address, int port, String deviceID){
 
         String message = "{type:'open',address:'"+address+"',port:'"+port+"',ID:'"+deviceID+"' }";
-        try {
             TcpManagerSender.sendMessage(message);
-            TcpManagerListener m = new TcpManagerListener(this);
-            m.run();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     public int getPortForwarding(String deviceId){
@@ -35,6 +25,7 @@ public class PortForwardManager {
     }
 
 
+    //TODO: interet du truc ???
     public  void addPortForwarding(String m){
         System.out.println("==> ==> ==>dans le port forward manager : " + m);
 
@@ -53,7 +44,7 @@ public class PortForwardManager {
 
 
     //{"type":"succes" , "port" : "16324","id":"idnumero" }
-
+    //TODO: better parsing
     private String getTypeFromJSon(String m){
         return m.split(",")[0].split(":")[1].replace("\"", "");
     }

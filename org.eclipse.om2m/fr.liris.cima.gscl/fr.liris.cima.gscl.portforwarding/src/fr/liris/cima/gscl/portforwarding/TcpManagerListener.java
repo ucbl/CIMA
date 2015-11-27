@@ -28,6 +28,8 @@ public class TcpManagerListener extends Thread {
             Socket socket = new Socket ("127.0.0.1", NBPORT);
             PrintWriter out = new PrintWriter (socket.getOutputStream(), true);
 
+
+            System.out.println(out.toString());
             System.out.println("Hello from JAVA TCP Client");
 
             out.close ();
