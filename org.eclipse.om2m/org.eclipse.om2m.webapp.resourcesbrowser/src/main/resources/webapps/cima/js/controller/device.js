@@ -98,7 +98,7 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
             cap.seeAlso = { "@id": "rdfs:seeAlso", "@type": "@id" };
             cap.status = "vs:term_status";
             console.log("cap = "+JSON.stringify(cap));
-            /*var doc = {
+            var doc = {
               "http://schema.org/name": "Manu Sporny",
               "http://schema.org/url": {"@id": "http://manu.sporny.org/"},
               "http://schema.org/image": {"@id": "http://manu.sporny.org/images/manu.png"}
@@ -119,13 +119,14 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
                 "subPropertyOf": { "@id": "rdfs:subPropertyOf", "@type": "@id", "@container": "@set" },
                 "seeAlso": { "@id": "rdfs:seeAlso", "@type": "@id" },
                 "status": "vs:term_status"
-            };*/
+            };
 
             // compact a document according to a particular context
             // see: http://json-ld.org/spec/latest/json-ld/#compacted-document-form
-            /*jsonld.compact(doc, context, function(err, compacted) {
+            jsonld.compact(doc, context, function(err, compacted) {
               console.log(JSON.stringify(compacted, null, 2));
-            });*/
+            });
+            
             DeviceFactory.addCapability($scope.id,cap).then(function(){
                 $scope.capabilities.push(cap);
                 ngToast.create("Capability added.");
@@ -203,7 +204,7 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
     }
     /*Testing capability function*/
     $scope.testCapability = function(newCapability){
-
+        
         // var cap = {};
         // newCapability = newCapability || {};
         // newCapability.protocol = newCapability.protocol || {};
@@ -268,10 +269,10 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
 
                 }, function(msg){
                     //error
-                    ngToast.create({
-                        content: "Unable to test capability : "+msg,
-                        className: "danger"
-                    });     
+                    // ngToast.create({
+                    //     content: "Unable to test capability : "+msg,
+                    //     className: "danger"
+                    // });     
                 });
             } else {
                 alert('Entrez tous les champs vides s\'il vous plait !');

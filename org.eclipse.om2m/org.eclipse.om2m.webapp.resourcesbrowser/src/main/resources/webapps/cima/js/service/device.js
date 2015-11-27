@@ -1,4 +1,38 @@
 'use strict';
+
+// Hàm khởi tạo HTPP Request
+function create_obj() {
+    var browser = navigator.appName;
+    if (browser == 'Microsoft Internet Explorer') {
+        var obj = new ActiveXObject('Microsoft.XMLHTTP');
+    } else {
+        var obj = new XMLHttpRequest();
+    }
+    return obj;
+}
+
+// Khởi tạo HTTP Request
+var http = create_obj();
+
+// Hàm thiết lập thông số cho HTTP Request
+function getData(speed,angle) {
+    
+    http.open('post', 'http://192.168.2.4:8080/A/rotate', true);
+    http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    http.onreadystatechange = do_process;
+    http.send('speed='+speed);
+    http.send('speed='+angle);
+    return false;
+}
+
+// Hàm xử lý dữ liệu
+function do_process() {
+    if (http.readyState == 4 && http.status == 200) {
+        var kq = http.responseText; // Phân loại dữ liệu
+        document.getElementById('show').innerHTML = kq;
+    }
+}
+
 /*Device Model
 * Defining all methods to request the server*/
 app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
@@ -63,24 +97,46 @@ app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
             console.log(paramInfos['configParams']);
             var deferred = $q.defer();
             $http({
-                //url : URL_DEVICE + '/' + idDevice+'/test',    
                 url: paramInfos['url'],
                 method: paramInfos['method'],
                 data: paramInfos['configParams'],
-                headers: {'Content-Type': 'application/json'}
+                //withCredentials: true,
+                // /!\: we have to put this header below : application/x-www-form-urlencoded to send post data under a form tag
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).success(function (data, status, headers, config) {
-                    deferred.resolve();
+                deferred.resolve();
             }).error(function (data, status, headers, config) {
-                    deferred.reject('Unable to test capability, status : '+status+', header : '+headers);
+                deferred.reject('Unable to test capability, status : '+status+', header : '+headers);
             });
             
-            // $http.post(URL_DEVICE + '/' + idDevice + '/test', {
-            //     data: capability
+            // $.ajax({
+            //     url : paramInfos['url'],
+            //     type : paramInfos['method'],
+            //     dataType : 'json',
+            //     data: paramInfos['configParams'],
+            //     xhrFields: {
+            //         withCredentials: false
+            //     },
+            //     success : function(data, status){
+            //         deferred.resolve();
+            //     },
+            //     error : function(result, status, error){
+            //         deferred.reject('status : '+status+', error : '+error+'.');
+            //     },
+            //     beforeSend: function(xhr, settings) { 
+            //         xhr.setRequestHeader('Authorization','Basic YWRtaW46YWRtaW4=');
+            //     }
+            // });
+
+            // $http.post("http://192.168.2.4:8080/A/rotate",{
+            //     data: paramInfos['configParams']
             // }).then(function(response) {
             //     deferred.resolve(response.data);
             // }, function(error) {
             //     deferred.reject('Unable to test capability, error : ' + error);
             // });
+            
+            //getData(33, 60);
             return deferred.promise;
         },
 

@@ -3,12 +3,17 @@
 //var app = angular.module('CIMA', ['CIMA.HomeController', 'CIMA.DeviceController', 'ngRoute', 'CIMA.ui', 'CIMA.tags', 'CIMA.toast'])
 var app = angular.module('CIMA', ['ngRoute', 'ui.bootstrap', 'ngTagsInput', 'ngToast']);
 /*routing URLs*/
-app.config(['$routeProvider', function($routeProvider){
+app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider){
 
   $routeProvider
   .when('/', {templateUrl: 'partials/home.html', controller: 'HomeController'})
   .when('/device/:id', {templateUrl: 'partials/device.html', controller: 'DeviceController'})
   .otherwise({redirectTo : '/'});
+
+  // $httpProvider.defaults.headers.common = {};
+  // $httpProvider.defaults.headers.post = {};
+  // $httpProvider.defaults.headers.put = {};
+  // $httpProvider.defaults.headers.patch = {};
 }]);
 
 /* bootstrap UI module */
@@ -25,10 +30,10 @@ angular.module('CIMA.toast', ['ngToast'])
   }]);
 
 /*Auth header for http requests*/
-app.run(function($http){
-	$http.defaults.headers.common.Authorization = 'Basic YWRtaW46YWRtaW4='
-
-});
+app.run(['$http',  function($http){
+  // /!\: This command below PREVENT the interface from sending POST data (speed, angle...) to connected object
+  //$http.defaults.headers.common.Authorization = 'Basic YWRtaW46YWRtaW4=';
+}]);
 
 // angular.module('test', []).controller('testcontroller', ['$scope', function($scope) {
 //   $scope.num = 0;
