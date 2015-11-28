@@ -1,7 +1,7 @@
 #TODO
 pwd=`pwd`
 cd org.eclipse.om2m
-sudo mvn clean install
+#sudo mvn clean install
 cd ..
 wait
 

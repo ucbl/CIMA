@@ -32,7 +32,7 @@ angular.module('CIMA.toast', ['ngToast'])
 /*Auth header for http requests*/
 app.run(['$http',  function($http){
   // /!\: This command below PREVENT the interface from sending POST data (speed, angle...) to connected object
-  //$http.defaults.headers.common.Authorization = 'Basic YWRtaW46YWRtaW4=';
+  $http.defaults.headers.common.Authorization = 'Basic YWRtaW46YWRtaW4=';
 }]);
 
 // angular.module('test', []).controller('testcontroller', ['$scope', function($scope) {
