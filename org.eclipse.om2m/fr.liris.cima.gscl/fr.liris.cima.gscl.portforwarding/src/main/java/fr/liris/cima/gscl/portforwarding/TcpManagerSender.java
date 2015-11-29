@@ -39,9 +39,12 @@ public class TcpManagerSender {
             socket.shutdownOutput(); //HAHAHA
             
 
+            socket.setSoTimeout(3000);
 
+            
             inputGet = socket.getInputStream();
 
+            try{
             System.out.println("111");
 
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputGet));
@@ -54,6 +57,10 @@ public class TcpManagerSender {
 
             System.out.println("333");
 
+            }
+            catch(java.net.SocketTimeoutException e){
+            	System.out.println("ERROR : timeout during port forwarding answer.");
+            }
             inputGet.close();
             socket.close();
         }
