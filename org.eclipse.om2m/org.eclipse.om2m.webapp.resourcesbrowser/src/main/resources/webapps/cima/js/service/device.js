@@ -21,7 +21,7 @@ function getData(speed,angle) {
     http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     http.onreadystatechange = do_process;
     http.send('speed='+speed);
-    http.send('speed='+angle);
+    http.send('angle='+angle);
     return false;
 }
 
@@ -93,44 +93,43 @@ app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
         testCapability : function(paramInfos){
             $http.defaults.headers.common.Authorization = undefined;
             console.log($http.defaults.headers.common.Authorization);
-            console.log('*** Sending request ajax to test ***');
-            console.log('url : ' + paramInfos['url']);
-            console.log('method : ' + paramInfos['method']);
-            console.log(paramInfos['configParams']);
+            
+            
             var deferred = $q.defer();
-            $http({
+            var objHttp = {
                 url: paramInfos['url'],
                 method: paramInfos['method'],
-                data: paramInfos['configParams'],
-                //withCredentials: true,
-                // /!\: we have to put this header below : application/x-www-form-urlencoded to send post data under a form tag
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            }).success(function (data, status, headers, config) {
-                deferred.resolve();
+            };
+
+            switch (paramInfos['method']) {
+                case "POST":
+                    objHttp.data = paramInfos['configParams'];
+                    objHttp.headers = {};
+                    objHttp.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    break;
+                // Implement later if necessary
+                case "GET":
+                    
+                    break;
+                case "PUT":
+                    
+                    break;
+                default:
+                    break;
+            }
+
+            console.log('*** Sending AJAX request ***');
+            console.log(objHttp);
+            $http(objHttp).success(function (data, status, headers, config) {
+                deferred.resolve(data);
             }).error(function (data, status, headers, config) {
                 deferred.reject('Unable to test capability, status : '+status+', header : '+headers);
+                //$http.defaults.headers.common.Authorization = 'Basic YWRtaW46YWRtaW4=';
+                console.log(data);
             });
             $http.defaults.headers.common.Authorization = 'Basic YWRtaW46YWRtaW4=';
             console.log($http.defaults.headers.common.Authorization);
-            // $.ajax({
-            //     url : paramInfos['url'],
-            //     type : paramInfos['method'],
-            //     dataType : 'json',
-            //     data: paramInfos['configParams'],
-            //     xhrFields: {
-            //         withCredentials: false
-            //     },
-            //     success : function(data, status){
-            //         deferred.resolve();
-            //     },
-            //     error : function(result, status, error){
-            //         deferred.reject('status : '+status+', error : '+error+'.');
-            //     },
-            //     beforeSend: function(xhr, settings) { 
-            //         xhr.setRequestHeader('Authorization','Basic YWRtaW46YWRtaW4=');
-            //     }
-            // });
-
+            
             // $http.post("http://192.168.2.4:8080/A/rotate",{
             //     data: paramInfos['configParams']
             // }).then(function(response) {

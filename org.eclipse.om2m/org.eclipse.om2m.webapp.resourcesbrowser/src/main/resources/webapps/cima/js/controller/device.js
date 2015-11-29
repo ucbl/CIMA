@@ -233,7 +233,7 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         var newCapability = newCapability || {};
         if (!isEmpty(newCapability)) {
             var configParams = filterParamsOn(newCapability.params);
-            if (!isEmpty(configParams)) {
+            if ((newCapability.id.indexOf("sensor") >= 0) || (!isEmpty(configParams) && newCapability.id.indexOf("motor") >= 0)) {
 
 
                 var protocol = newCapability.protocol;
@@ -262,11 +262,12 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
                 var paramInfos = {
                     'method': method,
                     'url': url,
-                    'configParams': configParams
+                    'configParams': configParams,
+                    'result': newCapability.result
                 };
-                DeviceFactory.testCapability(paramInfos).then(function(){
+                DeviceFactory.testCapability(paramInfos).then(function(data){
                     ngToast.create("Capability tested.");
-
+                    console.log(data);
                 }, function(msg){
                     //error
                     // ngToast.create({

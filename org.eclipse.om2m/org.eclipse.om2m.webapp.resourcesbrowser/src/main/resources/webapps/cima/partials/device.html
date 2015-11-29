@@ -114,8 +114,11 @@
                             <button class="btn btn-danger pull-left" type="button" ng-click="openAndShowCapability(indexOfShowingCapacity)" />
                                 Close
                             </button>
+
+                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('sensor') >= 0" ng-click="testCapability(editedCapability)">Test</button>
+                            
                             <!-- Test capability button -->
-                            <button ng-click="" type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#configParamsModal">Configure</button>
+                            <button ng-click="" type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0" data-toggle="modal" data-target="#configParamsModal">Configure</button>
                             <br>
                             <!-- Modal -->
                             <div class="modal fade" id="configParamsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -140,7 +143,7 @@
                                   </div>
                                   <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" ng-if="editedCapability.params.length > 0" ng-click="testCapability(editedCapability)">Submit</button>
+                                    <button type="button" class="btn btn-primary" ng-if="editedCapability.params.length > 0" ng-click="testCapability(editedCapability)">Test</button>
                                   </div>
                                 </div>
                               </div>
