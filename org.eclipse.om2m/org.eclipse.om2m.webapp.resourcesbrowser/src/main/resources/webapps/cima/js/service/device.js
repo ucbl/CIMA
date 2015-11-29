@@ -91,6 +91,8 @@ app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
 
         /*test a device*/
         testCapability : function(paramInfos){
+            $http.defaults.headers.common.Authorization = undefined;
+            console.log($http.defaults.headers.common.Authorization);
             console.log('*** Sending request ajax to test ***');
             console.log('url : ' + paramInfos['url']);
             console.log('method : ' + paramInfos['method']);
@@ -108,7 +110,8 @@ app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
             }).error(function (data, status, headers, config) {
                 deferred.reject('Unable to test capability, status : '+status+', header : '+headers);
             });
-            
+            $http.defaults.headers.common.Authorization = 'Basic YWRtaW46YWRtaW4=';
+            console.log($http.defaults.headers.common.Authorization);
             // $.ajax({
             //     url : paramInfos['url'],
             //     type : paramInfos['method'],

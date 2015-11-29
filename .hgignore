@@ -13,5 +13,5 @@ images/*
 .DS_Store
 todo_09_12_2014.txt
 *.iml
-org.eclipse.om2m/fr.liris.cima.comm.protocol/target/p2content.xml
+/org.eclipse.om2m/fr.liris.cima.comm.protocol/target/p2content.xml
 /org.eclipse.om2m/org.eclipse.om2m.webapp.resourcesbrowser/src/main/resources/webapps/cima/node_modules/*
