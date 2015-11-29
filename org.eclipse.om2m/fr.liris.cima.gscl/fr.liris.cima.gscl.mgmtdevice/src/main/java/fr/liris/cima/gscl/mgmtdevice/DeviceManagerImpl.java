@@ -32,6 +32,8 @@ import fr.liris.cima.gscl.commons.parser.Parser;
 import fr.liris.cima.gscl.commons.util.Utils;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
 import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
+import fr.liris.cima.gscl.portforwarding.PortForwardingInterface;
+
 import java.util.logging.Logger;
 import java.util.logging.Handler;
 import java.util.logging.FileHandler;
@@ -54,6 +56,8 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 
 	/** Discovered SCL service*/
 	static SclService SCL;
+	
+	private PortForwardingInterface portForwardingService;
 
 
 	static List<Device> devices;
@@ -73,8 +77,9 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 
 	}
 
-	public DeviceManagerImpl(SclService scl){
+	public DeviceManagerImpl(SclService scl, PortForwardingInterface pf){
 		SCL = scl;
+		portForwardingService = pf;
 		devices = new ArrayList<>();
 		unknownDevices = new ArrayList<>();
 		configManagerImpl = new ConfigManagerImpl();
@@ -112,8 +117,19 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		for(Capability capability : device.getCapabilities()){
 			this.capabilityManager.add(capability);
 		}
+		this.askForPortForwarding(device);
 	}
 
+	private void askForPortForwarding(Device device){ //TODO : logique métier cote PF
+		String deviceID = device.getId();
+		int port = 8080; //TODO; //SELON CAPACITE
+		String address = device.getUri(); //TODO verif
+		
+		System.out.println("SEND SEND SEND : "+ deviceID + " " + port + " " + address);
+		portForwardingService.askNewPortForwarding(address, port, deviceID);
+		System.out.println("SENDED SENDED");
+	}
+	
 	@Override
 	public void removeDevice(String deviceId) {
 		Device  device = getDevice(deviceId);

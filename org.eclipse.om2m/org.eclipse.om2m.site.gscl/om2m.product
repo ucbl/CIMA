@@ -29,6 +29,17 @@
    </vm>
 
    <plugins>
+      <plugin id="fr.liris.cima.comm.http"/>
+      <plugin id="fr.liris.cima.comm.protocol"/>
+      <plugin id="fr.liris.cima.gscl.comm.http"/>
+      <plugin id="fr.liris.cima.gscl.commons"/>
+      <plugin id="fr.liris.cima.gscl.core"/>
+      <plugin id="fr.liris.cima.gscl.device.service"/>
+      <plugin id="fr.liris.cima.gscl.discovery"/>
+      <plugin id="fr.liris.cima.gscl.hiddiscovery"/>
+      <plugin id="fr.liris.cima.gscl.mgmtdevice"/>
+      <plugin id="fr.liris.cima.gscl.portforwarding"/>
+      <plugin id="fr.liris.cima.gscl.usbdiscovery"/>
       <plugin id="javax.servlet"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.httpclient"/>
@@ -58,20 +69,19 @@
       <plugin id="org.eclipse.om2m.webapp.resourcesbrowser"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
-      <plugin id="fr.liris.cima.comm.http"/>
-      <plugin id="fr.liris.cima.comm.protocol"/>
-      <plugin id="fr.liris.cima.gscl.comm.http"/>
-      <plugin id="fr.liris.cima.gscl.commons"/>
-      <plugin id="fr.liris.cima.gscl.discovery"/>
-      <plugin id="fr.liris.cima.gscl.hiddiscovery"/>
-      <plugin id="fr.liris.cima.gscl.usbdiscovery"/>
-      <plugin id="fr.liris.cima.gscl.portforwarding"/>
-      <plugin id="fr.liris.cima.gscl.core"/>
-      <plugin id="fr.liris.cima.gscl.mgmtdevice"/>
-      <plugin id="fr.liris.cima.gscl.device.service"/>
    </plugins>
 
    <configurations>
+      <plugin id="fr.liris.cima.comm.http" autoStart="true" startLevel="4" />
+      <plugin id="fr.liris.cima.comm.protocol" autoStart="true" startLevel="3" />
+      <plugin id="fr.liris.cima.gscl.comm.http" autoStart="true" startLevel="4" />
+      <plugin id="fr.liris.cima.gscl.commons" autoStart="true" startLevel="4" />
+      <plugin id="fr.liris.cima.gscl.core" autoStart="true" startLevel="6" />
+      <plugin id="fr.liris.cima.gscl.discovery" autoStart="true" startLevel="5" />
+      <plugin id="fr.liris.cima.gscl.hiddiscovery" autoStart="true" startLevel="5" />
+      <plugin id="fr.liris.cima.gscl.mgmtdevice" autoStart="true" startLevel="4" />
+      <plugin id="fr.liris.cima.gscl.portforwarding" autoStart="true" startLevel="3" />
+      <plugin id="fr.liris.cima.gscl.usbdiscovery" autoStart="true" startLevel="5" />
       <plugin id="org.apache.felix.gogo.command" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.shell" autoStart="true" startLevel="0" />
@@ -79,21 +89,16 @@
       <plugin id="org.eclipse.equinox.http.jetty" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.om2m.comm.coap" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.om2m.comm.http" autoStart="true" startLevel="3" />
-      <plugin id="fr.liris.cima.comm.protocol" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.om2m.core" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.om2m.ipu.sample" autoStart="false" startLevel="4" />
-      <plugin id="fr.liris.cima.comm.http" autoStart="true" startLevel="4" />
-      <plugin id="fr.liris.cima.gscl.commons" autoStart="true" startLevel="4" />
-      <plugin id="fr.liris.cima.gscl.comm.http" autoStart="true" startLevel="4" />
-      <plugin id="fr.liris.cima.gscl.discovery" autoStart="true" startLevel="5" />
-     <plugin id="fr.liris.cima.gscl.hiddiscovery" autoStart="true" startLevel="5" /> 
-     <plugin id="fr.liris.cima.gscl.usbdiscovery" autoStart="true" startLevel="5" />
-     <plugin id="fr.liris.cima.gscl.portforwarding" autoStart="true" startLevel="5" />
-      <plugin id="fr.liris.cima.gscl.core" autoStart="true" startLevel="6" />
-      <plugin id="fr.liris.cima.gscl.mgmtdevice" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.om2m.webapp.resourcesbrowser" autoStart="true" startLevel="3" />
+      <property name="fr.liris.cima.gscl.adress" value="127.0.0.1" />
+      <property name="fr.liris.cima.gscl.defaultDevicePathInfos" value="/infos" />
+      <property name="fr.liris.cima.gscl.discoveryWaitingTimer" value="1000" />
+      <property name="fr.liris.cima.gscl.forwardPort" value="8000" />
       <property name="org.eclipse.equinox.http.jetty.http.port" value="8181" />
       <property name="org.eclipse.om2m.adminRequestingEntity" value="admin:admin" />
+      <property name="org.eclipse.om2m.coap.port" value="5684" />
       <property name="org.eclipse.om2m.dbFile" value="gscl.db4o" />
       <property name="org.eclipse.om2m.globalContext" value="" />
       <property name="org.eclipse.om2m.guestRequestingEntity" value="guest:guest" />
@@ -109,13 +114,6 @@
       <property name="org.eclipse.om2m.sclBaseProtocol.default" value="http" />
       <property name="org.eclipse.om2m.sclType" value="GSCL" />
       <property name="org.eclipse.om2m.webInterfaceContext" value="/" />
-      <property name="org.eclipse.om2m.coap.port" value="5684" />
-
-      <property name="fr.liris.cima.gscl.forwardPort" value="8000" />
-      <property name="fr.liris.cima.gscl.adress" value="127.0.0.1" />
-      <property name="fr.liris.cima.gscl.defaultDevicePathInfos" value="/infos" />
-      <property name="fr.liris.cima.gscl.discoveryWaitingTimer" value="1000" />
-      
    </configurations>
 
 </product>

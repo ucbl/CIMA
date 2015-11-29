@@ -19,8 +19,10 @@
  ******************************************************************************/
 package fr.liris.cima.gscl.mgmtdevice;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import fr.liris.cima.gscl.device.service.ManagedDeviceService;
+import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
+import fr.liris.cima.gscl.portforwarding.PortForwardManagerThread;
+import fr.liris.cima.gscl.portforwarding.PortForwardingInterface;
 import org.eclipse.om2m.core.service.SclService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -28,15 +30,13 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
-import fr.liris.cima.gscl.device.service.ConfigManager;
-import fr.liris.cima.gscl.device.service.ManagedDeviceService;
-import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
-import java.util.logging.Logger;
-import java.util.logging.Handler;
+import java.io.IOException;
 import java.util.logging.FileHandler;
-import java.util.logging.Level;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import java.io.*;
+
+import javax.swing.plaf.synth.SynthSeparatorUI;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author <ul>
@@ -55,6 +55,8 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
+
+
 		try{
 		fh = new FileHandler("log/gsclMgmtDevice.log", false);
 		logger.addHandler(fh);
@@ -71,11 +73,22 @@ public class Activator implements BundleActivator {
 				logger.info("SclService discovered in mgmtdevice");
 				SclService sclService = (SclService) this.context.getService(reference);
 
-				serviceRegistration = this.context.registerService(ManagedDeviceService.class.getName(), new DeviceManagerImpl(sclService) , null);
+				
+				ServiceReference sf = context.getServiceReference(PortForwardingInterface.class.getName());
+				PortForwardingInterface pf = (PortForwardingInterface) context.getService(sf);
+				
+
+				serviceRegistration = this.context.registerService(ManagedDeviceService.class.getName(), new DeviceManagerImpl(sclService, pf) , null);
 				logger.info("ManagedDeviceService registered successfully");
 				serviceRegistration = this.context.registerService(CapabilityManager.class.getName(), new CapabilityManagerImpl(sclService) , null);
 				logger.info("CapabilityManager registered successfully");
+				
 
+
+				
+
+				
+				
 				return sclService;
 			}
 		};
