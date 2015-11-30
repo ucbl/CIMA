@@ -44,6 +44,9 @@ import fr.liris.cima.nscl.commons.Parameter;
 import fr.liris.cima.nscl.commons.constants.Configuration;
 import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
 
+import org.osgi.framework.*;
+import fr.liris.cima.gscl.portforwarding.*;
+
 import java.util.Iterator;
 
 public class Parser {
@@ -359,7 +362,8 @@ public class Parser {
 	}
 
 	public static JSONObject parseObixToJSONDevice(String obj_info) {
-
+		BundleContext cxt = FrameworkUtil.getBundle(PortForwardingInterface.class).getBundleContext();
+		PortForwardingInterface pf = (PortForwardingInterface) cxt.getService(cxt.getServiceReference(PortForwardingInterface.class.getName()));
 		JSONObject jsonDeviceObject = new JSONObject();
 		try {
 			SAXBuilder sxb = new SAXBuilder();
@@ -374,6 +378,16 @@ public class Parser {
 				attrCourant = (Element) noeudAttr.next();
 				if (attrCourant.getAttributeValue("name") != null && !attrCourant.getAttributeValue("name").equalsIgnoreCase("Capabilities")) {
 					jsonDeviceObject.put(attrCourant.getAttributeValue("name"), attrCourant.getAttributeValue("val"));
+
+					
+					if (attrCourant.getAttributeValue("name").equalsIgnoreCase("id")) {
+						try {
+							int port = pf.getPortForwarding(attrCourant.getAttributeValue("val"));
+							jsonDeviceObject.put("portforwarding", port);
+						} catch (Exception e) {
+							System.out.println("DOESNT HAVE A PORTFORWARDING ACTIF");
+						}
+					}
 				} else {
 					list_capabilities = attrCourant.getChildren();
 					noeud_capabilities = list_capabilities.iterator();

@@ -63,6 +63,7 @@
       <plugin id="org.eclipse.om2m.webapp.resourcesbrowser"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/><plugin id="fr.liris.cima.comm.http"/>
+      <plugin id="fr.liris.cima.gscl.portforwarding"/>
       <plugin id="fr.liris.cima.nscl.avatarbuilder"/>
       <plugin id="fr.liris.cima.nscl.commons"/>
       <plugin id="fr.liris.cima.nscl.core"/>
@@ -82,6 +83,7 @@
       <plugin id="org.eclipse.om2m.core" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.om2m.webapp.resourcesbrowser" autoStart="true" startLevel="3" />
       <plugin id="fr.liris.cima.comm.http" autoStart="true" startLevel="4" />
+      <plugin id="fr.liris.cima.gscl.portforwarding" autoStart="true" startLevel="1"/>
       <plugin id="fr.liris.cima.nscl.avatarbuilder" autoStart="true" startLevel="4" />
       <plugin id="fr.liris.cima.nscl.core" autoStart="true" startLevel="5" />
       <plugin id="fr.liris.cima.nscl.administration" autoStart="true" startLevel="5" />

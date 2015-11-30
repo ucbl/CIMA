@@ -11,9 +11,11 @@ import java.util.Set;
 public class PortForwardManager implements PortForwardingInterface {
 
 
-    private Map<String, Integer> PFmanager = new HashMap<String, Integer>();
+    private Map<String, Integer> PFmanager;
 
-
+    public PortForwardManager() {
+        PFmanager = new HashMap<String, Integer>();
+    }
 
     public void askNewPortForwarding(String address, int port, String deviceID){
         String message = "{\"type\":\"test\", \"address\" : \""+address+"\", \"port\" : \""+port+"\" , \"id\" : \""+deviceID+"\" }";

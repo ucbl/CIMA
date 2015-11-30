@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.om2m.core.service,
  org.apache.commons.logging,
  org.eclipse.om2m.ipu.service,
  org.eclipse.om2m.comm.service,
- fr.liris.cima.comm.protocol
+ fr.liris.cima.comm.protocol,
+ fr.liris.cima.gscl.portforwarding
 Export-package: fr.liris.cima.nscl.commons,
  fr.liris.cima.nscl.commons.constants,
  fr.liris.cima.nscl.commons.encoder,
