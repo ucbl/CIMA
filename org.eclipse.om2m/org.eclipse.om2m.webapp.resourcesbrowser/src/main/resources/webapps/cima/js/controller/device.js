@@ -246,18 +246,22 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
                 
                 for (var i = 0; i < protocol.parameters.length; i++) {
                     var parameter = protocol.parameters[i];
+                    
                     switch(parameter.name) {
                         case 'method':
                             method = parameter.value;
+                            break;
                         case 'port':
                             port = parameter.value;
+                            break;
                         case 'uri':
                             pathName = parameter.value;
+                            break;
                         default:
                             break;
                     }
                 }
-
+                
                 var url = protocolName + '://' + host + ':' + port + pathName;
                 var paramInfos = {
                     'method': method,
