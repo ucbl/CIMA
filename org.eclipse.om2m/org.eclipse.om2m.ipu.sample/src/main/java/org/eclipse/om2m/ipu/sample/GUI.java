@@ -36,13 +36,9 @@ import javax.swing.border.LineBorder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.FrameworkUtil;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * The Graphical User Interface of the IPU sample.
@@ -53,9 +49,11 @@ import java.io.*;
  *         </ul>
  */
 public class GUI extends JFrame {
-    /** Logger */
-    private static Logger LOGGER = Logger.getLogger(GUI.class.getName());
-    private  static  Handler fh ;
+  /** Logger */
+      static Log LOGGER = LogFactory.getLog(GUI.class);
+      /** Logger OSGI*/
+      private static ServiceTracker logServiceTracker;
+      private static LogService logservice;
     /** Serial Version UID */
     private static final long serialVersionUID = 1L;
     /** GUI Content Panel */
@@ -85,17 +83,19 @@ public class GUI extends JFrame {
     public static void init() {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
+              logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(GUI.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+                logServiceTracker.open();
+                logservice = (LogService) logServiceTracker.getService();
+
                 try {
                     frame = new GUI();
                     frame.setVisible(true);
                 } catch (Exception e) {
-                  try{
-                      fh = new FileHandler("log/ipu.log", true);
-                    LOGGER.addHandler(fh);
-                    fh.setFormatter(new SimpleFormatter());}
-                    catch(IOException ex){}
 
-                    LOGGER.log(Level.SEVERE, "GUI init Error", e);
+
+                  LOGGER.error("GUI init Error", e);
+                  logservice.log(LogService.LOG_ERROR, "GUI init Error");
+
                 }
             }
         });

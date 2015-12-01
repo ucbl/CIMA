@@ -39,13 +39,9 @@ import org.eclipse.om2m.commons.resource.MemberType;
 import org.eclipse.om2m.commons.resource.StatusCode;
 import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  *  Provides methods to create groups to switchON/OFF all lamps and send switch request to specific lamp.
@@ -55,10 +51,12 @@ import java.io.*;
  *         </ul>
  */
 public class Switchs {
-    /** Logger */
-    private static Logger LOGGER = Logger.getLogger(Switchs.class.getName());
-    private  static  Handler fh;
-    /** AppId */
+  /** Logger */
+  private static Log LOGGER = LogFactory.getLog(Switchs.class);
+  /** Logger OSGI*/
+  private static ServiceTracker logServiceTracker;
+  private static LogService logservice;
+      /** AppId */
     public final static String APP_ID = "LAMP_ALL";
     /** GrouON ID */
     final static String GROUP_ON = "ON_ALL";
@@ -119,13 +117,13 @@ public class Switchs {
      * @return Obix XML representation
      */
     public static String getDescriptorRep(String sclId, String appId, String type, String location, String stateCont) {
-      try{
-        fh = new FileHandler("log/ipu.log", true);
-        LOGGER.addHandler(fh);
-        fh.setFormatter(new SimpleFormatter());}
-        catch(IOException ex){}
 
-        LOGGER.info("Descriptor Representation Construction");
+      logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(Switchs.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+              logServiceTracker.open();
+              logservice = (LogService) logServiceTracker.getService();
+
+              LOGGER.info("Descriptor Representation Construction");
+              logservice.log(LogService.LOG_ERROR, "Descriptor Representation Construction");
         // oBIX
         Obj obj = new Obj();
         obj.add(new Str("type",type));

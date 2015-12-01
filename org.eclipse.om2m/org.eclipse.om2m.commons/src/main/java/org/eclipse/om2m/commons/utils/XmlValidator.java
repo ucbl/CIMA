@@ -34,13 +34,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXException;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.File;
 
 /**
  * Validates resource XML representation using XSD files.
@@ -51,10 +48,12 @@ import java.io.File;
  *         </ul>
  */
 public class XmlValidator {
-    /** XmlValidator Logger */
-    private static Logger LOGGER = Logger.getLogger(XmlValidator.class.getName());
-    private  static  Handler fh ;
-    /** XmlValidator Singleton */
+  /** XmlValidator Logger */
+      private static Log LOGGER = LogFactory.getLog(XmlValidator.class);
+      /** Logger OSGI*/
+      private static ServiceTracker logServiceTracker;
+      private static LogService logservice;
+          /** XmlValidator Singleton */
     private static XmlValidator xmlValidator = new XmlValidator();
     /** Provides a factory API that enables applications to configure and obtain a SAX based parser to parse XML documents.*/
     private SAXParserFactory factory;
@@ -98,12 +97,7 @@ public class XmlValidator {
             schemas.put("attachedDevices.xsd", schemaFactory.newSchema(FrameworkUtil.getBundle(XmlValidator.class).getResource(xsdPath+"/attachedDevices.xsd")));
             schemas.put("mgmtObjs.xsd", schemaFactory.newSchema(FrameworkUtil.getBundle(XmlValidator.class).getResource(xsdPath+"/mgmtObjs.xsd")));
         } catch (SAXException e) {
-            try{
-            fh = new FileHandler("log/xmlValidator.log", false);
-            LOGGER.addHandler(fh);
-            fh.setFormatter(new SimpleFormatter());
-            LOGGER.log(Level.SEVERE, "Error reading XSD shemas", e);}
-            catch(IOException ex){}
+            LOGGER.error("Error reading XSD shemas", e);
 
         }
     }

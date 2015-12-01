@@ -12,27 +12,26 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
-
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 import fr.liris.cima.comm.protocol.Protocol;
+
 import fr.liris.cima.comm.protocol.ProtocolResolver;
 
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author hady
  */
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Logger LOGGER = Logger.getLogger(Activator.class.getName());
-	private  static  Handler fh ;
+	private static Log logger = LogFactory.getLog(Activator.class);
 
 	/** SCL service tracker */
 	private ServiceTracker<Object, Object> sclServiceTracker;
+
+	/** Logger OSGI*/
+	private static ServiceTracker logServiceTracker;
+	private static LogService logservice;
 
 	private ServiceRegistration serviceRegistration;
 	private ProtocolResolver protocolResolver;
@@ -40,12 +39,10 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
-		try{
-		fh = new FileHandler("log/http.log", false);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
 
+		logServiceTracker = new ServiceTracker(bundleContext, org.osgi.service.log.LogService.class.getName(), null);
+			logServiceTracker.open();
+			logservice = (LogService) logServiceTracker.getService();
 
 
 		Dictionary props=new Properties();
@@ -59,13 +56,15 @@ public class Activator implements BundleActivator {
     	    this.pHttp = new HTTP();
     	    this.protocolResolver.addProtocol("http", HTTP.class);
     	}
-		LOGGER.info("registered RestClientService cima Http");
+		logger.info("registered RestClientService cima Http");
+		logservice.log(LogService.LOG_ERROR, "registered RestClientService cima Http");
+
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		//LOGGER.log(Level.SEVERE,"Unregistered RestClientService cima Http", null);
-		LOGGER.severe("Unregistered RestClientService cima Http");
+		logger.error("Unregistered RestClientService cima Http");
+			logservice.log(LogService.LOG_ERROR, "Unregistered RestClientService cima Http");
 
 
 		serviceRegistration.unregister();

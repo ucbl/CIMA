@@ -29,13 +29,9 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 import fr.liris.cima.nscl.avatarbuilder.service.AvatarService;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  *  Manages the starting and stopping of the bundle.
@@ -46,34 +42,39 @@ import java.io.*;
  */
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(Activator.class.getName());
-	private  static  Handler fh ;
+	private static Log logger = LogFactory.getLog(Activator.class);
+	/** Logger OSGI*/
+	private static ServiceTracker logServiceTracker;
+	private static LogService logservice;
 	/** SCL service tracker */
 	private ServiceTracker<Object, Object> sclServiceTracker;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
-		try{
-		fh = new FileHandler("log/nsclAvatarBuilder.log", false);
-		logger.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
 
 
-		logger.info("Register AvatarService ...");
+		logServiceTracker = new ServiceTracker(bundleContext, org.osgi.service.log.LogService.class.getName(), null);
+			logServiceTracker.open();
+			logservice = (LogService) logServiceTracker.getService();
+
+			logger.info("Register AvatarService ...");
+			logservice.log(LogService.LOG_ERROR, "Register AvatarService ...");
 		bundleContext.registerService(AvatarService.class.getName(), new AvatarFactory(), null);
 		bundleContext.registerService(IpuService.class.getName(), new AvatarController(), null);
 
 		logger.info("AvatarService is registered.");
+		logservice.log(LogService.LOG_ERROR, "AvatarService is registered.");
 
 
 		sclServiceTracker = new ServiceTracker<Object, Object>(bundleContext, SclService.class.getName(), null) {
 			public void removedService(ServiceReference<Object> reference, Object service) {
 				logger.info("SclService removed");
+							logservice.log(LogService.LOG_ERROR, "SclService removed");
 			}
 
 			public Object addingService(ServiceReference<Object> reference) {
 				logger.info("SclService discovered");
+							logservice.log(LogService.LOG_ERROR, "SclService discovered");
 				SclService sclService = (SclService) this.context.getService(reference);
 				final AvatarManager avatarManager = new AvatarManager(sclService);
 				return sclService;

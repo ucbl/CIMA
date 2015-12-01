@@ -20,13 +20,9 @@ import fr.liris.cima.nscl.commons.parser.Parser;
 import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
 import fr.liris.cima.nscl.commons.encoder.JsonEncoder;
 import fr.liris.cima.nscl.device.service.ManagedDeviceService;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * Specific Infrasctructure controller to perform requests on devices, manage clients subscriptions
@@ -36,8 +32,10 @@ import java.io.*;
 public class InfrastructureController implements IpuService{
 
 	/** Logger */
-	private static Logger LOGGER = Logger.getLogger(InfrastructureController.class.getName());
-	private  static  Handler fh ;
+	private static Log LOGGER = LogFactory.getLog(InfrastructureController.class);
+	/** Logger OSGI*/
+	private static ServiceTracker logServiceTracker;
+	private static LogService logservice;
 	/** managed device service*/
 	private  ManagedDeviceService managerImpl;
 	/** rest client service*/
@@ -69,11 +67,7 @@ public class InfrastructureController implements IpuService{
      */
 	@Override
 	public ResponseConfirm doRetrieve(RequestIndication requestIndication) {
-try{
-	fh = new FileHandler("log/nsclCore.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
 
 
 		String[] infos = requestIndication.getTargetID().split("/");
@@ -83,6 +77,7 @@ try{
 
 		if(infos[length - 1].equals(Constants.APOCPATH_DEVICES)){
 			LOGGER.info("********************REPRESENTATION*******"+requestIndication.getUrl());
+						logservice.log(LogService.LOG_ERROR, "********************REPRESENTATION*******"+requestIndication.getUrl());
 			requestIndication.setRepresentation(representation);
 			responseConfirm = new ResponseConfirm(StatusCode.STATUS_OK, representation);
 			return responseConfirm;
@@ -90,7 +85,11 @@ try{
 			// TODO : Ajouter le retour de la liste des capacités en fonction d'un device
 			// /nscl/application/CIMANSCL/devices/<device_id>/capabilities
 			LOGGER.info("********************REPRESENTATION*******"+requestIndication.getUrl());
+			logservice.log(LogService.LOG_ERROR, "********************REPRESENTATION*******"+requestIndication.getUrl());
+
 			LOGGER.info("********************GET CAPABILITIES*******");
+			logservice.log(LogService.LOG_ERROR, "********************GET CAPABILITIES*******");
+
 			Device device = managerImpl.getDevice(infos[length-2]);
 			List<Capability> capabilities = device.getCapabilities();
 			requestIndication.setRepresentation(JsonEncoder.capabilitiesToJSONStr(capabilities));
@@ -117,11 +116,7 @@ try{
      */
 	@Override
 	public ResponseConfirm doDelete(RequestIndication requestIndication) {
-		try{
-			fh = new FileHandler("log/nsclCore.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
 
 		String[] infos = requestIndication.getTargetID().split("/");
 		int length = infos.length;
@@ -130,6 +125,8 @@ try{
 
 		if(infos[length - 2].equals(Constants.APOCPATH_DEVICES)){
 			LOGGER.info("************DELETE DEVICE IN INFRASTRUCTURE CONTROLLER*****************");
+			logservice.log(LogService.LOG_ERROR, "************DELETE DEVICE IN INFRASTRUCTURE CONTROLLER*****************");
+
 			Device device = managerImpl.removeDevice(deviceId);
 			// Send notification to all subscribers
 			notifyAllSubscribers(requestIndication, device);
@@ -147,11 +144,7 @@ try{
      */
 	@Override
 	public ResponseConfirm doCreate(RequestIndication requestIndication) {
-		try{
-			fh = new FileHandler("log/nsclCore.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
 
 
 		String[] infos = requestIndication.getTargetID().split("/");
@@ -166,30 +159,50 @@ try{
 					ClientSubscriber subscriber = Parser.parseXmlToClientSubscriber(representation);
 					int success = managerImpl.addSubscriber(subscriber);
 					if(success == 0 || success == 1) {
-						if(success == 0 ) LOGGER.info("A client Subscriber added succesfully ");
-						else LOGGER.info("The client Subscriber already exist");
-						// send all information to this subscriber
+						if(success == 0 ) {
+													LOGGER.info("A client Subscriber added succesfully ");
+													logservice.log(LogService.LOG_ERROR, "A client Subscriber added succesfully ");
+
+												}
+												else {
+													LOGGER.info("The client Subscriber already exist");
+													logservice.log(LogService.LOG_ERROR, "The client Subscriber already exist");
+
+												}						// send all information to this subscriber
 						List<Device> devices = managerImpl.getDevices();
 						requestIndication.setBase(subscriber.getUrl()+":"+subscriber.getPort());
 						requestIndication.setTargetID("");
 						requestIndication.setRepresentation(JsonEncoder.devicesToJSONStr(devices));
 						LOGGER.info(JsonEncoder.devicesToJSONStr(devices));
+						logservice.log(LogService.LOG_ERROR, "registered RestClientService cima Http");
+
 						LOGGER.info("Sending all devices contact info to new subscriber");
+						logservice.log(LogService.LOG_ERROR, "Sending all devices contact info to new subscriber");
+
 						LOGGER.info(JsonEncoder.devicesToJSONStr(devices));
+						logservice.log(LogService.LOG_ERROR, JsonEncoder.devicesToJSONStr(devices));
+
+
 						restClientService.sendRequest(requestIndication);
 
 						return new ResponseConfirm(StatusCode.STATUS_ACCEPTED, "");
 					}
 				}
 				else if(infos[length - 1].equals(Constants.APOCPATH_DEVICES)){
-					LOGGER.severe("Creating a device in infrastrucure controller and sending contact information to all subscribers");
+					LOGGER.error("Creating a device in infrastrucure controller and sending contact information to all subscribers");
+	logservice.log(LogService.LOG_ERROR, "Creating a device in infrastrucure controller and sending contact information to all subscribers");
 
-					LOGGER.info("********Representation********"+representation);
+	LOGGER.info("********Representation********" + representation);
+	logservice.log(LogService.LOG_ERROR, "********Representation********" + representation);
+
+
 					Device device = Parser.parseObixToDevice(representation);
 					LOGGER.info("********device********"+device);
-					managerImpl.addDevice(device);
-					LOGGER.info("device = " + device);
+										logservice.log(LogService.LOG_ERROR, "********device********"+device);
 
+										managerImpl.addDevice(device);
+										LOGGER.info("device = " + device);
+										logservice.log(LogService.LOG_ERROR, "device = " + device);
 					for(ClientSubscriber subscriber : managerImpl.getSubscribers()){
 						requestIndication.setBase(subscriber.getUrl());
 						requestIndication.setRepresentation(JsonEncoder.deviceToJSONStr(device));

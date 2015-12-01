@@ -13,13 +13,9 @@ import fr.liris.cima.gscl.device.service.ConfigManager;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
 import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
 import fr.liris.cima.gscl.device.service.discovery.DiscoveryService;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  *  Manages the starting and stopping of the bundle.
@@ -27,8 +23,10 @@ import java.io.*;
  */
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(Activator.class.getName());
-	private  static  Handler fh ;
+private static Log logger = LogFactory.getLog(Activator.class);
+/** Logger OSGI*/
+private static ServiceTracker logServiceTracker;
+private static LogService logservice;
 	/** Management device service tracker */
 	private ServiceTracker<Object, Object> mgmtDeviceServiceTracker;
 	private ServiceTracker<Object, Object> restServiceClientTracker;
@@ -39,22 +37,25 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
-		try{
-		fh = new FileHandler("log/gsclCore.log", false);
-		logger.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
 
+		logServiceTracker = new ServiceTracker(bundleContext, org.osgi.service.log.LogService.class.getName(), null);
+				logServiceTracker.open();
+				logservice = (LogService) logServiceTracker.getService();
 
-		logger.info("get  ManagedDeviceService .");
+				logger.info("get  ManagedDeviceService .");
+				logservice.log(LogService.LOG_ERROR, "get  ManagedDeviceService .");
 
 		mgmtDeviceServiceTracker = new ServiceTracker<Object, Object>(bundleContext, ManagedDeviceService.class.getName(), null) {
 			public void removedService(ServiceReference<Object> reference, Object service) {
 				logger.info("ManagedDevice removed");
+				logservice.log(LogService.LOG_ERROR, "ManagedDevice removed");
+
 			}
 
 			public Object addingService(ServiceReference<Object> reference) {
 				logger.info("ManagedDevice discovered in cima gscl core");
+				logservice.log(LogService.LOG_ERROR, "ManagedDevice discovered in cima gscl core");
+
 				final ManagedDeviceService managedDeviceService = (ManagedDeviceService) this.context.getService(reference);
 				final CapabilityManager managedCapabilityManager = (CapabilityManager) this.context.getService(this.context.getServiceReference(CapabilityManager.class.getName()));
 				this.context.registerService(IpuService.class.getName(), new DeviceController(managedDeviceService,managedCapabilityManager), null);
@@ -64,8 +65,8 @@ public class Activator implements BundleActivator {
 						try {
 							managedDeviceService.start();
 						} catch (Exception e) {
-							logger.log(Level.SEVERE,"ManagedDeviceService error", e);
-
+							logger.error("ManagedDeviceService error", e);
+							logservice.log(LogService.LOG_ERROR, "ManagedDeviceService error");
 
 						}
 					}
@@ -104,10 +105,14 @@ public class Activator implements BundleActivator {
 		restServiceClientTracker = new ServiceTracker<Object, Object>(bundleContext, RestClientService.class.getName(), null) {
 			public void removedService(ServiceReference<Object> reference, Object service) {
 				logger.info("RestClientService removed");
+				logservice.log(LogService.LOG_ERROR, "RestClientService removed");
+
 			}
 
 			public Object addingService(ServiceReference<Object> reference) {
 				logger.info("RestClientService discovered in cima gscl core");
+				logservice.log(LogService.LOG_ERROR, "RestClientService discovered in cima gscl core");
+
 				final RestClientService restClientService = (RestClientService) this.context.getService(reference);
 				DeviceController.restClientService = restClientService;
 			//	ConfigController.restClientService = restClientService;
@@ -119,10 +124,14 @@ public class Activator implements BundleActivator {
 		discoverytServiceTracker = new ServiceTracker<Object, Object>(bundleContext, DiscoveryService.class.getName(), null) {
 			public void removedService(ServiceReference<Object> reference, Object service) {
 				logger.info("RestClientService removed");
+				logservice.log(LogService.LOG_ERROR, "RestClientService removed");
+
 			}
 
 			public Object addingService(ServiceReference<Object> reference) {
 				logger.info(" discovered DiscoveryService in cima gscl core");
+				logservice.log(LogService.LOG_ERROR, " discovered DiscoveryService in cima gscl core");
+
 				final DiscoveryService discoveryService = (DiscoveryService) this.context.getService(reference);
 				new Thread(){
 					public void run(){
@@ -131,8 +140,11 @@ public class Activator implements BundleActivator {
 								Thread.sleep(5000) ;
 								discoveryService.doDiscovery();
 								logger.info("do discovery ...");
+								logservice.log(LogService.LOG_ERROR, "do discovery ...");
+
 							} catch (Exception e) {
-								logger.log(Level.SEVERE,"Error for discovering devices", e);
+								logger.error("Error for discovering devices", e);
+								logservice.log(LogService.LOG_ERROR, "Error for discovering devices");
 
 							}
 						}
@@ -146,19 +158,14 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		try{
-			fh = new FileHandler("log/gsclCore.log", true);
-		logger.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());
-		logger.severe("Stop IPU Phidgets monitor");
-
-	}
-		catch(IOException ex){}
+		logger.error("Stop IPU Phidgets monitor");
+			logservice.log(LogService.LOG_ERROR, "Stop IPU Phidgets monitor");
 
 
 		try {
 		} catch (Exception e) {
-			logger.log(Level.SEVERE,"Stop Phidgets error", e);
+			logger.error("Stop Phidgets error", e);
+			logservice.log(LogService.LOG_ERROR, "Stop Phidgets error");
 
 		}
 	}

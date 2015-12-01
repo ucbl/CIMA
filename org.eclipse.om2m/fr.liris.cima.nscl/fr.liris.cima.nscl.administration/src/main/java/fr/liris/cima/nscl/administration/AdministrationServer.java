@@ -14,18 +14,16 @@ import org.eclipse.om2m.ipu.service.IpuService;
 import fr.liris.cima.comm.protocol.ProtocolResolver;
 import fr.liris.cima.nscl.commons.constants.Constants;
 import fr.liris.cima.nscl.commons.parser.Parser;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 public class AdministrationServer implements IpuService{
-	private static Logger LOGGER = Logger.getLogger(AdministrationServer.class.getName());
-	private  static  Handler fh ;
+	private static Log LOGGER = LogFactory.getLog(AdministrationServer.class);
 
+		/** Logger OSGI*/
+		private static ServiceTracker logServiceTracker;
+		private static LogService logservice;
 	/** rest client service*/
 	public static RestClientService restClientService;
 
@@ -41,20 +39,31 @@ public class AdministrationServer implements IpuService{
 	@Override
 	// GET
 	public ResponseConfirm doRetrieve(RequestIndication requestIndication) {
-		try{
-			fh = new FileHandler("log/nsclAdministration.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+		logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+				logServiceTracker.open();
+				logservice = (LogService) logServiceTracker.getService();
 
+				LOGGER.info("Base : " + requestIndication.getBase());
+				logservice.log(LogService.LOG_ERROR, "Base : " + requestIndication.getBase());
 
-		LOGGER.info("Base : " + requestIndication.getBase());
-		LOGGER.info("Method : " + requestIndication.getMethod());
-		LOGGER.info("Protocol : " + requestIndication.getProtocol());
-		LOGGER.info("Representation : " + requestIndication.getRepresentation());
-		LOGGER.info("RequestingEntity : " + requestIndication.getRequestingEntity());
-		LOGGER.info("TargetID : " + requestIndication.getTargetID());
-		LOGGER.info("Url : " + requestIndication.getUrl());
+				LOGGER.info("Method : " + requestIndication.getMethod());
+				logservice.log(LogService.LOG_ERROR, "Method : " + requestIndication.getMethod());
+
+				LOGGER.info("Protocol : " + requestIndication.getProtocol());
+				logservice.log(LogService.LOG_ERROR, "Protocol : " + requestIndication.getProtocol());
+
+				LOGGER.info("Representation : " + requestIndication.getRepresentation());
+				logservice.log(LogService.LOG_ERROR, "Representation : " + requestIndication.getRepresentation());
+
+				LOGGER.info("RequestingEntity : " + requestIndication.getRequestingEntity());
+				logservice.log(LogService.LOG_ERROR, "RequestingEntity : " + requestIndication.getRequestingEntity());
+
+				LOGGER.info("TargetID : " + requestIndication.getTargetID());
+				logservice.log(LogService.LOG_ERROR, "TargetID : " + requestIndication.getTargetID());
+
+				LOGGER.info("Url : " + requestIndication.getUrl());
+				logservice.log(LogService.LOG_ERROR, "Url : " + requestIndication.getUrl());
+
 		ResponseConfirm resp = null;
 		String [] tID = requestIndication.getTargetID().split("/");
 
@@ -167,19 +176,20 @@ public class AdministrationServer implements IpuService{
 	@Override
 	// POST with body
 	public ResponseConfirm doCreate(RequestIndication requestIndication) {
-		try{
-			fh = new FileHandler("log/nsclAdministration.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
 
 
 		String [] tID = requestIndication.getTargetID().split("/");
 
 		ResponseConfirm resp = null;
 		requestIndication.setBase("127.0.0.1:8181/");
+		requestIndication.setBase("127.0.0.1:8181/");
 		LOGGER.info("++++++++++++++++++++");
+		logservice.log(LogService.LOG_ERROR, "++++++++++++++++++++");
+
 		LOGGER.info("tID.lengh = " + tID.length);
+		logservice.log(LogService.LOG_ERROR, "tID.lengh = " + tID.length);
+
 		if(tID.length == 7){
 			// nscl/applications/CIMA/administration/device/<device id>/test
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/all/" + tID[5] + "/test");

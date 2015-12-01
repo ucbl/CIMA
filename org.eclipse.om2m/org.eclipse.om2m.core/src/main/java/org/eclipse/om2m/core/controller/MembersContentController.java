@@ -33,13 +33,9 @@ import org.eclipse.om2m.commons.utils.DateConverter;
 import org.eclipse.om2m.core.constants.Constants;
 import org.eclipse.om2m.core.dao.DAOFactory;
 import org.eclipse.om2m.core.router.Router;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * Implements Create, Retrieve, Update, Delete and Execute methods to handle
@@ -59,6 +55,11 @@ public class MembersContentController extends Controller {
      * @return the aggregation of the requests responses
      */
     public ResponseConfirm fanOutRequestIndication (RequestIndication requestIndication) {
+
+
+      setLogServiceTracker(new ServiceTracker(FrameworkUtil.getBundle(MembersContentController.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null));
+              getLogServiceTracker().open();
+              setLogservice((LogService) getLogServiceTracker().getService());
 
         String groupUri = requestIndication.getTargetID().split("/membersContent")[0];
         Group group = DAOFactory.getGroupDAO().find(groupUri);
@@ -103,14 +104,11 @@ public class MembersContentController extends Controller {
                 try {
                     thread.join();
                 } catch (InterruptedException e) {
-                  try{
-                      fh = new FileHandler("log/core.log", true);
-                    LOGGER.addHandler(fh);
-                    fh.setFormatter(new SimpleFormatter());}
-                    catch(IOException ex){}
 
 
-                    LOGGER.log(Level.SEVERE, "Group request thread join error", e);
+
+                  LOGGER.error("Group request thread join error",e);
+                                      getLogservice().log(LogService.LOG_ERROR, "Group request thread join error");
                 }
             }
 

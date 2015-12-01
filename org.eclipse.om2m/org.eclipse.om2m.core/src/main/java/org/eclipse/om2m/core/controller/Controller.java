@@ -45,13 +45,10 @@ import org.eclipse.om2m.core.constants.Constants;
 import org.eclipse.om2m.core.dao.DAOFactory;
 import org.xml.sax.SAXException;
 
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
 
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 /**
  * Controller class contains generic and abstract Create, Retrieve, Update, Delete and Execute
  * methods to handle generic REST request that will be implemented in extended-to classes.
@@ -62,10 +59,27 @@ import java.io.*;
  *         </ul>
  */
 public abstract class Controller {
-    /** Logger */
-    protected static Logger LOGGER = Logger.getLogger(Controller.class.getName());
-    protected  static  Handler fh ;
+  /** Logger */
+  protected static Log LOGGER = LogFactory.getLog(Controller.class);
+  private static ServiceTracker logServiceTracker;
+  private static LogService logservice;
 
+  /** Logger OSGI*/
+  public static ServiceTracker getLogServiceTracker() {
+      return logServiceTracker;
+  }
+
+  public static void setLogServiceTracker(ServiceTracker logServiceTracker) {
+      Controller.logServiceTracker = logServiceTracker;
+  }
+
+  public static LogService getLogservice() {
+      return logservice;
+  }
+
+  public static void setLogservice(LogService logservice) {
+      Controller.logservice = logservice;
+  }
     /**
      * Abstract Create method to handle generic REST request.
      * @param requestIndication - The generic request to handle.
@@ -108,11 +122,6 @@ public abstract class Controller {
      * @return the error with a specific status code if the representation is wrong otherwise null
      */
     public ResponseConfirm checkMessageSyntax(String resourceRepresentation, String xsd) {
-        try{
-            fh = new FileHandler("log/core.log", true);
-        LOGGER.addHandler(fh);
-        fh.setFormatter(new SimpleFormatter());}
-        catch(IOException ex){}
 
 
         try {
@@ -120,14 +129,16 @@ public abstract class Controller {
         } catch (SAXException e) {
             //LOGGER.debug("Resource representation syntax error",e);
             //LOGGER.debug("Resource representation syntax error");
-            LOGGER.log(Level.SEVERE,"Resource representation syntax error", e);
+            LOGGER.debug("Resource representation syntax error",e);
+                        getLogservice().log(LogService.LOG_ERROR, "Resource representation syntax error");
 
 
             return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_BAD_REQUEST,"Resource representation syntax error: "+e.getMessage())) ;
         } catch (IOException e) {
             //LOGGER.debug("XSD not found",e);
             //LOGGER.debug("XSD not found");
-            LOGGER.log(Level.SEVERE,"XSD not found", e);
+            LOGGER.debug("XSD not found",e);
+            getLogservice().log(LogService.LOG_ERROR, "XSD not found");
 
 
 

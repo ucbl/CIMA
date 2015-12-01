@@ -43,12 +43,9 @@ import ch.ethz.inf.vs.californium.coap.CoAP.ResponseCode;
 import ch.ethz.inf.vs.californium.network.Exchange;
 import ch.ethz.inf.vs.californium.server.MessageDeliverer;
 import ch.ethz.inf.vs.californium.server.Server;
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 public class CoapServer {
 
@@ -73,8 +70,11 @@ public class CoapServer {
 
 class CoapMessageDeliverer implements MessageDeliverer {
 
-    private static Logger LOGGER = Logger.getLogger(CoapMessageDeliverer.class.getName());
-    private  static  Handler fh ;
+	private static Log LOGGER = LogFactory.getLog(CoapMessageDeliverer.class);
+
+	/** Logger OSGI*/
+	private static ServiceTracker logServiceTracker;
+	private static LogService logservice;
 
     private static SclService scl;
     private static String context = System.getProperty("org.eclipse.om2m.sclBaseContext","/om2m");
@@ -83,26 +83,24 @@ class CoapMessageDeliverer implements MessageDeliverer {
 
    @Override
    public void deliverRequest(Exchange exchange) {
-		 try{
-             fh = new FileHandler("log/coap.log", true);
 
-       LOGGER.addHandler(fh);
-       fh.setFormatter(new SimpleFormatter());}
-			 catch(IOException ex){}
 
 
        req = exchange.getRequest();
 
        try {
            resp= service (req);
-           LOGGER.info("the response= "+ resp);
+					 LOGGER.info("the response= "+ resp);
+						logservice.log(LogService.LOG_ERROR, "the response= "+ resp);
        } catch (SocketException e) {
-           LOGGER.info("the service failed! ");
+				 LOGGER.info("the service failed! ");
+				            logservice.log(LogService.LOG_ERROR, "the service failed! ");
            e.printStackTrace();
        } catch (IOException e) {
            e.printStackTrace();}
 
-       LOGGER.info("request = " + req);
+					 LOGGER.info("request = " + req);
+					        logservice.log(LogService.LOG_ERROR, "request = " + req);
        exchange.sendResponse(resp);
 
    }
@@ -111,14 +109,10 @@ class CoapMessageDeliverer implements MessageDeliverer {
 
    @Override
    public void deliverResponse(Exchange rqst, Response rspns) {
-		 try{
-             fh = new FileHandler("log/coap.log", true);
-       LOGGER.addHandler(fh);
-       fh.setFormatter(new SimpleFormatter());}
-			 catch(IOException ex){}
 
 	   rqst.sendResponse(rspns);
-       LOGGER.info("response= "+ rspns);
+		 LOGGER.info("response= " + rspns);
+		        logservice.log(LogService.LOG_ERROR, "response= " + rspns);
 
    }
 
@@ -128,11 +122,10 @@ class CoapMessageDeliverer implements MessageDeliverer {
     */
 
    public Response service (Request request) throws SocketException, IOException {
-try{
-    fh = new FileHandler("log/coap.log", true);
-       LOGGER.addHandler(fh);
-       fh.setFormatter(new SimpleFormatter());}
-			 catch(IOException ex){}
+
+		 logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(CoapMessageDeliverer.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+		        logServiceTracker.open();
+		        logservice = (LogService) logServiceTracker.getService();
 
 
        // store the MId and the Token
@@ -203,7 +196,8 @@ try{
        //sending the standard request to the Scl and getting a standard response
        if(scl!=null){
            responseConfirm = scl.doRequest(requestIndication);
-           LOGGER.info("check point: requestIndication sent and waiting for responseConfirm");
+					 LOGGER.info("check point: requestIndication sent and waiting for responseConfirm");
+					            logservice.log(LogService.LOG_ERROR, "check point: requestIndication sent and waiting for responseConfirm");
        }else{
            responseConfirm = new ResponseConfirm(StatusCode.STATUS_SERVICE_UNAVAILABLE, "SCL service not installed");
        }
@@ -215,7 +209,9 @@ try{
        }
 
        double statusCode = getCoapStatusCode(responseConfirm.getStatusCode(),isEmptyResponse);
-       LOGGER.info("check point : The code is " + statusCode);
+			 LOGGER.info("check point : The code is " + statusCode);
+			        logservice.log(LogService.LOG_ERROR, "check point : The code is " + statusCode);
+
 
        /**transformation of the code to create the CoAP response to be returned*/
        ResponseCode resCode= ResponseCode.VALID;
@@ -260,7 +256,8 @@ try{
        default: resCode= ResponseCode.SERVICE_UNAVAILABLE;
 
        }
-       LOGGER.info("the responseConfirm: "+ responseConfirm);
+			 LOGGER.info("the responseConfirm: "+ responseConfirm);
+		       logservice.log(LogService.LOG_ERROR, "the responseConfirm: "+ responseConfirm);
 
        // creation of the CoAP Response
        Response response= new Response(resCode);
@@ -280,7 +277,9 @@ if(responseConfirm.getRepresentation()!=null){
     	   	CoAP.Type coapType= CoAP.Type.ACK;
     	   	response.setType(coapType);
        }
-       LOGGER.info("CoAP Response parameters set");
+			 LOGGER.info("CoAP Response parameters set");
+       logservice.log(LogService.LOG_ERROR, "CoAP Response parameters set");
+
 
        return response;
    }
@@ -324,14 +323,12 @@ if(responseConfirm.getRepresentation()!=null){
     * @return standard CoAP status code.
     */
    public static double getCoapStatusCode(StatusCode statusCode, boolean isEmptyBody){
-		 try{
-             fh = new FileHandler("log/coap.log", true);
-       LOGGER.addHandler(fh);
-       fh.setFormatter(new SimpleFormatter());}
-			 catch(IOException ex){}
 
 
-       LOGGER.info("The received code is "+statusCode);
+
+		 LOGGER.info("The received code is "+statusCode);
+		        logservice.log(LogService.LOG_ERROR, "The received code is "+statusCode);
+
        switch(statusCode){
        case STATUS_OK :
            if (isEmptyBody) {

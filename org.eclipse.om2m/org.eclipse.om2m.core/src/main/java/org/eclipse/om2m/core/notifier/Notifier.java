@@ -37,12 +37,10 @@ import org.eclipse.om2m.core.dao.DAOFactory;
 import org.eclipse.om2m.core.redirector.Redirector;
 import org.eclipse.om2m.core.router.Router;
 
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
+
 
 /**
  * Notifies subscribers when a change occurs on a resource according to their subscriptions.
@@ -54,9 +52,10 @@ import java.io.*;
  */
 public class Notifier {
     /** Logger */
-    private static Logger LOGGER = Logger.getLogger(Notifier.class.getName());
-    private  static  Handler fh ;
-
+    private static Log LOGGER = LogFactory.getLog(Notifier.class);
+    /** Logger OSGI*/
+    private static ServiceTracker logServiceTracker;
+    private static LogService logservice;
 
     /**
      * Finds all resource subscribers and notifies them.
@@ -117,16 +116,15 @@ public class Notifier {
                 // Send notification on a new Thread
                 new Thread() {
                     public void run() {
-                      try{
-                          fh = new FileHandler("log/core.log", true);
-                        LOGGER.addHandler(fh);
-                        fh.setFormatter(new SimpleFormatter());}
-                        catch(IOException ex){}
 
 
-                        LOGGER.info("Notification Request:\n"+requestIndication);
+
+                      LOGGER.info("Notification Request:\n"+requestIndication);
+                                              logservice.log(LogService.LOG_ERROR, "Notification Request:\n"+requestIndication);
                         ResponseConfirm responseConfirm = Notifier.notify(requestIndication,contact);
                         LOGGER.info("Notification Response:\n"+responseConfirm);
+                        logservice.log(LogService.LOG_ERROR, "Notification Response:\n"+responseConfirm);
+
                     }
                 }.start();
             }

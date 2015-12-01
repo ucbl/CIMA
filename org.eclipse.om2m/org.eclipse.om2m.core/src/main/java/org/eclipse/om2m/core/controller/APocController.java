@@ -5,13 +5,9 @@ import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 import org.eclipse.om2m.core.comm.RestClient;
 import org.eclipse.om2m.core.dao.DAOFactory;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /** allows the choice of the controller based on the aPoC of the application**/
 public class APocController extends Controller{
@@ -38,6 +34,9 @@ public class APocController extends Controller{
 
 
     public ResponseConfirm doRetrieve (RequestIndication requestIndication) {
+      setLogServiceTracker(new ServiceTracker(FrameworkUtil.getBundle(APocController.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null));
+      getLogServiceTracker().open();
+      setLogservice((LogService) getLogServiceTracker().getService());
 
 
         String sclId = requestIndication.getTargetID().split("/")[0];
@@ -51,6 +50,7 @@ public class APocController extends Controller{
             requestIndication.setBase(aPoCPath);
             requestIndication.setTargetID(targetID);
             LOGGER.info(targetID);
+                        getLogservice().log(LogService.LOG_ERROR, targetID);
             return new RestClient().sendRequest(requestIndication);
         }else{
             Controller IPUController= new InterworkingProxyController();
@@ -69,14 +69,10 @@ public class APocController extends Controller{
         Application application= DAOFactory.getApplicationDAO().find(applicationUri);
 
         /****** DEBUG *******/
-        try{
-            fh = new FileHandler("log/core.log", true);
-        LOGGER.addHandler(fh);
-        fh.setFormatter(new SimpleFormatter());}
-        catch(IOException ex){}
-
 
         LOGGER.info("Application URI : " + applicationUri);
+        getLogservice().log(LogService.LOG_ERROR, "Application URI : " + applicationUri);
+
         /****** /DEBUG ******/
 
 

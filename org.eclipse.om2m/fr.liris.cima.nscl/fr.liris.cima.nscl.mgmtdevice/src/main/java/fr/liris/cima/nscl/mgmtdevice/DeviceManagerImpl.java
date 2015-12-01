@@ -21,19 +21,18 @@ import fr.liris.cima.nscl.commons.Device;
 import fr.liris.cima.nscl.commons.constants.Constants;
 import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
 import fr.liris.cima.nscl.device.service.ManagedDeviceService;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 public class DeviceManagerImpl implements ManagedDeviceService{
 
 	/** Logger */
-	private static Logger LOGGER = Logger.getLogger(DeviceManagerImpl.class.getName());
-	private  static  Handler fh ;
+	private static Log LOGGER = LogFactory.getLog(DeviceManagerImpl.class);
+
+	/** Logger OSGI*/
+	private static ServiceTracker logServiceTracker;
+	private static LogService logservice;
 
 	public final static String DATA = "DATA";
 	/** Descriptor container id */
@@ -85,16 +84,19 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 
 	@Override
 	public void addDevice(Device device) {
-		try{
-			fh = new FileHandler("log/nsclMgmtDevice.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
+		logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(DeviceManagerImpl.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+			logServiceTracker.open();
+			logservice = (LogService) logServiceTracker.getService();
 
 
 		devices.add(device);
-		LOGGER.info("Add device ..."+ device.getId());
-		LOGGER.info("Add device ..."+ devices.size());
+		LOGGER.info("Add device ..." + device.getId());
+		logservice.log(LogService.LOG_ERROR, "Add device ..." + device.getId());
+
+		LOGGER.info("Add device ..." + devices.size());
+		logservice.log(LogService.LOG_ERROR, "Add device ..." + devices.size());
+
 	}
 
 	@Override
@@ -112,14 +114,13 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 
 	@Override
 	public void start() {
-		try{
-			fh = new FileHandler("log/nsclMgmtDevice.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
 
 
+		logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(DeviceManagerImpl.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+		logServiceTracker.open();
+		logservice = (LogService) logServiceTracker.getService();
 		LOGGER.info("Devices waiting for attachement..");
+				logservice.log(LogService.LOG_ERROR, "Devices waiting for attachement..");
 		createManagerResources("CIMANSCL", "devices");
 		createManagerResources("CIMA", "administration");
 	}

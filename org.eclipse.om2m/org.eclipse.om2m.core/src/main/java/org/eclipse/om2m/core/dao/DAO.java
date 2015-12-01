@@ -25,12 +25,10 @@ import org.eclipse.om2m.core.router.Router;
 
 import com.db4o.ObjectContainer;
 
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
+
 /**
  * <p>
  * The DAO (Data Object Access) Pattern is used to make separation between data
@@ -49,9 +47,10 @@ import java.io.*;
  */
 
 public abstract class DAO<T> {
-	private static Logger LOGGER = Logger.getLogger(DAO.class.getName());
-	private  static  Handler fh ;
-
+	private static Log LOGGER = LogFactory.getLog(DAO.class);
+		/** Logger OSGI*/
+		private static ServiceTracker logServiceTracker;
+		private static LogService logservice;
 	public static ObjectContainer DB = DBClientConnection.getInstance();
 	public static Object lock = new Object();
 	public static Object commitLock = new Object();
@@ -116,17 +115,17 @@ public abstract class DAO<T> {
 	public void commit() {
 		new Thread() {
 			public void run() {
-				try{
-					fh = new FileHandler("log/core.log", true);
-				LOGGER.addHandler(fh);
-				fh.setFormatter(new SimpleFormatter());}
-				catch(IOException ex){}
+
+				logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(DAO.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+								logServiceTracker.open();
+								logservice = (LogService) logServiceTracker.getService();
 
 
 				Router.readWriteLock.readLock().lock();
 
 				DB.commit();
 				LOGGER.info("Transaction committed successfully");
+								logservice.log(LogService.LOG_ERROR, "Transaction committed successfully");
 				Router.readWriteLock.readLock().unlock();
 			}
 		}.start();

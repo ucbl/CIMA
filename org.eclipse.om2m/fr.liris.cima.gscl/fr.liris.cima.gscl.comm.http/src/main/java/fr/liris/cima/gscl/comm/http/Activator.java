@@ -14,20 +14,19 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author hady
  */
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(Activator.class.getName());
-	private  static  Handler fh ;
+private static Log logger = LogFactory.getLog(Activator.class);
+/** Logger OSGI*/
+private static ServiceTracker logServiceTracker;
+private static LogService logservice;
 	/** SCL service tracker */
 	private ServiceTracker<Object, Object> sclServiceTracker;
 
@@ -35,22 +34,24 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
-		try{
-		fh = new FileHandler("log/gsclHttp.log", false);
-		logger.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+		logServiceTracker = new ServiceTracker(bundleContext, org.osgi.service.log.LogService.class.getName(), null);
+				logServiceTracker.open();
+				logservice = (LogService) logServiceTracker.getService();
+
 
 
 		Dictionary props=new Properties();
 		props.put("fr.liris.cima.gscl.comm.plateform", "cima");
         this.serviceRegistration = bundleContext.registerService(RestClientService.class.getName(), new CIMARestHttpClient(), props);
-		logger.info("registered RestClientService Http");
+				logger.info("registered RestClientService Http");
+				logservice.log(LogService.LOG_ERROR, "registered RestClientService Http");
+
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		logger.severe("Unregistered RestClientService Http");
+		logger.error("Unregistered RestClientService Http");
+		logservice.log(LogService.LOG_ERROR, "Unregistered RestClientService Http");
 		serviceRegistration.unregister();
 	}
 }

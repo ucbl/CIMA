@@ -80,12 +80,9 @@ import org.eclipse.om2m.core.notifier.Notifier;
 import org.eclipse.om2m.core.redirector.Redirector;
 import org.eclipse.om2m.core.service.SclService;
 
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * Routes a generic request to the appropriate resource controller to handle it based on the request method and URI.
@@ -97,10 +94,12 @@ import java.io.*;
  */
 
 public class Router implements SclService {
-    /** Logger */
-    private static Logger LOGGER = Logger.getLogger(Router.class.getName());
-    private  static  Handler fh ;
+  /** Logger */
+private static Log LOGGER = LogFactory.getLog(Router.class);
 
+/** Logger OSGI*/
+private static ServiceTracker logServiceTracker;
+private static LogService logservice;
     public static ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     /** Resource id pattern. */
     private static String idPattern="(?!(sclBase|scls|scl|applications|application|applicationAnnc|containers|container|content|subscriptions|subscription|"
@@ -264,16 +263,14 @@ public class Router implements SclService {
      */
 
     public ResponseConfirm doRequest(RequestIndication requestIndication) {
+      logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(Router.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+              logServiceTracker.open();
+              logservice = (LogService) logServiceTracker.getService();
 
-        try{
-            fh = new FileHandler("log/core.log", true);
-        LOGGER.addHandler(fh);
-        fh.setFormatter(new SimpleFormatter());}
-        catch(IOException e){
 
-        }
 
-         LOGGER.info(requestIndication.toString());
+      LOGGER.info(requestIndication.toString());
+              logservice.log(LogService.LOG_ERROR, requestIndication.toString());
          ResponseConfirm  responseConfirm = new ResponseConfirm();
 
          // Check requesting entity not null.
@@ -301,7 +298,8 @@ public class Router implements SclService {
              // Select the resource controller method and invoke it.
              if(controller!=null){
 
-                     LOGGER.info("ResourceController ["+controller.getClass().getSimpleName()+"]");
+               LOGGER.info("ResourceController ["+controller.getClass().getSimpleName() + "]");
+                               logservice.log(LogService.LOG_ERROR, "ResourceController [" + controller.getClass().getSimpleName()+"]");
                      try{
 
                              switch(requestIndication.getMethod()){
@@ -319,7 +317,9 @@ public class Router implements SclService {
                              break;
                          }
                      }catch(Exception e){
-                         LOGGER.log(Level.SEVERE, "Controller Internal Error", e);
+                       LOGGER.error("Controller Internal Error", e);
+                   logservice.log(LogService.LOG_ERROR, "Controller Internal Error");
+
 
                          responseConfirm =  new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_INTERNAL_SERVER_ERROR,"Controller Internal Error"));
                      }
@@ -329,7 +329,9 @@ public class Router implements SclService {
          }
          readWriteLock.readLock().unlock();
 
-         LOGGER.info(responseConfirm.toString());
+         LOGGER.info(responseConfirm);
+        logservice.log(LogService.LOG_ERROR, responseConfirm.toString());
+
          return responseConfirm;
      }
 
