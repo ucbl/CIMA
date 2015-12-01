@@ -22,12 +22,9 @@ import obix.Obj;
 import obix.Str;
 import obix.io.ObixDecoder;
 import obix.io.ObixEncoder;
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * Encode an given object into xml, json, obix format.
@@ -36,9 +33,11 @@ import java.io.*;
  */
 public class Encoder {
 
-	private static Logger LOGGER = Logger.getLogger(Encoder.class.getName());
-	private  static  Handler fh ;
+	private static Log LOGGER = LogFactory.getLog(Encoder.class);
 
+	/** Logger OSGI*/
+	private static ServiceTracker logServiceTracker;
+	private static LogService logservice;
 
 	static Map<String, List<Capability>>mapPortManager = new HashMap<>();
 
@@ -79,14 +78,12 @@ public class Encoder {
 	}
 
 	public static String encodeDeviceToObix(Device device) {
-		try{
-			fh = new FileHandler("log/gsclCommons.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
 
 
 		LOGGER.info("******************dans encoder ***********");
+		logservice.log(LogService.LOG_ERROR, "******************dans encoder ***********");
+
 		Obj objDevice = new Obj("device");
 		Obj obj = new Obj();
 
@@ -131,11 +128,7 @@ public class Encoder {
 	}
 
 	public static Obj encodeCapabilityToObixObj(Capability capability) {
-		try{
-			fh = new FileHandler("log/gsclCommons.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
 
 		Obj obj = new Obj();
 
@@ -143,6 +136,8 @@ public class Encoder {
 		obj.add(new Int("cloudPort",capability.getCloudPort()));
 		obj.add(new Str("configuration", ((capability.getConfiguration()!=null)?capability.getConfiguration():"automatic")));
 		LOGGER.info("***************** ADD a Capability");
+		logservice.log(LogService.LOG_ERROR, "***************** ADD a Capability");
+
 		//obj.add(capability.getProtocol().toObj());
 		obj.add(encodeProtocolObixObj(capability.getProtocol()));
 		obix.List keywords = new obix.List("keywords");
@@ -184,11 +179,7 @@ public class Encoder {
 	}
 
 	public static Obj encodeParameterToObixObj(Parameter parameter) {
-		try{
-			fh = new FileHandler("log/gsclCommons.log", true);
-			LOGGER.addHandler(fh);
-			fh.setFormatter(new SimpleFormatter());
-		} catch(IOException ex){}
+
 
 		Obj obj = new Obj();
 		obj.add(new Str("idp", parameter.getIdP()));

@@ -26,12 +26,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author <ul>
@@ -41,8 +38,10 @@ import java.io.*;
  */
 public class Activator implements BundleActivator {
 	/** logger */
-	private static Logger LOGGER = Logger.getLogger(Activator.class.getName());
-	private  static  Handler fh ;
+	private static Log LOGGER = LogFactory.getLog(Activator.class);
+	/** Logger OSGI*/
+	private static ServiceTracker logServiceTracker;
+	private static LogService logservice;
 	public static String globalContext = System.getProperty("org.eclipse.om2m.globalContext","");
 	public static String uiContext = System.getProperty("org.eclipse.om2m.webInterfaceContext","/");
 	public static String sep ="/";
@@ -51,11 +50,10 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-try{
-		fh = new FileHandler("log/resourcesBrowser.log", false);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
+		logServiceTracker = new ServiceTracker(context, org.osgi.service.log.LogService.class.getName(), null);
+				logServiceTracker.open();
+				logservice = (LogService) logServiceTracker.getService();
 
 
 		if(uiContext.equals("/")){
@@ -64,26 +62,33 @@ try{
 
 		httpServiceTracker = new ServiceTracker<Object, Object>(context, HttpService.class.getName(), null) {
 	      public void removedService(ServiceReference<Object> reference, Object service) {
-			LOGGER.info("HttpService removed");
+					LOGGER.info("HttpService removed");
+								  logservice.log(LogService.LOG_ERROR, "HttpService removed");
 	        try {
-				LOGGER.info("Unregister "+uiContext+sep+" http context");
+						LOGGER.info("Unregister "+uiContext+sep+" http context");
+										  logservice.log(LogService.LOG_ERROR, "Unregister "+uiContext+sep+" http context");
 	           ((HttpService) service).unregister(uiContext+sep);
 	        } catch (IllegalArgumentException e) {
-						LOGGER.log(Level.SEVERE, "Error unregistring webapp servlet", e);
+						LOGGER.error("Error unregistring webapp servlet",e);
+										  logservice.log(LogService.LOG_ERROR, "Error unregistring webapp servlet");
 	        }
 	      }
 
 	      public Object addingService(ServiceReference<Object> reference) {
-			LOGGER.info("HttpService discovered");
+					LOGGER.info("HttpService discovered");
+							  logservice.log(LogService.LOG_ERROR, "HttpService discovered");
 	        HttpService httpService = (HttpService) context.getService(reference);
 	        try{
-			LOGGER.info("Register "+uiContext+sep+" http context");
+						LOGGER.info("Register "+uiContext+sep+" http context");
+										logservice.log(LogService.LOG_ERROR, "Register "+uiContext+sep+" http context");
 	          httpService.registerServlet(uiContext+sep+"w", new WelcomeServlet(), null, null);
 	          httpService.registerServlet(uiContext+sep, new CIMAAdministrationServlet(), null, null);
 			  httpService.registerResources(uiContext+sep+"welcome", uiContext+sep+"webapps", null);
 			  httpService.registerResources(uiContext+sep+"cima", uiContext+sep+"webapps/cima", null);
 	        } catch (Exception e) {
-						LOGGER.log(Level.SEVERE, "Error registring webapp servlet", e);
+						LOGGER.error("Error registring webapp servlet",e);
+				logservice.log(LogService.LOG_ERROR, "Error registring webapp servlet");
+
 
 	        }
 	        return httpService;

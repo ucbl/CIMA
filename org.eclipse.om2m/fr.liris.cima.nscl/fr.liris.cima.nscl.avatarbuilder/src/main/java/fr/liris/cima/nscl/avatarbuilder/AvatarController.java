@@ -22,7 +22,6 @@ public class AvatarController implements IpuService{
 
 	/** Logger */
 	private static Logger LOGGER = Logger.getLogger(AvatarController.class.getName());
-	private  static  Handler fh ;
 
 	/** Returns the implemented Application Point of Contact id */
 	@Override

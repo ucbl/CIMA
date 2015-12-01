@@ -16,18 +16,18 @@ import org.eclipse.om2m.core.service.SclService;
 import fr.liris.cima.gscl.commons.Capability;
 import fr.liris.cima.gscl.commons.constants.Constants;
 import fr.liris.cima.gscl.device.service.ConfigManager;
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 public class ConfigManagerImpl implements ConfigManager{
 
 
-	private static Logger LOGGER = Logger.getLogger(ConfigManagerImpl.class.getName());
-	private  static  Handler fh ;
+	private static Log LOGGER = LogFactory.getLog(ConfigManagerImpl.class);
+
+	/** Logger OSGI*/
+	private static ServiceTracker logServiceTracker;
+	private static LogService logservice;
 
 	public final static String DESC = "DESCRIPTOR";
 
@@ -49,14 +49,12 @@ public class ConfigManagerImpl implements ConfigManager{
 
 	@Override
 	public void start() {
-		try{
-			fh = new FileHandler("log/gsclDeviceManualConfig.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
 
-
-		LOGGER.info("config waiting for attachement..");
+		logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(ConfigManagerImpl.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+				logServiceTracker.open();
+				logservice = (LogService) logServiceTracker.getService();
+				LOGGER.info("config waiting for attachement..");
+				logservice.log(LogService.LOG_ERROR, "config waiting for attachement..");
 		createManagerResources("manualconfig", "devices");
 	}
 

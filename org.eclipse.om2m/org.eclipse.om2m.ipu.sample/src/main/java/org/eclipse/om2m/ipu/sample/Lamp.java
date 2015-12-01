@@ -29,13 +29,9 @@ import obix.io.ObixEncoder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  *  Provides different Lamps information.
@@ -45,10 +41,12 @@ import java.io.*;
  *         </ul>
  */
 public class Lamp {
-    /** Logger */
-    private static Logger LOGGER = Logger.getLogger(Lamp.class.getName());
-    private  static  Handler fh ;
-    /** Application point of contact for the lamps controller {@link SampleController} */
+  /** Logger */
+  private static Log LOGGER = LogFactory.getLog(Lamp.class);
+  /** Logger OSGI*/
+  private static ServiceTracker logServiceTracker;
+  private static LogService logservice;
+      /** Application point of contact for the lamps controller {@link SampleController} */
     public final static String APOCPATH = "lamps";
     /** Default Lamps location */
     public final static String LOCATION = "Home";
@@ -68,13 +66,14 @@ public class Lamp {
      * @return Obix XML representation
      */
     public static String getDescriptorRep(String sclId, String appId, String stateCont) {
-      try{
-          fh = new FileHandler("log/ipu.log", true);
-        LOGGER.addHandler(fh);
-        fh.setFormatter(new SimpleFormatter());}
-        catch(IOException ex){}
 
-        LOGGER.info("Descriptor Representation Construction");
+
+      logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(Lamp.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+              logServiceTracker.open();
+              logservice = (LogService) logServiceTracker.getService();
+              LOGGER.info("Descriptor Representation Construction");
+              logservice.log(LogService.LOG_ERROR, "Descriptor Representation Construction");
+
         // oBIX
         Obj obj = new Obj();
         obj.add(new Str("type",TYPE));

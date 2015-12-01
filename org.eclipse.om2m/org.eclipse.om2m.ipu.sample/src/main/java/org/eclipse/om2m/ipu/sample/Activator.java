@@ -27,13 +27,9 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
 /**
  *  Manages the starting and stopping of the bundle.
  *  @author <ul>
@@ -42,32 +38,38 @@ import java.io.*;
  *         </ul>
  */
 public class Activator implements BundleActivator {
-    /** Logger */
-    private static Logger logger = Logger.getLogger(Activator.class.getName());
-    private  static  Handler fh ;
+  /** Logger */
+  private static Log logger = LogFactory.getLog(Activator.class);
+  /** Logger OSGI*/
+  private static ServiceTracker logServiceTracker;
+  private static LogService logservice;
     /** SCL service tracker */
     private ServiceTracker<Object, Object> sclServiceTracker;
 
     @Override
     public void start(BundleContext bundleContext) throws Exception {
-      try{
-        fh = new FileHandler("log/ipu.log", false);
-        logger.addHandler(fh);
-        fh.setFormatter(new SimpleFormatter());}
-        catch(IOException ex){}
+
+      logServiceTracker = new ServiceTracker(bundleContext, org.osgi.service.log.LogService.class.getName(), null);
+              logServiceTracker.open();
+              logservice = (LogService) logServiceTracker.getService();
 
 
-        logger.info("Register IpuService..");
+              logger.info("Register IpuService..");
+                      logservice.log(LogService.LOG_ERROR, "Register IpuService..");
         bundleContext.registerService(IpuService.class.getName(), new SampleController(), null);
         logger.info("IpuService is registered.");
+                logservice.log(LogService.LOG_ERROR, "IpuService is registered.");
 
         sclServiceTracker = new ServiceTracker<Object, Object>(bundleContext, SclService.class.getName(), null) {
             public void removedService(ServiceReference<Object> reference, Object service) {
-                logger.info("SclService removed");
+              logger.info("SclService removed");
+                              logservice.log(LogService.LOG_ERROR, "SclService removed");
             }
 
             public Object addingService(ServiceReference<Object> reference) {
-                logger.info("SclService discovered");
+              logger.info("SclService discovered");
+              logservice.log(LogService.LOG_ERROR, "SclService discovered");
+
                 SclService sclService = (SclService) this.context.getService(reference);
                 final SampleMonitor ipuMonitor = new SampleMonitor(sclService);
                 new Thread(){
@@ -75,7 +77,8 @@ public class Activator implements BundleActivator {
                         try {
                             ipuMonitor.start();
                         } catch (Exception e) {
-                            logger.log(Level.SEVERE, "IpuMonitor Sample error", e);
+                          logger.error("IpuMonitor Sample error", e);
+                                                      logservice.log(LogService.LOG_ERROR, "IpuMonitor Sample error");
                         }
                     }
                 }.start();
@@ -87,18 +90,17 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext bundleContext) throws Exception {
-      try{
-        fh = new FileHandler("log/ipu.log", true);
-        logger.addHandler(fh);
-        fh.setFormatter(new SimpleFormatter());}
-        catch(IOException ex){}
 
-        logger.severe("Stop IPU Phidgets monitor");
+
+      logger.error("Stop IPU Phidgets monitor");
+              logservice.log(LogService.LOG_ERROR, "Stop IPU Phidgets monitor");
         try {
             SampleMonitor.stop();
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Stop Phidgets error", e);
+          logger.error("Stop Phidgets error", e);
+          logservice.log(LogService.LOG_ERROR, "Stop Phidgets error");
+
         }
     }
 

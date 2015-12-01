@@ -41,19 +41,17 @@ import org.eclipse.om2m.commons.resource.StatusCode;
 import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 import org.eclipse.om2m.core.service.SclService;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 public class SampleMonitor {
-    /** Logger */
-    private static Logger LOGGER = Logger.getLogger(SampleMonitor.class.getName());
-    private  static  Handler fh ;
-    /** Sclbase id */
+  /** Logger */
+      private static Log LOGGER = LogFactory.getLog(SampleMonitor.class);
+      /** Logger OSGI*/
+      private static ServiceTracker logServiceTracker;
+      private static LogService logservice;
+          /** Sclbase id */
     public final static String SCLID = System.getProperty("org.eclipse.om2m.sclBaseId","");
     /** Admin requesting entity */
     static String REQENTITY = System.getProperty("org.eclipse.om2m.adminRequestingEntity","");
@@ -81,14 +79,15 @@ public class SampleMonitor {
      * Starts monitoring and creating resources on the SCL
      */
     public void start() {
-      try{
-          fh = new FileHandler("log/ipu.log", true);
-        LOGGER.addHandler(fh);
-        fh.setFormatter(new SimpleFormatter());}
-        catch(IOException ex){}
 
 
-        LOGGER.info("Lamps waiting for attachement..");
+
+      logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(SampleMonitor.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+              logServiceTracker.open();
+              logservice = (LogService) logServiceTracker.getService();
+
+              LOGGER.info("Lamps waiting for attachement..");
+              logservice.log(LogService.LOG_ERROR, "Lamps waiting for attachement..");
         // Create initial resources for the 2 lamps
         for(int i=0; i<2; i++) {
             String lampId = Lamp.TYPE+"_"+i;

@@ -24,34 +24,33 @@ import org.eclipse.om2m.comm.service.RestClientService;
 import org.eclipse.om2m.commons.resource.StatusCode;
 import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 
 public class CIMARestHttpClient implements RestClientService{
 
 	/** Logger */
-	private static Logger LOGGER = Logger.getLogger(CIMARestHttpClient.class.getName());
-	private  static  Handler fh ;
+	private static Log LOGGER = LogFactory.getLog(CIMARestHttpClient.class);
+
+	/** Logger OSGI*/
+	private static ServiceTracker logServiceTracker;
+	private static LogService logservice;
 	/** implemented specific protocol name */
 	private static String protocol ="http";
 
 	@Override
 	public ResponseConfirm sendRequest(RequestIndication requestIndication) {
-		try{
-		fh = new FileHandler("log/http.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
 
 
-		//LOGGER.debug("Http Client > "+requestIndication);
-		LOGGER.severe("Http Client > "+requestIndication);
+
+		logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(CIMARestHttpClient.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+		logServiceTracker.open();
+		logservice = (LogService) logServiceTracker.getService();
+
+		LOGGER.debug("Http Client > "+requestIndication);
+		logservice.log(LogService.LOG_ERROR, "Http Client > " + requestIndication);
 
 		HttpClient httpclient = new HttpClient();
 
@@ -62,8 +61,14 @@ public class CIMARestHttpClient implements RestClientService{
 			url=protocol+"://"+url;
 		}
 		LOGGER.info("---------URL------");
+		logservice.log(LogService.LOG_ERROR, "---------URL------");
+
 		LOGGER.info(url);
+		logservice.log(LogService.LOG_ERROR, url);
+
 		LOGGER.info("-----------------");
+		logservice.log(LogService.LOG_ERROR, "-----------------");
+
 		try {
 			switch (requestIndication.getMethod()){
 			case "RETRIEVE" :
@@ -103,6 +108,8 @@ public class CIMARestHttpClient implements RestClientService{
 				}
 			}
 			LOGGER.info("Http Client > "+responseConfirm);
+			logservice.log(LogService.LOG_ERROR, "Http Client > " + responseConfirm);
+
 
 		}catch(IOException e){
 			// LOGGER.error(url+ " Not Found"+responseConfirm,e);

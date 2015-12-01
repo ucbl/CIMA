@@ -40,13 +40,9 @@ import org.eclipse.om2m.commons.resource.StatusCode;
 import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 import org.eclipse.om2m.core.service.SclService;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  *  Provides mapping from a HTTP-specific request to a protocol-independent request.
@@ -58,10 +54,12 @@ import java.io.*;
  *         </ul>
  */
 public class RestHttpServlet extends HttpServlet {
-    /** Logger */
-    private static Logger LOGGER = Logger.getLogger(RestHttpServlet.class.getName());
-    private  static  Handler fh ;
-    /** Serial Version UID */
+  /** Logger */
+  private static Log LOGGER = LogFactory.getLog(RestHttpServlet.class);
+  /** Logger OSGI*/
+  private static ServiceTracker logServiceTracker;
+  private static LogService logservice;
+      /** Serial Version UID */
     private static final long serialVersionUID = 1L;
     /** Discovered SCL service */
     private static SclService scl;
@@ -73,12 +71,10 @@ public class RestHttpServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
 
-      try{
-          fh = new FileHandler("log/commHttp.log", true);
-        LOGGER.addHandler(fh);
-        fh.setFormatter(new SimpleFormatter());
-      }
-        catch(IOException ex){}
+      logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(RestHttpServlet.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+              logServiceTracker.open();
+              logservice = (LogService) logServiceTracker.getService();
+
 
 
         //Construct a requestIndication Object from the http request
@@ -91,7 +87,9 @@ public class RestHttpServlet extends HttpServlet {
         try {
             representation = convertStreamToString(httpServletRequest.getInputStream());
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error reading httpServletRequest InputStream", e);
+          LOGGER.error("Error reading httpServletRequest InputStream",e);
+          logservice.log(LogService.LOG_ERROR, "Error reading httpServletRequest InputStream");
+
         }
         requestIndication.setRepresentation(representation);
         //Get the method
@@ -117,6 +115,7 @@ public class RestHttpServlet extends HttpServlet {
         //Construct the response to return
         ResponseConfirm responseConfirm = new ResponseConfirm();
         LOGGER.info(httpRequestToString(httpMethod, targetID, representation, authorization, queryString));
+                logservice.log(LogService.LOG_ERROR, httpRequestToString(httpMethod, targetID, representation, authorization, queryString));
         if(scl!=null){
             responseConfirm = scl.doRequest(requestIndication);
         }else{
@@ -142,11 +141,14 @@ public class RestHttpServlet extends HttpServlet {
         try {
             out = httpServletResponse.getWriter();
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error reading httpServletResponse Writer", e);
+          LOGGER.error("Error reading httpServletResponse Writer",e);
+          logservice.log(LogService.LOG_ERROR, "Error reading httpServletResponse Writer");
+
         }
         out.println(body);
         out.close();
-        LOGGER.info(httpResponseToString(statusCode,body));
+        LOGGER.info(httpResponseToString(statusCode, body));
+                logservice.log(LogService.LOG_ERROR, httpResponseToString(statusCode, body));
     }
 
     /**

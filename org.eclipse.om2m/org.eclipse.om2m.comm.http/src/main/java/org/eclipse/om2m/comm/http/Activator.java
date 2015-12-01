@@ -28,13 +28,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  *  Manages the starting and stopping of the bundle.
@@ -44,10 +39,12 @@ import java.io.*;
  *         </ul>
  */
 public class Activator implements BundleActivator {
-    /** Logger */
-    private static Logger LOGGER = Logger.getLogger(Activator.class.getName());
-    private  static  Handler fh ;
-    /** HTTP service tracker */
+  /** Logger */
+private static Log LOGGER = LogFactory.getLog(Activator.class);
+/** Logger OSGI*/
+private static ServiceTracker logServiceTracker;
+private static LogService logservice;
+/** HTTP service tracker */
     private ServiceTracker<Object, Object> httpServiceTracker;
     /** SCL service tracker */
     private ServiceTracker<Object, Object> sclServiceTracker;
@@ -56,39 +53,49 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext bundleContext) throws Exception {
-      try{
-        fh = new FileHandler("log/commHttp.log", false);
-        LOGGER.addHandler(fh);
-        fh.setFormatter(new SimpleFormatter());}
-        catch(IOException ex){}
+      logServiceTracker = new ServiceTracker(bundleContext, org.osgi.service.log.LogService.class.getName(), null);
+      logServiceTracker.open();
+      logservice = (LogService) logServiceTracker.getService();
+
+      // Register the Rest HTTP Client
+      LOGGER.info("Register HTTP RestClientService..");
+      logservice.log(LogService.LOG_ERROR, "Register HTTP RestClientService..");
 
 
-        // Register the Rest HTTP Client
-        LOGGER.info("Register HTTP RestClientService..");
         bundleContext.registerService(RestClientService.class.getName(), new RestHttpClient(), null);
         LOGGER.info("HTTP RestClientService is registered.");
+              logservice.log(LogService.LOG_ERROR, "HTTP RestClientService is registered.");
 
         // track the HTTP service
         httpServiceTracker = new ServiceTracker<Object, Object>(bundleContext, HttpService.class.getName(), null) {
             public void removedService(ServiceReference<Object> reference, Object service) {
-                LOGGER.info("HttpService removed");
+              LOGGER.info("HttpService removed");
+                              logservice.log(LogService.LOG_ERROR, "HttpService removed");
                 try {
-                    LOGGER.info("Unregister "+sclBaseContext+" http context");
+                  LOGGER.info("Unregister "+sclBaseContext+" http context");
+                                      logservice.log(LogService.LOG_ERROR, "Unregister "+sclBaseContext+" http context");
                     ((HttpService) service).unregister(sclBaseContext);
                 } catch (IllegalArgumentException e) {
-                    LOGGER.log(Level.SEVERE, "Error unregistring SclServlet", e);
+                  LOGGER.error("Error unregistring SclServlet",e);
+                                      logservice.log(LogService.LOG_ERROR, "Error unregistring SclServlet");
 
                 }
             }
 
             public Object addingService(ServiceReference<Object> reference) {
-                LOGGER.info("HttpService discovered");
+              LOGGER.info("HttpService discovered");
+              logservice.log(LogService.LOG_ERROR, "HttpService discovered");
+
                 HttpService httpService = (HttpService) this.context.getService(reference);
                 try {
-                    LOGGER.info("Register "+sclBaseContext+" context");
+                  LOGGER.info("Register "+sclBaseContext+" context");
+                  logservice.log(LogService.LOG_ERROR, "Register "+sclBaseContext+" context");
+
                     httpService.registerServlet(sclBaseContext, new RestHttpServlet(), null,null);
                 } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, "Error registring SclServlet", e);
+                  LOGGER.error("Error registering SclServlet",e);
+                  logservice.log(LogService.LOG_ERROR, "Error registering SclServlet");
+
 
 
                 }
@@ -100,22 +107,28 @@ public class Activator implements BundleActivator {
         // track the SCL service
         sclServiceTracker = new ServiceTracker<Object, Object>(bundleContext, SclService.class.getName(), null) {
             public void removedService(ServiceReference<Object> reference, Object service) {
-                LOGGER.info("SclService removed");
+              LOGGER.info("SclService removed");
+                              logservice.log(LogService.LOG_ERROR, "SclService removed");
                 try {
                     RestHttpServlet.setScl((SclService) service);
                 } catch (IllegalArgumentException e) {
-                    LOGGER.log(Level.SEVERE, "Error removing SclService", e);
+                  LOGGER.error("Error removing SclService",e);
+                  logservice.log(LogService.LOG_ERROR, "Error removing SclService");
+
 
                 }
             }
 
             public Object addingService(ServiceReference<Object> reference) {
-                LOGGER.info("SclService discovered");
+              LOGGER.info("SclService discovered");
+                              logservice.log(LogService.LOG_ERROR, "SclService discovered");
                 SclService scl = (SclService) this.context.getService(reference);
                 try {
                     RestHttpServlet.setScl(scl);
                 } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, "Error adding SclService", e);
+                  LOGGER.error("Error adding SclService",e);
+                  logservice.log(LogService.LOG_ERROR, "Error adding SclService");
+
 
                 }
                 return scl;

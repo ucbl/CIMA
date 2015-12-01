@@ -33,21 +33,21 @@ import fr.liris.cima.gscl.commons.util.Utils;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
 import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
 import fr.liris.cima.gscl.portforwarding.PortForwardingInterface;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 public class DeviceManagerImpl implements ManagedDeviceService {
 
-	/** Logger */
-	private static Logger LOGGER = Logger.getLogger(DeviceManagerImpl.class.getName());
-	private  static  Handler fh ;
 
-	public final static String DATA = "DATA";
+		/** Logger */
+		private static Log LOGGER = LogFactory.getLog(DeviceManagerImpl.class);
+
+		/** Logger OSGI*/
+		private static ServiceTracker logServiceTracker;
+		private static LogService logservice;
+
+			public final static String DATA = "DATA";
 	/** Descriptor container id */
 	public final static String DESC = "DESCRIPTOR";
 
@@ -56,7 +56,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 
 	/** Discovered SCL service*/
 	static SclService SCL;
-	
+
 	private PortForwardingInterface portForwardingService;
 
 
@@ -124,12 +124,12 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		String deviceID = device.getId();
 		int port = 8080; //TODO; //SELON CAPACITE
 		String address = device.getUri(); //TODO verif
-		
+
 		System.out.println("SEND SEND SEND : "+ deviceID + " " + port + " " + address);
 		portForwardingService.askNewPortForwarding(address, port, deviceID);
 		System.out.println("SENDED SENDED");
 	}
-	
+
 	@Override
 	public void removeDevice(String deviceId) {
 		Device  device = getDevice(deviceId);
@@ -144,13 +144,12 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 
 	@Override
 	public void start() {
-		try{
-			fh = new FileHandler("log/gsclMgmtDevice.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+		logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(DeviceManagerImpl.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+		logServiceTracker.open();
+		logservice = (LogService) logServiceTracker.getService();
 
 		LOGGER.info("Devices waiting for attachement..");
+			logservice.log(LogService.LOG_ERROR, "Devices waiting for attachement..");
 		createManagerResources("CIMA", "devices");
 	}
 
@@ -230,6 +229,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 	@Override
 	public boolean switchUnknownToKnownDevice(Device device) {
 		LOGGER.info("******"+unknownDevices);
+				logservice.log(LogService.LOG_ERROR, "******"+unknownDevices);
 		if(!unknownDevices.contains(device))
 			return false;
 		unknownDevices.remove(device);
@@ -298,6 +298,8 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		//Device device = Parser.parseObixToDevice(obixFormat);
 		unknownDevices.add(device);
 		LOGGER.info("size unknown = "+unknownDevices.size());
+				logservice.log(LogService.LOG_ERROR, "size unknown = " + unknownDevices.size());
+
 
 	}
 
@@ -307,6 +309,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		//requestIndication.setRepresentation(device.toObixFormat());
 		String representation = Encoder.encodeDeviceToObix(device);
 		LOGGER.info("Send device to nscl  = "+representation);
+				logservice.log(LogService.LOG_ERROR, "Send device to nscl  = "+representation);
 
 		requestIndication.setRepresentation(representation);
 
@@ -420,9 +423,16 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		uri += "/" + capabilityURI;
 
 		LOGGER.info(uri);
+		logservice.log(LogService.LOG_ERROR, uri);
+
 		LOGGER.info(protocolName);
+		logservice.log(LogService.LOG_ERROR, protocolName);
+
 		LOGGER.info(capability.getProtocol().getParameterValue("body"));
+		logservice.log(LogService.LOG_ERROR, capability.getProtocol().getParameterValue("body"));
+
 		LOGGER.info("capabilityURI = "+capabilityURI);
+		logservice.log(LogService.LOG_ERROR, "capabilityURI = "+capabilityURI);
 
 		requestIndication.setBase(uri);
 		requestIndication.setMethod(protocol.getParameterValue("method").trim());

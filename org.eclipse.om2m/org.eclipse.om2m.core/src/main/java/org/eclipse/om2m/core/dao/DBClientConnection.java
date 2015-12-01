@@ -63,12 +63,9 @@ import com.db4o.defragment.Defragment;
 import com.db4o.defragment.DefragmentConfig;
 import com.db4o.ext.Db4oException;
 
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 
 /**
@@ -84,9 +81,10 @@ import java.io.*;
  */
 
 public class DBClientConnection {
-    private static Logger LOGGER = Logger.getLogger(DBClientConnection.class.getName());
-    private  static  Handler fh ;
-
+  private static Log LOGGER = LogFactory.getLog(DBClientConnection.class);
+      /** Logger OSGI*/
+      private static ServiceTracker logServiceTracker;
+      private static LogService logservice;
 
     private static ObjectContainer db;
 
@@ -95,21 +93,22 @@ public class DBClientConnection {
      * Open the connection with the DataBase
      */
     private DBClientConnection(){
-try{
-    fh = new FileHandler("log/core.log", true);
-        LOGGER.addHandler(fh);
-        fh.setFormatter(new SimpleFormatter());}
-        catch(IOException ex){}
+      logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(DBClientConnection.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+              logServiceTracker.open();
+              logservice = (LogService) logServiceTracker.getService();
+
 
 
             try {
                 db = Db4oEmbedded.openFile(getConfiguration(true), Constants.DB_FILE);
             } catch (Db4oException e) {
-                LOGGER.log(Level.SEVERE, "Database File locked", e);
+              LOGGER.error("Database File locked",e);
+                              logservice.log(LogService.LOG_ERROR, "Database File locked");
 
             }
             if(Constants.DB_DEFRAGMENT_PERIOD!=-1){
-                LOGGER.log(Level.SEVERE, "Defragment DB enabled each "+ Constants.DB_DEFRAGMENT_PERIOD+" ms", new Db4oException());
+              LOGGER.error("Defragment DB enabled each "+ Constants.DB_DEFRAGMENT_PERIOD+" ms");
+                              logservice.log(LogService.LOG_ERROR, "Defragment DB enabled each "+ Constants.DB_DEFRAGMENT_PERIOD+" ms");
 
                 new Thread() {
 					public void run() {
@@ -121,7 +120,8 @@ try{
 							}
 
 							Router.readWriteLock.writeLock().lock();
-							LOGGER.info("DB Defragmenting..");
+              LOGGER.info("DB Defragmenting..");
+                                          logservice.log(LogService.LOG_ERROR, "DB Defragmenting..");
 							DAO.DB.close();
 							try {
 								DefragmentConfig config = new DefragmentConfig(Constants.DB_FILE);
@@ -132,13 +132,15 @@ try{
 							}
 							DAO.DB = Db4oEmbedded.openFile(getConfiguration(false),
 									Constants.DB_FILE);
-							LOGGER.info("DB Defragmented");
+                  LOGGER.info("DB Defragmented");
+                                              logservice.log(LogService.LOG_ERROR, "DB Defragmented");
 							Router.readWriteLock.writeLock().unlock();
 						}
 					}
 				}.start();
             }else{
-                LOGGER.log(Level.SEVERE, "Defragment DB disabled", new Db4oException());
+              LOGGER.error("Defragment DB disabled");
+                              logservice.log(LogService.LOG_ERROR, "Defragment DB disabled");
             }
     }
 

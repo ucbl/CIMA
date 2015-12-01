@@ -21,12 +21,6 @@ import fr.liris.cima.gscl.device.service.discovery.DiscoveryService;
 import fr.liris.cima.gscl.device.service.*;
 
 import fr.liris.cima.gscl.*;
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.File;
 
 /**
  * Specific device discover, for discovering a device in the local network
@@ -35,23 +29,21 @@ import java.io.File;
  */
 public class Discovery_ptut implements DiscoveryService{
 
-	private static Logger LOGGER = Logger.getLogger(Discovery_ptut.class.getName());
-	private  static  Handler fh ;
 
 	public static final String ADMIN_REQUESTING_ENTITY = System.getProperty("org.eclipse.om2m.adminRequestingEntity","admin/admin");
 
 	// A device managed service
 	private ManagedDeviceService deviceService;
 
-	
+
 
 	public Discovery_ptut() {
 
 	}
-	
+
 	@Override
 	public void doDiscovery() {
 // Mettre le code ICI c'est une sorte de MAin
-	        
+
 	}
 }

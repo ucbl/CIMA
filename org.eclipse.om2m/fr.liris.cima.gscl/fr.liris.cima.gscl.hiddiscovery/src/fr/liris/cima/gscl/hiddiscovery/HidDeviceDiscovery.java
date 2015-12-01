@@ -41,18 +41,18 @@ public class HidDeviceDiscovery implements DiscoveryService{
 	// A device managed service
 	private ManagedDeviceService deviceService;
 
-	
+
 
 	public HidDeviceDiscovery() {
 
 	}
-	
+
 	@Override
 	public void doDiscovery() {
 		 System.out.println("doDiscovery PIUX\n\n");
-	        
+
 		 DeviceFinder DF = new DeviceFinder();
 			DF.FindAllNewUpdates();
-	        
+
 	}
 }

@@ -31,13 +31,9 @@ import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 import org.eclipse.om2m.core.constants.Constants;
 
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
-
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 /**
  *
  * A generic client that acts as a proxy to forward requests to specific rest clients based on their
@@ -50,9 +46,12 @@ import java.io.*;
  *         </ul>
  */
 public class RestClient{
-    /** Logger  */
-    private static Logger LOGGER = Logger.getLogger(RestClient.class.getName());
-    private  static  Handler fh ;
+
+  /** Logger  */
+private static Log LOGGER = LogFactory.getLog(RestClient.class);
+/** Logger OSGI*/
+private static ServiceTracker logServiceTracker;
+private static LogService logservice;
     /** Contains all discovered specific rest clients that will considered for sending requests */
     public static Map<String,RestClientService> restClients = new HashMap<String,RestClientService>();
 
@@ -62,14 +61,15 @@ public class RestClient{
      * @return The generic returned response
      */
     public ResponseConfirm sendRequest(RequestIndication requestIndication){
-      try{
-          fh = new FileHandler("log/core.log", true);
-        LOGGER.addHandler(fh);
-        fh.setFormatter(new SimpleFormatter());}
-        catch(IOException ex){}
 
 
-        LOGGER.info("the requestIndication RC: "+requestIndication);
+
+      logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(RestClient.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+              logServiceTracker.open();
+              logservice = (LogService) logServiceTracker.getService();
+
+              LOGGER.info("the requestIndication RC: "+requestIndication);
+              logservice.log(LogService.LOG_ERROR,"the requestIndication RC: "+requestIndication);
 
         ResponseConfirm responseConfirm = new ResponseConfirm();
         // Find the appropriate client from the map and send the request
@@ -83,13 +83,15 @@ public class RestClient{
                     throw new Exception();
                 }
             }catch(Exception e){
-                LOGGER.log(Level.SEVERE, "RestClient error", e);
+              LOGGER.error("RestClient error",e);
+                              logservice.log(LogService.LOG_ERROR, "RestClient error");
                 responseConfirm = new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_INTERNAL_SERVER_ERROR,"RestClient error"));
             }
         }else{
             responseConfirm = new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_IMPLEMENTED,"No RestClient service Found"));
         }
-        LOGGER.info(responseConfirm.toString());
+        LOGGER.info(responseConfirm);
+                logservice.log(LogService.LOG_ERROR, responseConfirm.toString());
         return responseConfirm;
     }
 

@@ -73,7 +73,7 @@
                                     <i class="glyphicon glyphicon-show"></i>
                                     Show
                                 </button>
-
+                                
                                 <button ng-show="capability.isEditable" type="button" ng-click="openAndEditCapability($index, capability)" class="btn btn-sm btn btn-info">
                                   <i class="glyphicon glyphicon-edit"></i>
                                   Edit
@@ -114,13 +114,20 @@
                             <button class="btn btn-danger pull-left" type="button" ng-click="openAndShowCapability(indexOfShowingCapacity)" />
                                 Close
                             </button>
-
-                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('sensor') >= 0" ng-click="testCapability(editedCapability)">Test</button>
-                            
+                                
                             <!-- Test capability button -->
-                            <button ng-click="" type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0" data-toggle="modal" data-target="#configParamsModal">Configure</button>
+                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('sensor') >= 0" ng-click="testCapability(editedCapability)">Test</button>
+
+                            <!-- Stop capability button -->
+                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0 && editedCapability.id.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button>
+
+                            
+                            <button ng-click="" type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0 && editedCapability.id.indexOf('stop') < 0" data-toggle="modal" data-target="#configParamsModal">Configure</button>
                             <br>
-                            <!-- Modal -->
+                                
+                            
+
+                            <!-- Modal Request -->
                             <div class="modal fade" id="configParamsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                               <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -144,6 +151,32 @@
                                   <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                     <button type="button" class="btn btn-primary" ng-if="editedCapability.params.length > 0" ng-click="testCapability(editedCapability)">Test</button>
+                                    <!-- <button type="button" class="btn btn-primary" ng-if="editedCapability.id.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button> -->
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <!-- Modal Response -->
+                            <div class="modal fade" id="configParamsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                              <div class="modal-dialog" role="document" ng-show="isResponseSensor">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Response</h4>
+                                  </div>
+                                  
+                                  <div class="modal-body" ng-repeat="responseSensor in responseSensors">
+                                    <!-- Implement a directive to solve this -->
+                                    <div class="input-group">
+                                      <span class="input-group-addon" id="sizing-addon2" ng-bind-template="responseSensor"></span>
+                                      
+                                    </div>
+                                    
+                                    
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="closeResponseSensorModal()">Close</button>
                                   </div>
                                 </div>
                               </div>

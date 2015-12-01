@@ -25,12 +25,9 @@ import fr.liris.cima.gscl.commons.parser.*;
 import fr.liris.cima.gscl.commons.util.*;
 import fr.liris.cima.gscl.device.service.discovery.DiscoveryService;
 import fr.liris.cima.gscl.device.service.*;
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 
 /**
@@ -40,8 +37,11 @@ import java.io.*;
  */
 public class DeviceDiscovery implements DiscoveryService{
 
-	private static Logger LOGGER = Logger.getLogger(DeviceDiscovery.class.getName());
-	private  static  Handler fh ;
+	private static Log LOGGER = LogFactory.getLog(DeviceDiscovery.class);
+	/** Logger OSGI*/
+	private static ServiceTracker logServiceTracker;
+	private static LogService logservice;
+
 	public static final String ADMIN_REQUESTING_ENTITY = System.getProperty("org.eclipse.om2m.adminRequestingEntity","admin/admin");
 
 	public static final String FORWARD_PORT = System.getProperty("fr.liris.cima.gscl.forwardPort");
@@ -99,11 +99,7 @@ public class DeviceDiscovery implements DiscoveryService{
 	 * @param deviceService - The device service for adding device, deleting device, ...
 	 */
 	public DeviceDiscovery(RestClientService clientService, ManagedDeviceService deviceService) {
-		try{
-			fh = new FileHandler("log/gsclDiscovery.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
 
 
 		this.clientService = clientService;
@@ -139,16 +135,18 @@ public class DeviceDiscovery implements DiscoveryService{
 	 * @return The generic returned response.
 	 */
 	private ResponseConfirm notifyDisconnectionToInfController(DeviceDescription deviceDescription) {
-		try{
-			fh = new FileHandler("log/gsclDiscovery.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
+		logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(DeviceDiscovery.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+			logServiceTracker.open();
+			logservice = (LogService) logServiceTracker.getService();
 
 
 		LOGGER.info("SEND NOTIFICATION FOR DEVICE" + deviceDescription.getId());
-		LOGGER.info("representation obix = "+Encoder.encodeDeviceDescriptionToObix(deviceDescription));
-		RequestIndication requestIndication = new RequestIndication();
+	logservice.log(LogService.LOG_ERROR, "SEND NOTIFICATION FOR DEVICE" + deviceDescription.getId());
+
+	LOGGER.info("representation obix = " + Encoder.encodeDeviceDescriptionToObix(deviceDescription));
+	logservice.log(LogService.LOG_ERROR, "representation obix = " + Encoder.encodeDeviceDescriptionToObix(deviceDescription));
+RequestIndication requestIndication = new RequestIndication();
 		requestIndication.setRepresentation(Encoder.encodeDeviceDescriptionToObix(deviceDescription));
 		requestIndication.setProtocol("http");
 		requestIndication .setMethod(Constants.METHOD_DELETE);
@@ -175,21 +173,23 @@ public class DeviceDiscovery implements DiscoveryService{
 	 */
 	@Override
 	public void doDiscovery() {
-		try{
-		fh = new FileHandler("log/gsclDeviceDiscovery.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+		logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(DeviceDiscovery.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+			logServiceTracker.open();
+			logservice = (LogService) logServiceTracker.getService();
+
 
 		RequestIndication requestIndication = new RequestIndication("RETRIEVE", "", "", "");
 		requestIndication.setMethod("RETRIEVE");
 		requestIndication.setProtocol("http");
 
-		LOGGER.info("***************getProperty"+System.getProperty("org.eclipse.om2m.sclBaseId"));
+		LOGGER.info("***************getProperty" + System.getProperty("org.eclipse.om2m.sclBaseId"));
+		logservice.log(LogService.LOG_ERROR, "***************getProperty" + System.getProperty("org.eclipse.om2m.sclBaseId"));
+
 
 		// Retrieve all connected address in local network
 		Set<String> addresses = lookUp();
 		LOGGER.info("addresses = " + addresses);
+				logservice.log(LogService.LOG_ERROR, "addresses = " + addresses);
 
 
 
@@ -199,6 +199,7 @@ public class DeviceDiscovery implements DiscoveryService{
 			// Check if device is in the network local network
 			if(mapConnectedAddresses.containsKey(address)) {
 				LOGGER.info("device is already connected maybe = " + address);
+								logservice.log(LogService.LOG_ERROR, "device is already connected maybe = " + address);
 
 				try {
 					Thread.sleep(1000);
@@ -210,14 +211,17 @@ public class DeviceDiscovery implements DiscoveryService{
 				if (checkKnownDeviceConnection(requestIndication)) {
 					// The device is always connected.
 					LOGGER.info("CONTINUE  " + address);
+										logservice.log(LogService.LOG_ERROR, "CONTINUE  " + address);
 					continue;
 				}
 				// The device is disconnected.
 				//send notification to the Infrasctructure Controller.
 				String deviceId = mapConnectedAddresses.get(address);
 				LOGGER.info("****deviceId***  = "+deviceId);
+								logservice.log(LogService.LOG_ERROR, "****deviceId***  = "+deviceId);
 				DeviceDescription deviceDescription  = deviceService.getDevice(deviceId).getDeviceDescription();
 				LOGGER.info("***deviceDescription*** = "+deviceDescription);
+								logservice.log(LogService.LOG_ERROR, "***deviceDescription*** = "+deviceDescription);
 				notifyDisconnectionToInfController(deviceDescription);
 
 				// Get ids that identifying  specifics ports to devices, in port forwarding part
@@ -236,11 +240,14 @@ public class DeviceDiscovery implements DiscoveryService{
 						String portForwadingId = entry.getKey();
 						int cloudPort =  mapConnectionPortForwarding.get(portForwadingId);
 						LOGGER.info("Error for disconnecting port "+cloudPort + " in port forwarding part");
+						logservice.log(LogService.LOG_ERROR, "Error for disconnecting port "+cloudPort + " in port forwarding part");
+
 					}
 				}
 
 				// update mapConnectedAddresses by removing the device address
 				LOGGER.info(" Le device viens de se deconnecter  " + address);
+								logservice.log(LogService.LOG_ERROR, " Le device viens de se deconnecter  " + address);
 				mapConnectedAddresses.remove(address);
 			}
 
@@ -252,9 +259,13 @@ public class DeviceDiscovery implements DiscoveryService{
 				//	else if(this.handleNewDeviceConnection(address, requestIndication, ":8080/simu/infos")){}
 				else {
 					LOGGER.info(" UNKNOWN DEVICE "+address);
+					logservice.log(LogService.LOG_ERROR, " UNKNOWN DEVICE "+address);
+
 					if( !mapConfiguredAddresses.containsKey(address)) {
 						// Create unknown device
 						LOGGER.info(" UNKNOWN DEVICE add successfully "+address);
+						logservice.log(LogService.LOG_ERROR, " UNKNOWN DEVICE add successfully "+address);
+
 
 						DeviceDescription deviceDescription = new DeviceDescription();
 						deviceDescription.setModeConnection(Constants.MOD_IP);
@@ -279,26 +290,30 @@ public class DeviceDiscovery implements DiscoveryService{
 	 * @return
 	 */
 	protected boolean handleNewDeviceConnection(String address, RequestIndication requestIndication, String targetId){
-		try{
-		fh = new FileHandler("log/gsclDeviceDiscovery.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
+		logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(DeviceDiscovery.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+			logServiceTracker.open();
+			logservice = (LogService) logServiceTracker.getService();
 
 
 		requestIndication.setTargetID(targetId);
 		ResponseConfirm responseConfirm = null ;
 		LOGGER.info("*****Client Service ******* : " + clientService);
+				logservice.log(LogService.LOG_ERROR, "*****Client Service ******* : " + clientService);
 		responseConfirm = clientService.sendRequest(requestIndication);
 
 		LOGGER.info("device requestIndication = "+requestIndication);
+				logservice.log(LogService.LOG_ERROR, "device requestIndication = "+requestIndication);
 
 		if(!(responseConfirm.getStatusCode() == null) && (responseConfirm.getStatusCode().equals(StatusCode.STATUS_OK) ||
 				responseConfirm.getStatusCode().equals(StatusCode.STATUS_ACCEPTED)) ) {
 			String representation = responseConfirm.getRepresentation();
 			representation = representation.replace("<!--home oage-->\n", "");
 			LOGGER.info("***************Representation******************* : \n" + representation);
+			logservice.log(LogService.LOG_ERROR, "***************Representation******************* : \n" + representation);
+
 			LOGGER.info("***************handleNewDeviceConnection*******************");
+			logservice.log(LogService.LOG_ERROR, "***************handleNewDeviceConnection*******************");
 
 			// Create device from its xml representation
 			Device device = Parser.parseXmlToDevice(representation);
@@ -311,6 +326,7 @@ public class DeviceDiscovery implements DiscoveryService{
 			//deviceService.sendDeviceToNSCL(device, clientService);
 
 			LOGGER.info("**SEND NOTIFICATION TO THE NSCL 1**" + device);
+						logservice.log(LogService.LOG_ERROR, "**SEND NOTIFICATION TO THE NSCL 1**" + device);
 
 
 			RequestIndication client = new RequestIndication();
@@ -321,9 +337,12 @@ public class DeviceDiscovery implements DiscoveryService{
 			client.setRequestingEntity(Constants.ADMIN_REQUESTING_ENTITY);
 			String encod = Encoder.encodeDeviceToObix(device);
 			LOGGER.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" + encod);
+						logservice.log(LogService.LOG_ERROR, "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" + encod);
 			client.setRepresentation(encod);
 			LOGGER.info("YYYYYYYYYYYYYYYYYYYY D E V I C E YYYYYYYYYYYYYYYYYYYY" + device);
-			LOGGER.info("**SEND NOTIFICATION TO THE NSCL in obix**");
+						logservice.log(LogService.LOG_ERROR, "YYYYYYYYYYYYYYYYYYYY D E V I C E YYYYYYYYYYYYYYYYYYYY" + device);
+						LOGGER.info("**SEND NOTIFICATION TO THE NSCL in obix**");
+									logservice.log(LogService.LOG_ERROR, "**SEND NOTIFICATION TO THE NSCL in obix**");
 
 
 
@@ -350,22 +369,26 @@ public class DeviceDiscovery implements DiscoveryService{
 	}
 
 	private  boolean checkKnownDeviceConnection(RequestIndication requestIndication) {
-		try{
-		fh = new FileHandler("log/gsclDeviceDiscovery.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
+		logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(DeviceDiscovery.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+		logServiceTracker.open();
+		logservice = (LogService) logServiceTracker.getService();
 
 
 		requestIndication.setTargetID(":8080"+DEFAULT_DEVICE_PATH_INFOS);
 		ResponseConfirm responseConfirm = clientService.sendRequest(requestIndication);
 		LOGGER.info("***********isAlwaysConnected*************"+requestIndication.getUrl());
+		logservice.log(LogService.LOG_ERROR, "***********isAlwaysConnected*************"+requestIndication.getUrl());
+
 		if(responseConfirm.getStatusCode() != null && responseConfirm.getStatusCode().equals(StatusCode.STATUS_OK)) {
 			String representation = responseConfirm.getRepresentation();
 			LOGGER.info("device is connected");
+						logservice.log(LogService.LOG_ERROR, "device is connected");
 			return true;
 		}
 		LOGGER.info("**********device is disconnected*****************");
+		logservice.log(LogService.LOG_ERROR, "**********device is disconnected*****************");
+
 		return false;
 	}
 

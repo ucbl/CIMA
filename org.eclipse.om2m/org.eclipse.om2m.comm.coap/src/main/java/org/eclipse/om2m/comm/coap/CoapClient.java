@@ -32,20 +32,18 @@ import ch.ethz.inf.vs.californium.coap.CoAP;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 public class CoapClient implements RestClientService {
 
 	/** Logger: */
-	private static Logger LOGGER = Logger.getLogger(CoapClient.class.getName());
-	private  static  Handler fh ;
-	/** implemented specific protocol name */
+		private static Log LOGGER = LogFactory.getLog(CoapClient.class);
+		/** Logger OSGI*/
+		private static ServiceTracker logServiceTracker;
+		private static LogService logservice;
+			/** implemented specific protocol name */
 	private static String protocol = "coap";
 
 	/**
@@ -68,15 +66,12 @@ public class CoapClient implements RestClientService {
 	 * @return protocol independent response.
 	 */
 	public ResponseConfirm sendRequest(RequestIndication requestIndication) {
-try{
-	fh = new FileHandler("log/coap.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
 
 
         //LOGGER.debug("CoAP Client > "+requestIndication);
-				LOGGER.severe("CoAP Client > "+requestIndication);
+				LOGGER.debug("CoAP Client > "+requestIndication);
+						logservice.log(LogService.LOG_ERROR, "CoAP Client > "+requestIndication);
 
 		// create the standard final response
 		ResponseConfirm responseConfirm = new ResponseConfirm();
@@ -167,7 +162,8 @@ try{
 		try {
 			response = request.waitForResponse();
 		} catch (InterruptedException e) {
-			 LOGGER.severe("CoAP Client > Failed to receive response:" + e.getMessage());
+			LOGGER.error("CoAP Client > Failed to receive response:" + e.getMessage());
+						logservice.log(LogService.LOG_ERROR, "CoAP Client > Failed to receive response:" + e.getMessage());
 			System.err.println("Failed to receive response:" + e.getMessage());
 		}
 		if (response != null) {
@@ -185,7 +181,8 @@ try{
 		CoAP.ResponseCode returncode = response.getCode();
 		responseConfirm.setStatusCode(getRestStatusCode(returncode));
 		//LOGGER.debug("CoAP Client > "+responseConfirm);
-		LOGGER.severe("CoAP Client > "+responseConfirm);
+		LOGGER.debug("CoAP Client > " + responseConfirm);
+				logservice.log(LogService.LOG_ERROR, "CoAP Client > " + responseConfirm);
 
 		return responseConfirm;
 	}

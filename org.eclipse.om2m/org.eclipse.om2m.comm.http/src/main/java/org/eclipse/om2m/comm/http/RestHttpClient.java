@@ -39,13 +39,10 @@ import org.eclipse.om2m.comm.service.RestClientService;
 import org.eclipse.om2m.commons.resource.StatusCode;
 import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
 
 /**
  *  Provides mapping from a protocol-independent request to a HTTP-specific request.
@@ -57,9 +54,12 @@ import java.io.*;
  */
 
 public class RestHttpClient implements RestClientService {
-    /** Logger */
-    private static Logger LOGGER = Logger.getLogger(RestHttpClient.class.getName());
-    private  static  Handler fh ;
+  /** Logger */
+  private static Log LOGGER = LogFactory.getLog(RestHttpClient.class);
+  /** Logger OSGI*/
+  private static ServiceTracker logServiceTracker;
+  private static LogService logservice;
+
     /** implemented specific protocol name */
     private static String protocol ="http";
 
@@ -78,16 +78,14 @@ public class RestHttpClient implements RestClientService {
     * @return protocol independent response.
     */
     public ResponseConfirm sendRequest(RequestIndication requestIndication) {
-      try{
-          fh = new FileHandler("log/commHttp.log", true);
-        LOGGER.addHandler(fh);
-        fh.setFormatter(new SimpleFormatter());
-      }
-        catch(IOException ex){}
 
 
-        //LOGGER.debug("Http Client > "+requestIndication);
-        LOGGER.severe("Http Client > "+requestIndication);
+
+      logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(RestHttpClient.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+      logServiceTracker.open();
+      logservice = (LogService) logServiceTracker.getService();
+      LOGGER.debug("Http Client > "+requestIndication);
+      logservice.log(LogService.LOG_ERROR, "Http Client > "+requestIndication);
 
         HttpClient httpclient = new HttpClient();
 
@@ -136,11 +134,13 @@ public class RestHttpClient implements RestClientService {
                 }
             }
             //LOGGER.debug("Http Client > "+responseConfirm);
-            LOGGER.severe("Http Client > "+responseConfirm);
+            LOGGER.debug("Http Client > "+responseConfirm);
+                        logservice.log(LogService.LOG_ERROR, "Http Client > "+responseConfirm);
 
 
         }catch(IOException e){
-            LOGGER.log(Level.SEVERE, url+ " Not Found"+responseConfirm, e);
+          LOGGER.error(url+ " Not Found"+responseConfirm,e);
+                      logservice.log(LogService.LOG_ERROR, url+ " Not Found"+responseConfirm);
 
         } finally {
             httpMethod.releaseConnection();

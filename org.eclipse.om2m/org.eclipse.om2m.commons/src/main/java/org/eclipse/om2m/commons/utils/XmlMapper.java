@@ -30,14 +30,10 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Converts resource XML representation to resource Java Object and vice versa.
@@ -48,10 +44,11 @@ import java.io.IOException;
  *         </ul>
  */
 public class XmlMapper {
-    /** XmlMapper Logger */
-    private static Logger LOGGER = Logger.getLogger(XmlMapper.class.getName());
-    private  static  Handler fh ;
-
+  /** XmlMapper Logger */
+  private static Log LOGGER = LogFactory.getLog(XmlMapper.class);
+  /** Logger OSGI*/
+  private static ServiceTracker logServiceTracker;
+  private static LogService logservice;
     /** XmlMapper Singleton */
     private static XmlMapper xmlMapper = new XmlMapper();
     /** Entry point to the JAXB API*/
@@ -66,16 +63,8 @@ public class XmlMapper {
         try {
             ctx = JAXBContext.newInstance(resourcePackage);
         } catch (JAXBException e) {
-            try {
-            fh = new FileHandler("log/xmlMapper.log", false);
-            LOGGER.addHandler(fh);
-            fh.setFormatter(new SimpleFormatter());
-            LOGGER.log(Level.SEVERE, "JAXB unmarshalling error!", e);}
-            catch(IOException ex){}
-
-
-
-        }
+          LOGGER.error("JAXB unmarshalling error!", e);
+}
     }
 
     /** Gets XmlMapper instance*/
@@ -98,13 +87,10 @@ public class XmlMapper {
 
             return outputStream.toString();
         } catch (JAXBException e) {
-            try{
-                fh = new FileHandler("log/xmlMapper.log", true);
-                LOGGER.addHandler(fh);
-                fh.setFormatter(new SimpleFormatter());
-                LOGGER.log(Level.SEVERE, "JAXB unmarshalling error!", e);
-            }
-            catch(IOException ex){}
+
+              LOGGER.error("JAXB unmarshalling error!", e);
+              logservice.log(LogService.LOG_ERROR, "JAXB unmarshalling error!");
+
 
 
         }
@@ -123,15 +109,8 @@ public class XmlMapper {
             Unmarshaller unmarshaller = ctx.createUnmarshaller();
             return unmarshaller.unmarshal(stringReader);
         } catch (JAXBException e) {
-            try{
-            fh = new FileHandler("log/xmlMapper.log", true);
-            LOGGER.addHandler(fh);
-            fh.setFormatter(new SimpleFormatter());
-            LOGGER.log(Level.SEVERE, "JAXB unmarshalling error!", e);}
-            catch(IOException ex){}
-
-
-
+          LOGGER.error("JAXB unmarshalling error!", e);
+          logservice.log(LogService.LOG_ERROR, "JAXB unmarshalling error!");
         }
         return null;
     }

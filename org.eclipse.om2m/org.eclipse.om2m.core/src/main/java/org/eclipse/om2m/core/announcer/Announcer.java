@@ -39,12 +39,9 @@ import org.eclipse.om2m.core.comm.RestClient;
 import org.eclipse.om2m.core.constants.Constants;
 import org.eclipse.om2m.core.dao.DAOFactory;
 
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  *Announces/De-Announces resources for which the announcement attribute is activated for each Creation/Delete.
@@ -56,10 +53,11 @@ import java.io.*;
  */
 
 public class Announcer {
-    /** Logger */
-    private static Logger LOGGER = Logger.getLogger(Announcer.class.getName());
-    private  static  Handler fh ;
-
+  /** Logger */
+private static Log LOGGER = LogFactory.getLog(Announcer.class);
+/** Logger OSGI*/
+private static ServiceTracker logServiceTracker;
+private static LogService logservice;
     /**
      * Announces the created resource.
      * @param announceTo - sclId target.
@@ -68,6 +66,11 @@ public class Announcer {
      * @return
      */
     public AnnounceTo announce(AnnounceTo announceTo, String uri, SearchStrings searchStrings, String requestingEntity) {
+
+      logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(Announcer.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+              logServiceTracker.open();
+              logservice = (LogService) logServiceTracker.getService();
+
         // Checks if the sclList contains a remote sclReference.
         if (!announceTo.getSclList().getReference().isEmpty()) {
             String resourceId = uri.split("/")[uri.split("/").length - 1];
@@ -156,11 +159,7 @@ public class Announcer {
                     final String targetId = scl.getLink() + partialPath;
                     new Thread() {
                         public void run() {
-                          try{
-                              fh = new FileHandler("log/core.log", true);
-                            LOGGER.addHandler(fh);
-                            fh.setFormatter(new SimpleFormatter());}
-                            catch(IOException ex){}
+
 
 
                             // Set the request Base
@@ -174,10 +173,13 @@ public class Announcer {
                             requestIndication.setRepresentation(resourceAnncRepresentation);
                             requestIndication.setBase(base);
 
-                            LOGGER.info("Annoncement Request\n:"+requestIndication);
-                            // Send the request
+                            LOGGER.info("Annoncement Request\n:" + requestIndication);
+                                                        logservice.log(LogService.LOG_ERROR, "Annoncement Request\n:" + requestIndication);
+                                                                                    // Send the request
                             ResponseConfirm response = new RestClient().sendRequest(requestIndication);
                             LOGGER.info("Annoncement Response:\n"+response.toString());
+                            logservice.log(LogService.LOG_ERROR, "Annoncement Response:\n"+response.toString());
+
                         }
                     }.start();
                 } else {
@@ -186,7 +188,9 @@ public class Announcer {
                 }
             }
             announceTo.setSclList(sclnewList);
-            LOGGER.info("check3****************"+sclnewList);
+            LOGGER.info("check3****************" + sclnewList);
+            logservice.log(LogService.LOG_ERROR, "check3****************" + sclnewList);
+
         }
         return announceTo;
     }
@@ -259,11 +263,7 @@ public class Announcer {
                     final String targetId = scl.getLink()+partialPath;
                     new Thread() {
                         public void run() {
-                          try{
-                              fh = new FileHandler("log/core.log", true);
-                            LOGGER.addHandler(fh);
-                            fh.setFormatter(new SimpleFormatter());}
-                            catch(IOException ex){}
+
 
                             // Set the request Base
                             String base = scl.getPocs().getReference().get(0)+ "/";
@@ -274,10 +274,12 @@ public class Announcer {
                             requestIndication.setTargetID(targetId);
                             requestIndication.setBase(base);
 
-                            LOGGER.info("Annoncement Request:\n"+ requestIndication);
+                            LOGGER.info("Annoncement Request:\n" + requestIndication);
+                                                        logservice.log(LogService.LOG_ERROR, "Annoncement Request:\n" + requestIndication);
                             // Send the Request
                             ResponseConfirm response = new RestClient().sendRequest( requestIndication);
                             LOGGER.info("Annoucement Response:\n"+ response);
+                                                        logservice.log(LogService.LOG_ERROR, "Annoucement Response:\n"+ response);
                         }
                     }.start();
                 }

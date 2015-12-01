@@ -59,16 +59,14 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
-
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.util.tracker.ServiceTracker;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
+import org.osgi.service.log.*;
 
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+
 
 /**
  *  Manages the starting and stopping of the bundle.
@@ -78,57 +76,69 @@ import java.io.*;
  *         </ul>
  */
 public class Activator implements BundleActivator {
-    /** Logger */
-    private static Logger LOGGER = Logger.getLogger(Activator.class.getName());
-    private  static  Handler fh ;
-    /** IPU service tracker */
+  /** Logger */
+    private static Log LOGGER = LogFactory.getLog(Activator.class);
+
+    /** Logger OSGI*/
+    private static ServiceTracker logServiceTracker;
+    private static LogService logservice;
+        /** IPU service tracker */
     private ServiceTracker<Object, Object> ipuServiceTracker;
     /** Rest Client service tracker */
     private ServiceTracker<Object, Object> restClientServiceTracker;
 
     public void start(BundleContext bundleContext) throws Exception {
-        try{
-        fh = new FileHandler("log/core.log", false);
-        LOGGER.addHandler(fh);
-        fh.setFormatter(new SimpleFormatter());}
-        catch(IOException ex){}
+
+      logServiceTracker = new ServiceTracker(bundleContext, org.osgi.service.log.LogService.class.getName(), null);
+      logServiceTracker.open();
+      logservice = (LogService) logServiceTracker.getService();
 
 
-        //Initiate Scl
-        LOGGER.info("Starting SCL..");
+      //Initiate Scl
+      LOGGER.info("Starting SCL..");
+      logservice.log(LogService.LOG_ERROR, "Starting SCL..");
 
         try{
             initScl();
         }catch(Exception e){
-            LOGGER.log(Level.SEVERE,"SCL is Stopped", e);
-        }
-        LOGGER.info("SCL Started.");
+          logservice.log(LogService.LOG_ERROR, "SCL is Stopped");
+                      LOGGER.error("SCL is Stopped",e);
+                            }
+                            LOGGER.info("SCL Started.");
+                            logservice.log(LogService.LOG_ERROR, "SCL Started.");
 
 
+                            // Register Scl service
+                            LOGGER.info("Register SclService..");
+                            logservice.log(LogService.LOG_ERROR, "Register SclService..");
 
-        // Register Scl service
-        LOGGER.info("Register SclService..");
 
         bundleContext.registerService(SclService.class.getName(), new Router(), null);
         LOGGER.info("SclService is registered.");
+                logservice.log(LogService.LOG_ERROR, "SclService is registered.");
 
 
         // Track the Ipu service
         ipuServiceTracker = new ServiceTracker<Object, Object>(bundleContext, IpuService.class.getName(), null) {
             public void removedService(ServiceReference<Object> reference, Object service) {
-                LOGGER.info("IpuService removed");
+              LOGGER.info("IpuService removed");
+                              logservice.log(LogService.LOG_ERROR, "IpuService removed");
 
                 IpuService ipu = (IpuService)service;
                 LOGGER.info("Remove IPU [ path = "+ipu.getAPOCPath()+" ]");
+                logservice.log(LogService.LOG_ERROR, "Remove IPU [ path = "+ipu.getAPOCPath()+" ]");
+
 
                 InterworkingProxyController.getIpUnits().remove(ipu.getAPOCPath());
             }
 
             public Object addingService(ServiceReference<Object> reference) {
-                LOGGER.info("IpuService discovered");
+              LOGGER.info("IpuService discovered");
+                              logservice.log(LogService.LOG_ERROR, "IpuService discovered");
 
                 IpuService ipu = (IpuService) this.context.getService(reference);
                 LOGGER.info("Add IPU [ path = "+ipu.getAPOCPath()+" ]");
+                                logservice.log(LogService.LOG_ERROR, "Add IPU [ path = " + ipu.getAPOCPath()+" ]");
 
                 InterworkingProxyController.getIpUnits().put(ipu.getAPOCPath(), ipu);
 
@@ -140,19 +150,26 @@ public class Activator implements BundleActivator {
         // Track the SclClient Service
         restClientServiceTracker = new ServiceTracker<Object, Object>(bundleContext, RestClientService.class.getName(), null) {
             public void removedService(ServiceReference<Object> reference, Object service) {
-                LOGGER.info("RestClientService removed");
+              LOGGER.info("RestClientService removed");
+                              logservice.log(LogService.LOG_ERROR, "RestClientService removed");
 
                 RestClientService restClient = (RestClientService)service;
                 LOGGER.info("Remove RestClientService [ protocol = "+restClient.getProtocol()+" ]");
+                logservice.log(LogService.LOG_ERROR, "Remove RestClientService [ protocol = "+restClient.getProtocol()+" ]");
+
 
                 RestClient.getRestClients().remove(restClient.getProtocol());
             }
 
             public Object addingService(ServiceReference<Object> reference) {
-                LOGGER.info("RestClientService discovered");
+              LOGGER.info("RestClientService discovered");
+              logservice.log(LogService.LOG_ERROR, "RestClientService discovered");
+
 
                 RestClientService sclClient = (RestClientService) this.context.getService(reference);
                 LOGGER.info("Add RestClientService  [ protocol = "+sclClient.getProtocol()+" ]");
+                logservice.log(LogService.LOG_ERROR, "Add RestClientService  [ protocol = "+sclClient.getProtocol()+" ]");
+
 
                 RestClient.getRestClients().put(sclClient.getProtocol(),sclClient);
                 // Display to check on the discovered protocols
@@ -167,7 +184,6 @@ public class Activator implements BundleActivator {
     }
 
     public void stop(BundleContext bundleContext) throws Exception {
-        fh.close();
     }
 
     /**
@@ -179,28 +195,34 @@ public class Activator implements BundleActivator {
             if(Constants.RESET){
                 // Clear SCL DataBase
                 LOGGER.info("Clear SCL DataBase");
+                                logservice.log(LogService.LOG_ERROR, "Clear SCL DataBase");
 
                 clearDB();
 
                 // Create SclBase resource
                 LOGGER.info("Create SclBase resource");
+                                logservice.log(LogService.LOG_ERROR, "Create SclBase resource");
 
                 initSclBase();
 
                 // Create AccessRight resource
                 LOGGER.info("Create AccessRight resource");
+                                logservice.log(LogService.LOG_ERROR, "Create AccessRight resource");
 
                 initAccessRight();
             }
 
             // Create JAXBContext instance
-        LOGGER.info("Init XmlMapper");
+            LOGGER.info("Init XmlMapper");
+        logservice.log(LogService.LOG_ERROR, "Init XmlMapper");
+
 
 
         XmlMapper.getInstance();
 
             // Create SAXParserFactory instance
-        LOGGER.info("Init XmlValidator");
+            LOGGER.info("Init XmlValidator");
+                    logservice.log(LogService.LOG_ERROR, "Init XmlValidator");
 
         XmlValidator.getInstance();
 
@@ -223,7 +245,8 @@ public class Activator implements BundleActivator {
                     DBClientConnection.getInstance().delete(result.next());
                 }
             }catch(Exception e){
-                LOGGER.log(Level.SEVERE,"Error clearDB", e);
+              LOGGER.error("Error clearDB",e);
+                              logservice.log(LogService.LOG_ERROR, "Error clearDB");
 
                 registerScl();
             }
@@ -269,7 +292,8 @@ public class Activator implements BundleActivator {
             requestIndication.setRepresentation(XmlMapper.getInstance().objectToXml(gscl));
             requestIndication.setBase(base);
 
-            LOGGER.info("The requestIndication : " + requestIndication );
+            LOGGER.info("The requestIndication : " + requestIndication);
+                        logservice.log(LogService.LOG_ERROR, "The requestIndication : " + requestIndication);
 
 
             // Start registration in a new Thread
@@ -281,32 +305,45 @@ public class Activator implements BundleActivator {
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e1) {
-                        LOGGER.log(Level.SEVERE, "Registration sleep error", e1);
+                      LOGGER.error("Registration sleep error",e1);
+                      logservice.log(LogService.LOG_ERROR, "Registration sleep error");
+
 
                     }
                     // Loop until registration succeed or already registered
                     while(!registred){
                         // Send GSCL registration to NSCL
                         LOGGER.info("Send GSCL registration to NSCL");
+                        logservice.log(LogService.LOG_ERROR, "Send GSCL registration to NSCL");
+
 
                         responseConfirm = new RestClient().sendRequest(requestIndication);
                         //Stop registration if success of GSCL already registered
                         if(responseConfirm.getStatusCode().equals(StatusCode.STATUS_CREATED)){
-                            LOGGER.info("GSCL is successfully registered to NSCL");
+                          LOGGER.info("GSCL is successfully registered to NSCL");
+                                                      logservice.log(LogService.LOG_ERROR, "GSCL is successfully registered to NSCL");
 
                             registred=true;
                         }else if(responseConfirm.getStatusCode().equals(StatusCode.STATUS_CONFLICT)){
-                            LOGGER.info("GSCL is already registered to NSCL");
+                          LOGGER.info("GSCL is already registered to NSCL");
+                          logservice.log(LogService.LOG_ERROR, "GSCL is already registered to NSCL");
 
                             registred=true;
                         }else{
                             try {
                                 // Retry if registration failed
                                 LOGGER.info("GSCL registration failed");
-                                LOGGER.info("Retrying registration after: "+sleepTime+" ms");
+                                logservice.log(LogService.LOG_ERROR, "GSCL registration failed");
+
+                                LOGGER.info("Retrying registration after: " + sleepTime + " ms");
+                                logservice.log(LogService.LOG_ERROR, "Retrying registration after: " + sleepTime+" ms");
+
+
                                 Thread.sleep(sleepTime);
                             } catch (InterruptedException e) {
-                                LOGGER.log(Level.SEVERE, "Registration sleep error", e);
+                              LOGGER.error("Registration sleep error",e);
+                              logservice.log(LogService.LOG_ERROR, "Registration sleep error");
+
 
                             }
                         }
@@ -314,7 +351,9 @@ public class Activator implements BundleActivator {
                   //Create an NSCL Scl resource
                 	Router.readWriteLock.readLock().lock();
 
-                    LOGGER.info("Create NSCL registration on GSCL");
+                  LOGGER.info("Create NSCL registration on GSCL");
+                  logservice.log(LogService.LOG_ERROR, "Create NSCL registration on GSCL");
+
 
                     Scl nscl = new Scl();
                     nscl.setUri(Constants.SCL_ID+""+"/scls/"+Constants.NSCL_ID);
@@ -350,6 +389,8 @@ public class Activator implements BundleActivator {
                     DAOFactory.getSclDAO().create(nscl);
 
                     LOGGER.info("NSCL is successfully registred on GSCL");
+                    logservice.log(LogService.LOG_ERROR, "NSCL is successfully registred on GSCL");
+
 
                     Router.readWriteLock.readLock().unlock();
                 }

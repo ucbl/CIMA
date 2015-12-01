@@ -12,40 +12,44 @@ import org.osgi.util.tracker.ServiceTracker;
 import fr.liris.cima.comm.protocol.AbstractProtocol;
 import fr.liris.cima.comm.protocol.ProtocolResolver;
 import fr.liris.cima.gscl.commons.parser.Parser;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 public class Activator implements BundleActivator {
 
-	private static Logger logger = Logger.getLogger(Activator.class.getName());
-	private  static  Handler fh ;
+	private static Log logger = LogFactory.getLog(Activator.class);
+
+	/** Logger OSGI*/
+	private static ServiceTracker logServiceTracker;
+	private static LogService logservice;
 
 	private ServiceTracker<Object, Object> protocolResolverServiceClientTracker;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
-		try{
-		fh = new FileHandler("log/gsclCommons.log", false);
-		logger.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
+		logServiceTracker = new ServiceTracker(bundleContext, org.osgi.service.log.LogService.class.getName(), null);
+		logServiceTracker.open();
+		logservice = (LogService) logServiceTracker.getService();
+
 
 
 		logger.info("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
+		logservice.log(LogService.LOG_ERROR, "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
 
 
 		protocolResolverServiceClientTracker=  new ServiceTracker<Object, Object>(bundleContext, ProtocolResolver.class.getName(), null) {
 			public void removedService(ServiceReference<Object> reference, Object service) {
 				logger.info("ProtocolResolver removed");
+				logservice.log(LogService.LOG_ERROR, "ProtocolResolver removed");
+
 			}
 
 			public Object addingService(ServiceReference<Object> reference) {
 				logger.info("ProtocolResolver  in cima gscl commons");
+				logservice.log(LogService.LOG_ERROR, "ProtocolResolver  in cima gscl commons");
+
 				final ProtocolResolver protocolResolver = (ProtocolResolver) this.context.getService(reference);
 				Parser.protocolResolver = protocolResolver;
 				Map<String, Class<? extends AbstractProtocol>> protocols = Parser.protocolResolver.getAllProtocol();
@@ -56,11 +60,15 @@ public class Activator implements BundleActivator {
 				}
 				sout += "---------------------------\n";
 				logger.info(sout);
+				logservice.log(LogService.LOG_ERROR, sout);
+
 				return protocolResolver;
 			}
 		};
 		protocolResolverServiceClientTracker.open();
 		logger.info("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
+		logservice.log(LogService.LOG_ERROR, "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
+
 	}
 
 	@Override

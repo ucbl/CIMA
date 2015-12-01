@@ -19,6 +19,9 @@
  ******************************************************************************/
 package fr.liris.cima.gscl.mgmtdevice;
 
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
 import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
 import fr.liris.cima.gscl.portforwarding.PortForwardingInterface;
@@ -29,11 +32,12 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
-import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+import fr.liris.cima.gscl.device.service.ConfigManager;
+import fr.liris.cima.gscl.device.service.ManagedDeviceService;
+import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 import javax.swing.plaf.synth.SynthSeparatorUI;
 /**
@@ -45,9 +49,11 @@ import javax.swing.plaf.synth.SynthSeparatorUI;
  */
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(Activator.class.getName());
-	private  static  Handler fh ;
-	/** SCL service tracker */
+private static Log logger = LogFactory.getLog(Activator.class);
+/** Logger OSGI*/
+private static ServiceTracker logServiceTracker;
+private static LogService logservice;
+/** SCL service tracker */
 	private ServiceTracker<Object, Object> sclServiceTracker;
 
 	private ServiceRegistration serviceRegistration;
@@ -55,39 +61,40 @@ public class Activator implements BundleActivator {
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 
-
-		try{
-		fh = new FileHandler("log/gsclMgmtDevice.log", false);
-		logger.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
-
+		logServiceTracker = new ServiceTracker(bundleContext, org.osgi.service.log.LogService.class.getName(), null);
+		logServiceTracker.open();
+		logservice = (LogService) logServiceTracker.getService();
 
 		sclServiceTracker = new ServiceTracker<Object, Object>(bundleContext, SclService.class.getName(), null) {
 			public void removedService(ServiceReference<Object> reference, Object service) {
 				logger.info("SclService removed");
+								logservice.log(LogService.LOG_ERROR, "SclService removed");
 			}
 
 			public Object addingService(ServiceReference<Object> reference) {
 				logger.info("SclService discovered in mgmtdevice");
+								logservice.log(LogService.LOG_ERROR, "SclService discovered in mgmtdevice");
 				SclService sclService = (SclService) this.context.getService(reference);
 
-				
+
 				ServiceReference sf = context.getServiceReference(PortForwardingInterface.class.getName());
 				PortForwardingInterface pf = (PortForwardingInterface) context.getService(sf);
-				
+
 
 				serviceRegistration = this.context.registerService(ManagedDeviceService.class.getName(), new DeviceManagerImpl(sclService, pf) , null);
 				logger.info("ManagedDeviceService registered successfully");
+				logservice.log(LogService.LOG_ERROR, "ManagedDeviceService registered successfully");
+
 				serviceRegistration = this.context.registerService(CapabilityManager.class.getName(), new CapabilityManagerImpl(sclService) , null);
 				logger.info("CapabilityManager registered successfully");
-				
+								logservice.log(LogService.LOG_ERROR, "CapabilityManager registered successfully");
 
 
-				
 
-				
-				
+
+
+
+
 				return sclService;
 			}
 		};
@@ -97,7 +104,8 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		logger.severe("Unregistered ManagedDeviceService");
+		logger.error("Unregistered ManagedDeviceService");
+				logservice.log(LogService.LOG_ERROR, "Unregistered ManagedDeviceService");
 		serviceRegistration.unregister();
 	}
 }

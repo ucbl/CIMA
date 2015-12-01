@@ -10,13 +10,9 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 import fr.liris.cima.nscl.device.service.ManagedDeviceService;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 
 /**
@@ -25,8 +21,10 @@ import java.io.*;
  */
 public class Activator implements BundleActivator {
 	/** Logger */
-	private static Logger logger = Logger.getLogger(Activator.class.getName());
-	private  static  Handler fh ;
+	private static Log logger = LogFactory.getLog(Activator.class);
+	/** Logger OSGI*/
+	private static ServiceTracker logServiceTracker;
+	private static LogService logservice;
 	/** Managed device service tracker */
 	private ServiceTracker<Object, Object> mgmtDeviceServiceTracker;
 	/** Rest service  client tracker */
@@ -34,24 +32,26 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
-		try{
-			fh = new FileHandler("log/nsclCore.log", false);
-			logger.addHandler(fh);
-			fh.setFormatter(new SimpleFormatter());
-		}
-		catch(IOException ex){
 
-		}
 
-		logger.info("get  ManagedDeviceService .");
+		logServiceTracker = new ServiceTracker(bundleContext, org.osgi.service.log.LogService.class.getName(), null);
+				logServiceTracker.open();
+				logservice = (LogService) logServiceTracker.getService();
+
+				logger.info("get  ManagedDeviceService .");
+				logservice.log(LogService.LOG_ERROR, "get  ManagedDeviceService .");
 
 		mgmtDeviceServiceTracker = new ServiceTracker<Object, Object>(bundleContext, ManagedDeviceService.class.getName(), null) {
 			public void removedService(ServiceReference<Object> reference, Object service) {
 				logger.info("ManagedDevice removed");
+				logservice.log(LogService.LOG_ERROR, "ManagedDevice removed");
+
 			}
 
 			public Object addingService(ServiceReference<Object> reference) {
 				logger.info("ManagedDevice discovered in cima gscl core");
+				logservice.log(LogService.LOG_ERROR, "ManagedDevice discovered in cima gscl core");
+
 				final ManagedDeviceService managedDeviceService = (ManagedDeviceService) this.context.getService(reference);
 				this.context.registerService(IpuService.class.getName(), new InfrastructureController(managedDeviceService), null);
 
@@ -60,7 +60,8 @@ public class Activator implements BundleActivator {
 						try {
 							managedDeviceService.start();
 						} catch (Exception e) {
-							logger.log(Level.SEVERE,"IpuMonitor Sample error", e);
+							logger.error("IpuMonitor Sample error", e);
+														logservice.log(LogService.LOG_ERROR, "IpuMonitor Sample error");
 						}
 					}
 				}.start();
@@ -72,10 +73,13 @@ public class Activator implements BundleActivator {
 		restServiceClientTracker = new ServiceTracker<Object, Object>(bundleContext, RestClientService.class.getName(), null) {
 			public void removedService(ServiceReference<Object> reference, Object service) {
 				logger.info("RestClientService removed");
+				logservice.log(LogService.LOG_ERROR, "RestClientService removed");
+
 			}
 
 			public Object addingService(ServiceReference<Object> reference) {
 				logger.info("RestClientService discovered in cima nscl core");
+								logservice.log(LogService.LOG_ERROR, "RestClientService discovered in cima nscl core");
 				final RestClientService restClientService = (RestClientService) this.context.getService(reference);
 				if(reference.getProperty("fr.liris.cima.comm.plateform") !=null) {
 					InfrastructureController.restClientService = restClientService;
@@ -88,10 +92,14 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		logger.severe("Stop IPU Phidgets monitor");
+		logger.error("Stop IPU Phidgets monitor");
+		logservice.log(LogService.LOG_ERROR, "Stop IPU Phidgets monitor");
+
 		try {
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Stop Phidgets error", e);
+			logger.error("Stop Phidgets error", e);
+			logservice.log(LogService.LOG_ERROR, "Stop Phidgets error");
+
 		}
 	}
 }

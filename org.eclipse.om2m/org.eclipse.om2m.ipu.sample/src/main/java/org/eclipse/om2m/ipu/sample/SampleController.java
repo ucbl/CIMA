@@ -33,19 +33,16 @@ import org.eclipse.om2m.commons.resource.StatusCode;
 import org.eclipse.om2m.commons.rest.RequestIndication;
 import org.eclipse.om2m.commons.rest.ResponseConfirm;
 import org.eclipse.om2m.ipu.service.IpuService;
-
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 public class SampleController implements IpuService {
-    /** Logger */
-    private static Logger LOGGER = Logger.getLogger(SampleController.class.getName());
-    private  static  Handler fh ;
-
+  /** Logger */
+  private static Log LOGGER = LogFactory.getLog(SampleController.class);
+  /** Logger OSGI*/
+  private static ServiceTracker logServiceTracker;
+  private static LogService logservice;
     /** Returns the implemented Application Point of Contact id */
     public String getAPOCPath() {
         return Lamp.APOCPATH;
@@ -57,6 +54,9 @@ public class SampleController implements IpuService {
      * @return The generic returned response.
      */
     public ResponseConfirm doExecute(RequestIndication requestIndication) {
+      logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(SampleController.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+        logServiceTracker.open();
+        logservice = (LogService) logServiceTracker.getService();
         String[] info = requestIndication.getTargetID().split("/");
         String lampId = info[info.length-3];
         String type = lampId.split("_")[0];
@@ -69,14 +69,10 @@ public class SampleController implements IpuService {
                 return new ResponseConfirm(StatusCode.STATUS_NOT_FOUND,type+" Not found");
             }
         } catch (Exception e) {
-          try{
 
-              fh = new FileHandler("log/ipu.log", true);
-            LOGGER.addHandler(fh);
-            fh.setFormatter(new SimpleFormatter());}
-            catch(IOException ex){}
 
-            LOGGER.log(Level.SEVERE, "IPU Lamp Error", e);
+          LOGGER.error("IPU Lamp Error",e);
+                    logservice.log(LogService.LOG_ERROR, "IPU Lamp Error");
             return new ResponseConfirm(StatusCode.STATUS_NOT_IMPLEMENTED,"IPU Lamp Error");
         }
     }
@@ -97,13 +93,10 @@ public class SampleController implements IpuService {
             return new ResponseConfirm(StatusCode.STATUS_OK,content);
 
         } catch (Exception e) {
-          try{
-            fh = new FileHandler("log/ipu.log", true);
-            LOGGER.addHandler(fh);
-            fh.setFormatter(new SimpleFormatter());}
-            catch(IOException ex){}
 
-            LOGGER.log(Level.SEVERE, "IPU Sample Error", e);
+
+          LOGGER.error("IPU Sample Error",e);
+                      logservice.log(LogService.LOG_ERROR, "IPU Sample Error");
             return new ResponseConfirm(StatusCode.STATUS_NOT_IMPLEMENTED,"IPU Sample Error" );
         }
     }
