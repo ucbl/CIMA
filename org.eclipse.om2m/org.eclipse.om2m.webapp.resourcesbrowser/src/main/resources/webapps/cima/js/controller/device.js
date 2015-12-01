@@ -9,6 +9,8 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
     $scope.ShowIsOpen = false;
     $scope.indexOfShowingCapacity = -1;
     $scope.configParams = {};
+    $scope.isResponseSensor = false;
+    $scope.responseSensors = [];
     /*retrieve information about the device and add them to the view*/
     DeviceFactory.get($routeParams.id).then(function(device){
         
@@ -216,24 +218,25 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         
         var filterParamsOn = function(params) {
             var configParams = {};
-
-            for (var i = 0; i < params.length; i++) {
-                var param = params[i];
-                if ($scope.configParams[param.idp] != null)
-                    configParams[param.idp] = $scope.configParams[param.idp];
-                else {
-                    configParams = {};
-                    break;
+            if (params != null) {
+                for (var i = 0; i < params.length; i++) {
+                    var param = params[i];
+                    if ($scope.configParams[param.idp] != null)
+                        configParams[param.idp] = $scope.configParams[param.idp];
+                    else {
+                        configParams = {};
+                        break;
+                    }
                 }
             }
-
+            
             return configParams;
         };
         
         var newCapability = newCapability || {};
         if (!isEmpty(newCapability)) {
             var configParams = filterParamsOn(newCapability.params);
-            if ((newCapability.id.indexOf("sensor") >= 0) || (!isEmpty(configParams) && newCapability.id.indexOf("motor") >= 0)) {
+            if ((newCapability.id.indexOf("sensor") >= 0) || (newCapability.id.indexOf("stop") >= 0) || (!isEmpty(configParams) && newCapability.id.indexOf("motor") >= 0)) {
 
 
                 var protocol = newCapability.protocol;
@@ -269,15 +272,21 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
                     'configParams': configParams,
                     'result': newCapability.result
                 };
+                console.log(configParams);
                 DeviceFactory.testCapability(paramInfos).then(function(data){
                     ngToast.create("Capability tested.");
                     console.log(data);
+                    // $scope.isResponseSensor = true;
+                    // $scope.responseSensors = JSON.parse(data);
+                    // console.log(data);
                 }, function(msg){
                     //error
                     // ngToast.create({
                     //     content: "Unable to test capability : "+msg,
                     //     className: "danger"
-                    // });     
+                    // });
+                    
+                    
                 });
             } else {
                 alert('Entrez tous les champs vides s\'il vous plait !');
@@ -286,6 +295,10 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         }
         
     }
+
+    $scope.closeResponseSensorModal = function() {
+        $scope.isRespo = false;
+    };
 
     /*Function for saving a device */
     $scope.saveDevice = function(){
