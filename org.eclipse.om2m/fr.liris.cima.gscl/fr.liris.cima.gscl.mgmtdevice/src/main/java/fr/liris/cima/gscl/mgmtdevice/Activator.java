@@ -21,7 +21,6 @@ package fr.liris.cima.gscl.mgmtdevice;
 
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
 import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
-import fr.liris.cima.gscl.portforwarding.PortForwardManagerThread;
 import fr.liris.cima.gscl.portforwarding.PortForwardingInterface;
 import org.eclipse.om2m.core.service.SclService;
 import org.osgi.framework.BundleActivator;

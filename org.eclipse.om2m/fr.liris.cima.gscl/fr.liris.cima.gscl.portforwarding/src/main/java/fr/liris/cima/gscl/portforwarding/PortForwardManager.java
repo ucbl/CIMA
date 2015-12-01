@@ -18,10 +18,11 @@ public class PortForwardManager implements PortForwardingInterface {
     public void askNewPortForwarding(String address, int port, String deviceID){
         String message = "{\"type\":\"test\", \"address\" : \""+address+"\", \"port\" : \""+port+"\" , \"id\" : \""+deviceID+"\" }";
 
-    	System.out.println("ASK ASK ASK + " + message);
+    	System.out.println("ASK for port forwarding : " + message);
     	
-            TcpManagerSender.sendMessage(message, this);
-
+            //TcpManagerSender.sendMessage(message, this);
+            PortForwardingProcessLauncher portForwardingProcessLauncher = new PortForwardingProcessLauncher(this, 1223, "devide", "dressss", PortForwardingProcessLauncher.PROTOCOL_TCP);
+            portForwardingProcessLauncher.startPortForwarding();
     }
 
     public int getPortForwarding(String deviceId){
@@ -31,6 +32,7 @@ public class PortForwardManager implements PortForwardingInterface {
 
     public  void addPortForwarding(String m){
 
+        System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRv " + m);
         try {
             String type = getTypeFromJSon(m),
                     id = getIdFromJSon(m);
