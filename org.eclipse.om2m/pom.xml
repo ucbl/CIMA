@@ -235,6 +235,7 @@
     <module>fr.liris.cima.nscl</module>
     <module>fr.liris.cima.comm.protocol</module>
     <module>fr.liris.cima.comm.http</module>
+    <module>fr.liris.cima.dao</module>
   </modules>
 
 </project>

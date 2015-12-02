@@ -3,6 +3,7 @@
 
 <product uid="gscl" useFeatures="false" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -17,6 +18,7 @@
 
    <windowImages/>
 
+
    <launcher name="gscl">
       <solaris/>
       <win useIco="false">
@@ -24,13 +26,16 @@
       </win>
    </launcher>
 
+
    <vm>
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7</windows>
    </vm>
 
+
    <plugins>
       <plugin id="fr.liris.cima.comm.http"/>
       <plugin id="fr.liris.cima.comm.protocol"/>
+      <plugin id="fr.liris.cima.dao"/>
       <plugin id="fr.liris.cima.gscl.comm.http"/>
       <plugin id="fr.liris.cima.gscl.commons"/>
       <plugin id="fr.liris.cima.gscl.core"/>
@@ -74,6 +79,7 @@
    <configurations>
       <plugin id="fr.liris.cima.comm.http" autoStart="true" startLevel="4" />
       <plugin id="fr.liris.cima.comm.protocol" autoStart="true" startLevel="3" />
+      <plugin id="fr.liris.cima.dao" autoStart="true" startLevel="1" />
       <plugin id="fr.liris.cima.gscl.comm.http" autoStart="true" startLevel="4" />
       <plugin id="fr.liris.cima.gscl.commons" autoStart="true" startLevel="4" />
       <plugin id="fr.liris.cima.gscl.core" autoStart="true" startLevel="6" />
@@ -115,5 +121,12 @@
       <property name="org.eclipse.om2m.sclType" value="GSCL" />
       <property name="org.eclipse.om2m.webInterfaceContext" value="/" />
    </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
 
 </product>
