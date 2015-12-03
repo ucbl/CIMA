@@ -118,6 +118,10 @@ public class DeviceController implements IpuService{
 	@Override
 	public ResponseConfirm doRetrieve(RequestIndication requestIndication) {
 
+		logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(DeviceController.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+		logServiceTracker.open();
+		logservice = (LogService) logServiceTracker.getService();
+
 
 		LOGGER.info("*********Retrieve in DEVICE CONTROLLER **** " + requestIndication.getTargetID());
 		logservice.log(LogService.LOG_ERROR, "*********Retrieve in DEVICE CONTROLLER **** " + requestIndication.getTargetID());

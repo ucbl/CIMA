@@ -79,6 +79,9 @@ public class Encoder {
 
 	public static String encodeDeviceToObix(Device device) {
 
+		logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(Encoder.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+		logServiceTracker.open();
+		logservice = (LogService) logServiceTracker.getService();
 
 
 		LOGGER.info("******************dans encoder ***********");
