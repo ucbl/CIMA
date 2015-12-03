@@ -42,7 +42,7 @@ public class PortForwardingProcessLauncher
         Process process = null;
 
         //Start the program
-        try {process = Runtime.getRuntime().exec("./test");
+        try {process = Runtime.getRuntime().exec("./PortForwarding 127.0.0.1 "+this.address+" "+this.objectPort+ " " + this.deviceId);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Could not execute program to create a new port forwarding.");
         }
@@ -77,7 +77,7 @@ public class PortForwardingProcessLauncher
             logger.log(Level.INFO, "FROM PORT FORWARDING PROCESS : " + line);
         }
         else
-            portForwardManager.addPortForwarding(line);
+            portForwardManager.addPortForwarding(line, this.deviceId);
 
     }
 }

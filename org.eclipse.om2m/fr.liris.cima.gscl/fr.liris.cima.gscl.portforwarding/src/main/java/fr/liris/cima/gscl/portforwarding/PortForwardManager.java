@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
+//import com.mongodb.MongoClient;
+//import com.mongodb.client.MongoDatabase;
 /**
  * Created by dasilvafrederic on 22/10/15.
  */
@@ -30,15 +31,26 @@ public class PortForwardManager implements PortForwardingInterface {
     }
 
 
-    public  void addPortForwarding(String m){
+    public  void addPortForwarding(String m, String deviceId){
+
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("+++++++++++++++++++++++++++++++++TEST DU MONGO TRUC++++++++++++++++++++++++++++++++");
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+//
+//        MongoClient mongoClient = new MongoClient();
+//        MongoDatabase db = mongoClient.getDatabase("test");
+
+
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("+++++++++++++++++++++++++++++++++FIN  DU MONGO TRUC++++++++++++++++++++++++++++++++");
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
 
         System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRv " + m);
         try {
-            String type = getTypeFromJSon(m),
-                    id = getIdFromJSon(m);
             int port = getPortFromJSon(m);
 
-            System.out.println("Message recu : " + type + " " + id + " " + port);
+            System.out.println("Message port recu :" + port);
             //TODO success or fail ???
             this.PFmanager.put(id, port);
             //TODO : enlever
@@ -70,7 +82,7 @@ public class PortForwardManager implements PortForwardingInterface {
     }
 
     private int getPortFromJSon(String m){
-        return Integer.parseInt(m.split(",")[1].split(":")[1].replace("\"", "").replace(" ", ""));
+        return Integer.parseInt(m.split("=")[1].replace("\"", "").replace(" ", "").replace("}", ""));
     }
 
 
