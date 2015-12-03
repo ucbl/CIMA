@@ -52,7 +52,7 @@ public class PortForwardManager implements PortForwardingInterface {
 
             System.out.println("Message port recu :" + port);
             //TODO success or fail ???
-            this.PFmanager.put(id, port);
+            this.PFmanager.put(deviceId, port);
             //TODO : enlever
             this.printPF();
         }

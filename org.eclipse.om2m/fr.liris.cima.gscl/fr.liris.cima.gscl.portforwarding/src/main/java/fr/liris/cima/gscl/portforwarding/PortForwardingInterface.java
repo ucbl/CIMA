@@ -9,6 +9,6 @@ public interface PortForwardingInterface {
     public void askNewPortForwarding(String address, int port, String deviceID);
 
     public int getPortForwarding(String deviceId);
-    public  void addPortForwarding(String m);
+    public  void addPortForwarding(String m, String deviceId);
 
 }
