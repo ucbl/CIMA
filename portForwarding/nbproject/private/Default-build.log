@@ -1,0 +1,9 @@
+g++ -c ./src/abstractServer.cpp -g -std=c++11 -fpermissive
+g++ -c ./src/serverTCP.cpp -g -std=c++11 -fpermissive
+In file included from ./src/../include/serverTCP.h:6:0,
+                 from ./src/serverTCP.cpp:1:
+./src/../include/../include/connectedObject.h:47:30: erreur: ‘ServerTCP’ has not been declared
+     void BordcastInformation(ServerTCP & serverTCP);
+                              ^
+Makefile:11: recipe for target 'serverTCP.o' failed
+make: *** [serverTCP.o] Error 1

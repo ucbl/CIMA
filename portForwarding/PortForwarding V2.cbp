@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="PortForwarding V2" />
+		<Option makefile_is_custom="1" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option platforms="Unix;" />
+				<Option output="PortForwarding" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="127.0.0.1 127.0.0.1 5000 DEVICE_0" />
+				<Compiler>
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add option="-pthread" />
+					<Add directory="include" />
+				</Compiler>
+				<Environment>
+					<Variable name="clean" value="clean" />
+					<Variable name="make" value="make" />
+					<Variable name="makefile" value="Makefile" />
+				</Environment>
+				<MakeCommands>
+					<Build command="$make -f $makefile" />
+					<CompileFile command="$make -f $makefile $file" />
+					<Clean command="$make -f $makefile clean" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="" />
+					<SilentBuild command="$make -f $makefile &gt; $(CMD_NULL)" />
+				</MakeCommands>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/PortForwarding V2" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="Makefile" />
+		<Unit filename="include/abstractServer.h" />
+		<Unit filename="include/connectedObject.h" />
+		<Unit filename="include/logger.h" />
+		<Unit filename="include/serverTCP.h" />
+		<Unit filename="include/serverUDP.h" />
+		<Unit filename="include/socketInformation.h" />
+		<Unit filename="include/util.h" />
+		<Unit filename="log.out" />
+		<Unit filename="main.cpp" />
+		<Unit filename="src/abstractServer.cpp" />
+		<Unit filename="src/connectedObject.cpp" />
+		<Unit filename="src/logger.cpp" />
+		<Unit filename="src/serverTCP.cpp" />
+		<Unit filename="src/serverUDP.cpp" />
+		<Unit filename="src/socketInformation.cpp" />
+		<Unit filename="src/util.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output html_help="1" rtf="1" man="1" />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+			<wxsmith version="1">
+				<resources>
+					<wxDialog wxs="wxsmith/NewDialog.wxs" src="NewDialog.cpp" hdr="NewDialog.h" fwddecl="0" i18n="1" name="NewDialog" language="CPP" />
+				</resources>
+			</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

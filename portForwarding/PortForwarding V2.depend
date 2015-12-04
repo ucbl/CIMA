@@ -1,0 +1,132 @@
+# depslib dependency file v1.0
+1448974244 source:/home/hbouchikhi/Documents/PortForwarding V2/main.cpp
+	<iostream>
+
+1448977790 source:/home/hbouchikhi/Documents/PortForwarding V2/src/logger.cpp
+	"../include/logger.h"
+	<stdexcept>
+	<ctime>
+
+1448889519 /home/hbouchikhi/Documents/PortForwarding V2/include/logger.h
+	<iostream>
+	<fstream>
+	<vector>
+	<string>
+	<mutex>
+
+1448976158 source:/home/hbouchikhi/Documents/PortForwarding V2/src/util.cpp
+	"../include/logger.h"
+	"../include/util.h"
+
+1448889823 /home/hbouchikhi/Documents/PortForwarding V2/include/util.h
+	<string>
+
+1448976609 source:/home/hbouchikhi/Documents/PortForwarding V2/src/socketInformation.cpp
+	"../include/socketInformation.h"
+	<sys/socket.h>
+	<netinet/in.h>
+
+1448983270 /home/hbouchikhi/Documents/PortForwarding V2/include/socketInformation.h
+	<sys/socket.h>
+	<netinet/in.h>
+
+1448983217 source:/home/hbouchikhi/Documents/PortForwarding V2/src/abstractServer.cpp
+	"../include/abstractServer.h"
+	"../include/socketInformation.h"
+	"../include/logger.h"
+	"../include/util.h"
+	<string>
+	<sys/socket.h>
+	<netinet/in.h>
+	<arpa/inet.h>
+
+1448983184 /home/hbouchikhi/Documents/PortForwarding V2/include/abstractServer.h
+	"../include/socketInformation.h"
+	<vector>
+	<string>
+
+1448982863 source:/home/hbouchikhi/Documents/PortForwarding V2/src/serverTCP.cpp
+	"../include/serverTCP.h"
+	"../include/socketInformation.h"
+	"../include/logger.h"
+	"../include/util.h"
+	<sys/socket.h>
+	<netinet/in.h>
+
+1448983164 /home/hbouchikhi/Documents/PortForwarding V2/include/serverTCP.h
+	<vector>
+	<thread>
+	"abstractServer.h"
+
+1448973863 source:/home/hbouchikhi/Documents/PortForwarding V2/src/serverUDP.cpp
+	"../include/serverUDP.h"
+
+1448973933 /home/hbouchikhi/Documents/PortForwarding V2/include/serverUDP.h
+	<../include/abstractServer.h>
+
+1448974244 source:/home/hbouchikhi/Documents/PortForwarding_V2/main.cpp
+	<iostream>
+
+1448983217 source:/home/hbouchikhi/Documents/PortForwarding_V2/src/abstractServer.cpp
+	"../include/abstractServer.h"
+	"../include/socketInformation.h"
+	"../include/logger.h"
+	"../include/util.h"
+	<string>
+	<sys/socket.h>
+	<netinet/in.h>
+	<arpa/inet.h>
+
+1448983184 /home/hbouchikhi/Documents/PortForwarding_V2/include/abstractServer.h
+	"../include/socketInformation.h"
+	<vector>
+	<string>
+
+1448983570 /home/hbouchikhi/Documents/PortForwarding_V2/include/socketInformation.h
+	<sys/socket.h>
+	<netinet/in.h>
+
+1448889519 /home/hbouchikhi/Documents/PortForwarding_V2/include/logger.h
+	<iostream>
+	<fstream>
+	<vector>
+	<string>
+	<mutex>
+
+1448889823 /home/hbouchikhi/Documents/PortForwarding_V2/include/util.h
+	<string>
+
+1448977790 source:/home/hbouchikhi/Documents/PortForwarding_V2/src/logger.cpp
+	"../include/logger.h"
+	<stdexcept>
+	<ctime>
+
+1448982863 source:/home/hbouchikhi/Documents/PortForwarding_V2/src/serverTCP.cpp
+	"../include/serverTCP.h"
+	"../include/socketInformation.h"
+	"../include/logger.h"
+	"../include/util.h"
+	<sys/socket.h>
+	<netinet/in.h>
+
+1448983164 /home/hbouchikhi/Documents/PortForwarding_V2/include/serverTCP.h
+	<vector>
+	<thread>
+	"abstractServer.h"
+
+1448973863 source:/home/hbouchikhi/Documents/PortForwarding_V2/src/serverUDP.cpp
+	"../include/serverUDP.h"
+
+1448973933 /home/hbouchikhi/Documents/PortForwarding_V2/include/serverUDP.h
+	<../include/abstractServer.h>
+
+1448983395 source:/home/hbouchikhi/Documents/PortForwarding_V2/src/socketInformation.cpp
+	"../include/socketInformation.h"
+	<sys/socket.h>
+	<netinet/in.h>
+	<iostream>
+
+1448976158 source:/home/hbouchikhi/Documents/PortForwarding_V2/src/util.cpp
+	"../include/logger.h"
+	"../include/util.h"
+

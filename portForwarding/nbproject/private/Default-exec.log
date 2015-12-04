@@ -1,0 +1,18 @@
+called: g++
+	/home/hbouchikhi/Documents/PortForwarding_V2
+	g++
+	-c
+	./src/abstractServer.cpp
+	-g
+	-std=c++11
+	-fpermissive
+
+called: g++
+	/home/hbouchikhi/Documents/PortForwarding_V2
+	g++
+	-c
+	./src/serverTCP.cpp
+	-g
+	-std=c++11
+	-fpermissive
+
