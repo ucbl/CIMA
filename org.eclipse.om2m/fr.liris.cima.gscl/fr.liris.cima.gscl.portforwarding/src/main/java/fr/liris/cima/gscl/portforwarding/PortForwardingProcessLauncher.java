@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 /**
  * Created by Maxime on 30/11/2015.
  */
-public class PortForwardingProcessLauncher
+public class PortForwardingProcessLauncher extends Thread
 {
 
     public static final int PROTOCOL_TCP = 0;
@@ -35,7 +35,7 @@ public class PortForwardingProcessLauncher
     }
 
 
-    public  Map.Entry<String, Integer> startPortForwarding(){
+    public  void run(){
 
 
         String line;
@@ -47,23 +47,26 @@ public class PortForwardingProcessLauncher
             logger.log(Level.SEVERE, "Could not execute program to create a new port forwarding." + e);
         }
 
-        //try to listen the procces out
-        Reader inStreamReader = new InputStreamReader(process.getInputStream());
-        BufferedReader in = new BufferedReader(inStreamReader);
+        
+            //try to listen the procces out
+            Reader inStreamReader = new InputStreamReader(process.getInputStream());
+            BufferedReader in = new BufferedReader(inStreamReader);
 
-        logger.log(Level.INFO, "Strating listenig process out on " + this.getDescription());
-        try {
-            while((line = in.readLine()) != null) {
-                this.analyseAndDoProcessOutLine(line);
+
+            logger.log(Level.INFO, "Strating listenig process out on " + this.getDescription());
+            try {
+                while((line = in.readLine()) != null) {
+                    this.analyseAndDoProcessOutLine(line);
+                }
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        logger.log(Level.INFO, "Ending listening precess out on " + this.getDescription());
+            logger.log(Level.INFO, "Ending listening port forwarding process out on " + this.getDescription());
 
-        return null;
+
+
     }
 
     private String getDescription(){

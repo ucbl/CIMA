@@ -20,10 +20,9 @@ public void askNewPortForwarding(String address, int port, String deviceID){
     String message = "{\"type\":\"test\", \"address\" : \""+address+"\", \"port\" : \""+port+"\" , \"id\" : \""+deviceID+"\" }";
 
    System.out.println("ASK for port forwarding : " + message);
-   
         //TcpManagerSender.sendMessage(message, this);
         PortForwardingProcessLauncher portForwardingProcessLauncher = new PortForwardingProcessLauncher(this, port, deviceID, address, PortForwardingProcessLauncher.PROTOCOL_TCP);
-        portForwardingProcessLauncher.startPortForwarding();
+        portForwardingProcessLauncher.start();
 }
 
 
