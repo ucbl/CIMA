@@ -30,7 +30,6 @@
   </parent>
 
   <modules>
-    <module>fr.liris.cima.gscl.dao</module>
     <module>fr.liris.cima.gscl.commons</module>
     <module>fr.liris.cima.gscl.device.service</module>
     <module>fr.liris.cima.gscl.core</module>

@@ -42,9 +42,9 @@ public class PortForwardingProcessLauncher
         Process process = null;
 
         //Start the program
-        try {process = Runtime.getRuntime().exec("./PortForwarding 127.0.0.1 "+this.address+" "+this.objectPort+ " " + this.deviceId);
+        try {process = Runtime.getRuntime().exec("/CIMA/PortForwarding/PortForwarding 127.0.0.1 "+ this.address+" "+this.objectPort+" "+this.deviceId);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Could not execute program to create a new port forwarding.");
+            logger.log(Level.SEVERE, "Could not execute program to create a new port forwarding." + e);
         }
 
         //try to listen the procces out
