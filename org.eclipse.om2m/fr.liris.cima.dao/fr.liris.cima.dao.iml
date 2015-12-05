@@ -11,7 +11,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: org.jdom:jdom2:2.0.5" level="project" />
     <orderEntry type="module-library">
-      <library name="Maven: p2.eclipse-plugin:fr.liris.cima.comm.protocol:1.0.0.20151022-2101">
+      <library name="Maven: p2.eclipse-plugin:fr.liris.cima.comm.protocol:1.0.0.20151128-1607">
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/om2m/fr.liris.cima.comm.protocol/1.0.0-SNAPSHOT/fr.liris.cima.comm.protocol-1.0.0-SNAPSHOT.jar!/" />
         </CLASSES>
@@ -20,7 +20,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: p2.eclipse-plugin:org.eclipse.om2m.core.service:1.0.0.20151022-2101">
+      <library name="Maven: p2.eclipse-plugin:org.eclipse.om2m.core.service:1.0.0.20151128-1607">
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/om2m/org.eclipse.om2m.core.service/1.0.0-SNAPSHOT/org.eclipse.om2m.core.service-1.0.0-SNAPSHOT.jar!/" />
         </CLASSES>
@@ -47,7 +47,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: p2.eclipse-plugin:org.eclipse.om2m.commons:1.0.0.20151022-2101">
+      <library name="Maven: p2.eclipse-plugin:org.eclipse.om2m.commons:1.0.0.20151128-1607">
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/om2m/org.eclipse.om2m.commons/1.0.0-SNAPSHOT/org.eclipse.om2m.commons-1.0.0-SNAPSHOT.jar!/" />
         </CLASSES>
@@ -56,7 +56,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: p2.eclipse-plugin:org.eclipse.om2m.commons:libs/obix.jar:1.0.0.20151022-2101">
+      <library name="Maven: p2.eclipse-plugin:org.eclipse.om2m.commons:libs/obix.jar:1.0.0.20151128-1607">
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/.cache/tycho/org.eclipse.om2m.commons-1.0.0-SNAPSHOT.jar/libs/obix.jar!/" />
         </CLASSES>
@@ -74,9 +74,18 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: p2.eclipse-plugin:org.eclipse.om2m.comm.service:1.0.0.20151022-2101">
+      <library name="Maven: p2.eclipse-plugin:org.eclipse.om2m.comm.service:1.0.0.20151128-1607">
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/om2m/org.eclipse.om2m.comm.service/1.0.0-SNAPSHOT/org.eclipse.om2m.comm.service-1.0.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: org.eclipse.om2m:fr.liris.cima.dao:lib/mongo-java-driver-3.0.4.jar:1.0.0.qualifier">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/mongo-java-driver-3.0.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -92,7 +101,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: p2.eclipse-plugin:org.eclipse.om2m.ipu.service:1.0.0.20151022-2101">
+      <library name="Maven: p2.eclipse-plugin:org.eclipse.om2m.ipu.service:1.0.0.20151128-1607">
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/om2m/org.eclipse.om2m.ipu.service/1.0.0-SNAPSHOT/org.eclipse.om2m.ipu.service-1.0.0-SNAPSHOT.jar!/" />
         </CLASSES>
@@ -101,7 +110,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: p2.eclipse-plugin:fr.liris.cima.nscl.commons:1.0.0.20151022-2101">
+      <library name="Maven: p2.eclipse-plugin:fr.liris.cima.nscl.commons:1.0.0.20151128-1607">
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/fr/liris/cima/nscl/fr.liris.cima.nscl.commons/1.0.0-SNAPSHOT/fr.liris.cima.nscl.commons-1.0.0-SNAPSHOT.jar!/" />
         </CLASSES>
@@ -110,7 +119,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: p2.eclipse-plugin:fr.liris.cima.nscl.commons:libs/jdom-2.0.5.jar:1.0.0.20151022-2101">
+      <library name="Maven: p2.eclipse-plugin:fr.liris.cima.nscl.commons:libs/jdom-2.0.5.jar:1.0.0.20151128-1607">
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/.cache/tycho/fr.liris.cima.nscl.commons-1.0.0-SNAPSHOT.jar/libs/jdom-2.0.5.jar!/" />
         </CLASSES>
@@ -119,7 +128,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: p2.eclipse-plugin:fr.liris.cima.nscl.commons:libs/obix.jar:1.0.0.20151022-2101">
+      <library name="Maven: p2.eclipse-plugin:fr.liris.cima.nscl.commons:libs/obix.jar:1.0.0.20151128-1607">
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/.cache/tycho/fr.liris.cima.nscl.commons-1.0.0-SNAPSHOT.jar/libs/obix.jar!/" />
         </CLASSES>
@@ -128,7 +137,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: p2.eclipse-plugin:fr.liris.cima.nscl.commons:libs/json-simple-1.1.1.jar:1.0.0.20151022-2101">
+      <library name="Maven: p2.eclipse-plugin:fr.liris.cima.nscl.commons:libs/json-simple-1.1.1.jar:1.0.0.20151128-1607">
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/.cache/tycho/fr.liris.cima.nscl.commons-1.0.0-SNAPSHOT.jar/libs/json-simple-1.1.1.jar!/" />
         </CLASSES>
