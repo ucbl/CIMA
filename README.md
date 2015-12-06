@@ -1,4 +1,4 @@
-#C.I.M.A.:
+#C.I.M.A. :
 
 ##About
 CIMA is a platform project developed by the [LIRIS laboratory](http://liris.cnrs.fr/) and students from [Claude Bernard university](www.univ-lyon1.fr/).
