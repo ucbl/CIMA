@@ -69,11 +69,9 @@
       <plugin id="fr.liris.cima.nscl.administration"/>
       <plugin id="fr.liris.cima.nscl.device.service"/>
       <plugin id="fr.liris.cima.nscl.mgmtdevice"/>
-      <plugin id="fr.liris.cima.gscl.portforwarding"/>
    </plugins>
 
    <configurations>
-      <plugin id="fr.liris.cima.gscl.portforwarding" autoStart="true" startLevel="1"/>
       <plugin id="org.apache.felix.gogo.command" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.shell" autoStart="true" startLevel="0" />

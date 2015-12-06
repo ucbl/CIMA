@@ -44,9 +44,6 @@ import fr.liris.cima.nscl.commons.Parameter;
 import fr.liris.cima.nscl.commons.constants.Configuration;
 import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
 
-import org.osgi.framework.*;
-import fr.liris.cima.gscl.portforwarding.*;
-
 import java.util.Iterator;
 
 public class Parser {
@@ -362,9 +359,6 @@ public class Parser {
 	}
 
 	public static JSONObject parseObixToJSONDevice(String obj_info) {
-		// get the PortForwarding sevice from the context bundle
-		BundleContext cxt = FrameworkUtil.getBundle(PortForwardingInterface.class).getBundleContext();
-		PortForwardingInterface pf = (PortForwardingInterface) cxt.getService(cxt.getServiceReference(PortForwardingInterface.class.getName()));
 
 		JSONObject jsonDeviceObject = new JSONObject();
 		try {
@@ -379,20 +373,8 @@ public class Parser {
 			while (noeudAttr.hasNext()){
 				attrCourant = (Element) noeudAttr.next();
 				if (attrCourant.getAttributeValue("name") != null && !attrCourant.getAttributeValue("name").equalsIgnoreCase("Capabilities")) {
-					// addition of the device attributes
 					jsonDeviceObject.put(attrCourant.getAttributeValue("name"), attrCourant.getAttributeValue("val"));
-
-					if (attrCourant.getAttributeValue("name").equalsIgnoreCase("id")) {
-						try {
-							// search by the device_id the dedicated port to communicate with the device
-							int port = pf.getPortForwarding(attrCourant.getAttributeValue("val"));
-							jsonDeviceObject.put("portforwarding", port);
-						} catch (Exception e) {
-							// if it doesn't have a dedicated port
-							System.out.println("DOESNT HAVE A PORTFORWARDING ACTIF");
-						}
-					}
-				} else {	// addition of the device's capabilities
+				} else {
 					list_capabilities = attrCourant.getChildren();
 					noeud_capabilities = list_capabilities.iterator();
 
