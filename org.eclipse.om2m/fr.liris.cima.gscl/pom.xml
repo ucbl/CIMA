@@ -42,7 +42,6 @@
     <module>fr.liris.cima.gscl.device.manualconfig</module>
     <module>fr.liris.cima.gscl.usbdiscovery</module>
     <module>fr.liris.cima.gscl.portforwarding</module>
-    <module>fr.liris.cima.gscl.dao</module>
 
   </modules>
 
