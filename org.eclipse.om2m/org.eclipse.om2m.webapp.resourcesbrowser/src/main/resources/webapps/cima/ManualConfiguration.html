@@ -1,4 +1,4 @@
-<!--home oage-->
+<!--home page-->
 <!doctype html>
 <html ng-app='CIMA'>
     <head>
@@ -8,13 +8,14 @@
     <link rel="stylesheet" href="css/ngToast.min.css">
     <link rel="stylesheet" type="text/css" href="css/appStyle.css">
     <link rel="stylesheet" href="css/ng-tags-input.min.css" />
-
+    <link rel="stylesheet" href="css/loading.css" />
     <title>CIMA Configuration</title>
     </head>
     
-
-    <body >
-
+    <body>
+        <div class="pull pull-left" ng-show="isLogin">
+            <a href="" title="" ng-click="logout()">Logout</a> 
+        </div>
         <toast></toast>
 
         <div ng-show='loading'>Loading...</div>
@@ -25,14 +26,17 @@
         <script src="lib/angular1312-animate.min.js"></script>
         <script src="lib/angular1312-sanitize.min.js"></script>
         <script src="lib/ngToast.min.js"></script>
+        <script src="lib/ngstorage.js"></script>
         <!-- <script src="lib/angular.min.js"></script>
         <script src="lib/angular-route.min.js"></script>       
         <script src="lib/angular-animate.min.js"></script>
         <script src="lib/angular-sanitize.min.js"></script> -->
         <!-- <script src="lib/jasmine.js"></script> -->
-        <!-- <script src="lib/jsonld.js"></script> --> <!-- Uncomment this when occuring weird errors-->
-        
-        
+        <!-- <script src="lib/jsonld.js"></script> -->
+        <script src="lib/restangular.js"></script>
+        <script src="lib/lodash-compat.min.js"></script>
+        <script src="lib/jsonld.js"></script>
+        <script src="lib/angular-jsonld.js"></script>
 
         <!-- <script src="lib/ui-bootstrap-tpls-0.14.1.min.js"></script> -->
         <script src="lib/ui-bootstrap-tpls-0.11.2.min.js"></script>
@@ -45,10 +49,11 @@
         <script src="js/service/device.js"></script>
         <script src="js/service/protocols.js"></script>
         <script src="js/service/modal.js"></script>
+        <script src="js/service/auth.js"></script>
         <!-- <script src="js/directive/search.js"></script> -->
         <script src="js/controller/device.js"></script>
         <script src="js/controller/home.js"></script> 
-        
+        <script src="js/controller/auth.js"></script> 
         
 
     </body>

@@ -11,28 +11,12 @@
         </div>
         <br>
         <hr>
-        
-        
-        <!--<div class="fil_ariane">
-            <a class="fil_ariane_a">
-                Index
-            </a>
-            &nbsp;&raquo;&nbsp;
-            <a class="fil_ariane_a">
-                Devices
-            </a>
-            &nbsp;&raquo;&nbsp;
-            <a class="fil_ariane_a_final">
-                Device : {{id}}
-            </a>
-            <p>
-                <br>
-            </p>
-        </div>-->
         <!-- Infos sur le device -->
         <div class="panel panel-primary col-sm-12 col-md-12 col-lg-12">
             <div class="panel-heading">
                 <h2 class="panel-title">Device ID : {{id}}</h2>
+                <!-- Change to this after for avoiding {{}} -->
+                <h2 class="panel-title" ng-bind-template="Port-forwarding : {{portforwarding}}"></h2>
             </div>
             <div class="panel-body">
                 <i>Configuration : {{configuration}}</i><br>
@@ -64,9 +48,10 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="capability in capabilities | orderBy:order">
-                            <td class="text-center">{{capability.configuration}}</td>
-                            <td class="text-center">{{capability.id}}</td>
-                            <td class="text-center">{{capability.protocol.protocolName}}</td>
+
+                            <td class="text-center">{{capability.configurationCapability}}</td>
+                            <td class="text-center">{{capability.idCapability}}</td>
+                            <td class="text-center">{{capability.protocolCapability.protocolName}}</td>
                             <td class="text-right">
 
                                <button ng-show="!capability.isEditable" type="button" ng-click="openAndShowCapability($index, capability)" class="btn btn-sm btn btn-info">
@@ -95,14 +80,14 @@
                         <h2 class="panel-title col-sm-12 col-md-12 col-lg-12">Show capability</h2>
                     </div>
                     <div class="panel-body col-sm-12 col-md-12 col-lg-12">                
-                            <strong>ID : {{editedCapability.id}} </strong>
+                            <strong>ID : {{editedCapability.idCapability}} </strong>
                             <br><br>
                             <li>
-                            <strong>Protocol type</strong> :  {{editedCapability.protocol.protocolName}}
+                            <strong>Protocol type</strong> :  {{editedCapability.protocolCapability.protocolName}}
  
                             </li>
-                            <li ng-repeat="parameter in editedCapability.protocol.parameters">
-                                <strong>{{parameter.name}}</strong> : {{parameter.value}}
+                            <li ng-repeat="parameter in editedCapability.protocolCapability.parameters">
+                                <strong>{{parameter.nameParamCapability}}</strong> : {{parameter.value}}
                             </li>
                             <br>   
                             <strong>Keywords :</strong>
@@ -116,13 +101,13 @@
                             </button>
                                 
                             <!-- Test capability button -->
-                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('sensor') >= 0" ng-click="testCapability(editedCapability)">Test</button>
+                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.idCapability.indexOf('sensor') >= 0" ng-click="testCapability(editedCapability)" data-toggle="modal" data-target="#responseSensorModal">Test</button>
 
                             <!-- Stop capability button -->
-                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0 && editedCapability.id.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button>
+                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.idCapability.indexOf('motor') >= 0 && editedCapability.idCapability.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button>
 
                             
-                            <button ng-click="" type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0 && editedCapability.id.indexOf('stop') < 0" data-toggle="modal" data-target="#configParamsModal">Configure</button>
+                            <button ng-click="" type="button" class="btn btn-primary pull-right" ng-if="editedCapability.idCapability.indexOf('motor') >= 0 && editedCapability.idCapability.indexOf('stop') < 0" data-toggle="modal" data-target="#configParamsModal">Configure</button>
                             <br>
                                 
                             
@@ -151,14 +136,14 @@
                                   <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                     <button type="button" class="btn btn-primary" ng-if="editedCapability.params.length > 0" ng-click="testCapability(editedCapability)">Test</button>
-                                    <!-- <button type="button" class="btn btn-primary" ng-if="editedCapability.id.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button> -->
+                                    <!-- <button type="button" class="btn btn-primary" ng-if="editedCapability.idCapability.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button> -->
                                   </div>
                                 </div>
                               </div>
                             </div>
 
                             <!-- Modal Response -->
-                            <div class="modal fade" id="configParamsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal fade" id="responseSensorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                               <div class="modal-dialog" role="document" ng-show="isResponseSensor">
                                 <div class="modal-content">
                                   <div class="modal-header">
@@ -167,9 +152,9 @@
                                   </div>
                                   
                                   <div class="modal-body" ng-repeat="responseSensor in responseSensors">
-                                    <!-- Implement a directive to solve this -->
+                                    <!-- Implement a directive to solve this in the future-->
                                     <div class="input-group">
-                                      <span class="input-group-addon" id="sizing-addon2" ng-bind-template="responseSensor"></span>
+                                      <div class="input-group-addon" id="sizing-addon2" ng-bind-template="{{responseSensor}}"></div>
                                       
                                     </div>
                                     
@@ -204,7 +189,7 @@
                                 </select>
                             </li>
                             <li ng-repeat="parameter in editedCapability.protocol.parameters">
-                                        {{parameter.name}}:
+                                        {{parameter.nameParamCapability}}:
                                         <input class="form-control"  style="width: 40%;" type="text" ng-model="parameter.value">
                             </li>
                             <br>   
@@ -254,7 +239,7 @@
                                     ng-options="protocol.protocolName for protocol in protocolsFromExisting" ng-required="true">
                             </select>
                             <li ng-repeat="parameter in NewFromExistingCapability.protocol.parameters">
-                                {{parameter.name}}:
+                                {{parameter.nameParamCapability}}:
                                 <input class="form-control"  type="text" ng-model="parameter.value">
                             </li>
                             <br>
@@ -284,7 +269,7 @@
                                 <option value=""> -- Choose protocol --</option>
                             </select>
                             <li ng-repeat="parameter in newCapability.protocol.parameters">
-                                {{parameter.name}}:
+                                {{parameter.nameParamCapability}}:
                                 <input class="form-control" style="width: 40%" type="text" ng-model="parameter.value">
                             </li>
                             <br>        
@@ -305,3 +290,4 @@
         </div> 
     </div> 
 </div>
+<div class="loading-modal" ng-show="isLoading"></div>

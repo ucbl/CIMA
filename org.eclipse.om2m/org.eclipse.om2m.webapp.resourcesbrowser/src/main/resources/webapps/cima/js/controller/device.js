@@ -11,40 +11,49 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
     $scope.configParams = {};
     $scope.isResponseSensor = false;
     $scope.responseSensors = [];
+    $scope.isLoading = false;
     /*retrieve information about the device and add them to the view*/
     DeviceFactory.get($routeParams.id).then(function(device){
-        
         ngToast.create("Device loaded.");
 
 
         $scope.id = device.id;
         $scope.name = device.name;
-        $scope.dateConnection = device.dateConnection;
-        $scope.modeConnection = device.modeConnection;
-        $scope.uri = device.uri;
-        $scope.configuration = device.configuration;
+        $scope.dateConnection = device.connection.dateConnection;
+        $scope.modeConnection = device.connection.protocol;
+        $scope.uri = device.connection.address;
+        $scope.configuration = device.configuration.automaticConfiguration ? 'automatic' : 'manual';
         $scope.keywords = device.keywords; 
-
-        if(device.configuration=='automatic'){
+        $scope.portforwarding = (typeof(device.portforwarding) !== "undefined") ? device.portforwarding : "Not available";
+        $scope.capabilities = [];
+        if(device.configuration == 'automatic'){
             $scope.isDeviceNameEditable = false;
         }else{
             $scope.isDeviceNameEditable = true;
         }
 
-        //Nécessaire pour connaitre possibilitée ou non d'éditer
-        if(device.capabilities){
-            $scope.capabilities = device.capabilities;
-            // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
-            angular.forEach($scope.capabilities, function(value, key) {
-                if(value.configuration=='automatic'){
-                    value.isEditable=false;
-                }else{
-                    value.isEditable=true;
-                }
-            });
-        }else{
-            $scope.capabilities = [];
-        }
+        DeviceFactory.getAllCapabilitiesFromDevice(device).then(function(res) {
+            $scope.capabilities = res;
+            //Nécessaire pour connaitre possibilitée ou non d'éditer
+            if ($scope.capabilities){
+                console.log($scope.capabilities);
+                // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
+                angular.forEach($scope.capabilities, function(value, key) {
+                    console.log(value);
+                    if(value.configurationCapability == 'automatic'){
+                        value.isEditable = false;
+                    }else{
+                        value.isEditable = true;
+                    }
+                });
+            } else {
+                $scope.capabilities = [];
+            }
+        });
+        
+
+        
+        
         $rootScope.loading = false; 
 
     }, function(msg){
@@ -53,7 +62,7 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
             content: "Unable to get device : "+msg,
             className: "danger"
         });
-    })
+    });
 
     /*retrieve the available protocols and add them to the view*/
     ProtocolsFactory.find().then(function(protocols){
@@ -74,9 +83,9 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
     $scope.addCapability = function(newCapability)
     {
         console.log('I am in addCapability');
-        if(newCapability.id !=null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null)
+        if(newCapability.id !=null && newCapability.protocolCapability.protocolName != null && newCapability.protocolCapability.parameters!= null)
         {           
-            console.log(newCapability.protocol.parameters);
+            console.log(newCapability.protocolCapability.parameters);
             var cap = {};
             cap.id = newCapability.id;
             cap.protocol = {};
@@ -126,7 +135,8 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
             // compact a document according to a particular context
             // see: http://json-ld.org/spec/latest/json-ld/#compacted-document-form
             jsonld.compact(doc, context, function(err, compacted) {
-              console.log(JSON.stringify(compacted, null, 2));
+                console.log(compacted);
+                console.log(JSON.stringify(compacted, null, 2));
             });
             
             DeviceFactory.addCapability($scope.id,cap).then(function(){
@@ -155,14 +165,14 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         newCapability = newCapability || {};
         newCapability.protocol = newCapability.protocol || {};
         //If id change -> add
-        if(newCapability.id !=null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null && add){          
+        if(newCapability.id !=null && newCapability.protocolCapability.protocolName != null && newCapability.protocolCapability.parameters!= null && add){          
             
             $scope.idrequired = false;
             var cap = {};
             cap.id = newCapability.id;
             cap.protocol = {};
-            cap.protocol.protocolName = newCapability.protocol.protocolName;
-            cap.protocol.parameters = newCapability.protocol.parameters;
+            cap.protocolCapability.protocolName = newCapability.protocolCapability.protocolName;
+            cap.protocolCapability.parameters = newCapability.protocolCapability.parameters;
             cap.configuration='manual';
             cap.isEditable=true;
             
@@ -206,16 +216,8 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
     }
     /*Testing capability function*/
     $scope.testCapability = function(newCapability){
-        
-        // var cap = {};
-        // newCapability = newCapability || {};
-        // newCapability.protocol = newCapability.protocol || {};
-        // cap.id = newCapability.id;
-        // cap.protocol = {};
-        // cap.protocol.protocolName = newCapability.protocol.protocolName;
-        // cap.protocol.parameters = newCapability.protocol.parameters;
-        // cap.params = newCapability.params;
-        
+        $scope.isLoading = true;
+  
         var filterParamsOn = function(params) {
             var configParams = {};
             if (params != null) {
@@ -232,14 +234,19 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
             
             return configParams;
         };
+
+        var getKeyValue = function(data) {
+            var keyValueParts = data.split(',');
+            var keyPart = keyValueParts[0];
+            var valuePart = keyValueParts[1];
+            return keyPart + ' : ' + valuePart;
+        };
         
         var newCapability = newCapability || {};
         if (!isEmpty(newCapability)) {
             var configParams = filterParamsOn(newCapability.params);
-            if ((newCapability.id.indexOf("sensor") >= 0) || (newCapability.id.indexOf("stop") >= 0) || (!isEmpty(configParams) && newCapability.id.indexOf("motor") >= 0)) {
-
-
-                var protocol = newCapability.protocol;
+            if ((newCapability.idCapability.indexOf("sensor") >= 0) || (newCapability.idCapability.indexOf("stop") >= 0) || (!isEmpty(configParams) && newCapability.idCapability.indexOf("motor") >= 0)) {
+                var protocol = newCapability.protocolCapability;
                 var protocolName = protocol.protocolName.toLowerCase();
                 //var protocolName = $scope.modeConnection;
                 var host = $scope.uri;
@@ -250,7 +257,7 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
                 for (var i = 0; i < protocol.parameters.length; i++) {
                     var parameter = protocol.parameters[i];
                     
-                    switch(parameter.name) {
+                    switch (parameter.nameParamCapability) {
                         case 'method':
                             method = parameter.value;
                             break;
@@ -274,26 +281,29 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
                 };
                 console.log(configParams);
                 DeviceFactory.testCapability(paramInfos).then(function(data){
+                    $scope.isLoading = false;
                     ngToast.create("Capability tested.");
                     console.log(data);
-                    // $scope.isResponseSensor = true;
-                    // $scope.responseSensors = JSON.parse(data);
-                    // console.log(data);
-                }, function(msg){
-                    //error
-                    // ngToast.create({
-                    //     content: "Unable to test capability : "+msg,
-                    //     className: "danger"
-                    // });
-                    
-                    
+                    // Intepret the sensor's response here => Hint : delimiter ; differentiates between array and object, delimiter , differentiates between key and value. We have to test with the robot
+                    /**
+                    * Check if the data contains ;. If so, split it by ;, otherwise, we consider it as a key:value (format: key, value received)
+                    */
+                    if (data.indexOf(';') >= 0) {
+                        var keyValuePairs = data.split(';');
+                        for (var i = 0; i < keyValuePairs.length; i++) {
+                            var aKeyValuePair = keyValuePairs[i];
+                            if (aKeyValuePair.indexOf(',') >= 0)
+                                $scope.responseSensors.push(getKeyValue(aKeyValuePair));
+                        }
+                    } else $scope.responseSensors.push(getKeyValue(data));
+                    $scope.isResponseSensor = true;
+                }, function(data){
+                    $scope.isLoading = false;
                 });
             } else {
                 alert('Entrez tous les champs vides s\'il vous plait !');
-            }
-            
+            } 
         }
-        
     }
 
     $scope.closeResponseSensorModal = function() {
@@ -306,8 +316,8 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
 
         device.id = $scope.id;
         device.name = $scope.name;
-        device.dateConnection = $scope.dateConnection;
-        device.modeConnection = $scope.modeConnection;
+        device.connection.dateConnection = $scope.dateConnection;
+        device.connection.modeConnection = $scope.modeConnection;
         device.uri = $scope.uri;
         device.capabilities = {};
         
@@ -329,8 +339,8 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         var cap = {};
         cap.id = capability.id;
         cap.protocol = {};
-        cap.protocol.protocolName = capability.protocol.protocolName;
-        cap.protocol.parameters = capability.protocol.parameters;
+        cap.protocolCapability.protocolName = capability.protocolCapability.protocolName;
+        cap.protocolCapability.parameters = capability.protocolCapability.parameters;
         DeviceFactory.modifyCapability($scope.id, cap).then(function(){
             ngToast.create("Capability modified.");
 
@@ -344,13 +354,14 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
     }
 
     var loadCapabilitiesIntoForm = function(index, capability) {
+        console.log(capability);
         $scope.indexOfShowingCapacity = index;
         $scope.editedCapability = JSON.parse(JSON.stringify(capability));
         //Not to have same reference
         for (var i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
             var dataset = $scope.protocolsFromEdited[i];
-            if (dataset.protocolName == capability.protocol.protocolName) {
-                $scope.protocolsFromEdited[i].parameters = capability.protocol.parameters;
+            if (dataset.protocolName == capability.protocolCapability.protocolName) {
+                $scope.protocolsFromEdited[i].parameters = capability.protocolCapability.parameters;
                 $scope.editedCapability.protocol = $scope.protocolsFromEdited[i];
                 break;
             }
@@ -376,8 +387,6 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         } else $scope.ShowIsOpen = false;
         
     };
-
-
 
     /*Function for closing the edition div*/
     $scope.CloseEditCapability = function(){
@@ -414,8 +423,8 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         $scope.NewFromExistingCapability = $item;
         for (var i = $scope.protocolsFromExisting.length - 1; i >= 0; i--) {
             var dataset = $scope.protocolsFromExisting[i];
-            if (dataset.protocolName == $item.protocol.protocolName) {
-                $scope.protocolsFromExisting[i].parameters = $item.protocol.parameters;
+            if (dataset.protocolName == $item.protocolCapability.protocolName) {
+                $scope.protocolsFromExisting[i].parameters = $item.protocolCapability.parameters;
                 $scope.NewFromExistingCapability.protocol = $scope.protocolsFromExisting[i];
                 break;
             }

@@ -94,12 +94,20 @@
                     <!-- Devices table -->
                     <tbody>
                         <tr ng-repeat="device in devices | filter:filterByDevice | filter:query | orderBy:predicate:reverse track by $index" class="deviceAfterFiltered">
-                            <td class="text-center">{{device.configuration}}</td>
+                            {{device}}
+                            <td class="text-center">
+                                <div ng-if="device.configuration.automaticConfiguration">
+                                    Automatic
+                                </div>
+                                <div ng-if="!device.configuration.automaticConfiguration">
+                                    Manual
+                                </div>
+                            </td>
                             <td class="text-center">{{device.id}}</td>
                             <td class="text-center">{{device.name}}</td>
-                            <td class="text-center">{{device.dateConnection}}</td>
-                            <td class="text-center">{{device.modeConnection}}</td>
-                            <td class="text-center">{{device.uri}}</td>
+                            <td class="text-center">{{device.connection.dateConnection}}</td>
+                            <td class="text-center">{{device.connection.protocol}}</td>
+                            <td class="text-center">{{device.connection.address}}</td>
                             <td class="text-center">
                                 <a class="btn btn-sm btn-success" ng-click="stopRefreshDevices()" href="#/device/{{device.id}}" id="viewDevice{{$index}}">View</a>
                             </td>
