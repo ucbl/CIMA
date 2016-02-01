@@ -1,0 +1,15 @@
+<div class="col-md-6 col-md-offset-3">
+    <div class="alert alert-danger" ng-if="errors.length > 0">
+        <ul>
+            <li ng-repeat="error in errors" ng-bind-template="{{error}}"></li>
+        </ul>
+    </div>
+    <form class="form-signin" novalidate>
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="inputEmail" class="sr-only">Username</label>
+        <input type="text" id="inputUsername" class="form-control" placeholder="Username" required="" autofocus="" ng-model="user.username" />
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="" ng-model="user.userpassword" />
+        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="login(user)">Sign in</button>
+    </form>
+</div>
