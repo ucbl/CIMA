@@ -7,6 +7,7 @@ app.controller('AuthController', ['$scope', '$rootScope', '$localStorage', '$loc
                 if (!results.errors) {
                     $rootScope.$storage = $localStorage;
                     $rootScope.$storage.userSession = results && results.username;
+                    $location.path('/');
                 } else {
                     $scope.errors = results.errors;
                 }
@@ -15,10 +16,11 @@ app.controller('AuthController', ['$scope', '$rootScope', '$localStorage', '$loc
 
             }
         );
-        // var results 
+        // var results = AuthService.login(user);
         // if (!results.errors) {
         //     $rootScope.$storage = $localStorage;
         //     $rootScope.$storage.userSession = results && results.username;
+        //     $location.path('/');
         // } else {
         //     $scope.errors = results.errors;
         // }

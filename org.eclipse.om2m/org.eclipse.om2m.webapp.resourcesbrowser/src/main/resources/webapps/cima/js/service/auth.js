@@ -3,7 +3,7 @@
 app.factory('AuthService', ['$q', '$http', function($q, $http) {
     this.login = function(data) {
         var deferred = $q.defer();
-        $http.post(URL_DEVICE + '/login', data).then(
+        $http.post(URL_LOGIN, data).then(
             function(result) {
                 deferred.resolve(result.data);
             },
@@ -12,6 +12,10 @@ app.factory('AuthService', ['$q', '$http', function($q, $http) {
             }
         );
         return deferred.promise;
+        // var result = {};
+        // result.username = 'CIMA';
+        // result.errors = 0;
+        // return result;
     };
 
     this.logout = function() {

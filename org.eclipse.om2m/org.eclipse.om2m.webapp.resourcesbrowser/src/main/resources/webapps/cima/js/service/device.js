@@ -2,42 +2,28 @@
 /*Device Model
 * Defining all methods to request the server*/
 app.factory('DeviceFactory', ['$http', '$q', 'JsonldRest', function($http, $q, JsonldRest){
-    JsonldRest.setBaseUrl('http://localhost:4040/angular-project/api/');
-    var connectedObjects = JsonldRest.collection('/cima');
+    //JsonldRest.setBaseUrl('http://localhost:4040/angular-project/api/');
+    //var connectedObjects = JsonldRest.collection('/cima');
     var factory = { 
         /*Return all devices*/
         find : function(options){
                 /* Promises */
             var deferred = $q.defer();
                 
-            // $http.get(URL_DEVICE).then(function(response) {
-            //     factory.devices = response.data;
-            //     deferred.resolve(factory.devices);
-            // }, function(error) {
-            //     deferred.reject('error : '+error);
-            // });
-            var data = [];
-            connectedObjects.one('devices').get().then(function(res) {
-                for (var i = 0; i < res['@graph'].length; i++) {
-                    data.push(res['@graph'][i]);
-                }
-                deferred.resolve(data);
-                
-                // for (var key in data) {
-                //     var capabilities = data[key].capabilities;
-                //     delete data[key].capabilities;
-                //     data[key].capabilities = [];
-                //     capabilities.forEach(function(capabilityLink, index) {
-                //         capabilityLink.get().then(function(capability) {
-                //             data[key].capabilities.push(capability);
-                //             console.log(data);
-                //             deferred.resolve(data);
-                //         });
-                //     });
-                // }
-               
-                
+            $http.get(URL_DEVICE).then(function(response) {
+                factory.devices = response.data;
+                deferred.resolve(factory.devices);
+            }, function(error) {
+                deferred.reject('error : '+error);
             });
+            // var data = [];
+            // connectedObjects.one('devices').get().then(function(res) {
+            //     for (var i = 0; i < res['@graph'].length; i++) {
+            //         data.push(res['@graph'][i]);
+            //     }
+            //     deferred.resolve(data);
+                
+            // });
             return deferred.promise;
         },
 

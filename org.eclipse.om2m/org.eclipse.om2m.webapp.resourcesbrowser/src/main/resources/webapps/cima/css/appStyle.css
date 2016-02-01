@@ -84,3 +84,16 @@ h1 {
 .bs-header h1 {
     color: #fff;
 }
+
+#listProfilesModal > .modal-dialog {
+    width: auto;
+    
+}
+
+#listProfilesBody {
+    /*font-size: 12px;
+    position: relative;
+    overflow-y: auto;
+    max-height: 400px;
+    padding: 15px;*/
+}
