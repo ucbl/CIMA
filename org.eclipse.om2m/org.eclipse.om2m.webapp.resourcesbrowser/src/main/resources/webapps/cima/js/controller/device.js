@@ -1,7 +1,7 @@
 'use strict';
 /* Controller page device.html */
 //angular.module('CIMA.DeviceController', []).controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast) {
-app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast) {
+app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', 'ProfileService', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast, ProfileService) {
     $rootScope.loading = true;
     $scope.EditIsOpen = false;
     $scope.idrequired = false;
@@ -12,6 +12,30 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
     $scope.isResponseSensor = false;
     $scope.responseSensors = [];
     $scope.isLoading = false;
+
+    $scope.loadProfileList = function() {
+        if (!$scope.profiles) {
+            ProfileService.getAllProfiles().then(function(results) {
+                $scope.profiles = results;
+            });
+        }
+        
+    };
+
+    $scope.loadCapabilitiesBy = function(profile) {
+        $scope.capabilitiesFromProfile = profile.capabilities;
+        if ($scope.capabilitiesFromProfile){
+            // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
+            angular.forEach($scope.capabilitiesFromProfile, function(value, key) {
+                if(value.configuration == 'automatic'){
+                    value.isEditable = false;
+                }else{
+                    value.isEditable = true;
+                }
+            });
+        } 
+    };
+
     /*retrieve information about the device and add them to the view*/
     DeviceFactory.get($routeParams.id).then(function(device){
         ngToast.create("Device loaded.");
@@ -19,39 +43,53 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
 
         $scope.id = device.id;
         $scope.name = device.name;
-        $scope.dateConnection = device.connection.dateConnection;
-        $scope.modeConnection = device.connection.protocol;
-        $scope.uri = device.connection.address;
-        $scope.configuration = device.configuration.automaticConfiguration ? 'automatic' : 'manual';
+        //$scope.dateConnection = device.connection.dateConnection;
+        $scope.dateConnection = device.dateConnection;
+        //$scope.modeConnection = device.connection.protocol;
+        $scope.modeConnection = device.modeConnection;
+        //$scope.uri = device.connection.address;
+        $scope.uri = device.uri;
+        //$scope.configuration = device.configuration.automaticConfiguration ? 'automatic' : 'manual';
+        $scope.configuration = device.configuration;
         $scope.keywords = device.keywords; 
         $scope.portforwarding = (typeof(device.portforwarding) !== "undefined") ? device.portforwarding : "Not available";
-        $scope.capabilities = [];
+        //$scope.capabilities = [];
+        $scope.capabilities = device.capabilities;
         if(device.configuration == 'automatic'){
             $scope.isDeviceNameEditable = false;
         }else{
             $scope.isDeviceNameEditable = true;
         }
 
-        DeviceFactory.getAllCapabilitiesFromDevice(device).then(function(res) {
-            $scope.capabilities = res;
-            //Nécessaire pour connaitre possibilitée ou non d'éditer
-            if ($scope.capabilities){
-                console.log($scope.capabilities);
-                // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
-                angular.forEach($scope.capabilities, function(value, key) {
-                    console.log(value);
-                    if(value.configurationCapability == 'automatic'){
-                        value.isEditable = false;
-                    }else{
-                        value.isEditable = true;
-                    }
-                });
-            } else {
-                $scope.capabilities = [];
-            }
-        });
+        // DeviceFactory.getAllCapabilitiesFromDevice(device).then(function(res) {
+        //     $scope.capabilities = res;
+        //     //Nécessaire pour connaitre possibilitée ou non d'éditer
+        //     if ($scope.capabilities){
+        //         // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
+        //         angular.forEach($scope.capabilities, function(value, key) {
+        //             if(value.configurationCapability == 'automatic'){
+        //                 value.isEditable = false;
+        //             }else{
+        //                 value.isEditable = true;
+        //             }
+        //         });
+        //     } else {
+        //         $scope.capabilities = [];
+        //     }
+        // });
         
-
+        if ($scope.capabilities){
+            // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
+            angular.forEach($scope.capabilities, function(value, key) {
+                if(value.configuration == 'automatic'){
+                    value.isEditable = false;
+                }else{
+                    value.isEditable = true;
+                }
+            });
+        } else {
+            $scope.capabilities = [];
+        }
         
         
         $rootScope.loading = false; 
@@ -83,9 +121,9 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
     $scope.addCapability = function(newCapability)
     {
         console.log('I am in addCapability');
-        if(newCapability.id !=null && newCapability.protocolCapability.protocolName != null && newCapability.protocolCapability.parameters!= null)
+        if(newCapability.id !=null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null)
         {           
-            console.log(newCapability.protocolCapability.parameters);
+            console.log(newCapability.protocol.parameters);
             var cap = {};
             cap.id = newCapability.id;
             cap.protocol = {};
@@ -165,14 +203,14 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         newCapability = newCapability || {};
         newCapability.protocol = newCapability.protocol || {};
         //If id change -> add
-        if(newCapability.id !=null && newCapability.protocolCapability.protocolName != null && newCapability.protocolCapability.parameters!= null && add){          
+        if(newCapability.id !=null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null && add){          
             
             $scope.idrequired = false;
             var cap = {};
             cap.id = newCapability.id;
             cap.protocol = {};
-            cap.protocolCapability.protocolName = newCapability.protocolCapability.protocolName;
-            cap.protocolCapability.parameters = newCapability.protocolCapability.parameters;
+            cap.protocol.protocolName = newCapability.protocol.protocolName;
+            cap.protocol.parameters = newCapability.protocol.parameters;
             cap.configuration='manual';
             cap.isEditable=true;
             
@@ -245,8 +283,8 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         var newCapability = newCapability || {};
         if (!isEmpty(newCapability)) {
             var configParams = filterParamsOn(newCapability.params);
-            if ((newCapability.idCapability.indexOf("sensor") >= 0) || (newCapability.idCapability.indexOf("stop") >= 0) || (!isEmpty(configParams) && newCapability.idCapability.indexOf("motor") >= 0)) {
-                var protocol = newCapability.protocolCapability;
+            if ((newCapability.id.indexOf("sensor") >= 0) || (newCapability.id.indexOf("stop") >= 0) || (!isEmpty(configParams) && newCapability.id.indexOf("motor") >= 0)) {
+                var protocol = newCapability.protocol;
                 var protocolName = protocol.protocolName.toLowerCase();
                 //var protocolName = $scope.modeConnection;
                 var host = $scope.uri;
@@ -257,7 +295,7 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
                 for (var i = 0; i < protocol.parameters.length; i++) {
                     var parameter = protocol.parameters[i];
                     
-                    switch (parameter.nameParamCapability) {
+                    switch (parameter.name) {
                         case 'method':
                             method = parameter.value;
                             break;
@@ -339,8 +377,8 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         var cap = {};
         cap.id = capability.id;
         cap.protocol = {};
-        cap.protocolCapability.protocolName = capability.protocolCapability.protocolName;
-        cap.protocolCapability.parameters = capability.protocolCapability.parameters;
+        cap.protocol.protocolName = capability.protocol.protocolName;
+        cap.protocol.parameters = capability.protocol.parameters;
         DeviceFactory.modifyCapability($scope.id, cap).then(function(){
             ngToast.create("Capability modified.");
 
@@ -360,8 +398,8 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         //Not to have same reference
         for (var i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
             var dataset = $scope.protocolsFromEdited[i];
-            if (dataset.protocolName == capability.protocolCapability.protocolName) {
-                $scope.protocolsFromEdited[i].parameters = capability.protocolCapability.parameters;
+            if (dataset.protocolName == capability.protocol.protocolName) {
+                $scope.protocolsFromEdited[i].parameters = capability.protocol.parameters;
                 $scope.editedCapability.protocol = $scope.protocolsFromEdited[i];
                 break;
             }
@@ -423,9 +461,9 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         $scope.NewFromExistingCapability = $item;
         for (var i = $scope.protocolsFromExisting.length - 1; i >= 0; i--) {
             var dataset = $scope.protocolsFromExisting[i];
-            if (dataset.protocolName == $item.protocolCapability.protocolName) {
-                $scope.protocolsFromExisting[i].parameters = $item.protocolCapability.parameters;
-                $scope.NewFromExistingCapability.protocol = $scope.protocolsFromExisting[i];
+            if (dataset.protocolName == $item.protocol.protocolName) {
+                $scope.protocolsFromExisting[i].parameters = $item.protocol.parameters;
+                $scope.NewFromExisting.protocol = $scope.protocolsFromExisting[i];
                 break;
             }
         }

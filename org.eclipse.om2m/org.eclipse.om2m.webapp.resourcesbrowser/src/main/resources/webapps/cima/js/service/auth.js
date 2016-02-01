@@ -12,6 +12,10 @@ app.factory('AuthService', ['$q', '$http', function($q, $http) {
             }
         );
         return deferred.promise;
+        // var result = {};
+        // result.username = 'CIMA';
+        // result.errors = 0;
+        // return result;
     };
 
     this.logout = function() {

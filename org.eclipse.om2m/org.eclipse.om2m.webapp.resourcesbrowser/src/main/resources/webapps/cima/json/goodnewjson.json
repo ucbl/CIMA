@@ -1,0 +1,427 @@
+[
+  {
+    "id": "DEVICE_0",
+    "name": "CimaRobot3",
+    "description": "This is a robotEV3",
+    "connection": {
+      "dateConnection": "Friday, Oct 23, 2015 10:04:47 AM",
+      "protocol": "wifi",
+      "address": "192.168.2.3"
+    },
+    "portforwarding": 91483,
+    "configuration": {
+      "automaticConfiguration": false,
+      "profile": "nom du profil enregistré par l'utilisateur"
+    },
+
+    "capabilities": [
+      
+    ]
+  },
+  {
+    "dateConnection": "lundi, nov. 30, 2015 12:12:28 PM",
+    "id": "DEVICE_1",
+    "modeConnection": "http",
+    "name": "CimaRobot",
+    "portforwarding": 91483,
+    "capabilities": [
+      {
+        "id": "motor-A-rotate",
+        "result": null,
+        "protocol": {
+          "protocolName": "HTTP",
+          "parameters": [
+            {
+              "name": "port",
+              "value": "8080"
+            },
+            {
+              "name": "body",
+              "value": "motor-A-rotate"
+            },
+            {
+              "name": "method",
+              "value": "POST"
+            },
+            {
+              "name": "uri",
+              "value": "\/A\/rotate"
+            }
+          ]
+        },
+        "cloudPort": "0",
+        "params": [
+          {
+            "desc": "null",
+            "idp": "speed",
+            "type": "int"
+          },
+          {
+            "desc": "null",
+            "idp": "angle",
+            "type": "int"
+          }
+        ],
+        "configuration": "automatic"
+      },
+      {
+        "id": "motor-A-stop",
+        "result": null,
+        "protocol": {
+          "protocolName": "HTTP",
+          "parameters": [
+            {
+              "name": "port",
+              "value": "8080"
+            },
+            {
+              "name": "body",
+              "value": "motor-A-stop"
+            },
+            {
+              "name": "method",
+              "value": "GET"
+            },
+            {
+              "name": "uri",
+              "value": "\/A\/stop"
+            }
+          ]
+        },
+        "cloudPort": "0",
+        "configuration": "automatic"
+      },
+      {
+        "id": "motor-B-stop",
+        "result": null,
+        "protocol": {
+          "protocolName": "HTTP",
+          "parameters": [
+            {
+              "name": "port",
+              "value": "8080"
+            },
+            {
+              "name": "body",
+              "value": "motor-B-stop"
+            },
+            {
+              "name": "method",
+              "value": "GET"
+            },
+            {
+              "name": "uri",
+              "value": "\/B\/stop"
+            }
+          ]
+        },
+        "cloudPort": "0",
+        "configuration": "automatic"
+      },
+      {
+        "id": "motor-C-stop",
+        "result": null,
+        "protocol": {
+          "protocolName": "HTTP",
+          "parameters": [
+            {
+              "name": "port",
+              "value": "8080"
+            },
+            {
+              "name": "body",
+              "value": "motor-C-stop"
+            },
+            {
+              "name": "method",
+              "value": "GET"
+            },
+            {
+              "name": "uri",
+              "value": "\/C\/stop"
+            }
+          ]
+        },
+        "cloudPort": "0",
+        "configuration": "automatic"
+      },
+      {
+        "id": "motor-D-stop",
+        "result": null,
+        "protocol": {
+          "protocolName": "HTTP",
+          "parameters": [
+            {
+              "name": "port",
+              "value": "8080"
+            },
+            {
+              "name": "body",
+              "value": "motor-D-stop"
+            },
+            {
+              "name": "method",
+              "value": "GET"
+            },
+            {
+              "name": "uri",
+              "value": "\/D\/stop"
+            }
+          ]
+        },
+        "cloudPort": "0",
+        "configuration": "automatic"
+      },
+      {
+        "id": "motor-A-forward",
+        "result": null,
+        "protocol": {
+          "protocolName": "HTTP",
+          "parameters": [
+            {
+              "name": "port",
+              "value": "8080"
+            },
+            {
+              "name": "body",
+              "value": "motor-A-forward"
+            },
+            {
+              "name": "method",
+              "value": "POST"
+            },
+            {
+              "name": "uri",
+              "value": "\/A\/forward"
+            }
+          ]
+        },
+        "cloudPort": "0",
+        "params": [
+          {
+            "desc": "null",
+            "idp": "speed",
+            "type": "int"
+          }
+        ],
+        "configuration": "automatic"
+      },
+      {
+        "id": "motor-A-backward",
+        "result": null,
+        "protocol": {
+          "protocolName": "HTTP",
+          "parameters": [
+            {
+              "name": "port",
+              "value": "8080"
+            },
+            {
+              "name": "body",
+              "value": "motor-A-backward"
+            },
+            {
+              "name": "method",
+              "value": "POST"
+            },
+            {
+              "name": "uri",
+              "value": "\/A\/backward"
+            }
+          ]
+        },
+        "cloudPort": "0",
+        "params": [
+          {
+            "desc": "null",
+            "idp": "speed",
+            "type": "int"
+          }
+        ],
+        "configuration": "automatic"
+      },
+      {
+        "id": "motor-D-rotate",
+        "result": null,
+        "protocol": {
+          "protocolName": "HTTP",
+          "parameters": [
+            {
+              "name": "port",
+              "value": "8080"
+            },
+            {
+              "name": "body",
+              "value": "motor-D-rotate"
+            },
+            {
+              "name": "method",
+              "value": "POST"
+            },
+            {
+              "name": "uri",
+              "value": "\/D\/rotate"
+            }
+          ]
+        },
+        "cloudPort": "0",
+        "params": [
+          {
+            "desc": "null",
+            "idp": "speed",
+            "type": "int"
+          },
+          {
+            "desc": "null",
+            "idp": "angle",
+            "type": "int"
+          }
+        ],
+        "configuration": "automatic"
+      },
+      {
+        "id": "motor-D-forward",
+        "result": null,
+        "protocol": {
+          "protocolName": "HTTP",
+          "parameters": [
+            {
+              "name": "port",
+              "value": "8080"
+            },
+            {
+              "name": "body",
+              "value": "motor-D-forward"
+            },
+            {
+              "name": "method",
+              "value": "POST"
+            },
+            {
+              "name": "uri",
+              "value": "\/D\/forward"
+            }
+          ]
+        },
+        "cloudPort": "0",
+        "params": [
+          {
+            "desc": "null",
+            "idp": "speed",
+            "type": "int"
+          }
+        ],
+        "configuration": "automatic"
+      },
+      {
+        "id": "motor-D-backward",
+        "result": null,
+        "protocol": {
+          "protocolName": "HTTP",
+          "parameters": [
+            {
+              "name": "port",
+              "value": "8080"
+            },
+            {
+              "name": "body",
+              "value": "motor-D-backward"
+            },
+            {
+              "name": "method",
+              "value": "POST"
+            },
+            {
+              "name": "uri",
+              "value": "\/D\/backward"
+            }
+          ]
+        },
+        "cloudPort": "0",
+        "params": [
+          {
+            "desc": "null",
+            "idp": "speed",
+            "type": "int"
+          }
+        ],
+        "configuration": "automatic"
+      },
+      {
+        "id": "motor-D-rotate",
+        "result": null,
+        "protocol": {
+          "protocolName": "HTTP",
+          "parameters": [
+            {
+              "name": "port",
+              "value": "8080"
+            },
+            {
+              "name": "body",
+              "value": "motor-D-stop"
+            },
+            {
+              "name": "method",
+              "value": "POST"
+            },
+            {
+              "name": "uri",
+              "value": "\/D\/stop"
+            }
+          ]
+        },
+        "cloudPort": "0",
+        "params": [
+          
+        ],
+        "configuration": "automatic"
+      },
+      {
+        "id": "sensor-S4-gyro",
+        "result": null,
+        "protocol": {
+          "protocolName": "HTTP",
+          "parameters": [
+            {
+              "name": "port",
+              "value": "8080"
+            },
+            {
+              "name": "body",
+              "value": "sensor-S4-gyro"
+            },
+            {
+              "name": "method",
+              "value": "GET"
+            },
+            {
+              "name": "uri",
+              "value": "\/S4\/EV3GyroSensor"
+            }
+          ]
+        },
+        "cloudPort": "0",
+        "params": [
+          
+        ],
+        "configuration": "automatic"
+      }
+    ],
+    "known": "true",
+    "configuration": "automatic",
+    "uri": "192.168.2.3"
+  },
+  {
+    "dateConnection": "lundi, nov. 30, 2015 12:12:35 PM",
+    "id": "DEVICE_2",
+    "modeConnection": "ip",
+    "name": "",
+    "capabilities": [
+      
+    ],
+    "known": "false",
+    "configuration": "automatic",
+    "uri": "192.168.2.4"
+  }
+]

@@ -75,14 +75,11 @@ app.run(['$http', '$rootScope', '$localStorage', '$location', function($http, $r
           }
       } else {
           if ($location.path() != '/login') {
+              //alert('You need to login to access this area');
               $location.path('/login');
-              alert('You need to login to access this area');
           }
       }
       
   });
 }]);
 
-// angular.module('test', []).controller('testcontroller', ['$scope', function($scope) {
-//   $scope.num = 0;
-// }]);

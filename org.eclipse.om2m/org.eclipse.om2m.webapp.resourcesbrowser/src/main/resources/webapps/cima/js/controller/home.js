@@ -29,11 +29,11 @@ app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$int
     // $scope.useConfig = {}; $scope.useMode = {}; $scope.useKeys = {};  
     var initializeOptions = function() {
         /*configGroup contains the list of unique configuration items ['manual','automatic']*/
-        //$scope.configGroup = uniqueItems($scope.devices, 'configuration');
-        $scope.configGroup = getAllConfigurationModes($scope.devices);
+        $scope.configGroup = uniqueItems($scope.devices, 'configuration');
+        //$scope.configGroup = getAllConfigurationModes($scope.devices);
         /*modeGroup contains the list of unique connection mode items ['USB','HTTP', ...]*/
-        //$scope.modeGroup = uniqueItems($scope.devices, 'modeConnection');
-        $scope.modeGroup = getAllConnectionModes($scope.devices);
+        $scope.modeGroup = uniqueItems($scope.devices, 'modeConnection');
+        //$scope.modeGroup = getAllConnectionModes($scope.devices);
         /*keyGroup contains the list of unique keywords ['ev3','movement', ...]*/
         $scope.keyGroup = uniqueItemsKeys($scope.devices, 'capabilities');
     };
@@ -158,14 +158,15 @@ app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$int
                 
                 if (reached) break;
             } else {
-                var value = '';
-                if (prop == 'configuration') {
-                    // This implementation is based on the received jsonld format
-                    value = device[prop].automaticConfiguration ? 'automatic' : 'manual';
-                } else if (prop == 'modeConnection') {
+                var value = device[prop];
+                // var value = '';
+                // if (prop == 'configuration') {
+                //     // This implementation is based on the received jsonld format
+                //     value = device[prop].automaticConfiguration ? 'automatic' : 'manual';
+                // } else if (prop == 'modeConnection') {
 
-                    value = device.connection.protocol;
-                }
+                //     value = device.connection.protocol;
+                // }
                 
                 if (!$scope.filters[prop][value]) {
                     matchesAND = false;
@@ -243,18 +244,18 @@ var getAllConnectionModes = function(data) {
 };
 
 /*return unique items from a data object*/
-// var uniqueItems = function(data, key) {
-//     var result = [];
-//     for (var i = 0; i < data.length; i++) {
-//         var value = data[i][key];
+var uniqueItems = function(data, key) {
+    var result = [];
+    for (var i = 0; i < data.length; i++) {
+        var value = data[i][key];
  
-//         if (result.indexOf(value) == -1) {
-//             result.push(value);
-//         }
+        if (result.indexOf(value) == -1) {
+            result.push(value);
+        }
     
-//     }
-//     return result;
-// };  
+    }
+    return result;
+};  
 /*return unique keywords*/
 var uniqueItemsKeys = function(data, key){
 
