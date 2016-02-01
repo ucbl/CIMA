@@ -24,6 +24,8 @@ public class AdministrationServer implements IpuService{
 		/** Logger OSGI*/
 		private static ServiceTracker logServiceTracker;
 		private static LogService logservice;
+
+
 	/** rest client service*/
 	public static RestClientService restClientService;
 
@@ -178,17 +180,46 @@ public class AdministrationServer implements IpuService{
 	public ResponseConfirm doCreate(RequestIndication requestIndication) {
 
 
-
 		String [] tID = requestIndication.getTargetID().split("/");
 
 		ResponseConfirm resp = null;
 		requestIndication.setBase("127.0.0.1:8181/");
 		requestIndication.setBase("127.0.0.1:8181/");
 		LOGGER.info("++++++++++++++++++++");
-		logservice.log(LogService.LOG_ERROR, "++++++++++++++++++++");
+		//logservice.log(LogService.LOG_ERROR, "++++++++++++++++++++");
 
 		LOGGER.info("tID.lengh = " + tID.length);
-		logservice.log(LogService.LOG_ERROR, "tID.lengh = " + tID.length);
+		//logservice.log(LogService.LOG_ERROR, "tID.lengh = " + tID.length);
+
+
+
+
+		// nscl/applications/CIMA/administration/login
+		if(tID.length == 5){
+			if("login".equals(tID[4])) {
+				String recu = (String) requestIndication.getRepresentation();
+
+				recu = recu.replace("{", "").replace("}", "");
+
+				String username = recu.split(",")[0];
+				username = username.split(":")[1].trim().replace("\"", "");
+
+
+				String password = recu.split(",")[1];
+				password = password.split(":")[1].trim().replace("\"", "");
+
+
+
+				System.out.println("username : " + username);
+				System.out.println("password : " + password);
+
+
+				//TODO: verifier username et mot de passe
+
+				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"username\":\""+username+"\", \"error\" : 0}");
+
+			}
+		}
 
 		if(tID.length == 7){
 			// nscl/applications/CIMA/administration/device/<device id>/test
