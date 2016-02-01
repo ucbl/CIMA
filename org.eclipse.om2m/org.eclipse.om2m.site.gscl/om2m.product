@@ -35,7 +35,6 @@
    <plugins>
       <plugin id="fr.liris.cima.comm.http"/>
       <plugin id="fr.liris.cima.comm.protocol"/>
-      <plugin id="fr.liris.cima.dao"/>
       <plugin id="fr.liris.cima.gscl.comm.http"/>
       <plugin id="fr.liris.cima.gscl.commons"/>
       <plugin id="fr.liris.cima.gscl.core"/>
@@ -79,7 +78,6 @@
    <configurations>
       <plugin id="fr.liris.cima.comm.http" autoStart="true" startLevel="4" />
       <plugin id="fr.liris.cima.comm.protocol" autoStart="true" startLevel="3" />
-      <plugin id="fr.liris.cima.dao" autoStart="true" startLevel="1" />
       <plugin id="fr.liris.cima.gscl.comm.http" autoStart="true" startLevel="4" />
       <plugin id="fr.liris.cima.gscl.commons" autoStart="true" startLevel="4" />
       <plugin id="fr.liris.cima.gscl.core" autoStart="true" startLevel="6" />
