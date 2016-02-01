@@ -1,5 +1,6 @@
 /* URL declaration */
 
+var URL_LOGIN = '/om2m/nscl/applications/CIMA/administration/login';
 var URL_DEVICE = '/om2m/nscl/applications/CIMA/administration/device';
 //var URL_DEVICE = 'json/newformatdevices.json';
 //var URL_DEVICE = 'json/goodjson.json';

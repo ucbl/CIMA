@@ -7,6 +7,7 @@ app.controller('AuthController', ['$scope', '$rootScope', '$localStorage', '$loc
                 if (!results.errors) {
                     $rootScope.$storage = $localStorage;
                     $rootScope.$storage.userSession = results && results.username;
+		    $location.path('/');
                 } else {
                     $scope.errors = results.errors;
                 }
