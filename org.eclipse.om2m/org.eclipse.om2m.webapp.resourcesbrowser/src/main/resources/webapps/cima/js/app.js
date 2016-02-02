@@ -9,6 +9,9 @@ app.config(['$routeProvider', '$httpProvider', 'jsonldContextProvider', function
   .when('/', {templateUrl: 'partials/home.html', controller: 'HomeController'})
   .when('/device/:id', {templateUrl: 'partials/device.html', controller: 'DeviceController'})
   .when('/login', {templateUrl: 'partials/login.html', controller: 'AuthController'})
+  .when('/profile', {templateUrl: 'partials/profile/list.html', controller: 'ProfileController'})
+  .when('/profile/add', {templateUrl: 'partials/profile/add.html', controller: 'AddProfileController'})
+  .when('/profile/:id', {templateUrl: 'partials/profile/edit.html', controller: 'EditProfileController'})
   .otherwise({redirectTo : '/'});
 
   

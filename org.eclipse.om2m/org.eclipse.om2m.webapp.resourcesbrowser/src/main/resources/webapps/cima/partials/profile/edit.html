@@ -1,0 +1,23 @@
+<div ng-show="errors.length > 0" class="alert alert-danger">
+    <ul>
+        <li ng-repeat="error in errors" ng-bind-template="{{error}}"></li>
+    </ul>
+</div>
+<form>
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" placeholder="Enter name" ng-model="profile.name">
+    </div>
+    <div class="form-group">
+        <label for="name">Description</label>
+        <input type="text" class="form-control" id="description" placeholder="Enter description" ng-model="profile.description">
+    </div>
+    
+    <div class="form-group">
+        <label for="category">Capabilities</label>
+        <div class="list-group" data-toggle="capabilities">
+            <a href class="list-group-item" ng-repeat="capability in capabilities" ng-click="chooseCapability(capability)" ng-bind-template="{{capability.id}}" ng-class="{active: capability.isActive}"></a>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary" ng-click="edit()">Edit</button>
+</form>

@@ -7,7 +7,7 @@ app.factory('DeviceFactory', ['$http', '$q', 'JsonldRest', function($http, $q, J
     var factory = { 
         /*Return all devices*/
         find : function(options){
-                /* Promises */
+            /* Promises */
             var deferred = $q.defer();
                 
             $http.get(URL_DEVICE).then(function(response) {
