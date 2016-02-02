@@ -1,0 +1,72 @@
+package fr.liris.cima.nscl.profils;
+
+import ProfilsExport.Profil;
+import ProfilsExport.ProfilManagerInterface;
+
+import java.io.IOException;
+import java.util.List;
+
+
+import fr.liris.cima.nscl.mongodao.persistance.MongoDaoInterface;
+import ProfilsExport.Profil;
+
+
+/**
+ * Created by Maxime on 02/02/2016.
+ */
+public class ProfilManager implements ProfilManagerInterface {
+
+    MongoDaoInterface mongoDaoInterface;
+
+
+    public ProfilManager(MongoDaoInterface mongoDaoInterface) {
+        this.mongoDaoInterface = mongoDaoInterface;
+    }
+
+    @Override
+    public List<Profil> getAllProfils() {
+        try {
+            return mongoDaoInterface.getAll(Profil.class);
+        }catch(ClassNotFoundException c){
+            System.out.println("Error : impossible de trouver la classe à rcéupérer dans la base mongo.");
+            c.printStackTrace();
+            return null;
+        }catch(Exception c){
+            System.out.println("Error : impossible de trouver la classe à rcéupérer dans la base mongo.");
+            c.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Profil saveNewProfil(Profil p) {
+        try {
+            mongoDaoInterface.persist(p);
+            return p; //to show that p was modified
+        }catch(IOException i){
+            System.out.println("Error : impossible d'enregistrer l'objet en mémoire : " + p.toStringPersistance());
+            i.printStackTrace();
+            return null;
+        }catch(Exception e){
+            System.out.println("Error : impossible d'enregistrer l'objet en mémoire : " + p.toStringPersistance());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public void updateProfil(Profil p) {
+        try {
+            mongoDaoInterface.save(p);
+        }catch(Exception e){
+            System.out.println("Error : impossible de mettre a jour l'ibjet : " + p);
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean deleteProfil(Profil p) {
+        return false;//TODO
+    }
+
+}
