@@ -1,7 +1,10 @@
 'use strict';
 /* Controller page device.html */
 //angular.module('CIMA.DeviceController', []).controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast) {
-app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', 'ProfileService', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast, ProfileService) {
+app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', 'ProfileService', '$localStorage', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast, ProfileService, $localStorage) {
+    $rootScope.$storage = $localStorage;
+    if (!$rootScope.$storage.capabilitiesForProfile)
+        $rootScope.$storage.capabilitiesForProfile = [];
     $rootScope.loading = true;
     $scope.EditIsOpen = false;
     $scope.idrequired = false;
@@ -15,11 +18,30 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
 
     $scope.loadProfileList = function() {
         if (!$scope.profiles) {
-            ProfileService.getAllProfiles().then(function(results) {
+            ProfileService.list().then(function(results) {
                 $scope.profiles = results;
             });
         }
         
+    };
+
+    $scope.loadCapabilitiesBy = function(profile) {
+        angular.forEach($scope.profiles, function(value, key) {
+            value.isActive = false;
+        });
+        profile.isActive = true;
+        $scope.activeProfile = profile;
+        $scope.capabilitiesFromProfile = profile.capabilities;
+        if ($scope.capabilitiesFromProfile){
+            // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
+            angular.forEach($scope.capabilitiesFromProfile, function(value, key) {
+                if(value.configuration == 'automatic'){
+                    value.isEditable = false;
+                }else{
+                    value.isEditable = true;
+                }
+            });
+        } 
     };
 
     $scope.loadCapabilitiesBy = function(profile) {
@@ -130,64 +152,65 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
             cap.protocol.protocolName = newCapability.protocol.protocolName;
             cap.protocol.parameters = newCapability.protocol.parameters;
             cap.configuration='manual';
-            cap.isEditable=true;
-            cap.hydra = "http://www.w3.org/ns/hydra/core#";
-            cap.rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-            cap.rdfs = "http://www.w3.org/2000/01/rdf-schema#";
-            cap.xsd = "http://www.w3.org/2001/XMLSchema#";
-            cap.owl = "http://www.w3.org/2002/07/owl#";
-            cap.vs = "http://www.w3.org/2003/06/sw-vocab-status/ns#";
-            cap.defines = { "@reverse": "rdfs:isDefinedBy" };
-            cap.comment = "rdfs:comment";
-            cap.label = "rdfs:label";
-            cap.domain = { "@id": "rdfs:domain", "@type": "@id" };
-            cap.range = { "@id": "rdfs:range", "@type": "@id" };
-            cap.subClassOf = { "@id": "rdfs:subClassOf", "@type": "@id", "@container": "@set" };
-            cap.subPropertyOf = { "@id": "rdfs:subPropertyOf", "@type": "@id", "@container": "@set" };
-            cap.seeAlso = { "@id": "rdfs:seeAlso", "@type": "@id" };
-            cap.status = "vs:term_status";
-            console.log("cap = "+JSON.stringify(cap));
-            var doc = {
-              "http://schema.org/name": "Manu Sporny",
-              "http://schema.org/url": {"@id": "http://manu.sporny.org/"},
-              "http://schema.org/image": {"@id": "http://manu.sporny.org/images/manu.png"}
-            };
-            var context = {
-                "hydra": "http://www.w3.org/ns/hydra/core#",
-                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-                "xsd": "http://www.w3.org/2001/XMLSchema#",
-                "owl": "http://www.w3.org/2002/07/owl#",
-                "vs": "http://www.w3.org/2003/06/sw-vocab-status/ns#",
-                "defines": { "@reverse": "rdfs:isDefinedBy" },
-                "comment": "rdfs:comment",
-                "label": "rdfs:label",
-                "domain": { "@id": "rdfs:domain", "@type": "@id" },
-                "range": { "@id": "rdfs:range", "@type": "@id" },
-                "subClassOf": { "@id": "rdfs:subClassOf", "@type": "@id", "@container": "@set" },
-                "subPropertyOf": { "@id": "rdfs:subPropertyOf", "@type": "@id", "@container": "@set" },
-                "seeAlso": { "@id": "rdfs:seeAlso", "@type": "@id" },
-                "status": "vs:term_status"
-            };
-
-            // compact a document according to a particular context
-            // see: http://json-ld.org/spec/latest/json-ld/#compacted-document-form
-            jsonld.compact(doc, context, function(err, compacted) {
-                console.log(compacted);
-                console.log(JSON.stringify(compacted, null, 2));
-            });
+            cap.cloudPort = 0;
+            // cap.isEditable=true;
+            // cap.hydra = "http://www.w3.org/ns/hydra/core#";
+            // cap.rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+            // cap.rdfs = "http://www.w3.org/2000/01/rdf-schema#";
+            // cap.xsd = "http://www.w3.org/2001/XMLSchema#";
+            // cap.owl = "http://www.w3.org/2002/07/owl#";
+            // cap.vs = "http://www.w3.org/2003/06/sw-vocab-status/ns#";
+            // cap.defines = { "@reverse": "rdfs:isDefinedBy" };
+            // cap.comment = "rdfs:comment";
+            // cap.label = "rdfs:label";
+            // cap.domain = { "@id": "rdfs:domain", "@type": "@id" };
+            // cap.range = { "@id": "rdfs:range", "@type": "@id" };
+            // cap.subClassOf = { "@id": "rdfs:subClassOf", "@type": "@id", "@container": "@set" };
+            // cap.subPropertyOf = { "@id": "rdfs:subPropertyOf", "@type": "@id", "@container": "@set" };
+            // cap.seeAlso = { "@id": "rdfs:seeAlso", "@type": "@id" };
+            // cap.status = "vs:term_status";
+            // console.log("cap = "+JSON.stringify(cap));
+            // var doc = {
+            //   "http://schema.org/name": "Manu Sporny",
+            //   "http://schema.org/url": {"@id": "http://manu.sporny.org/"},
+            //   "http://schema.org/image": {"@id": "http://manu.sporny.org/images/manu.png"}
+            // };
+            // var context = {
+            //     "hydra": "http://www.w3.org/ns/hydra/core#",
+            //     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            //     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+            //     "xsd": "http://www.w3.org/2001/XMLSchema#",
+            //     "owl": "http://www.w3.org/2002/07/owl#",
+            //     "vs": "http://www.w3.org/2003/06/sw-vocab-status/ns#",
+            //     "defines": { "@reverse": "rdfs:isDefinedBy" },
+            //     "comment": "rdfs:comment",
+            //     "label": "rdfs:label",
+            //     "domain": { "@id": "rdfs:domain", "@type": "@id" },
+            //     "range": { "@id": "rdfs:range", "@type": "@id" },
+            //     "subClassOf": { "@id": "rdfs:subClassOf", "@type": "@id", "@container": "@set" },
+            //     "subPropertyOf": { "@id": "rdfs:subPropertyOf", "@type": "@id", "@container": "@set" },
+            //     "seeAlso": { "@id": "rdfs:seeAlso", "@type": "@id" },
+            //     "status": "vs:term_status"
+            // };
+            $rootScope.$storage.capabilitiesForProfile.push(cap);
+            // // compact a document according to a particular context
+            // // see: http://json-ld.org/spec/latest/json-ld/#compacted-document-form
+            // jsonld.compact(doc, context, function(err, compacted) {
+            //     console.log(compacted);
+            //     console.log(JSON.stringify(compacted, null, 2));
+            // });
             
-            DeviceFactory.addCapability($scope.id,cap).then(function(){
-                $scope.capabilities.push(cap);
-                ngToast.create("Capability added.");
-            }, function(msg){
+            // DeviceFactory.addCapability($scope.id,cap).then(function(){
+            //     $scope.capabilities.push(cap);
+            //     ngToast.create("Capability added.");
+            // }, function(msg){
 
                 //error
-                ngToast.create({
-                    content: "Unable to add capability : "+msg,
-                    className: "danger"
-                }); 
-            });
+            //    ngToast.create({
+            //        content: "Unable to add capability : "+msg,
+            //        className: "danger"
+            //    }); 
+            //});
             $scope.newCapability = {}; 
         }
     }
