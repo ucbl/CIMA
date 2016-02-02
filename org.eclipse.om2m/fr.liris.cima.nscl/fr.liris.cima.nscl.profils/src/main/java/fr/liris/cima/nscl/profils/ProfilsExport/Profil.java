@@ -1,4 +1,4 @@
-package ProfilsExport;
+package fr.liris.cima.nscl.profils.profilsExport;
 
 
 import fr.liris.cima.nscl.mongodao.persistance.Persistable;

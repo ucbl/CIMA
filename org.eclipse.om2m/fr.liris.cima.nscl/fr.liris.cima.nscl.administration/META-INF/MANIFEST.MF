@@ -19,4 +19,5 @@ Bundle-ClassPath: .
 Export-Package: fr.liris.cima.nscl.administration
 Import-Package: fr.liris.cima.comm.protocol,
  org.eclipse.om2m.commons.resource,
- org.eclipse.om2m.commons.rest
+ org.eclipse.om2m.commons.rest,
+ fr.liris.cima.nscl.profils.profilsExport

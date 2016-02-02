@@ -1,14 +1,13 @@
 package fr.liris.cima.nscl.profils;
 
-import ProfilsExport.Profil;
-import ProfilsExport.ProfilManagerInterface;
+import fr.liris.cima.nscl.profils.profilsExport.Profil;
+import fr.liris.cima.nscl.profils.profilsExport.ProfilManagerInterface;
 
 import java.io.IOException;
 import java.util.List;
 
 
 import fr.liris.cima.nscl.mongodao.persistance.MongoDaoInterface;
-import ProfilsExport.Profil;
 
 
 /**

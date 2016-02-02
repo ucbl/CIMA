@@ -1,7 +1,5 @@
 package fr.liris.cima.nscl.profils;
 
-import ProfilsExport.Profil;
-import ProfilsExport.ProfilManagerInterface;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -11,7 +9,9 @@ import org.osgi.framework.ServiceReference;
 
 import fr.liris.cima.nscl.mongodao.persistance.MongoDaoInterface;
 
-import ProfilsExport.Profil;
+import fr.liris.cima.nscl.profils.profilsExport.Profil;
+
+import fr.liris.cima.nscl.profils.profilsExport.ProfilManagerInterface;
 
 public class Activator implements BundleActivator {
 

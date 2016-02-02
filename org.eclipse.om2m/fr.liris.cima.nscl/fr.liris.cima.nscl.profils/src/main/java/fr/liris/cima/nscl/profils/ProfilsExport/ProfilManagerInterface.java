@@ -1,4 +1,4 @@
-package ProfilsExport;
+package fr.liris.cima.nscl.profils.profilsExport;
 
 import java.util.List;
 

@@ -18,6 +18,9 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.service.log.*;
 import org.osgi.framework.FrameworkUtil;
 
+import fr.liris.cima.nscl.profils.profilsExport.ProfilManagerInterface;
+import fr.liris.cima.nscl.profils.profilsExport.Profil;
+
 public class AdministrationServer implements IpuService{
 	private static Log LOGGER = LogFactory.getLog(AdministrationServer.class);
 
@@ -103,6 +106,16 @@ public class AdministrationServer implements IpuService{
 				resp = restClientService.sendRequest(requestIndication);
 				resp.setRepresentation(Parser.parseObixToJSONStringCapabilities(resp.getRepresentation()));
 				return resp;
+			case "profile" :
+
+
+
+				ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfilManagerInterface.class.getName(), null);
+				st.open();
+				ProfilManagerInterface pf = (ProfilManagerInterface) st.getService();
+
+
+				return new ResponseConfirm(StatusCode.STATUS_OK, pf.getAllProfils().toString());
 			}
 
 		} else if(tID.length == 6){
