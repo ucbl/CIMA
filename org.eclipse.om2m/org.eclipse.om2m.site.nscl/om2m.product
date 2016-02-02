@@ -34,7 +34,6 @@
 
 
    <plugins>
-      
       <plugin id="javax.servlet"/>
       <plugin id="javax.xml"/>
       <plugin id="org.apache.commons.codec"/>
@@ -62,13 +61,16 @@
       <plugin id="org.eclipse.om2m.core.service"/>
       <plugin id="org.eclipse.om2m.webapp.resourcesbrowser"/>
       <plugin id="org.eclipse.osgi"/>
-      <plugin id="org.eclipse.osgi.services"/><plugin id="fr.liris.cima.comm.http"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="fr.liris.cima.comm.http"/>
       <plugin id="fr.liris.cima.nscl.avatarbuilder"/>
       <plugin id="fr.liris.cima.nscl.commons"/>
       <plugin id="fr.liris.cima.nscl.core"/>
       <plugin id="fr.liris.cima.nscl.administration"/>
       <plugin id="fr.liris.cima.nscl.device.service"/>
       <plugin id="fr.liris.cima.nscl.mgmtdevice"/>
+      <plugin id="fr.liris.cima.nscl.mongodao"/>
+      <plugin id="fr.liris.cima.nscl.profils"/>
    </plugins>
 
    <configurations>
@@ -86,6 +88,11 @@
       <plugin id="fr.liris.cima.nscl.core" autoStart="true" startLevel="5" />
       <plugin id="fr.liris.cima.nscl.administration" autoStart="true" startLevel="5" />
       <plugin id="fr.liris.cima.nscl.mgmtdevice" autoStart="true" startLevel="4" />
+      <plugin id="fr.liris.cima.nscl.mongodao" autoStart="true" startLevel="2" />
+      <plugin id="fr.liris.cima.nscl.profils" autoStart="true" startLevel="3" />
+      <property name="fr.liris.cima.nscl.mongodao.host" value="127.0.0.1" />
+      <property name="fr.liris.cima.nscl.mongodao.port" value="8888" />
+      <property name="fr.liris.cima.nscl.mongodao.dbname" value="cimadb" />
       <property name="org.eclipse.equinox.http.jetty.http.port" value="8080" />
       <property name="org.eclipse.om2m.adminRequestingEntity" value="admin:admin" />
       <property name="org.eclipse.om2m.coap.port" value="5683" />

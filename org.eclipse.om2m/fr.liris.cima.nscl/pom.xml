@@ -32,6 +32,8 @@
 		<module>fr.liris.cima.nscl.administration</module>
 		<module>fr.liris.cima.nscl.mgmtdevice</module>
 		<module>fr.liris.cima.nscl.core</module>
+		<module>fr.liris.cima.nscl.mongodao</module>
+		<module>fr.liris.cima.nscl.profils</module>
 	</modules>
 
 </project>
