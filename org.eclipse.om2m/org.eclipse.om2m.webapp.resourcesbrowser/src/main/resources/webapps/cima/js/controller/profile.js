@@ -40,7 +40,7 @@ app.controller('AddProfileController', ['$scope', '$rootScope', 'ProfileService'
     $scope.add = function() {
         console.log($scope.profile);
         if ($scope.profile.name && $scope.profile.description) {
-           
+            $scope.profile.capabilities = JSON.stringify($scope.profile.capabilities);
             //$location.path('/profile');
             ProfileService.add($scope.profile).then(
                 function(results) {
@@ -190,6 +190,7 @@ app.controller('EditProfileController', ['$scope', '$rootScope', 'ProfileService
     $scope.edit = function() {
         if ($scope.profile.name && $scope.profile.description) {
             console.log($scope.profile);
+            $scope.profile.capabilities = JSON.stringify($scope.profile.capabilities);
             //$location.path('/profile');
             ProfileService.edit($scope.profile).then(
                 function(results) {
