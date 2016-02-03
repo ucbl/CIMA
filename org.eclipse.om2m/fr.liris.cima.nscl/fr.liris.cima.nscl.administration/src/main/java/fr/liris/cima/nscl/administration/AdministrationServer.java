@@ -190,9 +190,9 @@ public class AdministrationServer implements IpuService{
 			ProfilManagerInterface pf = (ProfilManagerInterface) st.getService();
 			boolean b = pf.deleteProfilFromSimpleJson(payload);
 			if(b)
-				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"message\" : \"Profile deleted succesfully.}\"" );
+				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"message\" : \"Profile deleted succesfully.\"}" );
 			else
-				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"message\" : \"Error during profile deleting.}\"" );
+				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"error\" : \"Error during profile deleting.\"}" );
 
 		}
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" ressource not found"));

@@ -8,6 +8,11 @@ import java.util.UUID;
  */
 public class PersistableData {
 
+    public PersistableData(String _id, String _etag) {
+        this._id = _id;
+        this._etag = _etag;
+    }
+
     public String get_id() {
         return _id;
     }
