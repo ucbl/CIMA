@@ -304,9 +304,9 @@
       <div class="modal-body" id="listProfilesBody">
         <div class="row">
             <div class="list-group col-md-2">
-                <a href="" ng-click="loadCapabilitiesBy(profile)" class="list-group-item" ng-repeat="profile in profiles" ng-bind-template="{{profile.name}}"></a>
+                 <a href ng-click="loadCapabilitiesBy(profile)" ng-dblClick="applyProfile()" class="list-group-item" ng-repeat="profile in profiles" ng-bind-template="{{profile.name}}" ng-class="{active: profile.isActive}"></a>`
             </div>
-            <div class="col-md-10">
+            <div class="col-md-4">
 
                 <table st-table="devices" class="table table-striped" style="width: 40%">
                     <thead>
@@ -342,9 +342,9 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
-
-
+                </table> 
+            </div>
+            <div class="col-md-6">
                 <!-- SHOW CAPACBILITY -->
                 <div class="panel panel-warning col-sm-12 col-md-12 col-lg-12" id="edit" ng-show="ShowIsOpen">
                     <div class="panel-heading col-sm-12 col-md-12 col-lg-12">
@@ -484,15 +484,16 @@
                     </div>
                 </div>
             </div>
-
             <!-- </div> -->
         </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" ng-click="applyProfile()" data-dismiss="modal">Apply</button>
+            <!-- <button type="button" class="btn btn-primary" ng-if="editedCapability.params.length > 0" ng-click="testCapability(editedCapability)">Test</button> -->
+            <!-- <button type="button" class="btn btn-primary" ng-if="editedCapability.idCapability.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button> -->
+        </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <!-- <button type="button" class="btn btn-primary" ng-if="editedCapability.params.length > 0" ng-click="testCapability(editedCapability)">Test</button> -->
-        <!-- <button type="button" class="btn btn-primary" ng-if="editedCapability.idCapability.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button> -->
-      </div>
+      
     </div>
   </div>
 </div>
