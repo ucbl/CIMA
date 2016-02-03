@@ -202,6 +202,7 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
             //        className: "danger"
             //    }); 
             //});
+            ngToast.create("Capability created.");
             $scope.newCapability = {}; 
         }
     }
