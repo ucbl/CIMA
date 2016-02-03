@@ -171,6 +171,7 @@ public class AdministrationServer implements IpuService{
 	public ResponseConfirm doDelete(RequestIndication requestIndication) {
 		String [] tID = requestIndication.getTargetID().split("/");
 
+		String payload = requestIndication.getRepresentation();
 		ResponseConfirm resp = null;
 		requestIndication.setBase("127.0.0.1:8181/");
 		requestIndication.setRepresentation("");
@@ -180,6 +181,19 @@ public class AdministrationServer implements IpuService{
 			resp = restClientService.sendRequest(requestIndication);
 			return resp;
 //			return new ResponseConfirm(StatusCode.STATUS_OK, "ressource " + tID[7] + " deleted");
+		}
+		else if(tID.length == 5)
+		{
+			// nscl/applications/CIMA/administration/login
+			ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfilManagerInterface.class.getName(), null);
+			st.open();
+			ProfilManagerInterface pf = (ProfilManagerInterface) st.getService();
+			boolean b = pf.deleteProfilFromSimpleJson(payload);
+			if(b)
+				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"message\" : \"Profile deleted succesfully.}\"" );
+			else
+				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"message\" : \"Error during profile deleting.}\"" );
+
 		}
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" ressource not found"));
 	}
