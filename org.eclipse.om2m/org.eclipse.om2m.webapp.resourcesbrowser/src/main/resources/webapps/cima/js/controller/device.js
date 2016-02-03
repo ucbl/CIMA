@@ -41,7 +41,7 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
             angular.forEach($scope.capabilitiesFromProfile, function(value, key) {
                 if(value.configuration == 'automatic'){
                     value.isEditable = false;
-                }else{
+                } else {
                     value.isEditable = true;
                 }
             });
@@ -136,7 +136,7 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         console.log('I am in addCapability');
         if(newCapability.id !=null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null)
         {           
-            console.log(newCapability.protocol.parameters);
+            console.log(newCapability);
             var cap = {};
             cap.id = newCapability.id;
             cap.protocol = {};

@@ -23,7 +23,7 @@ app.controller('ProfileController', ['$scope', 'ProfileService', '$rootScope', f
             ProfileService.delete(deletingProfile.persistibleData).then(function(results) {
                 jQuery('.modal').modal('toggle');
 
-                //$scope.errors = results && results.errors;
+                $scope.error = results && results.error;
                 $scope.message = results && results.message;
 
                 if ($scope.message) {
@@ -71,8 +71,9 @@ app.controller('AddProfileController', ['$scope', '$rootScope', 'ProfileService'
             $scope.profile.capabilities.push(capability);
         } else {
             for (var key in $scope.profile.capabilities) {
-                if (!$scope.profile.capabilities[key].isActive) {
+                if ($scope.profile.capabilities[key].id == capability.id) {
                     $scope.profile.capabilities.splice(key, 1);
+                    break;
                 }
             }
             
@@ -81,11 +82,19 @@ app.controller('AddProfileController', ['$scope', '$rootScope', 'ProfileService'
     };
 
     $scope.add = function() {
-        console.log($scope.profile);
-        if ($scope.profile.name && $scope.profile.description) {
-            $scope.profile.capabilities = JSON.stringify($scope.profile.capabilities);
+        var profile = angular.copy($scope.profile);
+        angular.forEach(profile.capabilities, function(value, key) {
+            delete value.$$hashKey;
+            delete value.isActive;
+        });
+        console.log(profile);
+        if (profile.name && profile.description) {
+            if (profile.capabilities) {
+                profile.capabilities = JSON.stringify(profile.capabilities);
+            }
+            console.log($scope.profile.capabilities);
             //$location.path('/profile');
-            ProfileService.add($scope.profile).then(
+            ProfileService.add(profile).then(
                 function(results) {
                      if (!results.errors)
                         $location.path('/profile');
@@ -153,11 +162,17 @@ app.controller('EditProfileController', ['$scope', '$rootScope', 'ProfileService
     };
 
     $scope.edit = function() {
-        if ($scope.profile.name && $scope.profile.description) {
-            console.log($scope.profile);
-            $scope.profile.capabilities = JSON.stringify($scope.profile.capabilities);
+        var profile = angular.copy($scope.profile);
+        angular.forEach(profile.capabilities, function(value, key) {
+            delete value.$$hashKey;
+            delete value.isActive;
+        });
+        if (profile.name && profile.description) {
+            if (profile.capabilities) {
+                profile.capabilities = JSON.stringify($scope.profile.capabilities);
+            }
             //$location.path('/profile');
-            ProfileService.edit($scope.profile).then(
+            ProfileService.edit(profile).then(
                 function(results) {
                     if (!results.errors) {
                         $location.path('/profile');

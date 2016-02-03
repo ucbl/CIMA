@@ -28,12 +28,13 @@
     </ul>
 </div> -->
 <div class="alert alert-success" ng-if="message.length" ng-bind-template="{{message}}"></div>
+<div class="alert alert-error" ng-if="error.length" ng-bind-template="{{error}}"></div>
 <table class="table table-hover">
     <thead>
         <tr>
-            <td><a href="" ng-click="reverse('_id')">#</a></td>
-            <td><a href="" ng-click="reverse('name')">Name</a></td>
-            <td><a href="" ng-click="reverse('description')">Description</a></td>
+            <td>#</td>
+            <td>Name</td>
+            <td>Description</td>
             <td>Options</td>
         </tr>
     </thead>
