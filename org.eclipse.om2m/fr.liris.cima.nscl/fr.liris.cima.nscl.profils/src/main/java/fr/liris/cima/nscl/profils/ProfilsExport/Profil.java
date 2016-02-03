@@ -23,6 +23,8 @@ public class Profil implements Persistable {
         persistibleData = new PersistableData();
     }
 
+    public Profil(){}
+
     public String getName() {
         return name;
     }

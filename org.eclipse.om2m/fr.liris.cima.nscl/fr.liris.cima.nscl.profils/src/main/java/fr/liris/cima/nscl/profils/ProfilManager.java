@@ -108,8 +108,22 @@ public class ProfilManager implements ProfilManagerInterface {
 
         //{"_id":"fghjklmjhgf","_etag":"fygjlkmlklkhjgf"}
 
-        //TODO
-        return false;
+        JsonElement jelement = new JsonParser().parse(json);
+        JsonObject  jobject = jelement.getAsJsonObject();
+        String id = jobject.get("_id").toString();
+        id = id.replace("\"", "");
+        String etag = jobject.get("_etag").toString();
+        etag = etag.replace("\"", "");
+
+        Profil p = new Profil();
+        p.setPersistableData(new PersistableData(id, etag));
+
+        try {
+            return mongoDaoInterface.delete(p);
+        }catch(IOException i){
+            i.printStackTrace();
+            return false;
+        }
 
     }
 
