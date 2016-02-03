@@ -6,8 +6,6 @@ syntax: glob
 .hgignore~
 target/
 *~
-images/*
-*.png
 .gitignore
 .idea
 .DS_Store

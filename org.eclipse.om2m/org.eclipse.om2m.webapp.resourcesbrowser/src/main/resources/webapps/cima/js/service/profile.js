@@ -4,7 +4,11 @@ app.factory('ProfileService', ['$q', '$http', function($q, $http) {
     this.list = function() {
         var deferred = $q.defer();
         $http.get(URL_PROFILE).then(function(results) { //URL_PROFILE 'http://localhost:4040/angular-project/api/cima/robot/capabilitiesjson'
-            deferred.resolve(results.data);
+            var data = angular.copy(results.data);
+            for (var key in data) {
+                data[key].capabilities = JSON.parse(data[key].capabilities);
+            }
+            deferred.resolve(data);
         });
         // $http.get('http://localhost:4040/angular-project/api/cima/robot/capabilitiesjson').then(function(results) { //URL_PROFILE 
         //     deferred.resolve(results.data);
