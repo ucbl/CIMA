@@ -3,7 +3,6 @@ var URL_DEVICE_CONTEXT = '/om2m/nscl/applications/CIMA/administration/device/con
 var URL_DEVICE_CAPABILITY = '/om2m/nscl/applications/CIMA/administration/device/capability';
 var URL_PROFILE = '/om2m/nscl/applications/CIMA/administration/profile';
 
-
 var URL_LOGIN = '/om2m/nscl/applications/CIMA/administration/login';
 var URL_DEVICE = '/om2m/nscl/applications/CIMA/administration/device';
 //var URL_DEVICE = 'json/newformatdevices.json';

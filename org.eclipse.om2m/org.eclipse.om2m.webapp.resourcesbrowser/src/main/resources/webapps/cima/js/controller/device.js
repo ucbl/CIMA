@@ -15,14 +15,18 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
     $scope.isResponseSensor = false;
     $scope.responseSensors = [];
     $scope.isLoading = false;
-
+    $scope.activeProfile = {};
     $scope.loadProfileList = function() {
         if (!$scope.profiles) {
             ProfileService.list().then(function(results) {
                 $scope.profiles = results;
             });
         }
-        
+    };
+
+    $scope.applyProfile = function() {
+        $('#listProfilesModal').modal('hide');
+        angular.copy($scope.activeProfile.capabilities, $scope.capabilities);
     };
 
     $scope.loadCapabilitiesBy = function(profile) {
@@ -44,19 +48,6 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         } 
     };
 
-    $scope.loadCapabilitiesBy = function(profile) {
-        $scope.capabilitiesFromProfile = profile.capabilities;
-        if ($scope.capabilitiesFromProfile){
-            // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
-            angular.forEach($scope.capabilitiesFromProfile, function(value, key) {
-                if(value.configuration == 'automatic'){
-                    value.isEditable = false;
-                }else{
-                    value.isEditable = true;
-                }
-            });
-        } 
-    };
 
     /*retrieve information about the device and add them to the view*/
     DeviceFactory.get($routeParams.id).then(function(device){
@@ -75,7 +66,7 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         $scope.configuration = device.configuration;
         $scope.keywords = device.keywords; 
         $scope.portforwarding = (typeof(device.portforwarding) !== "undefined") ? device.portforwarding : "Not available";
-        //$scope.capabilities = [];
+        $scope.capabilities = [];
         $scope.capabilities = device.capabilities;
         if(device.configuration == 'automatic'){
             $scope.isDeviceNameEditable = false;
