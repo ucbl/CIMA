@@ -17,7 +17,7 @@ public interface ProfilManagerInterface {
     void updateProfilFromJson(String json);
 
     boolean deleteProfil(Profil p);
-    boolean deleteProfilFromJson(String json);
+    boolean deleteProfilFromSimpleJson(String json);
 
     Profil profilFromJson(String json);
     String jsonFromProfil(Profil p);

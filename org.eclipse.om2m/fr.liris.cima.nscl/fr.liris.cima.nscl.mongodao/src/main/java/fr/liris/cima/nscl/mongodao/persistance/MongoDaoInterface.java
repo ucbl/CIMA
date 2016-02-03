@@ -24,6 +24,8 @@ public interface MongoDaoInterface {
 
     public <T> List<T> getAll(T object) throws ClassNotFoundException;
 
+    public boolean delete(Persistable p) throws IOException;
+
 
 
 

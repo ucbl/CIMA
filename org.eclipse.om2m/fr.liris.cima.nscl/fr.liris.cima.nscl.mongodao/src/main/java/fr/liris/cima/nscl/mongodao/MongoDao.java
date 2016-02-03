@@ -51,7 +51,48 @@ public class MongoDao implements MongoDaoInterface {
         }
 
 
-        /**
+    /**
+     * Delete object
+     */
+    public boolean delete(Persistable p) throws IOException {
+
+        String url = "http://"+host+":"+port+"/"+database+"/"+this.getCollecNameByClassName(p)+"/"+p.getPersistableData().get_id();
+
+        //sending to database
+
+        try {
+
+
+            URL obj = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
+
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("If-Match",p.getPersistableData().get_etag()); //important to delete !
+            conn.setDoOutput(true);
+
+            conn.setRequestMethod("DELETE");
+
+
+            try {
+                //restheart normally give no result
+                new InputStreamReader(conn.getInputStream());
+            }catch (FileNotFoundException f){
+                f.printStackTrace();
+            }
+
+
+            return conn.getResponseCode() == 204;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+
+    }
+
+
+    /**
          * Persist an object if this object is not perisited yet ...
          * AND ONLY IN THIS CASE
          * @param o : the object that is wanted to be persist
@@ -105,6 +146,8 @@ public class MongoDao implements MongoDaoInterface {
             //add the etag
             String etag = this.getEtagFromId(this.getCollecNameByClassName(o), o.getPersistableData().get_id());
             o.getPersistableData().set_etag(etag);
+
+            this.save(o);
 
 
         }

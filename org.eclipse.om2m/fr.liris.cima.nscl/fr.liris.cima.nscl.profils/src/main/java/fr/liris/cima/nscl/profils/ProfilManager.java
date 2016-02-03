@@ -42,12 +42,16 @@ public class ProfilManager implements ProfilManagerInterface {
 
     @Override
     public String getAllProfilsToJson() {
+
+        Gson gson = new Gson();
         List<Profil> lp = this.getAllProfils();
         String res = "[";
-        for(Profil p : lp)
-            res+= p.toJson() + ", ";
-        res = res.substring(0, res.length() - 2);
-        res += "]";
+        for(Profil p : lp) {
+            res += gson.toJson(p);
+            res += ", ";
+        }
+        res = res.substring(0, res.length() - 3);
+        res += "}";
         return res;
     }
 
@@ -91,12 +95,22 @@ public class ProfilManager implements ProfilManagerInterface {
 
     @Override
     public boolean deleteProfil(Profil p) {
-        return false;//TODO
+        try {
+            return mongoDaoInterface.delete(p);
+        }catch(IOException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
-    public boolean deleteProfilFromJson(String json) {
-        return this.deleteProfil(this.profilFromJson(json));
+    public boolean deleteProfilFromSimpleJson(String json) {
+
+        //{"_id":"fghjklmjhgf","_etag":"fygjlkmlklkhjgf"}
+
+        //TODO
+        return false;
+
     }
 
     @Override

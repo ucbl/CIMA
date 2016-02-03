@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,7 +41,7 @@ public class PortForwardingProcessLauncher extends Thread
         Process process = null;
 
         //Start the program
-        try {process = Runtime.getRuntime().exec("/CIMA/PortForwarding/PortForwarding 127.0.0.1 "+ this.address+" "+this.objectPort+" "+this.deviceId);
+        try {process = Runtime.getRuntime().exec("/CIMA/PortForwarding/PortForwarding 127.0.0.1 "+ this.address+" "+this.objectPort);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Could not execute program to create a new port forwarding." + e);
         }
