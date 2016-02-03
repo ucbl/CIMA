@@ -10,3 +10,5 @@ Import-Package: org.osgi.framework,
  org.osgi.util.tracker;version="1.5.1",
   fr.liris.cima.nscl.mongodao.persistance
 Bundle-Activator: fr.liris.cima.nscl.profils.Activator
+Bundle-ClassPath: .,
+ libs/gson-2.5.jar

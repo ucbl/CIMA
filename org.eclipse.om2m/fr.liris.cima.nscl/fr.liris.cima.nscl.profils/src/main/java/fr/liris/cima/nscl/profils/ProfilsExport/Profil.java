@@ -54,6 +54,9 @@ public class Profil implements Persistable {
         persistibleData = p;
     }
 
+    public String toJson(){
+        return "{ \"_id\" : \""+this.persistibleData.get_id()+"\", \"name\" : \""+this.name+"\", \"description\" : \""+this.description+"\", \"capabilities\" : \""+this.jsonCapabilities+"\" }";
+    }
 
     public String toStringPersistance(){
         return "Profil : {\n" +

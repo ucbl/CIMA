@@ -108,14 +108,18 @@ public class AdministrationServer implements IpuService{
 				return resp;
 			case "profile" :
 
-
-
 				ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfilManagerInterface.class.getName(), null);
 				st.open();
 				ProfilManagerInterface pf = (ProfilManagerInterface) st.getService();
 
+				List<Profil> lp = pf.getAllProfils();
+				String res = "[";
+				for(Profil p : lp)
+					res+= p.toJson() + ", ";
+				res = res.substring(0, res.length() - 2);
+				res += "]";
 
-				return new ResponseConfirm(StatusCode.STATUS_OK, pf.getAllProfils().toString());
+				return new ResponseConfirm(StatusCode.STATUS_OK, res );
 			}
 
 		} else if(tID.length == 6){

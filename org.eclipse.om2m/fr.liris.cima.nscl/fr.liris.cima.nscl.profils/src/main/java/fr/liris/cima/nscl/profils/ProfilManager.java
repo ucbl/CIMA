@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.List;
 
 
+import com.google.gson.*;
+
 import fr.liris.cima.nscl.mongodao.persistance.MongoDaoInterface;
 
 
@@ -38,6 +40,17 @@ public class ProfilManager implements ProfilManagerInterface {
     }
 
     @Override
+    public String getAllProfilsToJson() {
+        List<Profil> lp = this.getAllProfils();
+        String res = "[";
+        for(Profil p : lp)
+            res+= p.toJson() + ", ";
+        res = res.substring(0, res.length() - 2);
+        res += "]";
+        return res;
+    }
+
+    @Override
     public Profil saveNewProfil(Profil p) {
         try {
             mongoDaoInterface.persist(p);
@@ -54,6 +67,11 @@ public class ProfilManager implements ProfilManagerInterface {
     }
 
     @Override
+    public String saveNewProfilFromJson(String json) {
+        return this.jsonFromProfil(this.saveNewProfil(this.profilFromJson(json)));
+    }
+
+    @Override
     public void updateProfil(Profil p) {
         try {
             mongoDaoInterface.save(p);
@@ -64,8 +82,28 @@ public class ProfilManager implements ProfilManagerInterface {
     }
 
     @Override
+    public void updateProfilFromJson(String json) {
+        this.updateProfil(this.profilFromJson(json));
+    }
+
+    @Override
     public boolean deleteProfil(Profil p) {
         return false;//TODO
+    }
+
+    @Override
+    public boolean deleteProfilFromJson(String json) {
+        return this.deleteProfil(this.profilFromJson(json));
+    }
+
+    @Override
+    public Profil profilFromJson(String json) {
+        return (Profil) new Gson().fromJson(json, Profil.class);
+    }
+
+    @Override
+    public String jsonFromProfil(Profil p) {
+        return p.toJson();
     }
 
 }
