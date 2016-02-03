@@ -2,6 +2,7 @@ package fr.liris.cima.nscl.profils;
 
 import fr.liris.cima.nscl.profils.profilsExport.Profil;
 import fr.liris.cima.nscl.profils.profilsExport.ProfilManagerInterface;
+import fr.liris.cima.nscl.mongodao.persistance.PersistableData;
 
 import java.io.IOException;
 import java.util.List;
@@ -53,14 +54,16 @@ public class ProfilManager implements ProfilManagerInterface {
     @Override
     public Profil saveNewProfil(Profil p) {
         try {
+            //added to make persistable profiles from the interface that have not PersistableData from constructor
+            p.setPersistableData(new PersistableData());
             mongoDaoInterface.persist(p);
             return p; //to show that p was modified
         }catch(IOException i){
-            System.out.println("Error : impossible d'enregistrer l'objet en mémoire : " + p.toStringPersistance());
+            System.out.println("Error : impossible d'enregistrer l'objet en mémoire : " );
             i.printStackTrace();
             return null;
         }catch(Exception e){
-            System.out.println("Error : impossible d'enregistrer l'objet en mémoire : " + p.toStringPersistance());
+            System.out.println("Error : impossible d'enregistrer l'objet en mémoire : " );
             e.printStackTrace();
             return null;
         }
