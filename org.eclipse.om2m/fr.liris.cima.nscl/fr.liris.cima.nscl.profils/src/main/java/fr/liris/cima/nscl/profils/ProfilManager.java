@@ -51,7 +51,7 @@ public class ProfilManager implements ProfilManagerInterface {
             res += ", ";
         }
         res = res.substring(0, res.length() - 3);
-        res += "}";
+        res += "]";
         return res;
     }
 
