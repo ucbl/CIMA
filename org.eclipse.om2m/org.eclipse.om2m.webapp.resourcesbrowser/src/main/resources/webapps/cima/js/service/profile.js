@@ -1,12 +1,15 @@
 'use strict';
 
+
 app.factory('ProfileService', ['$q', '$http', function($q, $http) {
     this.list = function() {
         var deferred = $q.defer();
         $http.get(URL_PROFILE).then(function(results) { //URL_PROFILE 'http://localhost:4040/angular-project/api/cima/robot/capabilitiesjson'
             var data = angular.copy(results.data);
             for (var key in data) {
-                data[key].capabilities = JSON.parse(data[key].capabilities);
+                var transFormedData = data[key].capabilities.substr(1, data[key].capabilities.length-2); // remove " at the 0 and the end position
+                console.log(transFormedData);
+                data[key].capabilities = JSON.parse(transFormedData);
             }
             deferred.resolve(data);
         });
