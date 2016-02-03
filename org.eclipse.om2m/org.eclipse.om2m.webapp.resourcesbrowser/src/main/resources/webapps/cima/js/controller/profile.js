@@ -1,10 +1,11 @@
 'use strict';
 
-app.controller('ProfileController', ['$scope', 'ProfileService', '$rootScope', function($scope, ProfileService, $rootScope) {
+app.controller('ProfileController', ['$scope', 'ProfileService', '$rootScope', '$log', function($scope, ProfileService, $rootScope, $log) {
     
     ProfileService.list().then(
         function(results) {
             $scope.profiles = results;
+            $log.log($scope.profiles);
             $rootScope.$storage.profiles = $scope.profiles;
         },
         function(errors) {
@@ -96,8 +97,10 @@ app.controller('AddProfileController', ['$scope', '$rootScope', 'ProfileService'
             //$location.path('/profile');
             ProfileService.add(profile).then(
                 function(results) {
-                     if (!results.errors)
-                        $location.path('/profile');
+                    if (results) {
+                        console.log("success");
+                        $location.path('/profile');    
+                    }
                 },
                 function(errors) {
 
@@ -171,6 +174,7 @@ app.controller('EditProfileController', ['$scope', '$rootScope', 'ProfileService
             if (profile.capabilities) {
                 profile.capabilities = JSON.stringify($scope.profile.capabilities);
             }
+            console.log(profile);
             //$location.path('/profile');
             ProfileService.edit(profile).then(
                 function(results) {
