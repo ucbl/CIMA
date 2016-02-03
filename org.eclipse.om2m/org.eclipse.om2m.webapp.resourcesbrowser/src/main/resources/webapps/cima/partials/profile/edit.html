@@ -16,7 +16,8 @@
     <div class="form-group">
         <label for="category">Capabilities</label>
         <div class="list-group" data-toggle="capabilities">
-            <a href class="list-group-item" ng-repeat="capability in capabilities" ng-click="chooseCapability(capability)" ng-bind-template="{{capability.id}}" ng-class="{active: capability.isActive}"></a>
+            <a href class="list-group-item" ng-repeat="capability in capabilities" ng-click="chooseCapability(capability)" ng-bind-template="{{capability.id}}" ng-class="{active: capability.isActive}">
+            </a>
         </div>
     </div>
     <button type="submit" class="btn btn-primary" ng-click="edit()">Edit</button>
