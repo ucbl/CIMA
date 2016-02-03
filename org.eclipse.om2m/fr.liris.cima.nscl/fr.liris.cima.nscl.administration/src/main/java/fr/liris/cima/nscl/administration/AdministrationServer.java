@@ -106,20 +106,11 @@ public class AdministrationServer implements IpuService{
 				resp = restClientService.sendRequest(requestIndication);
 				resp.setRepresentation(Parser.parseObixToJSONStringCapabilities(resp.getRepresentation()));
 				return resp;
-			case "profile" :
-
+			case "profile" ://nscl/applications/CIMA/administration/profile
 				ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfilManagerInterface.class.getName(), null);
 				st.open();
 				ProfilManagerInterface pf = (ProfilManagerInterface) st.getService();
-
-				List<Profil> lp = pf.getAllProfils();
-				String res = "[";
-				for(Profil p : lp)
-					res+= p.toJson() + ", ";
-				res = res.substring(0, res.length() - 2);
-				res += "]";
-
-				return new ResponseConfirm(StatusCode.STATUS_OK, res );
+				return new ResponseConfirm(StatusCode.STATUS_OK, pf.getAllProfilsToJson() );
 			}
 
 		} else if(tID.length == 6){
@@ -150,6 +141,7 @@ public class AdministrationServer implements IpuService{
 	@Override
 	// PUT
 	public ResponseConfirm doUpdate(RequestIndication requestIndication) {
+		System.out.println("DANS LE DO UPDATE");
 		String [] tID = requestIndication.getTargetID().split("/");
 		String body = requestIndication.getRepresentation();
 		ResponseConfirm resp = null;
@@ -211,9 +203,9 @@ public class AdministrationServer implements IpuService{
 
 
 
-		// nscl/applications/CIMA/administration/login
+
 		if(tID.length == 5){
-			if("login".equals(tID[4])) {
+			if("login".equals(tID[4])) { // nscl/applications/CIMA/administration/login
 				String recu = (String) requestIndication.getRepresentation();
 
 				recu = recu.replace("{", "").replace("}", "");
@@ -234,7 +226,18 @@ public class AdministrationServer implements IpuService{
 				//TODO: verifier username et mot de passe
 
 				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"username\":\""+username+"\", \"error\" : 0}");
+			}
+			else if("profile".equals(tID[4])) //nscl/applications/CIMA/administration/profile
+			{
 
+				System.out.println("DANS LE DO UPDATE BON IF");
+				ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfilManagerInterface.class.getName(), null);
+				st.open();
+				ProfilManagerInterface pf = (ProfilManagerInterface) st.getService();
+
+				String res = pf.saveNewProfilFromJson(requestIndication.getRepresentation());
+
+				return new ResponseConfirm(StatusCode.STATUS_OK, res );
 			}
 		}
 

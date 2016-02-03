@@ -11,7 +11,7 @@ public class Profil implements Persistable {
 
     String name, description;
 
-    String jsonCapabilities;
+    String capabilities;
 
     PersistableData persistibleData;
 
@@ -19,7 +19,7 @@ public class Profil implements Persistable {
     public Profil(String name, String description, String jsonCapabilities) {
         this.name = name;
         this.description = description;
-        this.jsonCapabilities = jsonCapabilities;
+        this.capabilities = jsonCapabilities;
         persistibleData = new PersistableData();
     }
 
@@ -40,11 +40,11 @@ public class Profil implements Persistable {
     }
 
     public String getJsonCapabilities() {
-        return jsonCapabilities;
+        return capabilities;
     }
 
     public void setJsonCapabilities(String jsonCapabilities) {
-        this.jsonCapabilities = jsonCapabilities;
+        this.capabilities = jsonCapabilities;
     }
 
     public PersistableData getPersistableData(){
@@ -55,7 +55,16 @@ public class Profil implements Persistable {
     }
 
     public String toJson(){
-        return "{ \"_id\" : \""+this.persistibleData.get_id()+"\", \"name\" : \""+this.name+"\", \"description\" : \""+this.description+"\", \"capabilities\" : \""+this.jsonCapabilities+"\" }";
+        return "{ \"_id\" : \""+this.persistibleData.get_id()+"\", \"name\" : \""+this.name+"\", \"description\" : \""+this.description+"\", \"capabilities\" : \""+this.capabilities+"\" }";
+    }
+
+    @Override
+    public String toString() {
+        return "Profil{" +
+                "jsonCapabilities='" + capabilities + '\'' +
+                ", description='" + description + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 
     public String toStringPersistance(){
