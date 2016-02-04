@@ -55,4 +55,77 @@
     </tbody>
 </table>
 <a class="btn btn-primary" ng-href="#/profile/add"><span class="glyphicon glyphicon-plus"></span>Add</a>
+
+<div class="addCapability panel panel-info col-sm-12 col-md-12 col-lg-12">
+    <div class="panel-heading col-sm-12 col-md-12 col-lg-12">
+        <h2 class="panel-title col-sm-12 col-md-12 col-lg-12">Add a capability</h2>
+    </div>
+    <div class="panel-body col-sm-12 col-md-12 col-lg-12">               
+        <accordion>
+            <accordion-group>
+                <accordion-heading>
+                    From existing one
+                </accordion-heading>                
+                <!-- From Existing -->
+                <input type="text" ng-model="NewFromExistingCapability" placeholder="search for a capability..." typeahead="capability as capability.id for capability in getCapability($viewValue) | filter:{id:$viewValue}" typeahead-loading="loadingCapabilities" typeahead-on-select="onSelectCapability($item, $model, $label)" class="form-control" />
+                <i ng-show="loadingCapabilities" class="glyphicon glyphicon-refresh"></i>
+                <!--<pre>Model: {{NewFromExistingCapability | json}}</pre>-->
+                <form name = "addFromExisting" ng-submit="addCapabilityFromExisting(NewFromExistingCapability)" ng-show="(NewFromExistingCapability != '' && NewFromExistingCapability != null)">
+                    <strong>ID</strong><span class=" btn-danger" ng-show="idrequired">You must specify a new ID !</span>
+
+                    <input name="id" class="form-control" style="width: 40%" type="text" placeholder="Type an ID... (Required)" ng-model="NewFromExistingCapability.id" id required>
+
+                    <strong>Protocol </strong>
+                    <select class="form-control" ng-model="NewFromExistingCapability.protocol"
+                            ng-options="protocol.protocolName for protocol in protocolsFromExisting" ng-required="true">
+                    </select>
+                    <li ng-repeat="parameter in NewFromExistingCapability.protocol.parameters">
+                        {{parameter.name}}:
+                        <input class="form-control"  type="text" ng-model="parameter.value">
+                    </li>
+                    <br>
+                     <strong>Keywords </strong>
+                     <tags-input ng-model="tags"></tags-input>                   
+                     <!-- Reset capability button -->
+                    <button ng-click="NewFromExistingCapability='';tags=null" type="button" class="btn btn-primary pull-left" >Reset</button>
+                     <!-- Add capability button -->
+                    <button style="margin-left:5px" class="btn btn-success pull-right" type="submit" >Add</button>
+                    <!-- Test capability button -->
+                    <button ng-click="testCapability(NewFromExistingCapability)" type="button" class="btn btn-primary pull-right">Test</button>
+                </form>
+            </accordion-group>
+
+            <accordion-group>
+                <accordion-heading>
+                New one
+                <!--Create a new capability-->
+                </accordion-heading>
+                <form ng-submit="addCapability(newCapability)">
+                    <strong>ID</strong>
+                    <input class="form-control" style="width: 40%" type="text" placeholder="Type an ID... (Required)" ng-model="newCapability.id" required>
+                    <strong>Protocol </strong>
+                    <select class="form-control" ng-model="newCapability.protocol"
+                            ng-options="protocol.protocolName for protocol in protocols" required>
+                        <option value="">-- Choose protocol --</option>
+                    </select>
+                    <li ng-repeat="parameter in newCapability.protocol.parameters">
+                        {{parameter.name}}:
+                        <input class="form-control" style="width: 40%" type="text" ng-model="parameter.value">
+                    </li>
+                    <br>        
+
+                     <strong>Keywords </strong>
+                     <tags-input ng-model="tags"></tags-input> 
+                     <br>                
+                     <!-- Reset capability button -->
+                    <button ng-click="newCapability={};tags=null" type="button" class="btn btn-primary pull-left">Reset</button> 
+                     <!-- Add capability button -->
+                    <input style="margin-left:5px" class="btn btn-success pull-right" type="submit" value="Add"/>
+                     <!-- Test capability button -->
+                    <!-- <button ng-click="testCapability(newCapability)" type="button" class="btn btn-primary pull-right">Test</button> -->
+                </form>
+            </accordion-group>
+        </ubi-accordion>
+    </div> 
+</div> 
 <!-- <div ng-if="pagination" ng-bind-html="pagination" class="text-center"></div> -->

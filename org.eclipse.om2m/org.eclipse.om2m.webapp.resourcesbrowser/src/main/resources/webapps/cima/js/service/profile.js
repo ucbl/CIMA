@@ -6,9 +6,7 @@ app.factory('ProfileService', ['$q', '$http', function($q, $http) {
         $http.get(URL_PROFILE).then(function(results) { //URL_PROFILE 
             var data = angular.copy(results.data);
             for (var key in data) {
-                console.log(data[key].capabilities);
                 data[key].capabilities = JSON.parse(data[key].capabilities);
-                console.log(data[key].capabilities);
             }
             deferred.resolve(data);
         });
@@ -25,7 +23,7 @@ app.factory('ProfileService', ['$q', '$http', function($q, $http) {
 
     this.edit = function(data) {
         var deferred = $q.defer();
-        $http.put(URL_PROFILE, data).then(function(results) {
+        $http.put(URL_PROFILE + "/update", data).then(function(results) {
             deferred.resolve(results.data);
         });
         return deferred.promise;

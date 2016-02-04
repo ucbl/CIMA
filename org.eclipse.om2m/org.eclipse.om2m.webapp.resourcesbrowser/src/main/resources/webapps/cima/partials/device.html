@@ -50,7 +50,6 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="capability in capabilities | orderBy:order">
-                            {{capability}}
                             <td class="text-center">{{capability.configuration}}</td>
                             <td class="text-center">{{capability.id}}</td>
                             <td class="text-center">{{capability.protocol.protocolName}}</td>
@@ -77,7 +76,7 @@
 
 
         <!-- SHOW CAPACBILITY -->
-                <div class="panel panel-warning col-sm-12 col-md-12 col-lg-12" id="edit" ng-show="ShowIsOpen">
+                <div class="panel panel-warning col-sm-12 col-md-12 col-lg-12" ng-show="ShowIsOpen">
                     <div class="panel-heading col-sm-12 col-md-12 col-lg-12">
                         <h2 class="panel-title col-sm-12 col-md-12 col-lg-12">Show capability</h2>
                     </div>
@@ -101,7 +100,7 @@
                             <button class="btn btn-danger pull-left" type="button" ng-click="openAndShowCapability(indexOfShowingCapacity)" />
                                 Close
                             </button>
-                                
+                            <!-- This only works for the robotEV3 for instance --> 
                             <!-- Test capability button -->
                             <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('sensor') >= 0" ng-click="testCapability(editedCapability)" data-toggle="modal" data-target="#responseSensorModal">Test</button>
 
@@ -172,52 +171,12 @@
                 </div>
 
 
-                <!-- EDIT CAPACBILITY -->
-                <div class="panel panel-warning col-sm-12 col-md-12 col-lg-12" id="edit" ng-show="EditIsOpen">
-                    <div class="panel-heading col-sm-12 col-md-12 col-lg-12">
-                        <h2 class="panel-title col-sm-12 col-md-12 col-lg-12">Edit capability</h2>
-                    </div>
-                    <div class="panel-body col-sm-12 col-md-12 col-lg-12">                
-                        <form ng-submit="modifyCapability(editedCapability)">
-                            <strong>ID : {{editedCapability.id}} </strong>
-                            <br><br>
-                            <li>
-                                Protocol type :  {{editedCapability.protocol.protocolName}}
-                               <!-- <select class="form-control" ng-model="editedCapability.protocol"
-                                                ng-options="protocol.protocolName for protocol in protocols" ng-required="true" ng-change ="SelectCapability($item)">-->
-
-                                <select class="form-control" ng-model="editedCapability.protocol"
-                                                ng-options="protocol.protocolName for protocol in protocolsFromEdited" ng-required="true">
-                                </select>
-                            </li>
-                            <li ng-repeat="parameter in editedCapability.protocol.parameters">
-                                        {{parameter.name}}:
-                                        <input class="form-control"  style="width: 40%;" type="text" ng-model="parameter.value">
-                            </li>
-                            <br>   
-                            <li> Keywords </li> 
-                            <tags-input   ng-model="editedCapability.keywords"></tags-input> 
-
-                            <br>
-
-                            <button class="btn btn-success pull-right" style="margin-left:5px" type="submit">
-                                <i class="glyphicon glyphicon-ok"></i>
-                                Apply 
-                            </button>
-                            <button class="btn btn-danger pull-left" type="button" ng-click="CloseEditCapability()" />
-                                Undo
-                            </button>
-                            <!-- Test capability button -->
-                            <button ng-click="testCapability(editedCapability)" type="button" class="btn btn-primary pull-right">Test</button>
-                            <br>
-                        </form>
-                    </div>
-                </div>
+                
             </div>
         </div>
 
         <!-- ADD CAPABILITY -->
-        <div class="addCapability panel panel-info col-sm-12 col-md-12 col-lg-12">
+        <!-- <div class="addCapability panel panel-info col-sm-12 col-md-12 col-lg-12">
             <div class="panel-heading col-sm-12 col-md-12 col-lg-12">
                 <h2 class="panel-title col-sm-12 col-md-12 col-lg-12">Add a capability</h2>
             </div>
@@ -227,10 +186,10 @@
                         <accordion-heading>
                             From existing one
                         </accordion-heading>                
-                        <!-- From Existing -->
+                 
                         <input type="text" ng-model="NewFromExistingCapability" placeholder="search for a capability..." typeahead="capability as capability.id for capability in getCapability($viewValue) | filter:{id:$viewValue}" typeahead-loading="loadingCapabilities" typeahead-on-select="onSelectCapability($item, $model, $label)" class="form-control" />
                         <i ng-show="loadingCapabilities" class="glyphicon glyphicon-refresh"></i>
-                        <!--<pre>Model: {{NewFromExistingCapability | json}}</pre>-->
+                       
                         <form name = "addFromExisting" ng-submit="addCapabilityFromExisting(NewFromExistingCapability)" ng-show="(NewFromExistingCapability != '' && NewFromExistingCapability != null)">
                             <strong>ID</strong><span class=" btn-danger" ng-show="idrequired">You must specify a new ID !</span>
 
@@ -247,11 +206,11 @@
                             <br>
                              <strong>Keywords </strong>
                              <tags-input ng-model="tags"></tags-input>                   
-                             <!-- Reset capability button -->
+                            
                             <button ng-click="NewFromExistingCapability='';tags=null" type="button" class="btn btn-primary pull-left" >Reset</button>
-                             <!-- Add capability button -->
+                             
                             <button style="margin-left:5px" class="btn btn-success pull-right" type="submit" >Add</button>
-                            <!-- Test capability button -->
+                            
                             <button ng-click="testCapability(NewFromExistingCapability)" type="button" class="btn btn-primary pull-right">Test</button>
                         </form>
                     </accordion-group>
@@ -259,7 +218,7 @@
                     <accordion-group>
                         <accordion-heading>
                         New one
-                        <!--Create a new capability-->
+                        
                         </accordion-heading>
                         <form ng-submit="addCapability(newCapability)">
                             <strong>ID</strong>
@@ -279,21 +238,21 @@
                              <strong>Keywords </strong>
                              <tags-input ng-model="tags"></tags-input> 
                              <br>                
-                             <!-- Reset capability button -->
+                            
                             <button ng-click="newCapability={};tags=null" type="button" class="btn btn-primary pull-left">Reset</button> 
-                             <!-- Add capability button -->
+                             
                             <input style="margin-left:5px" class="btn btn-success pull-right" type="submit" value="Add"/>
-                             <!-- Test capability button -->
+                            
                             <button ng-click="testCapability(newCapability)" type="button" class="btn btn-primary pull-right">Test</button>
                         </form>
                     </accordion-group>
                 </ubi-accordion>
             </div> 
-        </div> 
+        </div>  -->
     </div> 
 </div>
 
-
+<!-- Profile -->
 <div class="modal fade" id="listProfilesModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -303,87 +262,93 @@
       </div>
       <div class="modal-body" id="listProfilesBody">
         <div class="row">
-            <div class="list-group col-md-2">
-                 <a href ng-click="loadCapabilitiesBy(profile)" ng-dblClick="applyProfile()" class="list-group-item" ng-repeat="profile in profiles" ng-bind-template="{{profile.name}}" ng-class="{active: profile.isActive}"></a>`
+            <div class="list-group col-md-4">
+                <a href ng-click="loadCapabilitiesBy(profile)" ng-dblClick="applyProfile()" class="list-group-item" ng-repeat="profile in profiles" ng-bind-template="{{profile.name}} - {{profile.description}}" ng-class="{active: profile.isActive}">
+                    
+                </a>
             </div>
-            <div class="col-md-4">
-
+            <div class="col-md-4" ng-if="activeProfile.capabilities.length > 0">
                 <table st-table="devices" class="table table-striped" style="width: 40%">
                     <thead>
                         <tr>
                             <th class="text-center">Configuration</th>
                             <th class="text-center">ID</th>
                             <th class="text-center">Protocol</th>
-                            <th class="text-center">Action</th>
+                            <th class="text-center">Option</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="capabilityFromProfile in capabilitiesFromProfile | orderBy:order">
-
                             <td class="text-center">{{capabilityFromProfile.configuration}}</td>
                             <td class="text-center">{{capabilityFromProfile.id}}</td>
                             <td class="text-center">{{capabilityFromProfile.protocol.protocolName}}</td>
                             <td class="text-right">
-
-                               <button ng-show="!capabilityFromProfile.isEditable" type="button" ng-click="openAndShowCapability($index, capabilityFromProfile)" class="btn btn-sm btn btn-info">
-                                    <i class="glyphicon glyphicon-show"></i>
-                                    Show
-                                </button>
-                                
-                                <button ng-show="capabilityFromProfile.isEditable" type="button" ng-click="openAndEditCapability($index, capabilityFromProfile)" class="btn btn-sm btn btn-info">
-                                  <i class="glyphicon glyphicon-edit"></i>
-                                  Edit
-                                </button>
-
-                                <button class="btn btn-sm btn-danger" ng-show="capabilityFromProfile.isEditable" type="button" ng-click="removeCapability(capabilityFromProfile)" class="btn btn-sm btn btn-info">
-                                 <i class="glyphicon glyphicon-remove-circle"></i>
-                                Remove
-                                </button>
+                                <button type="button" class="btn btn-info" ng-click="showDetailsOfCapability(capabilityFromProfile)">Show</button>
                             </td>
                         </tr>
                     </tbody>
-                </table> 
+                </table>
+                
             </div>
-            <div class="col-md-6">
-                <!-- SHOW CAPACBILITY -->
-                <div class="panel panel-warning col-sm-12 col-md-12 col-lg-12" id="edit" ng-show="ShowIsOpen">
+            <div class="col-md-4" ng-if="activeProfile.capabilities.length <= 0">
+                No capabilities found
+            </div>
+            <div ng-show="detailsOfCapability">
+                <strong>ID : {{detailsOfCapability.id}} </strong>
+                <br><br>
+                <li>
+                <strong>Protocol type</strong> :  {{detailsOfCapability.protocol.protocolName}}
+
+                </li>
+                <li ng-repeat="parameter in detailsOfCapability.protocol.parameters">
+                    <strong>{{parameter.name}}</strong> : {{parameter.value}}
+                </li>
+                <br>   
+                <strong>Keywords :</strong>
+                <li ng-repeat="word in detailsOfCapability.keywords">
+                    {{word.text}}
+                </li>
+                <br>
+            </div>
+            <!-- <div class="col-md-6">
+
+                <div class="panel panel-warning col-sm-12 col-md-12 col-lg-12" id="edit" ng-show="ShowIsOpenFromProfile">
                     <div class="panel-heading col-sm-12 col-md-12 col-lg-12">
                         <h2 class="panel-title col-sm-12 col-md-12 col-lg-12">Show capability</h2>
                     </div>
                     <div class="panel-body col-sm-12 col-md-12 col-lg-12">                
-                            <strong>ID : {{editedCapability.id}} </strong>
+                            <strong>ID : {{editedCapabilityFromProfile.id}} </strong>
                             <br><br>
                             <li>
-                            <strong>Protocol type</strong> :  {{editedCapability.protocol.protocolName}}
+                            <strong>Protocol type</strong> :  {{editedCapabilityFromProfile.protocol.protocolName}}
  
                             </li>
-                            <li ng-repeat="parameter in editedCapability.protocol.parameters">
+                            <li ng-repeat="parameter in editedCapabilityFromProfile.protocol.parameters">
                                 <strong>{{parameter.name}}</strong> : {{parameter.value}}
                             </li>
                             <br>   
                             <strong>Keywords :</strong>
-                            <li ng-repeat="word in editedCapability.keywords">
+                            <li ng-repeat="word in editedCapabilityFromProfile.keywords">
                                 {{word.text}}
                             </li>
                             <br>
 
-                            <button class="btn btn-danger pull-left" type="button" ng-click="openAndShowCapability(indexOfShowingCapacity)" />
+                            <button class="btn btn-danger pull-left" type="button" ng-click="openAndShowCapabilityFromProfile(indexOfShowingCapacity)" />
                                 Close
                             </button>
                                 
-                            <!-- Test capability button -->
-                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('sensor') >= 0" ng-click="testCapability(editedCapability)" data-toggle="modal" data-target="#responseSensorModal">Test</button>
+   
+                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapabilityFromProfile.id.indexOf('sensor') >= 0" ng-click="testCapability(editedCapabilityFromProfile)" data-toggle="modal" data-target="#responseSensorModal">Test</button>
 
-                            <!-- Stop capability button -->
-                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0 && editedCapability.id.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button>
+                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapabilityFromProfile.id.indexOf('motor') >= 0 && editedCapabilityFromProfile.id.indexOf('stop') >= 0" ng-click="testCapability(editedCapabilityFromProfile)">Stop</button>
 
                             
-                            <button ng-click="" type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0 && editedCapability.id.indexOf('stop') < 0" data-toggle="modal" data-target="#configParamsModal">Configure</button>
+                            <button ng-click="" type="button" class="btn btn-primary pull-right" ng-if="editedCapabilityFromProfile.id.indexOf('motor') >= 0 && editedCapabilityFromProfile.id.indexOf('stop') < 0" data-toggle="modal" data-target="#configParamsModal">Configure</button>
                             <br>
                                 
                             
 
-                            <!-- Modal Request -->
+                
                             <div class="modal fade" id="configParamsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                               <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -391,11 +356,11 @@
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                     <h4 class="modal-title" id="myModalLabel">Configuration Of Parameters Modal</h4>
                                   </div>
-                                  <div class="modal-body" ng-if="editedCapability.params.length <= 0">
+                                  <div class="modal-body" ng-if="editedCapabilityFromProfile.params.length <= 0">
                                       Les params ne sont pas disponibles pour cette capabilité
                                   </div>
-                                  <div class="modal-body" ng-repeat="param in editedCapability.params">
-                                    <!-- Implement a directive to solve this -->
+                                  <div class="modal-body" ng-repeat="param in editedCapabilityFromProfile.params">
+         
                                     <div class="input-group">
                                       <span class="input-group-addon" id="sizing-addon2">{{param.idp}}</span>
                                       <input type="number" class="form-control" ng-model="configParams[param.idp]" ng-if="param.type == 'int'" aria-describedby="sizing-addon2" />
@@ -406,14 +371,14 @@
                                   </div>
                                   <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" ng-if="editedCapability.params.length > 0" ng-click="testCapability(editedCapability)">Test</button>
-                                    <!-- <button type="button" class="btn btn-primary" ng-if="editedCapability.idCapability.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button> -->
+                                    <button type="button" class="btn btn-primary" ng-if="editedCapabilityFromProfile.params.length > 0" ng-click="testCapability(editedCapabilityFromProfile)">Test</button>
+                                    
                                   </div>
                                 </div>
                               </div>
                             </div>
 
-                            <!-- Modal Response -->
+                           
                             <div class="modal fade" id="responseSensorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                               <div class="modal-dialog" role="document" ng-show="isResponseSensor">
                                 <div class="modal-content">
@@ -423,7 +388,7 @@
                                   </div>
                                   
                                   <div class="modal-body" ng-repeat="responseSensor in responseSensors">
-                                    <!-- Implement a directive to solve this in the future-->
+                                 
                                     <div class="input-group">
                                       <div class="input-group-addon" id="sizing-addon2" ng-bind-template="{{responseSensor}}"></div>
                                       
@@ -441,31 +406,30 @@
                 </div>
 
 
-                <!-- EDIT CAPACBILITY -->
+   
                 <div class="panel panel-warning col-sm-12 col-md-12 col-lg-12" id="edit" ng-show="EditIsOpen">
                     <div class="panel-heading col-sm-12 col-md-12 col-lg-12">
                         <h2 class="panel-title col-sm-12 col-md-12 col-lg-12">Edit capability</h2>
                     </div>
                     <div class="panel-body col-sm-12 col-md-12 col-lg-12">                
-                        <form ng-submit="modifyCapability(editedCapability)">
-                            <strong>ID : {{editedCapability.id}} </strong>
+                        <form ng-submit="modifyCapability(editedCapabilityFromProfile)">
+                            <strong>ID : {{editedCapabilityFromProfile.id}} </strong>
                             <br><br>
                             <li>
-                                Protocol type :  {{editedCapability.protocol.protocolName}}
-                               <!-- <select class="form-control" ng-model="editedCapability.protocol"
-                                                ng-options="protocol.protocolName for protocol in protocols" ng-required="true" ng-change ="SelectCapability($item)">-->
+                                Protocol type :  {{editedCapabilityFromProfile.protocol.protocolName}}
+                               
 
-                                <select class="form-control" ng-model="editedCapability.protocol"
+                                <select class="form-control" ng-model="editedCapabilityFromProfile.protocol"
                                                 ng-options="protocol.protocolName for protocol in protocolsFromEdited" ng-required="true">
                                 </select>
                             </li>
-                            <li ng-repeat="parameter in editedCapability.protocol.parameters">
+                            <li ng-repeat="parameter in editedCapabilityFromProfile.protocol.parameters">
                                         {{parameter.name}}:
                                         <input class="form-control"  style="width: 40%;" type="text" ng-model="parameter.value">
                             </li>
                             <br>   
                             <li> Keywords </li> 
-                            <tags-input   ng-model="editedCapability.keywords"></tags-input> 
+                            <tags-input   ng-model="editedCapabilityFromProfile.keywords"></tags-input> 
 
                             <br>
 
@@ -476,14 +440,14 @@
                             <button class="btn btn-danger pull-left" type="button" ng-click="CloseEditCapability()" />
                                 Undo
                             </button>
-                            <!-- Test capability button -->
-                            <button ng-click="testCapability(editedCapability)" type="button" class="btn btn-primary pull-right">Test</button>
+                           
+                            <button ng-click="testCapability(editedCapabilityFromProfile)" type="button" class="btn btn-primary pull-right">Test</button>
                             <br>
                         </form>
                     </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!-- </div> -->
         </div>
         <div class="modal-footer">

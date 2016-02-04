@@ -8,12 +8,13 @@ html, body {
 h1 {
     color: navy;
 } 
-.addCapacity{
+.addCapability{
 	background-color: #eee;
 	padding-bottom: 5px;
 	padding-left: 5px;
 	padding-right: 5px;
 	border-radius: 5px;
+    margin-top: 10px;
 } 
 .editCapability{
 	background-color: white;

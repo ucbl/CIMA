@@ -1,7 +1,15 @@
 'use strict';
 /* Application modules */
 //var app = angular.module('CIMA', ['CIMA.HomeController', 'CIMA.DeviceController', 'ngRoute', 'CIMA.ui', 'CIMA.tags', 'CIMA.toast'])
-var app = angular.module('CIMA', ['ngRoute', 'ui.bootstrap', 'ngTagsInput', 'ngToast', 'angularJsonld', 'ngStorage']);
+var app = angular.module('CIMA', [
+  'ngRoute', 
+  'ui.bootstrap', 
+  'ngTagsInput', 
+  'CIMA.toast', 
+  'angularJsonld', 
+  'ngStorage',
+  'ProfileController'
+  ]);
 /*routing URLs*/
 app.config(['$routeProvider', '$httpProvider', 'jsonldContextProvider', function($routeProvider, $httpProvider, jsonldContextProvider){
 
@@ -13,8 +21,6 @@ app.config(['$routeProvider', '$httpProvider', 'jsonldContextProvider', function
   .when('/profile/add', {templateUrl: 'partials/profile/add.html', controller: 'AddProfileController'})
   .when('/profile/:id', {templateUrl: 'partials/profile/edit.html', controller: 'EditProfileController'})
   .otherwise({redirectTo : '/'});
-
-  
 
   jsonldContextProvider.add({
     //'vocab': 'http://localhost:4040/angular-project/api/cima/phonevocabJSONLD/',
@@ -52,7 +58,7 @@ app.config(['$routeProvider', '$httpProvider', 'jsonldContextProvider', function
 angular.module('CIMA.toast', ['ngToast'])
   .config(['ngToastProvider', function(ngToast) {
     ngToast.configure({
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
       horizontalPosition: 'right',
       dismissButton: true,
       maxNumber: 3,
