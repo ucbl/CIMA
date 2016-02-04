@@ -241,10 +241,8 @@ public class AdministrationServer implements IpuService{
 
 				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"username\":\""+username+"\", \"error\" : 0}");
 			}
-			else if("profile".equals(tID[4])) //nscl/applications/CIMA/administration/profile
-			{
-
-				System.out.println("DANS LE DO UPDATE BON IF");
+			else if("profile".equals(tID[4]))
+			{//nscl/applications/CIMA/administration/profile
 				ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfilManagerInterface.class.getName(), null);
 				st.open();
 				ProfilManagerInterface pf = (ProfilManagerInterface) st.getService();
@@ -253,6 +251,20 @@ public class AdministrationServer implements IpuService{
 
 				return new ResponseConfirm(StatusCode.STATUS_OK, res );
 			}
+		}
+
+
+		if(tID.length == 6){ //nscl/applications/CIMA/administration/profile/update
+
+			ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfilManagerInterface.class.getName(), null);
+			st.open();
+			ProfilManagerInterface pf = (ProfilManagerInterface) st.getService();
+
+			pf.updateProfilFromJson(requestIndication.getRepresentation());
+
+			return new ResponseConfirm(StatusCode.STATUS_OK, "{\"message\" : \"It's probably done.\"}" );
+
+
 		}
 
 		if(tID.length == 7){
