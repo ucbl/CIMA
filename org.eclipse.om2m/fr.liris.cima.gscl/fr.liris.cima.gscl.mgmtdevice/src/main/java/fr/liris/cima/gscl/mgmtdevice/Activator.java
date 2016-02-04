@@ -41,7 +41,7 @@ import org.osgi.framework.FrameworkUtil;
 
 import javax.swing.plaf.synth.SynthSeparatorUI;
 /**
- *  Manages the starting and stopping of the bundle.
+ *  Manages the starting and stopping of the GSCL.MGMTDEVICE bundle.
  *  @author <ul>
  *         <li>Yassine Banouar < ybanouar@laas.fr > < yassine.banouar@gmail.com ></li>
  *         <li>Mahdi Ben Alaya < ben.alaya@laas.fr > < benalaya.mahdi@gmail.com ></li>

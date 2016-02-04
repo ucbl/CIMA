@@ -37,6 +37,9 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.service.log.*;
 import org.osgi.framework.FrameworkUtil;
 
+/**
+ * Manage device
+ */
 public class DeviceManagerImpl implements ManagedDeviceService {
 
 
@@ -156,8 +159,8 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 
 	/**
 	 * create a manager resources
-	 * @param appId
-	 * @param aPoCPath
+	 * @param appId the application ID
+	 * @param aPoCPath the application point of contact
 	 */
 	public void createManagerResources(String appId, String aPoCPath) {
 		// Create the Application resource

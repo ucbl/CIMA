@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.Set;
 //import com.mongodb.MongoClient;
 //import com.mongodb.client.MongoDatabase;
+
 /**
+ * implements PortForwardingInterface.java, and store allocated port and deviceId into a Map<String, Integer>.
  * Created by dasilvafrederic on 22/10/15.
  */
 public class PortForwardManager implements PortForwardingInterface {

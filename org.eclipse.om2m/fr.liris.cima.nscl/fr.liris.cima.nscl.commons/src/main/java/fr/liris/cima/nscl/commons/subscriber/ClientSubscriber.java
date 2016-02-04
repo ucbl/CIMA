@@ -1,5 +1,6 @@
 package fr.liris.cima.nscl.commons.subscriber;
 
+
 public class ClientSubscriber {
 
 	private String url;

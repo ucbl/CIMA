@@ -8,6 +8,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * instanciate a PortForwardingManager and execute the C++ PortForwarding programm specifying the address,
+ * the object port and the device ID and start listening in order get the port number.
+ * An instance of this class can be initiate by giving
+ * the following parameters objectPort, deviceId, address, protocol (0 for TCP and 1 for UDP), portForwardManager.
  * Created by Maxime on 30/11/2015.
  */
 public class PortForwardingProcessLauncher extends Thread

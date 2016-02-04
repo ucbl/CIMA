@@ -16,18 +16,18 @@ public class HTTP extends AbstractProtocol {
 	 * base URL
 	 */
 	private String base;
-	
+
 	/**
 	 * Http method can be GET, POST, PUT, DELETE...
 	 */
 	private String method;
 
-	/** 
+	/**
 	 * Http port to contact
 	 */
 	private int port;
-	
-	/** 
+
+	/**
 	 * Http uri to contact
 	 */
 	private String uri;
@@ -36,26 +36,30 @@ public class HTTP extends AbstractProtocol {
 	 * Http body content
 	 */
 	private String body;
-	
+
 	/**
 	 * Http transport protocol
 	 */
 	private String transport = "tcp";
-	
+
 	@Override
 	public String getName() {
 		return "http";
 	}
 
+	/**
+	 * Send message using cima http rest client
+	 * @param message the message to send
+	 */
 	@Override
 	public void sendMessage(String message) {
 		CIMARestHttpClient cimaRestHttpClient = new CIMARestHttpClient();
 		RequestIndication requestIndication = new RequestIndication(method, uri, Constants.REQENTITY, ((body == null) ? "" : body));
 		requestIndication.setBase(base);
-		
+
 		cimaRestHttpClient.sendRequest(requestIndication);
 	}
-	
+
 	/**
 	 * Test method
 	 * @param args

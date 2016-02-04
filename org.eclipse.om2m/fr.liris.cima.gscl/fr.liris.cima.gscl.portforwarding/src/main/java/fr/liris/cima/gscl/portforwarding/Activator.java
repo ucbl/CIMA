@@ -6,7 +6,8 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * Created by DA SILVA Frédéric on 22/10/2015.
+ * Manages the starting and stopping of GSCL.PORTFORWARDING bundle.
+ * @author DA SILVA Frédéric on 22/10/2015.
  */
 public class Activator implements BundleActivator {
 

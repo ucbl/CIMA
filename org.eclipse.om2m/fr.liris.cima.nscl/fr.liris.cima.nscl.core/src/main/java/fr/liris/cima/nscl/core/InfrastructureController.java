@@ -52,7 +52,7 @@ public class InfrastructureController implements IpuService{
 
 	/**
      * Executes a resource on devices,  notify subscribers.
-     * @param requestIndication - The generic request to handle.
+     * @param requestIndication The generic request to handle.
      * @return The generic returned response.
      */
 	@Override
@@ -62,7 +62,7 @@ public class InfrastructureController implements IpuService{
 
 	/**
      * Retrieves a resource on devices.
-     * @param requestIndication - The generic request to handle.
+     * @param requestIndication The generic request to handle.
      * @return The generic returned response.
      */
 	@Override
@@ -101,7 +101,7 @@ public class InfrastructureController implements IpuService{
 
 	/**
      * Updates a resource on devices, subscribers.
-     * @param requestIndication - The generic request to handle.
+     * @param requestIndication The generic request to handle.
      * @return The generic returned response.
      */
 	@Override
@@ -111,7 +111,7 @@ public class InfrastructureController implements IpuService{
 
 	/**
      * Deletes a resource on devices, notify subscribers.
-     * @param requestIndication - The generic request to handle.
+     * @param requestIndication The generic request to handle.
      * @return The generic returned response.
      */
 	@Override
@@ -139,7 +139,7 @@ public class InfrastructureController implements IpuService{
 
 	/**
      * Create a resource on devices, notify subscribers.
-     * @param requestIndication - The generic request to handle.
+     * @param requestIndication The generic request to handle.
      * @return The generic returned response.
      */
 	@Override

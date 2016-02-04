@@ -20,6 +20,10 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.service.log.*;
 import org.osgi.framework.FrameworkUtil;
 
+
+/**
+ * Provide Capability class to be manually configured.
+ */
 public class ConfigManagerImpl implements ConfigManager{
 
 

@@ -10,6 +10,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+/**
+ * Class to receive data on specified socket.
+ */
 public class CIMAReceiver implements Runnable{
 
 	public static final String CIMA_ADDRESS = System.getProperty("fr.liris.cima.gscl.adress");

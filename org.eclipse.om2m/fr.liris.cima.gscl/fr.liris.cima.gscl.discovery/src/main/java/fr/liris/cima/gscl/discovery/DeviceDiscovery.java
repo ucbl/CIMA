@@ -95,8 +95,8 @@ public class DeviceDiscovery implements DiscoveryService{
 	}
 	/**
 	 * Make an DeviceDiscovery object with client Service and a device service.
-	 * @param clientService - The client service like http, coap, ...
-	 * @param deviceService - The device service for adding device, deleting device, ...
+	 * @param clientService The client service like http, coap, ...
+	 * @param deviceService The device service for adding device, deleting device, ...
 	 */
 	public DeviceDiscovery(RestClientService clientService, ManagedDeviceService deviceService) {
 
@@ -118,7 +118,7 @@ public class DeviceDiscovery implements DiscoveryService{
 
 	/**
 	 * Lookup a connected address in the local network by arp scan
-	 * @return
+	 * @return  a set of reachable address device
 	 */
 	private Set<String> lookUp() {
 		//return ExecuteShellComand.getAllIpAddress(Constants.COMMAND_ARP_FOR_IP, Constants.IP_PREFIX);
@@ -131,7 +131,7 @@ public class DeviceDiscovery implements DiscoveryService{
 
 	/**
 	 * Send a notification to the NSCL for device disconnecting.
-	 * @param device -The that is disconnected.
+	 * @param deviceDescription -The description of the device that is disconnected.
 	 * @return The generic returned response.
 	 */
 	private ResponseConfirm notifyDisconnectionToInfController(DeviceDescription deviceDescription) {
@@ -284,10 +284,10 @@ RequestIndication requestIndication = new RequestIndication();
 
 	/**
 	 * This method handle new device connection by sending a request for discovery of potential device.
-	 * @param address
-	 * @param requestIndication
-	 * @param targetId
-	 * @return
+	 * @param address device address
+	 * @param requestIndication (method, uri, base url, port, body)
+	 * @param targetId target device ID
+	 * @return - true if connection handling is successfull, else false
 	 */
 	protected boolean handleNewDeviceConnection(String address, RequestIndication requestIndication, String targetId){
 

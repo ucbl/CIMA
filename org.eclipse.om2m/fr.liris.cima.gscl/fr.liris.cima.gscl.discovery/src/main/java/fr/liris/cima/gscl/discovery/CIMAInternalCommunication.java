@@ -11,7 +11,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 /**
- * This class allow to send information to C server.
+ * This class allow to send information to C server
+ * by opening socket connection between gscl and port forwarding part,
+ * sending connection data and reading server response.
  * @author madiallo
  *
  */

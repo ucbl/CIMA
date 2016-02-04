@@ -10,19 +10,19 @@ import java.util.Map;
  *
  */
 public class ProtocolResolver {
-	
+
 	/**
 	 * protocols contains all available protocols classes.
 	 */
 	Map<String,Class<? extends AbstractProtocol>> protocols;
-	
+
 	/**
 	 * Default constructor.
 	 */
 	public ProtocolResolver(){
 		protocols = new HashMap<String,Class<? extends AbstractProtocol>>();
 	}
-	
+
 	/**
 	 * Add a protocol class to available protocols.
 	 * @param protocolName name of the protocol typicaly {@code MyProtocol.class.getSimpleName().toLowerCase()}.
@@ -31,10 +31,10 @@ public class ProtocolResolver {
 	public void addProtocol(String protocolName, Class<? extends AbstractProtocol> protocol){
 		this.protocols.put(protocolName,protocol);
 	}
-	
+
 	/**
 	 * Remove a protocol from available protocols list.
-	 * @param protocolName the of the protocol to remove.
+	 * @param protocolName the name of the protocol to remove.
 	 */
 	public void removeProtocol(String protocolName){
 		this.protocols.remove(protocolName);
@@ -47,7 +47,7 @@ public class ProtocolResolver {
 	public Class<? extends AbstractProtocol> getProtocol(String protocolName){
 		return this.protocols.get(protocolName);
 	}
-	
+
 	/**
 	 * Get all available protocols.
 	 * @return {@code Map<String,Class>} with key as the name of a protocol and value as a Class of the protocol key.

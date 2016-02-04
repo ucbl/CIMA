@@ -16,6 +16,9 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.service.log.*;
 import org.osgi.framework.FrameworkUtil;
 
+/**
+ * Activator to manage starting and stopping GSCL COMMONS bundle
+ */
 public class Activator implements BundleActivator {
 
 	private static Log logger = LogFactory.getLog(Activator.class);
