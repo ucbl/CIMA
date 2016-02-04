@@ -23,7 +23,7 @@ app.factory('ProfileService', ['$q', '$http', function($q, $http) {
 
     this.edit = function(data) {
         var deferred = $q.defer();
-        $http.put(URL_PROFILE + "/update", data).then(function(results) {
+        $http.post(URL_PROFILE + "/update", data).then(function(results) {
             deferred.resolve(results.data);
         });
         return deferred.promise;
