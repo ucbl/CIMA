@@ -34,6 +34,7 @@
 		<module>fr.liris.cima.nscl.core</module>
 		<module>fr.liris.cima.nscl.mongodao</module>
 		<module>fr.liris.cima.nscl.profils</module>
+		<module>fr.liris.cima.nscl.users</module>
 	</modules>
 
 </project>
