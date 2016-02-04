@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Manage data persistence using a dao in mongo data base
  * Created by Maxime on 02/02/2016.
  */
 public class MongoDao implements MongoDaoInterface {
@@ -52,7 +53,10 @@ public class MongoDao implements MongoDaoInterface {
 
 
     /**
-     * Delete object
+     * Delete object from the database
+     * @param p a persistable object
+     * @return true if the object has been deleted, if not, return false
+     * @throws IOException
      */
     public boolean delete(Persistable p) throws IOException {
 
@@ -93,10 +97,10 @@ public class MongoDao implements MongoDaoInterface {
 
 
     /**
-         * Persist an object if this object is not perisited yet ...
+         * Persist an object if this object is not persisted yet ...
          * AND ONLY IN THIS CASE
          * @param o : the object that is wanted to be persist
-         * @throws IOException //TODO : exception s'il existe déjà
+         * @throws IOException //TODO : exception if there is already
          */
         public void persist(Persistable o) throws IOException {
 
@@ -155,7 +159,11 @@ public class MongoDao implements MongoDaoInterface {
 
         }
 
-        private void createCollection(String collectionName){
+    /**
+     * Create a collection in mongo (standard collection without particular parameter)
+     * @param collectionName the collection name
+     */
+    private void createCollection(String collectionName){
 
             try {
 
@@ -185,9 +193,9 @@ public class MongoDao implements MongoDaoInterface {
 
 
         /**
-         *
+         * Extract tag from Json
          * @param json
-         * @return
+         * @return a String tag
          */
         private String extractEtagFromJson(String json){
             JsonElement jsonElement = new JsonParser().parse(json);
@@ -197,6 +205,13 @@ public class MongoDao implements MongoDaoInterface {
             return etag.replace("\"", "");
         }
 
+    /**
+     * Get all objects of the giving type existing in the base
+     * @param askedClass an object class
+     * @param <T> ??
+     * @return a list of object having the same type
+     * @throws ClassNotFoundException if class is not found
+     */
         public <T> List<T> getAll(Class<T> askedClass) throws ClassNotFoundException {
 
             List<T> res = new ArrayList<T>();
@@ -221,6 +236,13 @@ public class MongoDao implements MongoDaoInterface {
             return res;
         }
 
+    /**
+     * Template which returns all objects of the giving type existing in the base
+     * @param object an object
+     * @param <T>
+     * @return a list of object having the same type
+     * @throws ClassNotFoundException
+     */
         public <T> List<T> getAll(T object) throws ClassNotFoundException {
             return (List<T>) this.getAll(object.getClass());
         }
@@ -228,14 +250,18 @@ public class MongoDao implements MongoDaoInterface {
 
         /**
          * Do not change
-         * @param o
-         * @return
+         * @param o an Object
+         * @return the object class
          */
         private String getCollecNameByClassName(Object o){
             return o.getClass().getName();
         }
 
 
+    /**
+     * Save an object into the database
+     * @param o Persistable object
+     */
         public void save(Persistable o){
             //serialize to json
             String json = gson.toJson(o, o.getClass());
@@ -283,7 +309,12 @@ public class MongoDao implements MongoDaoInterface {
 
         }
 
-        public static String callURL(String myURL) {
+    /**
+     * Call an URL using GET method
+     * @param myURL - the URL to call
+     * @return the result
+     */
+    public static String callURL(String myURL) {
             StringBuilder sb = new StringBuilder();
             URLConnection urlConn = null;
             InputStreamReader in = null;
