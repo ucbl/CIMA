@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 
+/**
+ * Process to find any new device on the local network
+ */
 
 public class DeviceFinder {
 

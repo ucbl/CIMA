@@ -16,7 +16,7 @@ import org.osgi.framework.FrameworkUtil;
 
 
 /**
- *  Manages the starting and stopping of the bundle.
+ *  Manages the starting and stopping of fr.liris.cima.nscl.core bundle.
  *  @author madiallo
  */
 public class Activator implements BundleActivator {

@@ -8,6 +8,9 @@ import obix.Str;
 import obix.Uri;
 import obix.io.ObixEncoder;
 
+/**
+ * Define the result (a type and a description) send by a device, when getting request by GSCL
+ */
 public class Result {
 	private String type;
 	private String desc;

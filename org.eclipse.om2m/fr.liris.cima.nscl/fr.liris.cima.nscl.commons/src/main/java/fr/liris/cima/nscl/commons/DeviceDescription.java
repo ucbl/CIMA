@@ -4,6 +4,9 @@ import java.util.Date;
 
 import fr.liris.cima.nscl.commons.util.Utils;
 
+/**
+ *	A simple device description (id, name, uri, modeConnection, dateConnection)
+ */
 public class DeviceDescription {
 
 	private String id;
@@ -24,8 +27,6 @@ public class DeviceDescription {
 		this.uri = uri;
 		this.modeConnection = modeConnection;
 		this.dateConnection = Utils.dateToStr(new Date());
-		
-
 	}
 	
 	public String getId() {

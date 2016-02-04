@@ -28,7 +28,9 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.service.log.*;
 import org.osgi.framework.FrameworkUtil;
 
-
+/***
+ * REST service from the client side of view
+ */
 public class CIMARestHttpClient implements RestClientService{
 
 	/** Logger */
@@ -40,6 +42,11 @@ public class CIMARestHttpClient implements RestClientService{
 	/** implemented specific protocol name */
 	private static String protocol ="http";
 
+	/**
+	 * Send request using GET, PUT, POST, DELETE... method
+	 * @param requestIndication - (method, uri, base url, port, body)
+	 * @return ResponseConfirm (codeStatus, representation, ressourceURI)
+	 */
 	@Override
 	public ResponseConfirm sendRequest(RequestIndication requestIndication) {
 

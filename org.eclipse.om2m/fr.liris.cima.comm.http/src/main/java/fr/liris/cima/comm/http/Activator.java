@@ -19,7 +19,7 @@ import fr.liris.cima.comm.protocol.Protocol;
 import fr.liris.cima.comm.protocol.ProtocolResolver;
 
 /**
- *  Manages the starting and stopping of the bundle.
+ *  Activator class for starting and stopping fr.liris.cima.comm.http bundle.
  *  @author hady
  */
 public class Activator implements BundleActivator {

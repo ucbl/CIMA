@@ -18,7 +18,7 @@ import org.osgi.service.log.*;
 import org.osgi.framework.FrameworkUtil;
 
 /**
- *  Manages the starting and stopping of the bundle.
+ *  Manages the starting and stopping of GSCL.CORE bundle.
  *  @author madiallo
  */
 public class Activator implements BundleActivator {

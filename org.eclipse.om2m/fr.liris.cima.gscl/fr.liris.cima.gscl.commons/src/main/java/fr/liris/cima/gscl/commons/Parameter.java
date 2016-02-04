@@ -8,6 +8,9 @@ import obix.Str;
 import obix.Uri;
 import obix.io.ObixEncoder;
 
+/**
+ * Describe by an identifier idP, a type and a description.
+ */
 public class Parameter {
 	private String idP;
 	private String desc;

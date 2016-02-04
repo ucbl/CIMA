@@ -34,7 +34,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.service.log.*;
 import org.osgi.framework.FrameworkUtil;
 /**
- *  Manages the starting and stopping of the bundle.
+ *  Manages the starting and stopping of GSCL.DEVICE.MANUALCONFIG bundle.
  *  @author <ul>
  *         <li>Yassine Banouar < ybanouar@laas.fr > < yassine.banouar@gmail.com ></li>
  *         <li>Mahdi Ben Alaya < ben.alaya@laas.fr > < benalaya.mahdi@gmail.com ></li>

@@ -15,7 +15,9 @@ import org.osgi.service.log.*;
 import org.osgi.framework.FrameworkUtil;
 
 
-
+/**
+ * Manages the starting and stopping of GSCL.DISCOVERY_PTUT bundle.
+ */
 public class Activator implements BundleActivator {
 	/** Logger */
 	private static Log logger = LogFactory.getLog(Activator.class);

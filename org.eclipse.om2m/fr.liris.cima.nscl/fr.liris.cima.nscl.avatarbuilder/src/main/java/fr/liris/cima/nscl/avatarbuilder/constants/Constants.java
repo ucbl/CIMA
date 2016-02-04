@@ -1,5 +1,9 @@
 package fr.liris.cima.nscl.avatarbuilder.constants;
 
+
+/**
+ * Define constants that will be used in NSCL layer for an avatar
+ */
 public class Constants {
 
 public static String APOCPATH = "avatars";

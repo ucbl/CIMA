@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/**
+ * Handle ommunication in CIMA using client socket, data to send, response to get.
+ */
 public class CIMACommunicationHandler implements Runnable{
 
 	public static final String CIMA_ADDRESS = System.getProperty("fr.liris.cima.gscl.adress");

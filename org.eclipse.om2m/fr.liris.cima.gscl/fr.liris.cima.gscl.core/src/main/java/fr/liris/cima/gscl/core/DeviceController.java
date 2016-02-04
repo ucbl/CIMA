@@ -65,7 +65,7 @@ public class DeviceController implements IpuService{
 
 	/**
 	 * Executes a resource on devices.
-	 * @param requestIndication - The generic request to handle.
+	 * @param requestIndication The generic request to handle.
 	 * @return The generic returned response.
 	 */
 	@Override
@@ -112,7 +112,7 @@ public class DeviceController implements IpuService{
 
 	/**
 	 * Retrieves a resource on devices.
-	 * @param requestIndication - The generic request to handle.
+	 * @param requestIndication The generic request to handle.
 	 * @return The generic returned response.
 	 */
 	@Override
@@ -241,7 +241,7 @@ LOGGER.info("filter = " + filter);
 
 	/**
 	 * Updates a resource on devices.
-	 * @param requestIndication - The generic request to handle.
+	 * @param requestIndication The generic request to handle.
 	 * @return The generic returned response.
 	 */
 	@Override
@@ -311,7 +311,7 @@ LOGGER.info("filter = " + filter);
 
 	/**
 	 * Deletes a resource on devices.
-	 * @param requestIndication - The generic request to handle.
+	 * @param requestIndication The generic request to handle.
 	 * @return The generic returned response.
 	 */
 	@Override
@@ -339,7 +339,7 @@ LOGGER.info("filter = " + filter);
 
 	/**
 	 * Create a resource on devices.
-	 * @param requestIndication - The generic request to handle.
+	 * @param requestIndication The generic request to handle.
 	 * @return The generic returned response.
 	 */
 	@Override

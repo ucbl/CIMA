@@ -1,9 +1,13 @@
 package fr.liris.cima.nscl.commons.constants;
 
+/**
+ * Define constants that will be used in NSCL layer for the device
+ */
 public class Constants {
 
 public static String APOCPATH = "devices";
-	
+
+
 	public final static String METHOD_CREATE = "CREATE";
 	/** Generic execute method name */
 	public final static String METHOD_EXECUTE = "EXECUTE";

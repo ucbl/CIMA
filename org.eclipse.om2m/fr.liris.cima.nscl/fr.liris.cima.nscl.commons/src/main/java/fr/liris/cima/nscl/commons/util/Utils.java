@@ -10,14 +10,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This class represent a utility class
+ * This class represent a utility class in NSCL
  * @author madiallo
  *
  */
 public class Utils {
 
+	/**
+	 * Extract IP address from an URI
+	 * @param uri an URI
+	 * @return an address IP
+	 */
 	public static String extractIpAdress(String uri) {
-		String IPADDRESS_PATTERN = 
+		String IPADDRESS_PATTERN =
 				"(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
 
 		Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
@@ -29,7 +34,7 @@ public class Utils {
 			return "0.0.0.0";
 		}
 	}
-	
+
 	public static Date StrToDate(String dateFormat) {
 		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
 		try {
@@ -39,7 +44,7 @@ public class Utils {
 		}
 		return null;
 	}
-	
+
 	public static String dateToStr(Date date) {
 		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
 		return formatter.format(date);

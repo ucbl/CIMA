@@ -5,15 +5,18 @@ import obix.Obj;
 import obix.Str;
 import obix.io.ObixEncoder;
 /**
- * This class represent a contact information for a device.
+ * This class represent a contact information for a device in GSCL.
  * @author madiallo
  *
  */
 public class ContactInfo {
 	
 	private String deviceId;
-	
-	//port in the gateway that allow a client to send communicate with device.
+
+	/**
+	 * 	port in the gateway that allow a client to send communicate with device.
+
+	 */
 	private int cloud_port;
 	
 	public ContactInfo() {

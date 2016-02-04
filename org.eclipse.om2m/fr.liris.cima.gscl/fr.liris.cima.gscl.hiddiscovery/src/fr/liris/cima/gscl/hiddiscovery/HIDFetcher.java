@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import static java.lang.System.exit;
 
-
+/**
+ * Retrieve any HID information and delete useless information
+ */
 public class HIDFetcher {
     public HIDFetcher(){
         

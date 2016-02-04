@@ -5,6 +5,9 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
+/**
+ * fr.liris.cima.comm.protocol bundle activator class
+ */
 public class Activator implements BundleActivator {
 
 	private ServiceRegistration serviceRegistration;

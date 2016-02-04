@@ -25,6 +25,9 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.service.log.*;
 import org.osgi.framework.FrameworkUtil;
 
+/**
+ * An implementation of ManagedDeviceService, to manage device service and capability using a scl service
+ */
 public class DeviceManagerImpl implements ManagedDeviceService{
 
 	/** Logger */
@@ -44,8 +47,12 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 	/** Discovered SCL service*/
 	static SclService SCL;
 
+	/** List of devices*/
 	static List<Device> devices;
 
+	/**
+	 * Set of client suscribers
+	 */
 	static Set<ClientSubscriber> subscribers;
 
 	// deviceId, contactInfo
@@ -55,6 +62,10 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 	public DeviceManagerImpl() {
 	}
 
+	/**
+	 * Instanciate a DeviceManagerImpl
+	 * @param scl Scl Service
+	 */
 	public DeviceManagerImpl(SclService scl){
 		SCL = scl;
 		devices = new ArrayList<>();
@@ -67,6 +78,11 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 		devices = new ArrayList<>();
 	}
 
+	/**
+	 * Get a device by giving the deviceId
+	 * @param deviceId the device ID
+	 * @return the device
+	 */
 	@Override
 	public Device getDevice(String deviceId) {
 		for(Device device: devices) {
@@ -82,6 +98,10 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 		return null;
 	}
 
+	/**
+	 * Add a device into the device manager
+	 * @param device the device
+	 */
 	@Override
 	public void addDevice(Device device) {
 
@@ -99,6 +119,11 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 
 	}
 
+	/**
+	 * Remove a device from the device manager by giving its id
+	 * @param deviceId the device ID
+	 * @return the device if it has not been removed, else return true.
+	 */
 	@Override
 	public Device removeDevice(String deviceId) {
 		Device  device = getDevice(deviceId);
@@ -107,6 +132,11 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 		}
 		return device;
 	}
+
+	/**
+	 * Remove a device from the device manager
+	 * @param device the device
+	 */
 	@Override
 	public void removeDevice(Device device) {
 		devices.remove(device);
@@ -130,6 +160,11 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 		return devices;
 	}
 
+	/**
+	 * Add a client subscriber to the device manager
+	 * @param subscriber the client suscriber
+	 * @return return 1 if the suscriber already exists, 0 if the suscriber has been added and 2 if nothing happened
+	 */
 	@Override
 	public  int addSubscriber(ClientSubscriber subscriber) {
 		if(subscribers.contains(subscriber)) return 1;
@@ -137,16 +172,30 @@ public class DeviceManagerImpl implements ManagedDeviceService{
 		else return 2;
 	}
 
+	/**
+	 * Remove a client subscriber from the device manager
+	 * @param subscriber the client suscriber
+	 * @return 1 if the suscriber has been removed, else return 0
+	 */
 	@Override
 	public  boolean removeSubscriber(ClientSubscriber subscriber) {
 		return subscribers.remove(subscriber);
 	}
 
+	/**
+	 * Get all the client subscribers of the device subscriber
+	 * @return a set of client subscriber
+	 */
 	@Override
 	public Set<ClientSubscriber> getSubscribers() {
 		return subscribers;
 	}
 
+	/**
+	 * Create the application resource to manage
+	 * @param appId an application ID
+	 * @param aPoCPath application point of contact
+	 */
 	public void createManagerResources(String appId, String aPoCPath) {
 		// Create the Application resource
 		ResponseConfirm response = SCL.doRequest(new RequestIndication(Constants.METHOD_CREATE,Constants.SCLID+"/applications",Constants.REQENTITY,new Application(appId,aPoCPath)));

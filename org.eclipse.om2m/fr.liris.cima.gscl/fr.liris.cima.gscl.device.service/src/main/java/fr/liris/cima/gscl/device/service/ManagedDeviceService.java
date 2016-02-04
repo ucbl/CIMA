@@ -18,45 +18,45 @@ public interface ManagedDeviceService {
 
 	/**
 	 * Get a device via id
-	 * @param deviceId - The device id.
+	 * @param deviceId The device id.
 	 * @return The returned device
 	 */
 	public Device getDevice(String deviceId);
 	/**
 	 * Get a device via address
-	 * @param address - The device id.
+	 * @param address The device id.
 	 * @return The returned device
 	 */
 	public Device getDeviceByAddress(String address);
 
 	/**
 	 * Add a device
-	 * @param device - The device to add.
+	 * @param device The device to add.
 	 */
 	public void addDevice(Device device);
 
 	/**
 	 * Remove a device via Id
-	 * @param deviceId - The device id
+	 * @param deviceId The device id
 	 */
 	public void removeDevice(String deviceId);
 
 
 	/**
 	 * Remove a device
-	 * @param device - The device to remove.
+	 * @param device The device to remove.
 	 */
 	public void removeDevice(Device device);
 	/**
 	 * Start the manager
 	 */
 	public void start();
-	
+
 	public List<Capability> getDeviceCapabilities(String deviceId);
-	
+
 	public List<Device> getDevices(boolean all);
-	
-	public Capability getCapabilityDevice(String deviceId, String capabilityName);	
+
+	public Capability getCapabilityDevice(String deviceId, String capabilityName);
 
 	public void addKnownDevice(Device device);
 

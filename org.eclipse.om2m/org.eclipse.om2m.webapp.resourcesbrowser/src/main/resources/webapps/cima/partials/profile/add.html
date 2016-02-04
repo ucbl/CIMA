@@ -15,10 +15,13 @@
     
     <div class="form-group">
         <label for="category">Capabilities</label>
-        <div class="list-group" data-toggle="capabilities">
-            <a href class="list-group-item" ng-repeat="capability in capabilities" ng-click="chooseCapability(capability)" ng-bind-template="{{capability.id}} - {{capability.protocol.protocolName}} - {{capability.protocol.parameters[0].value}} - {{capability.protocol.parameters[2].value}} - {{capability.protocol.parameters[3].value}} - {{capability.configuration}}" ng-class="{active: capability.isActive}">
-            </a>
-            
+        <div class="list-group row" data-toggle="capabilities" ng-repeat="capability in capabilities">
+            <div class="col-md-11">
+                <a href class="list-group-item" ng-click="chooseCapability(capability)" ng-bind-template="{{capability.id}}" ng-class="{active: capability.isActive}"></a>
+            </div>
+            <div class="col-md-1">
+                <a class="btn btn-info" data-toggle="modal" data-target="#detailsCapabilityModal" ng-click="openAndshowCapability($index, capability)">Show</a><br />
+            </div>
         </div>
         <!-- <div class="row">
             <div class="list-group col-md-4" data-toggle="capabilities">
@@ -30,5 +33,52 @@
         </div> -->
         
     </div>
+
+    <!-- SHOW CAPACBILITY -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="detailsCapabilityModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <strong>ID : {{detailCapability.id}} </strong>
+                        <br><br>
+                        <li>
+                            Protocol :  {{detailCapability.protocol.protocolName}}
+                            <select class="form-control" ng-model="detailCapability.protocol"
+                                            ng-options="protocol.protocolName for protocol in protocolsFromEdited" readonly disabled="disabled">
+                            </select>
+                        </li>
+                        <li ng-repeat="parameter in detailCapability.protocol.parameters">
+                                    {{parameter.name}}:{{parameter.value}}
+                        </li>
+                        <br>   
+                        <li> Keywords </li> 
+                        <tags-input   ng-model="detailCapability.keywords"></tags-input> 
+
+                        <br>
+
+                        <!-- <button class="btn btn-success pull-right" style="margin-left:5px" type="submit">
+                            <i class="glyphicon glyphicon-ok"></i>
+                            Apply 
+                        </button>
+                        <button class="btn btn-danger pull-left" type="button" ng-click="CloseEditCapability()" />
+                            Undo
+                        </button>
+                        
+                        <button ng-click="testCapability(detailCapability)" type="button" class="btn btn-primary pull-right">Test</button> -->
+                        <br>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->  
+
     <button type="submit" class="btn btn-primary" ng-click="add()">Add</button>
 </form>

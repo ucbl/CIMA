@@ -26,7 +26,7 @@ public class JsonEncoder {
 
 	/**
 	 * Encode device to a json string
-	 * @param device - a device to encode
+	 * @param device a device to encode
 	 * @return A string that represent the encodage of this device
 	 */
 	public static String deviceToJSONStr(Device device) {
@@ -36,10 +36,10 @@ public class JsonEncoder {
 		obj.put("uri", device.getUri());
 		obj.put("modeConnection", device.getModeConnection());
 		obj.put("dateConnection", device.getDateConnection());
-		
-		
+
+
 		JSONArray capabilitiesJson =  new JSONArray();
-		
+
 		for(Capability capability : device.getCapabilities()) {
 			String jsonStr = capabilityToJSONStr(capability);
 			JSONParser jsonParser = new JSONParser();
@@ -55,13 +55,13 @@ public class JsonEncoder {
 		DeviceDescription deviceDescription = device.getDeviceDescription();
 		obj.put("deviceId", deviceDescription.getId());
 		obj.put("cloud_port", "-1");
-		
+
 		return obj.toJSONString();
 	}
 
 	/**
 	 * Encode contactInfo to a json string
-	 * @param contactInfo - a contactInfo to encode
+	 * @param contactInfo a contactInfo to encode
 	 * @return A string that represent the encodage of this contactInfo
 	 */
 	public static String contactInfoToJSONStr(ContactInfo contactInfo) {
@@ -74,7 +74,7 @@ public class JsonEncoder {
 
 	/**
 	 * Encode devices to a json string
-	 * @param devices - a devices list to encode
+	 * @param devices a devices list to encode
 	 * @return A string that represent the encodage of  devices
 	 */
 	public static String devicesToJSONStr(List<Device> devices) {
@@ -97,6 +97,11 @@ public class JsonEncoder {
 		return obj.toJSONString();
 	}
 
+	/**
+	 * Encode all contact infos to a json string
+	 * @param devices a devices list to encode
+	 * @return A string that represent the encodage of all contact info
+	 */
 	public static String allContactInfoToJSONStr(List<Device> devices) {
 		JSONArray array = new JSONArray();
 		JSONObject obj = new JSONObject();
@@ -117,9 +122,14 @@ public class JsonEncoder {
 		return obj.toJSONString();
 	}
 
+	/**
+	 * Encode protocol to a json string
+	 * @param protocol a protocol to encode
+	 * @return A string that represent the encodage of protocol
+	 */
 	public static String protocolToJSONStr(Protocol protocol) {
 		JSONObject obj=new JSONObject();
-		
+
 		obj.put("protocoleName", protocol.getName());
 		JSONArray jsonParameters = new JSONArray();
 		JSONObject jsonParameter = new JSONObject();
@@ -128,12 +138,17 @@ public class JsonEncoder {
 			jsonParameter.put(entry.getKey(), entry.getValue());
 			jsonParameters.add(jsonParameter);
 		}
-		
+
 		obj.put("parameters", jsonParameters);
-		
+
 		return obj.toJSONString();
 	}
 
+	/**
+	 * Encode capabilities to a json string
+	 * @param capabilities a list of capabilities to encode
+	 * @return A string that represent the encodage of capabilities
+	 */
 	public static String capabilitiesToJSONStr(List<Capability> capabilities) {
 		//TODO return a list of Capability
 		JSONObject obj = new JSONObject();
@@ -153,10 +168,15 @@ public class JsonEncoder {
 		obj.put("capabilities", array);
 		return obj.toJSONString();
 	}
-	
+
+	/**
+	 * Encode a single capability to a json string
+	 * @param capability a capability to encode
+	 * @return A string that represent the encodage of a capability
+	 */
 	public static String capabilityToJSONStr(Capability capability) {
 		JSONObject obj=new JSONObject();
-		
+
 		obj.put("id", capability.getName());
 		String jsonStr = protocolToJSONStr(capability.getProtocol());
 		JSONParser jsonParser = new JSONParser();
@@ -169,54 +189,54 @@ public class JsonEncoder {
 		}
 		JSONArray keyWords = new JSONArray();
 		keyWords.addAll(capability.getKeywords());
-		
+
 		obj.put("keywords", keyWords);
-		
+
 		return obj.toJSONString();
 	}
-	
-	
-	
+
+
+
 
 
 	public static void main(String args[]) {
-		
+
 		String s = "\"foo\" is not \"bar\". specials: \b\r\n\f\t\\/";
 
 		  s = JSONObject.escape(s);
-		  
-		                
+
+
 		  System.out.println(s);
-		  
+
 		ContactInfo contact = new ContactInfo("DEVICE_0", 6000);
-		
+
 
 		DeviceDescription deviceDescription = new DeviceDescription("DEVICE_0", "uri", "modeConnection");
 
 		System.out.println(contactInfoToJSONStr(contact));
-		
+
 		Protocol protocol = new Protocol("http");
 		protocol.addParameter("method", "post");
-		
+
 		System.out.println(protocolToJSONStr(protocol));
-		
+
 		Capability capability = new Capability("back");
 		capability.setProtocol(protocol);
 		capability.addKeyword("ev3");
 		capability.addKeyword("robot");
-		
+
 		System.out.println(capabilityToJSONStr(capability));
-		
+
 		Device device = new Device(deviceDescription);
 		device.addCapability(capability);
 		System.out.println(deviceToJSONStr(device));
-		
+
 		List<Device> devices = new ArrayList<Device>();
 		devices.add(device);
-		
+
 		System.out.println(devicesToJSONStr(devices));
 
-		
+
 
 
 	}
