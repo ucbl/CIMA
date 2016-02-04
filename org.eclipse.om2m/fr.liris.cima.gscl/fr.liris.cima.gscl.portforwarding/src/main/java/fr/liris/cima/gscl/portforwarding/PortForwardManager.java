@@ -13,6 +13,7 @@ public class PortForwardManager implements PortForwardingInterface {
 
 
     private Map<String, Integer> PFmanager = new HashMap<String, Integer>();
+    private Map<Integer, Integer> pidAndPort = new HashMap<>();
 
 
 
@@ -37,10 +38,12 @@ public void askNewPortForwarding(String address, int port, String deviceID){
         System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRv " + m);
         try {
             int port = getPortFromJSon(m);
+            int pid = getPIDFromJson(m);
 
             System.out.println("Message port recu :" + port);
             //TODO success or fail ???
             this.PFmanager.put(deviceId, port);
+            this.pidAndPort.put(pid, port);
             //TODO : enlever
             this.printPF();
         }
@@ -73,12 +76,12 @@ public void askNewPortForwarding(String address, int port, String deviceID){
 
 
     private int getPortFromJSon(String m){
-        return Integer.parseInt(m.split(":")[1].replace("\"", "").replace(" ", "").replace("}", ""));
+        return Integer.parseInt(m.split(":")[1].split(",")[0].replace("\"", "").replace(" ", "").replace("}", ""));
     }
 
 
-    private String getIdFromJSon(String m){
-        return m.split(",")[1].split(":")[1].replace("\"", "").replace(" ", "").replace("}", "");
+    private int getPIDFromJson(String m){
+        return Integer.parseInt(m.split(",")[1].split(":")[1].replace("\"", "").replace(" ", "").replace("}", ""));
     }
 
 
