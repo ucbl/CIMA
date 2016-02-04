@@ -34,19 +34,6 @@ public void askNewPortForwarding(String address, int port, String deviceID){
 
     public  void addPortForwarding(String m, String deviceId){
 
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("+++++++++++++++++++++++++++++++++TEST DU MONGO TRUC++++++++++++++++++++++++++++++++");
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-//
-//        MongoClient mongoClient = new MongoClient();
-//        MongoDatabase db = mongoClient.getDatabase("test");
-
-
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("+++++++++++++++++++++++++++++++++FIN  DU MONGO TRUC++++++++++++++++++++++++++++++++");
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-
-
         System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRv " + m);
         try {
             int port = getPortFromJSon(m);
@@ -82,13 +69,16 @@ public void askNewPortForwarding(String address, int port, String deviceID){
         System.out.println("================================");
     }
 
+	//{"port" : "10002" , "pid" : "11338"}
+
+
     private int getPortFromJSon(String m){
-        return Integer.parseInt(m.split("=")[1].replace("\"", "").replace(" ", "").replace("}", ""));
+        return Integer.parseInt(m.split(":")[1].replace("\"", "").replace(" ", "").replace("}", ""));
     }
 
 
     private String getIdFromJSon(String m){
-        return m.split(",")[2].split(":")[1].replace("\"", "").replace(" ", "").replace("}", "");
+        return m.split(",")[1].split(":")[1].replace("\"", "").replace(" ", "").replace("}", "");
     }
 
 

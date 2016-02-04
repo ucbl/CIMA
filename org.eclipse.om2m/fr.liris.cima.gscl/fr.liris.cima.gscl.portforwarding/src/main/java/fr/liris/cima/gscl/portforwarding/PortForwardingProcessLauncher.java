@@ -41,12 +41,11 @@ public class PortForwardingProcessLauncher extends Thread
         Process process = null;
 
         //Start the program
-        try {process = Runtime.getRuntime().exec("/CIMA/PortForwarding/PortForwarding 127.0.0.1 "+ this.address+" "+this.objectPort);
+        try {process = Runtime.getRuntime().exec("/opt/PortForwarding 127.0.0.1 "+ this.address+" "+this.objectPort);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Could not execute program to create a new port forwarding." + e);
         }
 
-        
             //try to listen the procces out
             Reader inStreamReader = new InputStreamReader(process.getInputStream());
             BufferedReader in = new BufferedReader(inStreamReader);

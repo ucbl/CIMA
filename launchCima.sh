@@ -19,13 +19,18 @@ function launchCima {
 		ws="gtk"
 	fi
 	cd $localLocation/org.eclipse.om2m/org.eclipse.om2m.site.$1/target/products/$1/$os/$ws/$arch
-	echo $2' java -jar -ea -Declipse.ignoreApp=true -Dosgi.clean=true -Ddebug=true plugins/org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar -console -noExit'
-	$2 java -jar -ea -Declipse.ignoreApp=true -Dosgi.clean=true -Ddebug=true plugins/org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar -console -noExit
+	#echo $2' java -jar -ea -Declipse.ignoreApp=true -Dosgi.clean=true -Dosgi.logfile=../../../../../../../../log/gscl.log -Ddebug=true plugins/org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar -console -noExit'
+
+ 	sudo java -Dosgi.logfile=../../../../../../../../log/gscl.log -jar -ea -Declipse.ignoreApp=true -Dosgi.clean=true -Ddebug=true  plugins/org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar -console -noExit
+
+
+	#gnome-terminal -e "$2 java -jar  -ea -Declipse.ignoreApp=true -Dosgi.clean=true -Dosgi.logfile=../../../../../../../../log/gscl.log -Ddebug=true plugins/org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar -console -noExit"
 }
 
 function installCima {
 #	install the port forwarding
 	cd portForwarding
+	sudo chmod +x install.sh
 	sudo ./install.sh
 	cd ..
 	cd $localLocation/org.eclipse.om2m
