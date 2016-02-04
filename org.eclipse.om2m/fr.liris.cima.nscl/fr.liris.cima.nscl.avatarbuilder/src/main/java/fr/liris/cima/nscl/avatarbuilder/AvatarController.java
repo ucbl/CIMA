@@ -18,6 +18,9 @@ import java.util.logging.Level;
 import java.util.logging.SimpleFormatter;
 import java.io.*;
 
+/**
+ *
+ */
 public class AvatarController implements IpuService{
 
 	/** Logger */

@@ -9,6 +9,11 @@ import java.lang.reflect.Field;
  */
 public abstract class AbstractProtocol implements Protocol {
 
+	/**
+	 *	Get the value of a given parameter name
+	 * @param paramName the parameter name
+	 * @return the value of the parameter
+	 */
 	@Override
 	public Object getParam(String paramName) {
 		paramName = paramName.toLowerCase();
@@ -26,6 +31,11 @@ public abstract class AbstractProtocol implements Protocol {
 		}
 	}
 
+	/**
+	 * Set protocol parameters
+	 * @param paramName the parameter name
+	 * @param paramValue the parameter value
+	 */
 	@Override
 	public void setParam(String paramName, Object paramValue) {
 		paramName = paramName.toLowerCase();
@@ -42,9 +52,17 @@ public abstract class AbstractProtocol implements Protocol {
 		}
 	}
 
+	/**
+	 *	Get the protocol name
+	 * @return the protocol name
+	 */
 	@Override
 	public abstract String getName();
 
+	/**
+	 * Send message using this protocol
+	 * @param message the message to send
+	 */
 	@Override
 	public abstract void sendMessage(String message);
 

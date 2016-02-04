@@ -7,6 +7,9 @@ import obix.Str;
 import obix.Uri;
 import obix.io.ObixEncoder;
 
+/**
+ *  Capability class avalaible for avatar
+ */
 public class Capability {
 
 	private String name;
@@ -37,7 +40,7 @@ public class Capability {
 		return functionalityImpl;
 	}
 	/**
-	 * @param functionalityImple the functionalityImple to set
+	 * @param functionalityImpl the functionalityImple to set
 	 */
 	public void setFunctionalityImple(String functionalityImpl) {
 		this.functionalityImpl = functionalityImpl;

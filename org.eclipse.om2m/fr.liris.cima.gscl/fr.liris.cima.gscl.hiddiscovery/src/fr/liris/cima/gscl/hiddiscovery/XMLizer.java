@@ -1,14 +1,14 @@
-/*
 
-Recoit le code prestructuré et le transforme en XML
 
-*/
+
 package fr.liris.cima.gscl.hiddiscovery;
 
 import java.util.ArrayList;
 import static sun.security.krb5.Confounder.intValue;
 
-
+/**
+ * Receives the pre-structure code and transforms it into XML
+ */
 public class XMLizer {
     private ArrayList<String> data = new ArrayList<>();
     private String xmlOut = "";

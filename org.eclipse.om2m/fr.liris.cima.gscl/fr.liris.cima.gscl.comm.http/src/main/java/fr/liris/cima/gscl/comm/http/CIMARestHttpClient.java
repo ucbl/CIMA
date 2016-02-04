@@ -28,6 +28,10 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.service.log.*;
 import org.osgi.framework.FrameworkUtil;
 
+/**
+ * Implements RestClientService class, to provide to CIMA, methods to send REST request using HTTP protocol.
+ * This class helps converting a standard HTTP status code into a protocol-independent object and also converts a protocol independent parameters into a standard HTTP parameters.
+ */
 public class CIMARestHttpClient implements RestClientService{
 
 	/** Logger */
@@ -168,7 +172,7 @@ public class CIMARestHttpClient implements RestClientService{
 
 	/**
 	 * Converts a standard HTTP status code into a protocol-independent {@link StatusCode} object.
-	 * @param statusCode - standard HTTP status code.
+	 * @param statusCode standard HTTP status code.
 	 * @return protocol independent status.
 	 */
 	public static StatusCode getRestStatusCode(int statusCode){
@@ -199,7 +203,7 @@ public class CIMARestHttpClient implements RestClientService{
 
 	/**
 	 * Converts a protocol independent parameters into a standard HTTP parameters.
-	 * @param params - protocol independent parameters map.
+	 * @param params protocol independent parameters map.
 	 * @return standard HTTP query string.
 	 */
 	public static String getQueryFromParams(Map<String, List<String>> params){

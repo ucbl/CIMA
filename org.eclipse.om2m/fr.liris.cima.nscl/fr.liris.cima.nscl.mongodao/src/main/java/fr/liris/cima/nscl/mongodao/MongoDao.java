@@ -146,8 +146,11 @@ public class MongoDao implements MongoDaoInterface {
             //add the etag
             String etag = this.getEtagFromId(this.getCollecNameByClassName(o), o.getPersistableData().get_id());
             o.getPersistableData().set_etag(etag);
+            System.out.println("ETAG RECUP : " + etag);
 
             this.save(o);
+
+            System.out.println("APRE SAVE : " + o.getPersistableData().get_etag());
 
 
         }
@@ -212,6 +215,7 @@ public class MongoDao implements MongoDaoInterface {
             {
                 JsonElement object = it.next();
                 T p = (T) gson.fromJson(object,  askedClass);
+                ((Persistable) p).getPersistableData().set_etag(object.getAsJsonObject().get("_etag").toString());//UPDATE THE ETAG
                 res.add(p);
             }
             return res;
@@ -237,12 +241,19 @@ public class MongoDao implements MongoDaoInterface {
             String json = gson.toJson(o, o.getClass());
 
             //add the _id
-            json = json.substring(0, json.length() - 1);
-            json += ",\"_id\":\""+o.getPersistableData().get_id()+"\"}";
+            //json = json.substring(0, json.length() - 1);
+            //json += ",\"_id\":\""+o.getPersistableData().get_id()+"\"}";
 
             String url = "http://"+host+":"+port+"/"+database+"/"+this.getCollecNameByClassName(o)+"/"+o.getPersistableData().get_id();
 
 
+            System.out.println("TRYING WITH : ");
+            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            System.out.println("Urls : " + url);
+            System.out.println("JSON : " + json);
+            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
             //sending to database
 

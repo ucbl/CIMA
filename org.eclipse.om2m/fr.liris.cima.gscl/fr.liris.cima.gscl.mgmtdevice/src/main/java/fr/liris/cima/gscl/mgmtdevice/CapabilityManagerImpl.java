@@ -12,6 +12,9 @@ import fr.liris.cima.gscl.commons.Capability;
 import fr.liris.cima.gscl.commons.Protocol;
 import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
 
+/**
+ * Manage in GSCL all the capability avalaible.
+ */
 public class CapabilityManagerImpl implements CapabilityManager {
 
 	static Map<String,Capability> capabilities;

@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.util.HashSet;
 
 /**
- * This class generate a port 
+ * This class randomly generate a port number between 1050 and 15000
  * @author madiallo
  *
  */

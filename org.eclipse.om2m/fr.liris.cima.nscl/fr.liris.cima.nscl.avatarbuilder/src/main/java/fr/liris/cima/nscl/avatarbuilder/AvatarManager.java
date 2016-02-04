@@ -17,6 +17,9 @@ import org.eclipse.om2m.core.service.SclService;
 
 import fr.liris.cima.nscl.avatarbuilder.constants.Constants;
 
+/**
+ * Manage all the avatar
+ */
 public class AvatarManager {
 
 	private static final String DESC = "DESCRIPTION";
@@ -28,6 +31,11 @@ public class AvatarManager {
 		SCL = scl;
 	}
 
+	/**
+	 * Create avatar resources
+	 * @param appId the application ID
+	 * @param aPoCPath the application point of contact
+	 */
 	public static void createAvatarResources(String appId, String aPoCPath) {
 		// Create the Application resource
 		ResponseConfirm response = SCL.doRequest(new RequestIndication(Constants.METHOD_CREATE,Constants.SCLID+"/applications",Constants.REQENTITY,new Application(appId,aPoCPath)));
@@ -47,8 +55,12 @@ public class AvatarManager {
 			SCL.doRequest(new RequestIndication(Constants.METHOD_CREATE,targetID,Constants.REQENTITY,new ContentInstance(content.getBytes())));
 		}
 	}
-	
-	
+
+
+	/**
+	 * Encode avatar to obix
+	 * @return a String corresponding to Obix syntax
+	 */
 	public static String toObix() {
 
 		Obj obj = new Obj();

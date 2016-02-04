@@ -63,6 +63,7 @@ public class Capability {
 	}
 
 	/**
+	 * Get the capability name
 	 * @return the name
 	 */
 	public String getName() {
@@ -70,6 +71,7 @@ public class Capability {
 	}
 
 	/**
+	 * Set the capability name
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
@@ -77,7 +79,13 @@ public class Capability {
 	}
 
 
-
+	/**
+	 * Convert capability to obix
+	 * @param sclId
+	 * @param appId
+	 * @param apocPath
+	 * @return
+	 */
 	public Op toObix(String sclId, String appId, String apocPath) {
 
 		// OP Hello
@@ -94,7 +102,7 @@ public class Capability {
 	//	public String toObixFormat() {
 	//		return ObixEncoder.toString(this.toObj());
 	//	}
-	//	
+	//
 	//	public Obj toObj() {
 	//		Obj obj = new Obj();
 	//
@@ -110,9 +118,13 @@ public class Capability {
 	//		return obj;
 	//	}
 
+	/**
+	 * Convert a capability to String
+	 * @return
+	 */
 	public String toString() {
 		String res = "capabilities (" + name + ", "  + protocol + ", " + keywords + ", ";
-		
+
 		for (Parameter p : parameters) {
 			res += p.toString() + ", ";
 		}
@@ -128,13 +140,21 @@ public class Capability {
 		return  res;
 	}
 
+	/**
+	 *
+	 * @return the protocol used by this capability
+	 */
 	public Protocol getProtocol() {
 		return protocol;
 	}
 
+	/**
+	 * Set the protocol that the capability is going to use.
+	 * @param protocol
+	 */
 	public void setProtocol(Protocol protocol) {
 		this.protocol = protocol;
-	}	
+	}
 
 	public List<String> getKeywords(){
 		return this.keywords;

@@ -8,6 +8,9 @@ import java.util.Map;
 
 import fr.liris.cima.gscl.commons.Capability;
 
+/**
+ * Manager to set, update, remove, get capability and store configuration in map.
+ */
 public class ConfigManagerImpl {
 	
 	private Map<String, Map<String, Capability>> mapConfig;

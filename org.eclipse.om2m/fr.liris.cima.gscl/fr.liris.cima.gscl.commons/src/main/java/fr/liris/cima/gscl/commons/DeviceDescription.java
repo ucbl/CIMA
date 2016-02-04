@@ -4,6 +4,9 @@ import java.util.Date;
 
 import fr.liris.cima.gscl.commons.util.Utils;
 
+/**
+ *	A simple device description (id, name, uri, modeConnection, dateConnection)
+ */
 public class DeviceDescription {
 
 	private String id;

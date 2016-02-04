@@ -12,15 +12,20 @@ import org.json.simple.JSONObject;
 import fr.liris.cima.nscl.commons.encoder.JsonEncoder;
 
 /**
- * This class represent a contact information for a device.
+ * This class represent a contact information for a device in NSCL
  * @author madiallo
  *
  */
 public class ContactInfo implements JSONAware {
 
+	/**
+	 * the Device ID
+	 */
 	private String deviceId;
-	
-	//port in the gateway that allow a client to send communicate with device.
+
+	/**
+	 * 	port in the gateway that allow a client to communicate with device.
+	 */
 	private int cloud_port;
 
 	public ContactInfo(String deviceId, int cloud_port) {

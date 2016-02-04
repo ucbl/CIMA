@@ -23,25 +23,29 @@ public class Device {
 
 	/** Logger */
 	//private static Log LOGGER = LogFactory.getLog(Device.class);
-	/** Application point of contact for the devices controller {@link DeviceController} */
+	/** Application point of contact for the devices {@link Device} */
 	public final static String APOCPATH = "devices";
 	/** Default Device type */
 	public final static String TYPE = "DEVICE";
 
 	/** capabilities of device*/
 	private List<Capability> capabilities;
-	
+
 	/** Information for contacting the device in the cloudby-passing the OM2M layer*/
 	private ContactInfo contactInfo;
 
 	/** A simple device description*/
 	private DeviceDescription deviceDescription;
-	
+
 	/** Configuration's type of the Device(automatic or manual) */
 	private String configuration = "automatic";
-	
+	/** A boolean to check if the device is known or unknown*/
 	private boolean known;
 
+	/**
+	 *
+	 * @return true if device is known, else it return false.
+	 */
 	public boolean isKnown() {
 		return known;
 	}
@@ -72,6 +76,10 @@ public class Device {
 		this.known = false;
 	}
 
+	/**
+	 *
+	 * @param deviceDescription device description (id, name, uri, modeConnection, dateConnection)
+	 */
 	public Device(DeviceDescription deviceDescription) {
 		this.deviceDescription = deviceDescription;
 //		contactInfo = new ContactInfo(deviceDescription.getId(), PortGenerator.generatePort());
@@ -116,7 +124,7 @@ public class Device {
 		this.deviceDescription.setName(name);
 	}
 
-	/**
+	/** Get the device URI
 	 * @return the uri
 	 */
 	public String getUri() {
@@ -149,7 +157,7 @@ public class Device {
 	public void addCapability(Capability capability) {
 		capabilities.add(capability);
 	}
-	
+
 	public Capability getCapability(String capabilityName) {
 		for(Capability capability : capabilities) {
 			if(capability.getName().equals(capabilityName)) {

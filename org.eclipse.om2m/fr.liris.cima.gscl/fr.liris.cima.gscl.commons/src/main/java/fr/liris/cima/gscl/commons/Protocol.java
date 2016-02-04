@@ -3,6 +3,9 @@ package fr.liris.cima.gscl.commons;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Defines generic, object to provide information for how to protocol use to invoke, get, etc capabilities.
+ */
 public class Protocol {
 
 	private String name;

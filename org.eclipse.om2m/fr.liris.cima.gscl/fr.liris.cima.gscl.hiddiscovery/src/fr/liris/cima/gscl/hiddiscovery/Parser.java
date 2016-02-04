@@ -15,6 +15,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 
+/**
+ * Manages the "depth" of the information, prepare work for XMLizer
+ */
 public class Parser {
     private String[]dataList;
     private ArrayList<Integer> spacePresent = new ArrayList<>();

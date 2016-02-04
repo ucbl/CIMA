@@ -38,12 +38,18 @@ public class Device {
 	
 	/** Configuration's type of the Device(automatic or manual) */
 	private String configuration = "automatic";
-	
+
+
 	private boolean known;
 
+	/**
+	 *
+	 * @return true if device is known, else it return false.
+	 */
 	public boolean isKnown() {
 		return known;
 	}
+
 
 	public void setKnown(boolean known) {
 		this.known = known;
@@ -64,6 +70,7 @@ public class Device {
 	public void setContactInfo(ContactInfo contactInfo) {
 		this.contactInfo = contactInfo;
 	}
+
 
 
 	public Device() {

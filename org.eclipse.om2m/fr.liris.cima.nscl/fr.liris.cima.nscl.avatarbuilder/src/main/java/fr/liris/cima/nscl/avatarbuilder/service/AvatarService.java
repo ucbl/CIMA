@@ -6,6 +6,9 @@ import java.util.Set;
 import fr.liris.cima.nscl.avatarbuilder.Avatar;
 import fr.liris.cima.nscl.avatarbuilder.Capability;
 
+/**
+ * An interface service to create avatar
+ */
 public interface AvatarService {
 
 	public Avatar createAvatar(String id, String protocol, String uri);

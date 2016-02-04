@@ -256,7 +256,7 @@ public class Parser {
 		return device;
 	}
 
-	/**
+	/*
 	public static Device parseObixToDevice(String obixFormat) {
 
 		Device device = null;

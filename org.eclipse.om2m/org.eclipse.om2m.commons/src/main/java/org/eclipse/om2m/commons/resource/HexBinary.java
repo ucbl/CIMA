@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * Java Class for hexBinary complex type.
  *
  * <p>
- * Le fragment de schéma suivant indique le contenu attendu figurant dans cette
+ * Le fragment de schema suivant indique le contenu attendu figurant dans cette
  * classe.
  *
  * <pre>
