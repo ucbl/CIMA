@@ -31,7 +31,7 @@ app.factory('ProfileService', ['$q', '$http', function($q, $http) {
 
     this.delete = function(data) {
         var deferred = $q.defer();
-        $http.delete(URL_PROFILE, data).then(function(results) {
+        $http.delete(URL_PROFILE, {data: data}).then(function(results) {
             deferred.resolve(results.data);
         });
         return deferred.promise;

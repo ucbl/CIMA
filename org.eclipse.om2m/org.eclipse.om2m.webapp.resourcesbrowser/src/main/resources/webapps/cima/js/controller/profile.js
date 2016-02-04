@@ -161,43 +161,50 @@ ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '
 
     $scope.delete = function() {
         if (deletingProfile) {
-            ProfileService.delete(deletingProfile.persistibleData).then(function(results) {
-                jQuery('.modal').modal('toggle');
+            console.log(deletingProfile.persistibleData);
+            ProfileService.delete(deletingProfile.persistibleData).then(
+                function(results) {
+                    jQuery('.modal').modal('toggle');
 
-                $scope.error = results && results.error;
-                $scope.message = results && results.message;
+                    if (results.message) {
+                        $scope.profiles.splice($scope.profiles.indexOf(deletingProfile), 1);
+                        ngToast.create(results.message);
+                        ProfileService.list().then(function(results) {
+                            $scope.profiles = results;
+                            $rootScope.$storage.profiles = $scope.profiles;
+                            // var profiles = results && results.profiles;
+                            // var render = results && results.pagination && results.pagination.render;
+     
+                            // if (profiles) {
+                            //     $scope.profiles = profiles;
+                            // }
+                            // if (render) {
+                            //     $scope.pagination = ConfigService.getRender(render);
+                            // } else {
+                            //     $scope.pagination = false;
+                            // }
+                            
+                            
+                        });
 
-                if ($scope.message) {
-                    $scope.profiles.splice($scope.profiles.indexOf(deletingProfile), 1);
-                    
-                    ProfileService.list().then(function(results) {
-                        $scope.profiles = results;
-                        $rootScope.$storage.profiles = $scope.profiles;
-                        // var profiles = results && results.profiles;
-                        // var render = results && results.pagination && results.pagination.render;
- 
-                        // if (profiles) {
-                        //     $scope.profiles = profiles;
-                        // }
-                        // if (render) {
-                        //     $scope.pagination = ConfigService.getRender(render);
-                        // } else {
-                        //     $scope.pagination = false;
-                        // }
-                        
-                        
-                    });
+                    } 
+
+                    if (results.error) {
+                        ngToast.create({
+                            content: results.message,
+                            className: 'danger'
+                        });
+                    }
 
                 }
-
-            });
+            );
         }
     };
 }]);
 
 
 // Remove localStorage later, profile will be saved on server-side.
-ProfileController.controller('AddProfileController', ['$scope', '$rootScope', 'ProfileService', '$location', '$localStorage', function($scope, $rootScope, ProfileService, $location, $localStorage) {
+ProfileController.controller('AddProfileController', ['$scope', '$rootScope', 'ProfileService', '$location', '$localStorage', 'ngToast', function($scope, $rootScope, ProfileService, $location, $localStorage, ngToast) {
     //$scope.capabilities = $rootScope.$storage.capabilitiesForProfile;
     $scope.capabilities = angular.copy($rootScope.$storage.capabilitiesForProfile);
 
@@ -251,12 +258,13 @@ ProfileController.controller('AddProfileController', ['$scope', '$rootScope', 'P
             if (profile.capabilities) {
                 profile.capabilities = JSON.stringify(profile.capabilities);
             }
-            console.log($scope.profile.capabilities);
+            console.log(profile.capabilities);
             //$location.path('/profile');
             ProfileService.add(profile).then(
                 function(results) {
                     if (results) {
                         console.log("success");
+                        ngToast.create(results.message);
                         $location.path('/profile');    
                     }
                 },
@@ -268,7 +276,7 @@ ProfileController.controller('AddProfileController', ['$scope', '$rootScope', 'P
     };
 }]);
 
-// Remove localStorage later, profile will be saved on server-side.
+// Remove localStorage later, profiles will be saved on server-side.
 ProfileController.controller('EditProfileController', ['$scope', '$rootScope', 'ProfileService', '$location', '$localStorage', '$routeParams', function($scope, $rootScope, ProfileService, $location, $localStorage, $routeParams) {
     // $scope.capabilities = $rootScope.$storage.capabilitiesForProfile;
     // $scope.profiles = $rootScope.$storage.profiles;
@@ -365,6 +373,7 @@ ProfileController.controller('EditProfileController', ['$scope', '$rootScope', '
             ProfileService.edit(profile).then(
                 function(results) {
                     if (!results.errors) {
+                        ngToast.create(results.message);
                         $location.path('/profile');
                     }
                 },

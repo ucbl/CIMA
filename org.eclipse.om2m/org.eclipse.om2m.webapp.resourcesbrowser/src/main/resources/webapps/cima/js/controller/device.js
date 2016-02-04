@@ -6,7 +6,7 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
     if (!$rootScope.$storage.capabilitiesForProfile)
         $rootScope.$storage.capabilitiesForProfile = [];
     $rootScope.loading = true;
-    $scope.EditIsOpen = false;
+    //$scope.EditIsOpen = false;
     $scope.idrequired = false;
     $scope.selected = undefined;
     $scope.ShowIsOpen = false;
@@ -26,9 +26,10 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
 
     $scope.applyProfile = function() {
         $('#listProfilesModal').modal('hide');
-        angular.copy($scope.activeProfile.capabilities, $scope.capabilities);
+        $scope.capabilities = angular.copy($scope.activeProfile.capabilities);
         $scope.ShowIsOpen = false;
-        $scope.EditIsOpen = false;
+        console.log($scope.editedCapability);
+        //$scope.EditIsOpen = false;
     };
 
     $scope.loadCapabilitiesBy = function(profile) {
@@ -38,16 +39,16 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         profile.isActive = true;
         $scope.activeProfile = profile;
         $scope.capabilitiesFromProfile = profile.capabilities;
-        if ($scope.capabilitiesFromProfile){
-            // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
-            angular.forEach($scope.capabilitiesFromProfile, function(value, key) {
-                if(value.configuration == 'automatic'){
-                    value.isEditable = false;
-                } else {
-                    value.isEditable = true;
-                }
-            });
-        } 
+        // if ($scope.capabilitiesFromProfile){
+        //     // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
+        //     angular.forEach($scope.capabilitiesFromProfile, function(value, key) {
+        //         if(value.configuration == 'automatic'){
+        //             value.isEditable = false;
+        //         } else {
+        //             value.isEditable = true;
+        //         }
+        //     });
+        // } 
     };
 
     /*retrieve information about the device and add them to the view*/
