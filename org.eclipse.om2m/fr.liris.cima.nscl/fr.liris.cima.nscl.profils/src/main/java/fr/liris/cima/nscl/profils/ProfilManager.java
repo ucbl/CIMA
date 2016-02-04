@@ -50,7 +50,7 @@ public class ProfilManager implements ProfilManagerInterface {
             res += gson.toJson(p);
             res += ", ";
         }
-        res = res.substring(0, res.length() - 3);
+        res = res.substring(0, res.length() - 2);
         res += "]";
         return res;
     }
