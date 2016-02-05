@@ -20,6 +20,7 @@ import org.osgi.framework.FrameworkUtil;
 
 import fr.liris.cima.nscl.profils.profilsExport.ProfilManagerInterface;
 import fr.liris.cima.nscl.profils.profilsExport.Profil;
+import fr.liris.cima.nscl.users.UsersExport.*;
 
 public class AdministrationServer implements IpuService{
 	private static Log LOGGER = LogFactory.getLog(AdministrationServer.class);
@@ -141,7 +142,6 @@ public class AdministrationServer implements IpuService{
 	@Override
 	// PUT
 	public ResponseConfirm doUpdate(RequestIndication requestIndication) {
-		System.out.println("DANS LE DO UPDATE");
 		String [] tID = requestIndication.getTargetID().split("/");
 		String body = requestIndication.getRepresentation();
 		ResponseConfirm resp = null;
@@ -184,7 +184,7 @@ public class AdministrationServer implements IpuService{
 		}
 		else if(tID.length == 5)
 		{
-			// nscl/applications/CIMA/administration/login
+			// nscl/applications/CIMA/administration/profile
 			ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfilManagerInterface.class.getName(), null);
 			st.open();
 			ProfilManagerInterface pf = (ProfilManagerInterface) st.getService();
@@ -220,26 +220,17 @@ public class AdministrationServer implements IpuService{
 
 		if(tID.length == 5){
 			if("login".equals(tID[4])) { // nscl/applications/CIMA/administration/login
-				String recu = (String) requestIndication.getRepresentation();
 
-				recu = recu.replace("{", "").replace("}", "");
+				ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), UserManagerInterface.class.getName(), null);
+				st.open();
+				UserManagerInterface um = (UserManagerInterface) st.getService();
 
-				String username = recu.split(",")[0];
-				username = username.split(":")[1].trim().replace("\"", "");
+				boolean res = um.checkLoginFromJson(requestIndication.getRepresentation());
 
-
-				String password = recu.split(",")[1];
-				password = password.split(":")[1].trim().replace("\"", "");
-
-
-
-				System.out.println("username : " + username);
-				System.out.println("password : " + password);
-
-
-				//TODO: verifier username et mot de passe
-
-				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"username\":\""+username+"\", \"error\" : 0}");
+				if(res)
+					return new ResponseConfirm(StatusCode.STATUS_OK, "{ \"error\" : 0}");
+				else
+					return new ResponseConfirm(StatusCode.STATUS_OK, "{ \"error\" : 1}");
 			}
 			else if("profile".equals(tID[4]))
 			{//nscl/applications/CIMA/administration/profile
