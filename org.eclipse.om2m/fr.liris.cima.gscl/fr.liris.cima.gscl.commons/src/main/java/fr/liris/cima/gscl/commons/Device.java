@@ -137,12 +137,12 @@ public class Device {
 		this.deviceDescription.setDateConnection(Utils.dateToStr(dateConnection));
 	}
 
-	public String getModeConnection() {
-		return this.deviceDescription.getModeConnection();
+	public String getProtocol() {
+		return this.deviceDescription.getProtocol();
 	}
 
-	public void setModeConnection(String modeConnection) {
-		this.deviceDescription.setModeConnection(modeConnection);
+	public void setProtocol(String protocol) {
+		this.deviceDescription.setProtocol(protocol);
 	}
 
 	public void addCapability(Capability capability) {

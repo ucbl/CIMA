@@ -25,12 +25,9 @@ import fr.liris.cima.gscl.commons.constants.Constants;
 import fr.liris.cima.gscl.commons.parser.Parser;
 import fr.liris.cima.gscl.device.service.ManagedDeviceService;
 import fr.liris.cima.gscl.device.service.capability.CapabilityManager;
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * Specific device controller to perform requests on devices.
@@ -40,8 +37,10 @@ import java.io.*;
 public class DeviceController implements IpuService{
 
 	/** Logger */
-	private static Logger LOGGER = Logger.getLogger(DeviceController.class.getName());
-	private  static  Handler fh ;
+	private static Log LOGGER = LogFactory.getLog(DeviceController.class);
+	/** Logger OSGI*/
+	private static ServiceTracker logServiceTracker;
+	private static LogService logservice;
 
 	/** managed device service*/
 	private  ManagedDeviceService managerImpl;
@@ -54,11 +53,7 @@ public class DeviceController implements IpuService{
 	public DeviceController(ManagedDeviceService deviceManagerImpl, CapabilityManager capabilityManager) {
 		this.managerImpl = deviceManagerImpl;
 		this.capabilityManager = capabilityManager;
-		try{
-			fh = new FileHandler("log/gsclCore.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
 
 	}
 
@@ -77,6 +72,7 @@ public class DeviceController implements IpuService{
 	public ResponseConfirm doExecute(RequestIndication requestIndication) {
 
 		LOGGER.info("*********Execute in DEVICE CONTROLLER ****");
+			logservice.log(LogService.LOG_ERROR, "*********Execute in DEVICE CONTROLLER ****");
 
 		/**
 		 * http://localhost:8181/om2m/gscl/applications/CIMA/devices/DEVICE_1/capabilities/EV3Back
@@ -98,14 +94,16 @@ public class DeviceController implements IpuService{
 				//	requestIndication.setTargetID("");
 					//	requestIndication.setTargetID("/"+Constants.PATH_CAPABILITIES+"/"+Constants.PATH_INVOKE+"/"+capabilityName);
 			//		requestIndication.setProtocol(device.getModeConnection());
-					LOGGER.info("send request for executing capabilities");
-					//ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
+			LOGGER.info("send request for executing capabilities");
+			logservice.log(LogService.LOG_ERROR, "send request for executing capabilities");
+//ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
 						ResponseConfirm responseConfirm = new ResponseConfirm(StatusCode.STATUS_ACCEPTED);
 					return responseConfirm;
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE,"IPU Device Error", e);
+			LOGGER.error("IPU Device Error",e);
+			logservice.log(LogService.LOG_ERROR, "IPU Device Error");
 
 			return new ResponseConfirm(StatusCode.STATUS_NOT_IMPLEMENTED,"IPU Device Error");
 		}
@@ -120,13 +118,21 @@ public class DeviceController implements IpuService{
 	@Override
 	public ResponseConfirm doRetrieve(RequestIndication requestIndication) {
 
+		logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(DeviceController.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+		logServiceTracker.open();
+		logservice = (LogService) logServiceTracker.getService();
+
 
 		LOGGER.info("*********Retrieve in DEVICE CONTROLLER **** " + requestIndication.getTargetID());
+		logservice.log(LogService.LOG_ERROR, "*********Retrieve in DEVICE CONTROLLER **** " + requestIndication.getTargetID());
 		String []infos = requestIndication.getTargetID().split("/");
 		String lastInfo = infos[infos.length - 1];
 		LOGGER.info("********* LAST INFOS **** " + lastInfo);
+		logservice.log(LogService.LOG_ERROR, "********* LAST INFOS **** " + lastInfo);
+
 		LOGGER.info("********* INFO - 2 **** " + infos[infos.length - 2]);
-		if(lastInfo.equals(Constants.PATH_CAPABILITIES)){
+		logservice.log(LogService.LOG_ERROR, "********* INFO - 2 **** " + infos[infos.length - 2]);
+if(lastInfo.equals(Constants.PATH_CAPABILITIES)){
 			if(infos[infos.length - 2].equals(Constants.PATH_DEVICES_ALL)){
 				// filter on capabilities
 				Map<String, List <String>> params = requestIndication.getParameters();
@@ -143,12 +149,15 @@ public class DeviceController implements IpuService{
 				String deviceId = infos[infos.length - 2];
 				Device device = managerImpl.getDevice(deviceId);
 				LOGGER.info("*********LAST INFO ****"+deviceId);
+								logservice.log(LogService.LOG_ERROR, "*********LAST INFO ****"+deviceId);
 
 
 				if(device != null) {
 					LOGGER.info("*********Constant INFO = = = ****"+Constants.PATH_CAPABILITIES);
+									logservice.log(LogService.LOG_ERROR, "*********Constant INFO = = = ****"+Constants.PATH_CAPABILITIES);
 					String representation = Encoder.encodeCapabilitiesToObix(device.getCapabilities());
 					LOGGER.info("send request for getting capabilities");
+										logservice.log(LogService.LOG_ERROR, "send request for getting capabilities");
 					ResponseConfirm responseConfirm = new ResponseConfirm(StatusCode.STATUS_OK, representation);
 					return responseConfirm;
 				}
@@ -158,6 +167,7 @@ public class DeviceController implements IpuService{
 			//device
 			String format = managerImpl.devicesToObixFormat();
 			LOGGER.info("******** /administration/device/ ***********");
+						logservice.log(LogService.LOG_ERROR, "******** /administration/device/ ***********");
 
 			ResponseConfirm confirm = new ResponseConfirm(StatusCode.STATUS_OK, format);
 			return confirm;
@@ -166,12 +176,14 @@ public class DeviceController implements IpuService{
 		else if(infos[infos.length - 2].equals(Constants.PATH_DEVICES_ALL)){
 			//if(lastInfo.equals("capability")) {
 			LOGGER.info("******** /administration/device/<id d'un device>***********");
+						logservice.log(LogService.LOG_ERROR, "******** /administration/device/<id d'un device>***********");
 			//}
 		}
 
 		else if(infos[infos.length - 3].equals(Constants.PATH_DEVICES_ALL)){
 			if(lastInfo.equals("capability")) {
 				LOGGER.info("******** /administration/device/<id d'un device>/capability***********");
+				logservice.log(LogService.LOG_ERROR, "******** /administration/device/<id d'un device>/capability***********");
 				String deviceId = infos[infos.length - 2];
 			//	List<Capability> capabilities = managerImpl.getUnknownDeviceCapabilities(deviceId);
 				List<Capability> capabilities = managerImpl.getDeviceCapabilities(deviceId);
@@ -185,6 +197,7 @@ public class DeviceController implements IpuService{
 		else if(infos[infos.length - 4].equals(Constants.PATH_DEVICES_ALL )){
 			if(infos[infos.length - 2].equals("capability")) {
 				LOGGER.info("********  /administration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
+								logservice.log(LogService.LOG_ERROR, "********  /administration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
 				String deviceId = infos[infos.length - 3];
 				String capabilityId = infos[infos.length - 1];
 				String representation;
@@ -200,13 +213,16 @@ public class DeviceController implements IpuService{
 
 		else if(lastInfo.equals("protocol")) {
 			LOGGER.info("********  /administration/protocol  ***********");
+						logservice.log(LogService.LOG_ERROR, "********  /administration/protocol  ***********");
 
 		}
 
 		else if(lastInfo.contains("capabilities?filter=")) {
 			LOGGER.info("********  /administration/capabilities?filter=<filter>  ***********");
-			String filter = lastInfo.split("=")[1];
-			LOGGER.info("filter = " + filter);
+			logservice.log(LogService.LOG_ERROR, "********  /administration/capabilities?filter=<filter>  ***********");
+String filter = lastInfo.split("=")[1];
+LOGGER.info("filter = " + filter);
+			logservice.log(LogService.LOG_ERROR, "filter = " + filter);
 
 			// TODO Le filtre sur les capabilities
 			// TODO Où stocke-t-on les capabilities ?
@@ -238,9 +254,11 @@ public class DeviceController implements IpuService{
 		if(infos[infos.length - 2].equals(Constants.PATH_DEVICES_ALL)){
 
 			LOGGER.info("*********PATH_DEVICES_ALL ****");
+						logservice.log(LogService.LOG_ERROR, "*********PATH_DEVICES_ALL ****");
 
 			String representation = requestIndication.getRepresentation();
 			LOGGER.info("PATH_DEVICES_ALL == "+representation);
+						logservice.log(LogService.LOG_ERROR, "PATH_DEVICES_ALL == "+representation);
 
 			//Device device = Parser.ParseJsonToDevice(representation);
 			Device device = Parser.parseObixToDevice(representation);
@@ -248,6 +266,7 @@ public class DeviceController implements IpuService{
 				return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND, "No device with this information"));
 			}
 			LOGGER.info("DEVICE CAPABILITIES == "+device.getCapabilities());
+			logservice.log(LogService.LOG_ERROR, "DEVICE CAPABILITIES == "+device.getCapabilities());
 		//	boolean validate = managerImpl.switchUnknownToKnownDevice(device);
 			device.setKnown(true);
 			Device existDev = managerImpl.getDevice(device.getId());
@@ -268,6 +287,7 @@ public class DeviceController implements IpuService{
 		else if(infos[infos.length - 4].equals(Constants.PATH_DEVICES_ALL )){
 			if(infos[infos.length - 2].equals("capability")) {
 				LOGGER.info("******** UPDATE  /administration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
+				logservice.log(LogService.LOG_ERROR, "******** UPDATE  /administration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
 				String deviceId = infos[infos.length - 3];
 				String capabilityId = infos[infos.length - 1];
 				String representation;
@@ -302,6 +322,8 @@ public class DeviceController implements IpuService{
 		if(infos[infos.length - 4].equals(Constants.PATH_DEVICES_ALL )){
 			if(infos[infos.length - 2].equals("capability")) {
 				LOGGER.info("******** DELETE  /administration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
+				logservice.log(LogService.LOG_ERROR, "******** DELETE  /administration/device/<id d'un device>/capability/<id d'une capacité>  ***********");
+
 				String deviceId = infos[infos.length - 3];
 				String capabilityId = infos[infos.length - 1];
 				String representation;
@@ -333,6 +355,7 @@ public class DeviceController implements IpuService{
 			if(deviceDescription != null) {
 				Device device = new Device(deviceDescription);
 				LOGGER.info("***DEVICE TO OBIX FORMAT***");
+								logservice.log(LogService.LOG_ERROR, "***DEVICE TO OBIX FORMAT***");
 				//LOGGER.info(device.toObixFormat());
 				managerImpl.addDevice(device);
 			}
@@ -348,6 +371,8 @@ public class DeviceController implements IpuService{
 				}
 
 				LOGGER.info("********  /administration/device/<id d'un device>/test  ***********");
+				logservice.log(LogService.LOG_ERROR, "********  /administration/device/<id d'un device>/test  ***********");
+
 			}
 		} else if(infos[infos.length - 3].equals(Constants.PATH_CAPABILITIES) && infos[infos.length - 2].equals(Constants.PATH_INVOKE)){
 			String deviceId = infos[infos.length - 4];
@@ -358,8 +383,9 @@ public class DeviceController implements IpuService{
 				requestIndication.setBase(device.getDeviceDescription().getUri());
 				requestIndication.setTargetID("");
 				//	requestIndication.setTargetID("/"+Constants.PATH_CAPABILITIES+"/"+Constants.PATH_INVOKE+"/"+capabilityName);
-				requestIndication.setProtocol(device.getDeviceDescription().getModeConnection());
+				requestIndication.setProtocol(device.getDeviceDescription().getProtocol());
 				LOGGER.info("send request for executing capabilities");
+				logservice.log(LogService.LOG_ERROR, "send request for executing capabilities");
 				ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
 				//	ResponseConfirm responseConfirm = restClientService.sendRequest(requestIndication);
 				return responseConfirm;
@@ -368,7 +394,11 @@ public class DeviceController implements IpuService{
 
 		ResponseConfirm confirm = new ResponseConfirm(StatusCode.STATUS_OK,"Device created successfully");
 		LOGGER.info("confirm *** "+ confirm);
-		LOGGER.info("url ***"+requestIndication.getUrl());
+		logservice.log(LogService.LOG_ERROR, "confirm *** "+ confirm);
+
+		LOGGER.info("url ***" + requestIndication.getUrl());
+		logservice.log(LogService.LOG_ERROR, "url ***" + requestIndication.getUrl());
+
 		return confirm;
 	}
 }

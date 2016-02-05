@@ -94,26 +94,41 @@ public class Parser {
 			SAXBuilder sb  = new SAXBuilder();
 			Document doc = sb.build(new StringReader(representation));
 			Element root =  doc.getRootElement();
-			String uri ="";
-			String modeConnection="";
-			String name = "";
 
+			String id = "";
+			String ip = "";
+			String protocol = "";
+			String name = "";
+			String description = "";
 
 			List<Element> childrenElement = root.getChildren();
 			for(Element element : childrenElement) {
-				if(element.getName().equals("uri")) {
-					uri = element.getText().trim();
+				if(element.getName().equals("id")) {
+					id = element.getText().trim();
 				}
-				if(element.getName().equals("modeConnection")) {
-					modeConnection = element.getText().trim();
+				else if(element.getName().equals("ip")) {
+					ip = element.getText().trim();
 				}
-				if(element.getName().equals("name")) {
+				else if(element.getName().equals("protocol")) {
+					protocol = element.getText().trim();
+				}
+				else if(element.getName().equals("name")) {
 					name = element.getText().trim();
 				}
+				else if(element.getName().equals("description")) {
+					description = element.getText().trim();
+				}
 			}
-			deviceDescription.setUri(uri);
-			deviceDescription.setModeConnection(modeConnection);
+
+			deviceDescription.setIp(ip);
+			deviceDescription.setProtocol(protocol);
 			deviceDescription.setName(name);
+
+			if (id.isEmpty() || id.equals("")) {
+				deviceDescription.setId(id);
+			}
+
+			deviceDescription.setDescription(description);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -212,28 +227,37 @@ public class Parser {
 		Device device = null;
 		List<Capability> capabilities = new ArrayList<>();
 
+		
 		try {
 			SAXBuilder sb  = new SAXBuilder();
 			Document doc = sb.build(new StringReader(representation));
 			Element root =  doc.getRootElement();
-			String uri ="";
-			String modeConnection="";
-			String name = "";
 
+			String id = "";
+			String ip = "";
+			String protocol = "";
+			String name = "";
+			String description = "";
 			String capabilityId = "";
-			Protocol protocol;
+
 			List<Element> childrenElement = root.getChildren();
 			for(Element element : childrenElement) {
-				if(element.getName().equals("uri")) {
-					uri = element.getText().trim();
+				if(element.getName().equals("id")) {
+					id = element.getText().trim();
 				}
-				if(element.getName().equals("modeConnection")) {
-					modeConnection = element.getText().trim();
+				else if(element.getName().equals("ip")) {
+					ip = element.getText().trim();
 				}
-				if(element.getName().equals("name")) {
+				else if(element.getName().equals("protocol")) {
+					protocol = element.getText().trim();
+				}
+				else if(element.getName().equals("name")) {
 					name = element.getText().trim();
 				}
-				if(element.getName().equals("capabilities")) {
+				else if(element.getName().equals("description")) {
+					description = element.getText().trim();
+				}
+				else if(element.getName().equals("capabilities")) {
 					List<Element> childrenCapabilityElement = element.getChildren("capability");
 
 					for(Element capabilityElement : childrenCapabilityElement) {
@@ -241,11 +265,20 @@ public class Parser {
 						capabilities.add(capability);
 					}
 				}
-
 			}
-			deviceDescription.setUri(uri);
-			deviceDescription.setModeConnection(modeConnection);
+
+			// Instatiation of DeviceDescription
+			deviceDescription.setIp(ip);
+			deviceDescription.setProtocol(protocol);
 			deviceDescription.setName(name);
+			deviceDescription.setDescription(description);
+
+			// If the device expose an id
+			if (!id.equals("")) {
+				deviceDescription.setId(id);
+			}
+
+			// Instatiation of Device
 			device = new Device(deviceDescription);
 			device.setCapabilities(capabilities);
 		}
@@ -396,7 +429,7 @@ public class Parser {
 		System.out.println("OBIX FORMAT : " + obixFormat);
 		Device device;
 		List<Capability> capabilities = new ArrayList<>();
-		String id = null, name = null, uri = null, modeConnection = null, dateConnection = null;
+		String id = null, name = null, uri = null, protocol = null, dateConnection = null, ip = null;
 
 		Obj objRoot = ObixDecoder.fromString(obixFormat);
 		Obj objDevice = objRoot.get("device");
@@ -405,11 +438,11 @@ public class Parser {
 		id = objDevice.get("id").getStr();
 		name = objDevice.get("name").getStr();
 		uri = objDevice.get("uri").getStr();
-		modeConnection = objDevice.get("modeConnection").getStr();
+		protocol = objDevice.get("protocol").getStr();
 		dateConnection  = objDevice.get("dateConnection").getStr();
-		
+		ip = objDevice.get("ip").getStr();
 
-		DeviceDescription deviceDescription = new DeviceDescription(name, uri, modeConnection);
+		DeviceDescription deviceDescription = new DeviceDescription(name, uri, protocol);
 		if(id != null) {
 			deviceDescription.setId(id);
 		}
@@ -418,7 +451,8 @@ public class Parser {
 		}
 		deviceDescription.setName(name);
 		deviceDescription.setUri(uri);
-		deviceDescription.setModeConnection(modeConnection);
+		deviceDescription.setProtocol(protocol);
+		deviceDescription.setIp(ip);
 
 		device = new Device(deviceDescription);
 
@@ -507,7 +541,7 @@ public class Parser {
 				"<str name=\"name\" val=\"http\"/>"+
 				"<str name=\"uri\" val=\"192.168.43.34:/device/capabilities/\"/>"+
 				"<str name=\"dateConnection\" val=\"mercredi, oct. 22, 2014 13:52:20 PM\"/>"+
-				"<str name=\"modeConnection\" val=\"ip\"/>"+
+				"<str name=\"protocol\" val=\"ip\"/>"+
 				"<list name=\"capabilities\">"+
 				"<obj>"+
 				"<str name=\"id\" val=\"ev3Back\"/>"+

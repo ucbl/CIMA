@@ -16,18 +16,16 @@ import org.json.simple.parser.ParseException;
 
 import fr.liris.cima.gscl.commons.parser.Parser;
 import fr.liris.cima.gscl.commons.util.Utils;
+import fr.liris.cima.gscl.portforwarding.PortForwardingInterface;
 import obix.Bool;
 import obix.Int;
 import obix.Obj;
 import obix.Str;
 import obix.io.ObixDecoder;
 import obix.io.ObixEncoder;
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.SimpleFormatter;
-import java.io.*;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.log.*;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * Encode an given object into xml, json, obix format.
@@ -36,11 +34,20 @@ import java.io.*;
  */
 public class Encoder {
 
-	private static Logger LOGGER = Logger.getLogger(Encoder.class.getName());
-	private  static  Handler fh ;
+	private static Log LOGGER = LogFactory.getLog(Encoder.class);
+	private static String URI_HYDRA = "localhost:8080/hydra/";
 
+	/** Logger OSGI*/
+	private static ServiceTracker logServiceTracker;
+	private static LogService logservice;
+
+	private static PortForwardingInterface pf;
 
 	static Map<String, List<Capability>>mapPortManager = new HashMap<>();
+
+	public Encoder(PortForwardingInterface pf) {
+		this.pf = pf;
+	}
 
 	/**
 	 * DeviceDescription
@@ -54,22 +61,23 @@ public class Encoder {
 				"<name>"+deviceDescription.getName()+"</name>"+
 				"<uri>"+deviceDescription.getUri()+"</uri> "+
 				"<dateConnection>"+deviceDescription.getDateConnection()+"</dateConnection>"+
-				"<modeConnection>"+deviceDescription.getModeConnection()+"</modeConnection>"+
+				"<protocol>"+deviceDescription.getProtocol()+"</protocol>"+
 				"</device>";
 
 		return  xmlFormat;
 	}
 
 	public static String encodeDeviceDescriptionToObix(DeviceDescription deviceDescription) {
-
 		Obj objDevice = new Obj("device");
 		Obj obj = new Obj();
 
 		objDevice.add(new Str("id",deviceDescription.getId()));
 		objDevice.add(new Str("name", deviceDescription.getName()));
-		objDevice.add(new Str("uri",deviceDescription.getUri()));
-		objDevice.add(new Str("modeConnection", deviceDescription.getModeConnection()));
+		objDevice.add(new Str("ip",deviceDescription.getIp()));
+		objDevice.add(new Str("protocol", deviceDescription.getProtocol()));
 		objDevice.add(new Str("dateConnection", deviceDescription.getDateConnection()));
+		objDevice.add(new Str("uri", deviceDescription.getUri()));
+		objDevice.add(new Str("description", deviceDescription.getDescription()));
 
 		return ObixEncoder.toString(objDevice);
 	}
@@ -79,14 +87,15 @@ public class Encoder {
 	}
 
 	public static String encodeDeviceToObix(Device device) {
-		try{
-			fh = new FileHandler("log/gsclCommons.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
+		logServiceTracker = new ServiceTracker(FrameworkUtil.getBundle(Encoder.class).getBundleContext(), org.osgi.service.log.LogService.class.getName(), null);
+		logServiceTracker.open();
+		logservice = (LogService) logServiceTracker.getService();
 
 
 		LOGGER.info("******************dans encoder ***********");
+		logservice.log(LogService.LOG_ERROR, "******************dans encoder ***********");
+
 		Obj objDevice = new Obj("device");
 		Obj obj = new Obj();
 
@@ -94,10 +103,19 @@ public class Encoder {
 		System.out.println("device desc : " + deviceDescription);
 		objDevice.add(new Str("id",deviceDescription.getId()));
 		objDevice.add(new Str("name", deviceDescription.getName()));
-		objDevice.add(new Str("uri",deviceDescription.getUri()));
-		objDevice.add(new Str("modeConnection", deviceDescription.getModeConnection()));
+		objDevice.add(new Str("ip",deviceDescription.getIp()));
+		objDevice.add(new Str("protocol", deviceDescription.getProtocol()));
 		objDevice.add(new Str("dateConnection", deviceDescription.getDateConnection()));
+		objDevice.add(new Str("uri", deviceDescription.getUri()));
+		objDevice.add(new Str("description", deviceDescription.getDescription()));
+		objDevice.add(new Str("modeConnection", deviceDescription.getProtocol()));
 		objDevice.add(new Str("configuration", device.getConfiguration()));
+		try {
+			objDevice.add(new Str("portforwarding", Integer.toString(pf.getPortForwarding(deviceDescription.getId()))));
+		} catch(Exception e) {
+			objDevice.add(new Str("portforwarding", "null"));
+		}
+
 		objDevice.add(new Bool("known", device.isKnown()));
 
 
@@ -131,11 +149,7 @@ public class Encoder {
 	}
 
 	public static Obj encodeCapabilityToObixObj(Capability capability) {
-		try{
-			fh = new FileHandler("log/gsclCommons.log", true);
-		LOGGER.addHandler(fh);
-		fh.setFormatter(new SimpleFormatter());}
-		catch(IOException ex){}
+
 
 		Obj obj = new Obj();
 
@@ -143,6 +157,8 @@ public class Encoder {
 		obj.add(new Int("cloudPort",capability.getCloudPort()));
 		obj.add(new Str("configuration", ((capability.getConfiguration()!=null)?capability.getConfiguration():"automatic")));
 		LOGGER.info("***************** ADD a Capability");
+		logservice.log(LogService.LOG_ERROR, "***************** ADD a Capability");
+
 		//obj.add(capability.getProtocol().toObj());
 		obj.add(encodeProtocolObixObj(capability.getProtocol()));
 		obix.List keywords = new obix.List("keywords");
@@ -184,11 +200,7 @@ public class Encoder {
 	}
 
 	public static Obj encodeParameterToObixObj(Parameter parameter) {
-		try{
-			fh = new FileHandler("log/gsclCommons.log", true);
-			LOGGER.addHandler(fh);
-			fh.setFormatter(new SimpleFormatter());
-		} catch(IOException ex){}
+
 
 		Obj obj = new Obj();
 		obj.add(new Str("idp", parameter.getIdP()));
@@ -276,7 +288,7 @@ public class Encoder {
 
 		String representation = "<device>"+
 				"<name>ev3</name>"+
-				"<modeConnection>http</modeConnection>"+
+				"<protocol>http</protocol>"+
 				"<dateConnection>mercredi, oct. 22, 2014 13:52:20 PM</dateConnection>"+
 				"<uri>192.168.43.34</uri> "+
 				"<capabilities> "

@@ -59,6 +59,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 	
 	private PortForwardingInterface portForwardingService;
 
+	private static Encoder encoder;
 
 	static List<Device> devices;
 
@@ -84,6 +85,8 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		unknownDevices = new ArrayList<>();
 		configManagerImpl = new ConfigManagerImpl();
 		capabilityManager = new CapabilityManagerImpl();
+
+		encoder = new Encoder(portForwardingService);
 	}
 
 	public static void init(SclService scl) {
@@ -305,7 +308,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 	public void sendDeviceToNSCL(Device device, RestClientService clientService) {
 		RequestIndication requestIndication = new RequestIndication();
 		//requestIndication.setRepresentation(device.toObixFormat());
-		String representation = Encoder.encodeDeviceToObix(device);
+		String representation = encoder.encodeDeviceToObix(device);
 		LOGGER.info("Send device to nscl  = "+representation);
 
 		requestIndication.setRepresentation(representation);
@@ -345,7 +348,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 
 		for(Device device : devices) {
 			//obixDevices.add(device.toIntrinsequeObix());
-			obixDevices.add(Encoder.encodeDeviceToObixObj(device));
+			obixDevices.add(encoder.encodeDeviceToObixObj(device));
 		}
 		obj.add(obixDevices);
 
@@ -372,7 +375,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		Obj obj = new Obj();
 
 		for(Capability capability : capabilities) {
-			obixCapabilities.add(Encoder.encodeCapabilityToObixObj(capability));
+			obixCapabilities.add(encoder.encodeCapabilityToObixObj(capability));
 		}
 		obj.add(obixCapabilities);
 
@@ -448,7 +451,7 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		Obj obj = new Obj();
 
 		for(Device device : unknownDevices) {
-			obixDevices.add(Encoder.encodeDeviceToObixObj(device));
+			obixDevices.add(encoder.encodeDeviceToObixObj(device));
 
 		}
 		obj.add(obixDevices);

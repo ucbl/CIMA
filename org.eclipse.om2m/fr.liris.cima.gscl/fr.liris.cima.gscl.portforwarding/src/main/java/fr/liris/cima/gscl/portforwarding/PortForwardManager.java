@@ -26,7 +26,11 @@ public class PortForwardManager implements PortForwardingInterface {
 
     }
 
-    public int getPortForwarding(String deviceId){
+    public int getPortForwarding(String deviceId) {
+        if (PFmanager.get(deviceId) == null) {
+            throw new NullPointerException("PortForwarding not found");
+        }
+
         return PFmanager.get(deviceId);
     }
 

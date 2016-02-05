@@ -21,6 +21,9 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.SimpleFormatter;
 import java.io.*;
+import java.io.IOException;
+import java.util.Scanner;
+
 
 public class AdministrationServer implements IpuService{
 	private static Logger LOGGER = Logger.getLogger(AdministrationServer.class.getName());
@@ -71,7 +74,13 @@ public class AdministrationServer implements IpuService{
 			case "device" :
 				requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/all");
 				resp = restClientService.sendRequest(requestIndication);
+
+                                System.out.println("++++++++++++++++++++++++++++++++++++++"+ resp.getRepresentation());
 				resp.setRepresentation(Parser.parseObixToJSONStringDevices(resp.getRepresentation()));
+                //                resp.setRepresentation(Parser.hydrateststring(resp.getRepresentation()));
+
+
+                                
 				return resp;
 //				return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
 			case "protocol" :
@@ -92,7 +101,72 @@ public class AdministrationServer implements IpuService{
 				resp = restClientService.sendRequest(requestIndication);
 				resp.setRepresentation(Parser.parseObixToJSONStringCapabilities(resp.getRepresentation()));
 				return resp;
-			}
+			case "vocabulaire" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.vocabEV3());
+
+				return resp;
+			case "contextDevice" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.contextDevice());
+
+				return resp;
+			case "contextCapabilities" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.contextCapabilities());
+
+				return resp;
+			case "sensor-S1-EV3UltrasonicSensor" :
+					resp = restClientService.sendRequest(requestIndication);
+					resp.setRepresentation(HydraGen.sensorS1EV3UltrasonicSensor());
+
+					return resp;
+			case "sensor-S4-EV3GyroSensor" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.sensorS4EV3GyroSensor());
+
+				return resp;
+			case "motor-A-rotate" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.motorARotate());
+
+				return resp;
+			case "motor-A-forward" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.motorAForward());
+
+				return resp;
+			case "motor-A-backward" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.motorABackward());
+
+				return resp;
+			case "motor-A-stop" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.motorAStop());
+
+				return resp;
+			case "motor-D-rotate" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.motorDRotate());
+
+				return resp;
+			case "motor-D-forward" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.motorDForward());
+
+				return resp;
+			case "motor-D-backward" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.motorDBackward());
+
+				return resp;
+			case "motor-D-stop" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.motorDStop());
+
+				return resp;
+		}
 
 		} else if(tID.length == 6){
 			// nscl/applications/CIMA/administration/device/<device id>/
@@ -194,6 +268,31 @@ public class AdministrationServer implements IpuService{
 	@Override
 	public String getAPOCPath() {
 		return "administration";
+	}
+
+	private String getFile(String fileName) {
+
+		StringBuilder result = new StringBuilder("");
+
+		//Get file from resources folder
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource(fileName).getFile());
+
+		try (Scanner scanner = new Scanner(file)) {
+
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				result.append(line).append("\n");
+			}
+
+			scanner.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return result.toString();
+
 	}
 
 }
