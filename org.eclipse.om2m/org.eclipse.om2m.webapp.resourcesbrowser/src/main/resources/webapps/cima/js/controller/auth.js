@@ -1,22 +1,36 @@
 'use strict';
-app.controller('AuthController', ['$scope', '$rootScope', '$localStorage', '$location', 'AuthService', function($scope, $rootScope, $localStorage, $location, AuthService) {
-    $scope.login = function(user) {
-        AuthService.login(user).then(
-            function(results) {
-                $scope.errors = results && results.errors;
-                if (!results.errors) {
-                    $rootScope.$storage = $localStorage;
-                    $rootScope.$storage.userSession = results && results.username;
-                    $location.path('/');
-                } else {
-                    $scope.errors = results.errors;
-                }
-            },
-            function(errors) {
+app.controller('AuthController', ['$scope', '$rootScope', '$localStorage', '$location', 'AuthService', 'GooglePlus', 'md5', function($scope, $rootScope, $localStorage, $location, AuthService, GooglePlus, md5) {
+    $scope.loginGoogle = function() {
+        // lib/angular-google-plus.js
+        GooglePlus.login().then(function (authResult) {
+            GooglePlus.getUser().then(function (user) {
+                $rootScope.$storage = $localStorage;
+                $rootScope.$storage.userSession = user.name;
+                $location.path('/');
+                console.log(user);
+            });
+        }, function (err) {
+            console.log(err);
+        });
 
+        
+    };
+
+    $scope.login = function(user) {
+
+        var cryptingUser = angular.copy(user);
+        cryptingUser.userpassword = md5.createHash(user.userpassword);
+        AuthService.login(cryptingUser).then(function(results) {
+            if (!results.error) {
+                $rootScope.$storage = $localStorage;
+                $rootScope.$storage.userSession = user.username;
+                $location.path('/');
+            } else {
+                $scope.errors = results.errors;
             }
-        );
-        // var results = AuthService.login(user);
+        }, function(errors) {});
+        
+        // var results = AuthService.login(cryptingUser);
         // if (!results.errors) {
         //     $rootScope.$storage = $localStorage;
         //     $rootScope.$storage.userSession = results && results.username;
@@ -25,5 +39,5 @@ app.controller('AuthController', ['$scope', '$rootScope', '$localStorage', '$loc
         //     $scope.errors = results.errors;
         // }
     };
-    
+
 }]);

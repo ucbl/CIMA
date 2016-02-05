@@ -1,8 +1,6 @@
 'use strict';
 /* Controller page home.html */
 app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$interval', 'ngToast', '$timeout', function($scope, $rootScope ,DeviceFactory, $interval,  ngToast, $timeout){
-//app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$interval', 'ngToast', '$timeout', function($scope, $rootScope ,DeviceFactory, $interval,  ngToast, $timeout){       
-
 
     $rootScope.loading = false;
     $scope.devices = [];

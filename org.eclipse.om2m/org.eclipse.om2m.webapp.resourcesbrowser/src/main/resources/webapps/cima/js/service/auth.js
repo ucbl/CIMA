@@ -11,7 +11,8 @@ app.factory('AuthService', ['$q', '$http', function($q, $http) {
 
             }
         );
-        return deferred.promise;
+        // This code below is just for local test. Remove when unnecessary
+        // return deferred.promise;
         // var result = {};
         // result.username = 'CIMA';
         // result.errors = 0;

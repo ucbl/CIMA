@@ -276,8 +276,7 @@ ProfileController.controller('AddProfileController', ['$scope', '$rootScope', 'P
     };
 }]);
 
-// Remove localStorage later, profiles will be saved on server-side.
-ProfileController.controller('EditProfileController', ['$scope', '$rootScope', 'ProfileService', '$location', '$localStorage', '$routeParams', function($scope, $rootScope, ProfileService, $location, $localStorage, $routeParams) {
+ProfileController.controller('EditProfileController', ['$scope', '$rootScope', 'ProfileService', '$location', '$localStorage', '$routeParams', 'ngToast', function($scope, $rootScope, ProfileService, $location, $localStorage, $routeParams, ngToast) {
     // $scope.capabilities = $rootScope.$storage.capabilitiesForProfile;
     // $scope.profiles = $rootScope.$storage.profiles;
     $scope.capabilities = angular.copy($rootScope.$storage.capabilitiesForProfile);
@@ -372,8 +371,8 @@ ProfileController.controller('EditProfileController', ['$scope', '$rootScope', '
             //$location.path('/profile');
             ProfileService.edit(profile).then(
                 function(results) {
-                    if (!results.errors) {
-                        ngToast.create(results.message);
+                    if (results.message) {
+                        //ngToast.create(results.message); // uncomment this when server send "non-cute" messages
                         $location.path('/profile');
                     }
                 },

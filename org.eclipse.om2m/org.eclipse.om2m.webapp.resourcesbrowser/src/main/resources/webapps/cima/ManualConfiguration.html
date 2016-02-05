@@ -14,7 +14,7 @@
     
     <body>
         <div class="pull pull-left" ng-show="$storage.userSession">
-            <a href="" title="" ng-click="logout()">Logout</a> 
+            <a href="" title="" ng-click="logout()" ng-bind-template="Logout ({{$storage.userSession}})"></a> 
         </div>
         <br />
         <toast></toast>
@@ -27,10 +27,10 @@
         <script src="lib/angular1312-animate.min.js"></script>
         <script src="lib/angular1312-sanitize.min.js"></script>
         <script src="lib/jquery-1.11.1.js"></script>
-        <script src="lib/listgroup.js"></script>
         <script src="lib/ngToast.min.js"></script>
         <script src="lib/ngstorage.js"></script>
-    
+        <script src="lib/angular-google-plus.js"></script>
+        <script src="lib/angular-md5.js"></script>
         <!-- <script src="lib/angular.min.js"></script>
         <script src="lib/angular-route.min.js"></script>       
         <script src="lib/angular-animate.min.js"></script>
