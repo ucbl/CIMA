@@ -4,6 +4,7 @@ import fr.liris.cima.nscl.mongodao.persistance.MongoDaoInterface;
 import fr.liris.cima.nscl.users.UsersExport.User;
 import fr.liris.cima.nscl.users.UsersExport.UserManagerInterface;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,6 +21,18 @@ public class UserManager implements UserManagerInterface{
 
     public UserManager(MongoDaoInterface mongoDaoInterface) {
         this.mongoDaoInterface = mongoDaoInterface;
+
+
+        //TODO : remove !!
+        User u = new User("admin", "21232f297a57a5a743894a0e4a801fc3");
+        try {
+            mongoDaoInterface.persist(u);
+        }
+        catch(IOException e)
+        {
+            System.out.println("ERROR : IMPOSSIBLE D'AJOUTER L'UTILISATEUR ADMIN");
+            e.printStackTrace();
+        }
     }
 
 

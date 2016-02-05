@@ -15,6 +15,7 @@ public class User implements Persistable{
     public User(String username, String userpassword) {
         this.username = username;
         this.userpassword = userpassword;
+        this.persistableData = new PersistableData();
     }
 
 
