@@ -101,7 +101,7 @@ public class Parser {
 
 			List<Element> childrenElement = root.getChildren();
 			for(Element element : childrenElement) {
-				if(element.getName().equals("uri")) {
+				if(element.getName().equals("uri") || element.getName().equals("ip")) {
 					uri = element.getText().trim();
 				}
 				if(element.getName().equals("modeConnection")) {
@@ -208,6 +208,12 @@ public class Parser {
 
 
 	public static Device parseXmlToDevice(String representation) {
+
+		System.out.println("+++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ ");
+		System.out.println("+++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ ");
+		System.out.println("Cas XXX" + representation.toString());
+		System.out.println("+++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ ");
+		System.out.println("+++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ +++ ");
 		DeviceDescription deviceDescription = new DeviceDescription();
 		Device device = null;
 		List<Capability> capabilities = new ArrayList<>();

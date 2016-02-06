@@ -126,11 +126,8 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 	private void askForPortForwarding(Device device){ //TODO : logique métier cote PF
 		String deviceID = device.getId();
 		int port = 8080; //TODO; //SELON CAPACITE
-		String address = device.getUri(); //TODO verif
-
-		System.out.println("SEND SEND SEND : "+ deviceID + " " + port + " " + address);
+		String address = device.getUri();
 		portForwardingService.askNewPortForwarding(address, port, deviceID);
-		System.out.println("SENDED SENDED");
 	}
 
 	@Override
