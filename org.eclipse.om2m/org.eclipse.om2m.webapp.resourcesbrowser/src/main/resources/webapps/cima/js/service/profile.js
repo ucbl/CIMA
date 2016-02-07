@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('ProfileService', ['$q', '$http', function($q, $http) {
+ProfileController.factory('ProfileService', ['$q', '$http', function($q, $http) {
     this.list = function() {
         var deferred = $q.defer();
         $http.get(URL_PROFILE).then(function(results) { //URL_PROFILE 
@@ -37,12 +37,35 @@ app.factory('ProfileService', ['$q', '$http', function($q, $http) {
         return deferred.promise;
     };
 
-    this.get = function(id) {
+    this.getProfilesMatchingOfDevice = function(id) {
         var deferred = $q.defer();
-        $http.get(URL_PROFILE, id).then(function(results) {
+
+        // Local test. Remove later
+        // $http.get(URL_PROFILE_MATCHING).then(function(results) {
+        //     deferred.resolve(results.data);
+        // });
+
+        $http.get(URL_PROFILE_MATCHING + '/' + id).then(function(results) {
             deferred.resolve(results.data);
         });
         return deferred.promise;
     };
+
+    this.addProfilesMatching = function(data) {
+        var deferred = $q.defer();
+        $http.post(URL_PROFILE_MATCHING, data).then(function(results) {
+            deferred.resolve(results.data);
+        });
+        return deferred.promise;
+    };
+
+    this.deleteProfilesMatching = function(data) {
+        var deferred = $q.defer();
+        $http.delete(URL_PROFILE_MATCHING, {data: data}).then(function(results) {
+            deferred.resolve(results.data);
+        });
+        return deferred.promise;
+    };
+
     return this;
 }]);

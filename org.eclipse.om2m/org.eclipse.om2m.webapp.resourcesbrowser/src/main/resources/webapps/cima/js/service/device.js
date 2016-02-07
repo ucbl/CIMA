@@ -1,7 +1,8 @@
 'use strict';
 /*Device Model
 * Defining all methods to request the server*/
-app.factory('DeviceFactory', ['$http', '$q', 'JsonldRest', function($http, $q, JsonldRest){
+DeviceController.factory('DeviceFactory', ['$http', '$q', function($http, $q){
+    // Add JsonldRest as a DI for jsonld
     //JsonldRest.setBaseUrl('http://localhost:4040/angular-project/api/');
     //var connectedObjects = JsonldRest.collection('/cima');
     var factory = { 
@@ -9,7 +10,6 @@ app.factory('DeviceFactory', ['$http', '$q', 'JsonldRest', function($http, $q, J
         find : function(options){
             /* Promises */
             var deferred = $q.defer();
-                
             $http.get(URL_DEVICE).then(function(response) {
                 factory.devices = response.data;
                 deferred.resolve(factory.devices);

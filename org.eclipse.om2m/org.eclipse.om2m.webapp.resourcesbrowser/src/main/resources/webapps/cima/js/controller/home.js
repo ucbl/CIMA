@@ -1,6 +1,7 @@
 'use strict';
-/* Controller page home.html */
-app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$interval', 'ngToast', '$timeout', function($scope, $rootScope ,DeviceFactory, $interval,  ngToast, $timeout){
+
+var HomeController = angular.module('HomeController', ['DeviceController', 'CIMA.toast']);
+HomeController.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$interval', 'ngToast', '$timeout', function($scope, $rootScope, DeviceFactory, $interval,  ngToast, $timeout){
 
     $rootScope.loading = false;
     $scope.devices = [];
@@ -47,7 +48,6 @@ app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$int
                 $scope.isSelectAll = true;
                 for (var key1 in $scope.filters) {
                     for (var key2 in $scope.filters[key1]) {
-                        var value = $scope.filters[key1][key2];
                         $scope.filters[key1][key2] = $scope.isSelectAll;
                     }
                 }
@@ -63,7 +63,7 @@ app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$int
         }, function(msg){
             $rootScope.requestInfo = msg;
             ngToast.create({
-                content: "Unable to get devices : "+msg,
+                content: "Unable to get devices : " + msg,
                 className: "danger"
             });
         });
@@ -86,6 +86,7 @@ app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$int
         if (isOneSelected)
             $scope.devices = $scope.devicesTemp;
         else $scope.devices = [];
+
     };
 
     $scope.filterByDevice = function(device) {
@@ -125,7 +126,7 @@ app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$int
         // }
         
         // return matchesOR;
-        
+       
         // Filter with the AND condition
         var matchesAND = true;
         var reached = false;
@@ -188,7 +189,6 @@ app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$int
             $scope.devicesTemp = $scope.devices;
             $scope.devices = [];
         } else $scope.devices = $scope.devicesTemp;
-        console.log($scope.devices);
     };
 
     interval = $interval($scope.loadDevices, DEVICE_REFRESH);

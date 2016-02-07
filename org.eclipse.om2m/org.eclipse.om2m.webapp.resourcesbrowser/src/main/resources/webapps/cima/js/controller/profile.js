@@ -1,22 +1,18 @@
 'use strict';
 
 // Change to this structure if we have time to refactor
-var ProfileController = angular.module('ProfileController', []);
+var ProfileController = angular.module('ProfileController', ['DeviceController', 'CIMA.toast']);
 
 ProfileController.run(['$rootScope', 'ProtocolsFactory', 'ngToast', function($rootScope, ProtocolsFactory, ngToast) {
      /*retrieve the available protocols and add them to the view*/
-    ProtocolsFactory.find().then(function(protocols){
-        ngToast.create("Protocols loaded.");
+    ProtocolsFactory.find().then(function(protocols){    
         $rootScope.protocols = protocols;
         //List of protocol from an existing capability (obliged to abort cross config problem between new cap and cap from existing)
         $rootScope.protocolsFromExisting = JSON.parse(JSON.stringify(protocols));
         $rootScope.protocolsFromEdited = JSON.parse(JSON.stringify(protocols));
 
     }, function(msg){
-        ngToast.create({
-            content: "Unable to get protocols : "+msg,
-            className: "danger"
-        }); 
+
     });
 
 }]);

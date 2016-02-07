@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('AuthService', ['$q', '$http', function($q, $http) {
+AuthController.factory('AuthService', ['$q', '$http', function($q, $http) {
     this.login = function(data) {
         var deferred = $q.defer();
         $http.post(URL_LOGIN, data).then(
@@ -11,20 +11,14 @@ app.factory('AuthService', ['$q', '$http', function($q, $http) {
 
             }
         );
+        return deferred.promise;
         // This code below is just for local test. Remove when unnecessary
-        // return deferred.promise;
+        
         // var result = {};
         // result.username = 'CIMA';
+        // result.userpassword = 'CIMA';
         // result.errors = 0;
         // return result;
-    };
-
-    this.logout = function() {
-
-    };
-
-    this.isLogin = function() {
-
     };
 
     return this;

@@ -19,16 +19,20 @@ module.exports = function(config) {
       'lib/ngToast.min.js',
       'lib/angular1312-route.min.js',
       'lib/angular1312-sanitize.min.js',
+      'lib/angular1312-animate.min.js',
       'lib/ui-bootstrap-tpls-0.11.2.min.js',
       'lib/ng-tags-input.min.js',
+      'lib/angular-google-plus.js',
+      'lib/angular-md5.js',
+      'lib/ngstorage.js',
       'lib/angular-mocks.js',
       'lib/jasmine-matchers.js',
       'lib/jquery-1.11.1.js',
-      'js/app.js',
       'js/url/url.js',
-      'js/service/*.js',
+      'js/app.js',
       'js/controller/*.js',
-      'test/unit/*.test.js'
+      'js/service/*.js',
+      'test/unit/*.spec.js'
     ],
 
 

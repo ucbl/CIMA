@@ -2,7 +2,7 @@
 <div  ng-hide='loading'>
     <div class="col-sm-12 col-md-12 col-lg-12">
         <div class="col-sm-12 col-md-12 col-lg-12">
-            <a class="btn btn-warning" href="#/"> &lt; Devices list</a>
+            <a class="btn btn-warning" href="#/"> &lt; Device list</a>
             <a class="btn btn-primary pull-right" href="#/profile">My profiles &gt;</a>
             <button type="button" ng-click="loadProfileList()" class="btn btn-primary pull-right" data-toggle="modal" data-target="#listProfilesModal">Profile list</button>
             <!-- Applying changes button-->
@@ -262,55 +262,74 @@
       </div>
       <div class="modal-body" id="listProfilesBody">
         <div class="row">
-            <div class="list-group col-md-4">
-                <a href ng-click="loadCapabilitiesBy(profile)" ng-dblClick="applyProfile()" class="list-group-item" ng-repeat="profile in profiles" ng-bind-template="{{profile.name}} - {{profile.description}}" ng-class="{active: profile.isActive}">
+            <div class="col-md-4">
+                <div class="row" ng-repeat="profile in profiles">
+                    <div class="col-md-9">
+                        <div class="list-group">
+                            <a href  class="list-group-item" ng-bind-template="{{profile.name}} - {{profile.description}}" ng-class="{active: profile.isActive}" ng-click="addProfileIntoMatchingList(profile)"></a>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-primary" ng-click="loadCapabilitiesBy(profile)">Details</button>
+                    </div>
                     
-                </a>
+                    
+                    
+                </div>
             </div>
-            <div class="col-md-4" ng-if="activeProfile.capabilities.length > 0">
-                <table st-table="devices" class="table table-striped" style="width: 40%">
-                    <thead>
-                        <tr>
-                            <th class="text-center">Configuration</th>
-                            <th class="text-center">ID</th>
-                            <th class="text-center">Protocol</th>
-                            <th class="text-center">Option</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="capabilityFromProfile in capabilitiesFromProfile | orderBy:order">
-                            <td class="text-center">{{capabilityFromProfile.configuration}}</td>
-                            <td class="text-center">{{capabilityFromProfile.id}}</td>
-                            <td class="text-center">{{capabilityFromProfile.protocol.protocolName}}</td>
-                            <td class="text-right">
-                                <button type="button" class="btn btn-info" ng-click="showDetailsOfCapability(capabilityFromProfile)">Show</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-            </div>
-            <div class="col-md-4" ng-if="activeProfile.capabilities.length <= 0">
-                No capabilities found
-            </div>
-            <div ng-show="detailsOfCapability">
-                <strong>ID : {{detailsOfCapability.id}} </strong>
-                <br><br>
-                <li>
-                <strong>Protocol type</strong> :  {{detailsOfCapability.protocol.protocolName}}
+            <div class="col-md-8">
+                <div class="col-md-offset-1 col-md-4" ng-if="activeProfile.capabilities.length > 0">
+                    
+                    <table st-table="devices" class="table table-striped" style="width: 40%">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Configuration</th>
+                                <th class="text-center">ID</th>
+                                <th class="text-center">Protocol</th>
+                                <th class="text-center">Option</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="capabilityFromProfile in capabilitiesFromProfile | orderBy:order">
+                                <td class="text-center">{{capabilityFromProfile.configuration}}</td>
+                                <td class="text-center">{{capabilityFromProfile.id}}</td>
+                                <td class="text-center">{{capabilityFromProfile.protocol.protocolName}}</td>
+                                <td class="text-right">
+                                    <button type="button" class="btn btn-info" ng-click="showDetailsOfCapability(capabilityFromProfile)">Show</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                </div>
+                <div class="col-md-offset-1 col-md-4" ng-if="activeProfile.capabilities.length <= 0">
+                    No capabilities found
+                </div>
+                <div class="col-md-offset-1 col-md-6" ng-show="detailsOfCapability">
+                    <strong>ID : {{detailsOfCapability.id}} </strong>
+                    <br><br>
+                    <li>
+                    <strong>Protocol type</strong> :  {{detailsOfCapability.protocol.protocolName}}
 
-                </li>
-                <li ng-repeat="parameter in detailsOfCapability.protocol.parameters">
-                    <strong>{{parameter.name}}</strong> : {{parameter.value}}
-                </li>
-                <br>   
-                <strong>Keywords :</strong>
-                <li ng-repeat="word in detailsOfCapability.keywords">
-                    {{word.text}}
-                </li>
-                <br>
+                    </li>
+                    <li ng-repeat="parameter in detailsOfCapability.protocol.parameters">
+                        <strong>{{parameter.name}}</strong> : {{parameter.value}}
+                    </li>
+                    <br>   
+                    <strong>Keywords :</strong>
+                    <li ng-repeat="word in detailsOfCapability.keywords">
+                        {{word.text}}
+                    </li>
+                    <br>
+                </div>
             </div>
-            <!-- <div class="col-md-6">
+    
+            
+
+    
+        
+        
+        <!-- <div class="col-md-6">
 
                 <div class="panel panel-warning col-sm-12 col-md-12 col-lg-12" id="edit" ng-show="ShowIsOpenFromProfile">
                     <div class="panel-heading col-sm-12 col-md-12 col-lg-12">
@@ -449,15 +468,14 @@
                 </div>
             </div> -->
             <!-- </div> -->
-        </div>
-        <div class="modal-footer">
+        
+      </div>
+      <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" ng-click="applyProfile()" data-dismiss="modal">Apply</button>
             <!-- <button type="button" class="btn btn-primary" ng-if="editedCapability.params.length > 0" ng-click="testCapability(editedCapability)">Test</button> -->
             <!-- <button type="button" class="btn btn-primary" ng-if="editedCapability.idCapability.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button> -->
         </div>
-      </div>
-      
     </div>
   </div>
 </div>
