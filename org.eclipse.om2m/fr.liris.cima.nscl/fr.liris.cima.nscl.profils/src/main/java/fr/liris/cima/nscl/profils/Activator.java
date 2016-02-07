@@ -12,6 +12,7 @@ import fr.liris.cima.nscl.mongodao.persistance.MongoDaoInterface;
 import fr.liris.cima.nscl.profils.profilsExport.Profil;
 
 import fr.liris.cima.nscl.profils.profilsExport.ProfilManagerInterface;
+import fr.liris.cima.nscl.profils.profilsExport.ProfileMatchingManagerInterface;
 
 public class Activator implements BundleActivator {
 
@@ -19,25 +20,30 @@ public class Activator implements BundleActivator {
     private ServiceTracker<Object, Object> sclServiceTracker;
 
     private ServiceRegistration serviceRegistration;
+    private ServiceRegistration serviceRegistration2;
 
 
 
     public void start(BundleContext bundlecontext) throws Exception{
 
-
+        //Getting mongodao
         ServiceReference sf = bundlecontext.getServiceReference(MongoDaoInterface.class.getName());
         MongoDaoInterface mongoDaoInterface = (MongoDaoInterface) bundlecontext.getService(sf);
 
-
+        //Register Profil(e) Manager
         serviceRegistration = bundlecontext.registerService(ProfilManagerInterface.class.getName(), new ProfilManager(mongoDaoInterface), null);
+        System.out.println("ProfilManager service rehgisterd succesfully.");
 
 
+        //Register ProfileMatchingManager
+        serviceRegistration2 = bundlecontext.registerService(ProfileMatchingManagerInterface.class.getName(), new ProfileMatchingManager(mongoDaoInterface), null);
         System.out.println("ProfilManager service rehgisterd succesfully.");
 
     }
 
 
     public void stop(BundleContext context) throws Exception{
-        //serviceRegistration.unregister();
+        serviceRegistration.unregister();
+        serviceRegistration2.unregister();
     }
 }
