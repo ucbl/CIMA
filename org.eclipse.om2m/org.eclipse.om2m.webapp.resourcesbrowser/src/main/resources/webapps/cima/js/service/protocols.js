@@ -1,6 +1,6 @@
 'use strict';
 /* Protocols model */
-app.factory('ProtocolsFactory', ['$http' ,'$q', function($http, $q) {
+DeviceController.factory('ProtocolsFactory', ['$http' ,'$q', function($http, $q) {
 
     var factory = {
         protocols : false,

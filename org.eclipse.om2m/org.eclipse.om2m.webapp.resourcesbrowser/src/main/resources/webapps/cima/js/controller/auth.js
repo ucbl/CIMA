@@ -1,5 +1,8 @@
 'use strict';
-app.controller('AuthController', ['$scope', '$rootScope', '$localStorage', '$location', 'AuthService', 'GooglePlus', 'md5', function($scope, $rootScope, $localStorage, $location, AuthService, GooglePlus, md5) {
+
+var AuthController = angular.module('AuthController', []);
+
+AuthController.controller('AuthController', ['$scope', '$rootScope', '$localStorage', '$location', 'AuthService', 'GooglePlus', 'md5', function($scope, $rootScope, $localStorage, $location, AuthService, GooglePlus, md5) {
     $scope.loginGoogle = function() {
         // lib/angular-google-plus.js
         GooglePlus.login().then(function (authResult) {
@@ -17,11 +20,12 @@ app.controller('AuthController', ['$scope', '$rootScope', '$localStorage', '$loc
     };
 
     $scope.login = function(user) {
-
         var cryptingUser = angular.copy(user);
         cryptingUser.userpassword = md5.createHash(user.userpassword);
         AuthService.login(cryptingUser).then(function(results) {
-            if (!results.error) {
+            console.log(results);
+            if (results.error == 0) {
+                console.log('logged in');
                 $rootScope.$storage = $localStorage;
                 $rootScope.$storage.userSession = user.username;
                 $location.path('/');

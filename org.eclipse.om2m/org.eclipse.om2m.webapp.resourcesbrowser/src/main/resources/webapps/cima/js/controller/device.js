@@ -1,13 +1,14 @@
 'use strict';
-/* Controller page device.html */
-app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', 'ProfileService', '$localStorage', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast, ProfileService, $localStorage) {
+
+var DeviceController = angular.module('DeviceController', []);
+
+DeviceController.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', 'ProfileService', '$localStorage', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast, ProfileService, $localStorage) {
     $rootScope.$storage = $localStorage;
     if (!$rootScope.$storage.capabilitiesForProfile)
         $rootScope.$storage.capabilitiesForProfile = [];
     $rootScope.loading = true;
     //$scope.EditIsOpen = false;
     $scope.idrequired = false;
-    $scope.selected = undefined;
     $scope.ShowIsOpen = false;
     $scope.indexOfShowingCapability = -1;
     $scope.configParams = {};
@@ -15,40 +16,9 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
     $scope.responseSensors = [];
     $scope.isLoading = false;
     $scope.activeProfile = {};
-    $scope.loadProfileList = function() {
-        if (!$scope.profiles) {
-            ProfileService.list().then(function(results) {
-                $scope.profiles = results;
-            });
-        }
-    };
-
-    $scope.applyProfile = function() {
-        $('#listProfilesModal').modal('hide');
-        $scope.capabilities = angular.copy($scope.activeProfile.capabilities);
-        $scope.ShowIsOpen = false;
-        console.log($scope.editedCapability);
-        //$scope.EditIsOpen = false;
-    };
-
-    $scope.loadCapabilitiesBy = function(profile) {
-        angular.forEach($scope.profiles, function(value, key) {
-            value.isActive = false;
-        });
-        profile.isActive = true;
-        $scope.activeProfile = profile;
-        $scope.capabilitiesFromProfile = profile.capabilities;
-        // if ($scope.capabilitiesFromProfile){
-        //     // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
-        //     angular.forEach($scope.capabilitiesFromProfile, function(value, key) {
-        //         if(value.configuration == 'automatic'){
-        //             value.isEditable = false;
-        //         } else {
-        //             value.isEditable = true;
-        //         }
-        //     });
-        // } 
-    };
+    $scope.activeCapabilities = [];
+    $scope.profilesMatching = [];
+    $scope.selectedProfilesMatching = [];
 
     /*retrieve information about the device and add them to the view*/
     DeviceFactory.get($routeParams.id).then(function(device){
@@ -68,25 +38,34 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
         $scope.keywords = device.keywords; 
         $scope.portforwarding = (typeof(device.portforwarding) !== "undefined") ? device.portforwarding : "Not available";
         $scope.capabilities = [];
+
+        
         $scope.capabilities = device.capabilities;
+        $scope.activeCapabilities = $scope.capabilities;
+        getProfilesMatchingOfDevice($routeParams.id);
+        $scope.loadProfileList(function(results) {
+            $scope.capabilities = angular.copy(results);
+            console.log($scope.capabilities);
+        });
+
         if(device.configuration == 'automatic'){
             $scope.isDeviceNameEditable = false;
-        }else{
+        } else {
             $scope.isDeviceNameEditable = true;
         }
         
-        if ($scope.capabilities){
-            // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
-            angular.forEach($scope.capabilities, function(value, key) {
-                if(value.configuration == 'automatic'){
-                    value.isEditable = false;
-                }else{
-                    value.isEditable = true;
-                }
-            });
-        } else {
-            $scope.capabilities = [];
-        }
+        // if ($scope.capabilities){
+        //     // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
+        //     angular.forEach($scope.capabilities, function(value, key) {
+        //         if(value.configuration == 'automatic'){
+        //             value.isEditable = false;
+        //         }else{
+        //             value.isEditable = true;
+        //         }
+        //     });
+        // } else {
+        //     $scope.capabilities = [];
+        // }
         
         
         $rootScope.loading = false; 
@@ -98,6 +77,163 @@ app.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFact
             className: "danger"
         });
     });
+
+
+
+    var getProfilesMatchingOfDevice = function(id) {
+        ProfileService.getProfilesMatchingOfDevice(id).then(
+            function(results) {
+                $scope.profilesMatching = results;
+            },
+            function(errors) {
+
+            }
+        );
+    };
+    getProfilesMatchingOfDevice($routeParams.id);
+
+    var addActiveCapabilities = function(profile) {
+        for (var i in profile.capabilities) {
+            $scope.activeCapabilities.push(profile.capabilities[i]);
+        }
+    };
+
+    $scope.loadProfileList = function(callback) {
+        ProfileService.list().then(function(results) {
+            $scope.profiles = results;
+
+            angular.forEach($scope.profiles, function(profile) {
+                for (var key in $scope.profilesMatching) {
+                    if (profile.persistibleData['_id'] == $scope.profilesMatching[key].profileId) {
+                        if (callback === undefined) {
+                            profile.isActive = true;
+                            $scope.selectedProfilesMatching.push({
+                                deviceId: $routeParams.id,
+                                profileId: $scope.profilesMatching[key].profileId
+                            });
+                        }
+                        
+                        addActiveCapabilities(profile);
+                        
+                        break;
+                    } else {
+                        profile.isActive = false;
+                    }
+                }
+
+            });
+
+            if (callback !== undefined) {
+                callback($scope.activeCapabilities);
+                $scope.activeCapabilities = [];
+            }
+            console.log($scope.selectedProfilesMatching);
+        });
+
+    };
+
+    $scope.applyProfile = function() {
+        var deletedProfiles = [];
+        var found = false;
+
+        for (var i in $scope.profilesMatching) {
+            for (var j in $scope.selectedProfilesMatching) {
+                if ($scope.profilesMatching[i].profileId == $scope.selectedProfilesMatching[j].profileId) {
+                    found = false;
+                    break;
+                } else {
+                    found = true;
+                }
+            }
+            if (found)
+                deletedProfiles.push($scope.profilesMatching[i].persistableData);
+        }
+
+        console.log(deletedProfiles);
+        console.log($scope.selectedProfilesMatching);
+        console.log($scope.activeCapabilities);
+
+        ProfileService.deleteProfilesMatching(deletedProfiles).then(function(results) {
+            if (results.error == 0) {
+                ProfileService.addProfilesMatching($scope.selectedProfilesMatching).then(function(results) {
+                    if (results.error == 0) {
+                        $('#listProfilesModal').modal('hide');
+                        $scope.capabilities = angular.copy($scope.activeCapabilities);
+                        $scope.selectedProfilesMatching = [];
+                        $scope.activeCapabilities = [];
+                        $scope.ShowIsOpen = false;
+                    }
+                });
+            }
+        });
+        
+        // The codes below is for local-test purpose
+        // $('#listProfilesModal').modal('hide');
+        // $scope.capabilities = angular.copy($scope.activeCapabilities);
+        // $scope.selectedProfilesMatching = [];
+        // $scope.activeCapabilities = [];
+        // $scope.ShowIsOpen = false;
+        
+        //$scope.EditIsOpen = false;
+    };
+
+    var unselectProfilesMatching = function(profile) {
+        for (var key in $scope.selectedProfilesMatching) {
+            if (profile.persistibleData['_id'] == $scope.selectedProfilesMatching[key].profileId) {
+                $scope.selectedProfilesMatching.splice(key, 1);
+                break;
+            }
+        }
+    };
+
+    var removeActiveCapabilities = function(profile) {
+        for (var i in $scope.activeCapabilities) {
+            for (var j in profile.capabilities) {
+                if (profile.capabilities[j].id == $scope.activeCapabilities[i].id) {
+                    $scope.activeCapabilities.splice(i, 1);
+                    //break;
+                }
+            }
+        }
+    };
+
+    $scope.addProfileIntoMatchingList = function(profile) {
+        profile.isActive = !profile.isActive;
+
+        var profileMatching = {
+            deviceId: $routeParams.id,
+            profileId : profile.persistibleData['_id']
+        };
+
+        if (profile.isActive) {
+            $scope.selectedProfilesMatching.push(profileMatching);
+            addActiveCapabilities(profile);
+        }
+        else {
+            unselectProfilesMatching(profile);
+            removeActiveCapabilities(profile);
+        }
+
+        console.log($scope.activeCapabilities);
+        console.log($scope.selectedProfilesMatching);
+    };
+
+    $scope.loadCapabilitiesBy = function(profile) {
+        $scope.activeProfile = profile;
+        $scope.capabilitiesFromProfile = profile.capabilities;
+        // if ($scope.capabilitiesFromProfile){
+        //     // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
+        //     angular.forEach($scope.capabilitiesFromProfile, function(value, key) {
+        //         if(value.configuration == 'automatic'){
+        //             value.isEditable = false;
+        //         } else {
+        //             value.isEditable = true;
+        //         }
+        //     });
+        // } 
+    };
+
+    
  
     /*remove a capability from the model and the view*/
     // $scope.removeCapability = function (row) {
