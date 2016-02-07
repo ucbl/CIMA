@@ -110,17 +110,66 @@
                     </select>
                     <li ng-repeat="parameter in newCapability.protocol.parameters">
                         {{parameter.name}}:
-                        <input class="form-control" style="width: 40%" type="text" ng-model="parameter.value">
+                        <input ng-if="parameter.name != 'method'" class="form-control" style="width: 40%" type="text" ng-model="parameter.value">
+                        <select class="form-control" ng-model="parameter.value" ng-if="parameter.name == 'method'">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="DELETE">DELETE</option>
+                            <option value="PUT">PUT</option>
+                            <option value="PATCH">PATCH</option>
+                        </select>
                     </li>
-                    <br>        
+                    
+                    <!-- Template of AddParamIntoCapability directive -->
+                    <!-- <div class="form-inline" id="parameter'+counter+'" role="form" style="margin-top: 10px;">
+                        <h4>Parameter '+(counter+1)+'</h4>
+                        <div class="form-group">
+                            <label for="name">Name</label><input class="form-control" type=
+                            "text">
+                            <div class="form-group">
+                                <label for="type">Type</label><select class="form-control">
+                                    <option value="int">
+                                        int
+                                    </option>
+                                    <option value="string">
+                                        string
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-danger" type="button"><span class=
+                                "glyphicon glyphicon-minus"></span></button>
+                            </div>
+                        </div>
+                    </div>-->
 
-                     <strong>Keywords </strong>
-                     <tags-input ng-model="tags"></tags-input> 
-                     <br>                
+                    <div add-param-into-capability></div>
+
+                    <button type="button" class="btn btn-primary" ng-click="addParamIntoCapability()"><span class="glyphicon glyphicon-plus"></span></button>
+                    <br>        
+                    
+                    <div class="row form-inline">
+                        <div class="checkbox checkbox-primary col-md-2">
+                            <input type="checkbox" name="result" ng-click="toggleResultCheckbox()" />
+                            <label style="font-weight: bold;">
+                                Result
+                            </label>
+                        </div>
+                        <div class="col-md-4 pull pull-right">
+                            <label for="name">Result</label>
+                            <input type="text" ng-model="newCapability.result" ng-disabled="isResultCheckboxDisabled" />
+                            
+                        </div>
+                    </div>
+                    
+
+                    <strong>Keywords </strong>
+                    <tags-input ng-model="tags"></tags-input> 
+                    <br>                
                      <!-- Reset capability button -->
-                    <button ng-click="newCapability={};tags=null" type="button" class="btn btn-primary pull-left">Reset</button> 
+                    <button type="button" class="btn btn-primary pull-left">Reset</button> 
                      <!-- Add capability button -->
-                    <input style="margin-left:5px" class="btn btn-success pull-right" type="submit" value="Add"/>
+                    <input style="margin-left:5px" class="btn btn-success pull-right" type="submit" value="Add" />
                      <!-- Test capability button -->
                     <!-- <button ng-click="testCapability(newCapability)" type="button" class="btn btn-primary pull-right">Test</button> -->
                 </form>

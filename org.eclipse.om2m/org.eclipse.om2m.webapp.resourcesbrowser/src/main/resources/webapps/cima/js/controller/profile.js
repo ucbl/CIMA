@@ -19,11 +19,18 @@ ProfileController.run(['$rootScope', 'ProtocolsFactory', 'ngToast', function($ro
 
 ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '$rootScope', '$log', 'ProtocolsFactory', 'ngToast', function($scope, ProfileService, $rootScope, $log, ProtocolsFactory, ngToast) {
     $scope.newCapability = {};
+    $scope.newCapability.params = [];
+    $scope.isResultCheckboxDisabled = true;
+    $rootScope.$storage.capabilitiesForProfile = $rootScope.$storage.capabilitiesForProfile ? $rootScope.$storage.capabilitiesForProfile : [];
+    $scope.toggleResultCheckbox = function() {
+        $scope.isResultCheckboxDisabled = !$scope.isResultCheckboxDisabled;
+    };
+
     /*Add the capability to the model and to the view if it's a success*/
     $scope.addCapability = function(newCapability)
     {
         console.log('I am in addCapability');
-        if(newCapability.id !=null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null)
+        if (newCapability.id != null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null)
         {           
             console.log(newCapability);
             var cap = {};
@@ -33,6 +40,17 @@ ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '
             cap.protocol.parameters = newCapability.protocol.parameters;
             cap.configuration = 'manual';
             cap.cloudPort = 0;
+            cap.params = [];
+            if (newCapability.params instanceof Object) {
+                for (var key in newCapability.params) {
+                    cap.params.push(newCapability.params[key]);
+                }
+            } else if (newCapability.params instanceof Array) {
+                cap.params = newCapability.params ? newCapability.params : [];
+            }
+            
+            cap.result = (!$scope.isResultCheckboxDisabled) ? newCapability.result : null;
+            console.log(cap);
             // cap.isEditable=true;
             // cap.hydra = "http://www.w3.org/ns/hydra/core#";
             // cap.rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
@@ -93,6 +111,7 @@ ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '
             //});
             ngToast.create("Capability created.");
             $scope.newCapability = {};
+            $scope.newCapability.params = [];
         }
 
     };
@@ -139,7 +158,7 @@ ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '
     ProfileService.list().then(
         function(results) {
             $scope.profiles = results;
-            $log.log($scope.profiles);
+            //$log.log($scope.profiles);
             $rootScope.$storage.profiles = $scope.profiles;
         },
         function(errors) {

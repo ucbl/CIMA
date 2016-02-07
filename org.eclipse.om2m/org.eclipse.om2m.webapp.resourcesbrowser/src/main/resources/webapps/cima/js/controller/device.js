@@ -3,9 +3,7 @@
 var DeviceController = angular.module('DeviceController', []);
 
 DeviceController.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', 'ProfileService', '$localStorage', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast, ProfileService, $localStorage) {
-    $rootScope.$storage = $localStorage;
-    if (!$rootScope.$storage.capabilitiesForProfile)
-        $rootScope.$storage.capabilitiesForProfile = [];
+    
     $rootScope.loading = true;
     //$scope.EditIsOpen = false;
     $scope.idrequired = false;
@@ -42,7 +40,6 @@ DeviceController.controller('DeviceController', ['$http', '$scope', '$rootScope'
         
         $scope.capabilities = device.capabilities;
         $scope.activeCapabilities = $scope.capabilities;
-        getProfilesMatchingOfDevice($routeParams.id);
         $scope.loadProfileList(function(results) {
             $scope.capabilities = angular.copy(results);
             console.log($scope.capabilities);
@@ -79,19 +76,6 @@ DeviceController.controller('DeviceController', ['$http', '$scope', '$rootScope'
     });
 
 
-
-    var getProfilesMatchingOfDevice = function(id) {
-        ProfileService.getProfilesMatchingOfDevice(id).then(
-            function(results) {
-                $scope.profilesMatching = results;
-            },
-            function(errors) {
-
-            }
-        );
-    };
-    getProfilesMatchingOfDevice($routeParams.id);
-
     var addActiveCapabilities = function(profile) {
         for (var i in profile.capabilities) {
             $scope.activeCapabilities.push(profile.capabilities[i]);
@@ -101,32 +85,40 @@ DeviceController.controller('DeviceController', ['$http', '$scope', '$rootScope'
     $scope.loadProfileList = function(callback) {
         ProfileService.list().then(function(results) {
             $scope.profiles = results;
-
-            angular.forEach($scope.profiles, function(profile) {
-                for (var key in $scope.profilesMatching) {
-                    if (profile.persistibleData['_id'] == $scope.profilesMatching[key].profileId) {
-                        if (callback === undefined) {
-                            profile.isActive = true;
-                            $scope.selectedProfilesMatching.push({
-                                deviceId: $routeParams.id,
-                                profileId: $scope.profilesMatching[key].profileId
-                            });
+            ProfileService.getProfilesMatchingOfDevice($routeParams.id).then(
+                function(results) {
+                    $scope.profilesMatching = results;
+                    angular.forEach($scope.profiles, function(profile) {
+                        for (var key in $scope.profilesMatching) {
+                            if (profile.persistibleData['_id'] == $scope.profilesMatching[key].profileId) {
+                                if (callback === undefined) {
+                                    profile.isActive = true;
+                                    $scope.selectedProfilesMatching.push({
+                                        deviceId: $routeParams.id,
+                                        profileId: $scope.profilesMatching[key].profileId
+                                    });
+                                }
+                                
+                                addActiveCapabilities(profile);
+                                
+                                break;
+                            } else {
+                                profile.isActive = false;
+                            }
                         }
-                        
-                        addActiveCapabilities(profile);
-                        
-                        break;
-                    } else {
-                        profile.isActive = false;
+
+                    });
+
+                    if (callback !== undefined) {
+                        callback($scope.activeCapabilities);
+                        $scope.activeCapabilities = [];
                     }
+                },
+                function(errors) {
+
                 }
-
-            });
-
-            if (callback !== undefined) {
-                callback($scope.activeCapabilities);
-                $scope.activeCapabilities = [];
-            }
+            );
+            
             console.log($scope.selectedProfilesMatching);
         });
 
@@ -148,6 +140,7 @@ DeviceController.controller('DeviceController', ['$http', '$scope', '$rootScope'
             if (found)
                 deletedProfiles.push($scope.profilesMatching[i].persistableData);
         }
+
 
         console.log(deletedProfiles);
         console.log($scope.selectedProfilesMatching);
