@@ -41,6 +41,7 @@
                 <table st-table="devices" class="table table-striped" style="width: 40%">
                     <thead>
                     <tr>
+                        <th class="text-center">#</th>
                         <th class="text-center">Configuration </th>
                         <th class="text-center">ID </th>
                         <th class="text-center">Protocol</th>
@@ -50,6 +51,7 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="capability in capabilities | orderBy:order">
+                            <td class="text-center">{{$index+1}}</td>
                             <td class="text-center">{{capability.configuration}}</td>
                             <td class="text-center">{{capability.id}}</td>
                             <td class="text-center">{{capability.protocol.protocolName}}</td>
@@ -102,49 +104,65 @@
                             </button>
                             <!-- This only works for the robotEV3 for instance --> 
                             <!-- Test capability button -->
-                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('sensor') >= 0" ng-click="testCapability(editedCapability)" data-toggle="modal" data-target="#responseSensorModal">Test</button>
-
+                            <!-- <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('sensor') >= 0" ng-click="testCapability(editedCapability)" data-toggle="modal" data-target="#responseSensorModal">Test</button> -->
                             <!-- Stop capability button -->
-                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0 && editedCapability.id.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button>
+                            <!-- <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0 && editedCapability.id.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button> -->
 
                             
-                            <button ng-click="" type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0 && editedCapability.id.indexOf('stop') < 0" data-toggle="modal" data-target="#configParamsModal">Configure</button>
+                            <!-- <button ng-click="" type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0 && editedCapability.id.indexOf('stop') < 0" data-toggle="modal" data-target="#configParamsModal">Configure</button> -->
+                            
+                            <!-- Modal Request -->
+                            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#testCapabilityModal" ng-if="editedCapability.params && editedCapability.params.length > 0">Test</button>
+                            <!-- Modal Response -->
+                            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#testCapabilityModal" ng-if="!editedCapability.params || editedCapability.params.length <= 0" ng-click="testCapability(editedCapability)">Test</button>
                             <br>
                                 
-                            
-
-                            <!-- Modal Request -->
-                            <div class="modal fade" id="configParamsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <!-- Modal -->
+                            <div class="modal fade" id="testCapabilityModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                               <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                   <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title" id="myModalLabel">Configuration Of Parameters Modal</h4>
+                                    <h4 class="modal-title" id="myModalLabel">Modal</h4>
                                   </div>
-                                  <div class="modal-body" ng-if="editedCapability.params.length <= 0">
+                                  <!-- <div class="modal-body" ng-if="editedCapability.params.length <= 0">
                                       Les params ne sont pas disponibles pour cette capabilité
-                                  </div>
-                                  <div class="modal-body" ng-repeat="param in editedCapability.params">
-                                    <!-- Implement a directive to solve this -->
+                                  </div> -->
+
+                                  <div class="modal-body" ng-if="editedCapability.params && editedCapability.params.length > 0" ng-repeat="param in editedCapability.params">
+                                    
                                     <div class="input-group">
                                       <span class="input-group-addon" id="sizing-addon2">{{param.idp}}</span>
                                       <input type="number" class="form-control" ng-model="configParams[param.idp]" ng-if="param.type == 'int'" aria-describedby="sizing-addon2" />
                                       <input type="text" class="form-control" ng-model="configParams[param.idp]" ng-if="param.type == 'string'" aria-describedby="sizing-addon2" />
                                     </div>
-                                    
-                                    
                                   </div>
+
+                                  <div class="modal-body" ng-if="responsesCapability.length > 0" ng-repeat="responseCapability in responsesCapability">
+                                    
+
+                                    <div class="input-group">
+                                      <div>Responses from server : </div>
+                                      <div class="input-group-addon" id="sizing-addon2" ng-bind-template="{{responseCapability}}"></div>
+                                    </div>
+
+                                  </div>
+
+                                  <div class="modal-body" ng-if="!editedCapability.params && responsesCapability.length <= 0">
+                                    No responses from serveur
+                                  </div>
+
                                   <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" ng-if="editedCapability.params.length > 0" ng-click="testCapability(editedCapability)">Test</button>
+                                    <button type="button" class="btn btn-primary" ng-if="editedCapability.params.length > 0" ng-click="testCapability(editedCapability)">Apply</button>
                                     <!-- <button type="button" class="btn btn-primary" ng-if="editedCapability.id.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button> -->
                                   </div>
                                 </div>
                               </div>
                             </div>
 
-                            <!-- Modal Response -->
-                            <div class="modal fade" id="responseSensorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            
+                            <!-- <div class="modal fade" id="responseSensorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                               <div class="modal-dialog" role="document" ng-show="isResponseSensor">
                                 <div class="modal-content">
                                   <div class="modal-header">
@@ -153,7 +171,7 @@
                                   </div>
                                   
                                   <div class="modal-body" ng-repeat="responseSensor in responseSensors">
-                                    <!-- Implement a directive to solve this in the future-->
+                                    
                                     <div class="input-group">
                                       <div class="input-group-addon" id="sizing-addon2" ng-bind-template="{{responseSensor}}"></div>
                                       
@@ -166,7 +184,7 @@
                                   </div>
                                 </div>
                               </div>
-                            </div>
+                            </div> -->
                     </div>
                 </div>
 

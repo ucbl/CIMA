@@ -3,7 +3,7 @@
 // Change to this structure if we have time to refactor
 var ProfileController = angular.module('ProfileController', ['DeviceController', 'CIMA.toast']);
 
-ProfileController.run(['$rootScope', 'ProtocolsFactory', 'ngToast', function($rootScope, ProtocolsFactory, ngToast) {
+ProfileController.run(['$rootScope', 'ProtocolsFactory', function($rootScope, ProtocolsFactory, ngToast) {
      /*retrieve the available protocols and add them to the view*/
     ProtocolsFactory.find().then(function(protocols){    
         $rootScope.protocols = protocols;
@@ -15,13 +15,15 @@ ProfileController.run(['$rootScope', 'ProtocolsFactory', 'ngToast', function($ro
 
     });
 
+
 }]);
 
 ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '$rootScope', '$log', 'ProtocolsFactory', 'ngToast', function($scope, ProfileService, $rootScope, $log, ProtocolsFactory, ngToast) {
     $scope.newCapability = {};
     $scope.newCapability.params = [];
     $scope.isResultCheckboxDisabled = true;
-    $rootScope.$storage.capabilitiesForProfile = $rootScope.$storage.capabilitiesForProfile ? $rootScope.$storage.capabilitiesForProfile : [];
+    $rootScope.$storage.capabilitiesForProfile = [];
+    $rootScope.$storage.addedCapabilities = $rootScope.$storage.addedCapabilities ? $rootScope.$storage.addedCapabilities : [];
     $scope.toggleResultCheckbox = function() {
         $scope.isResultCheckboxDisabled = !$scope.isResultCheckboxDisabled;
     };
@@ -90,7 +92,7 @@ ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '
             //     "seeAlso": { "@id": "rdfs:seeAlso", "@type": "@id" },
             //     "status": "vs:term_status"
             // };
-            $rootScope.$storage.capabilitiesForProfile.push(cap);
+            $rootScope.$storage.addedCapabilities.push(cap);
             // // compact a document according to a particular context
             // // see: http://json-ld.org/spec/latest/json-ld/#compacted-document-form
             // jsonld.compact(doc, context, function(err, compacted) {
@@ -160,6 +162,16 @@ ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '
             $scope.profiles = results;
             //$log.log($scope.profiles);
             $rootScope.$storage.profiles = $scope.profiles;
+            angular.forEach($scope.profiles, function(profile) {
+                angular.forEach(profile.capabilities, function(capability) {
+                    $rootScope.$storage.capabilitiesForProfile.push(capability);
+                });
+            });
+
+            angular.forEach($rootScope.$storage.addedCapabilities, function(addedCapability) {
+                $rootScope.$storage.capabilitiesForProfile.push(addedCapability);
+            });
+            console.log($rootScope.$storage.capabilitiesForProfile.length);
         },
         function(errors) {
 

@@ -10,8 +10,8 @@ DeviceController.controller('DeviceController', ['$http', '$scope', '$rootScope'
     $scope.ShowIsOpen = false;
     $scope.indexOfShowingCapability = -1;
     $scope.configParams = {};
-    $scope.isResponseSensor = false;
-    $scope.responseSensors = [];
+    $scope.isResponseCapability = false;
+    $scope.responsesCapability = [];
     $scope.isLoading = false;
     $scope.activeProfile = {};
     $scope.activeCapabilities = [];
@@ -268,100 +268,96 @@ DeviceController.controller('DeviceController', ['$http', '$scope', '$rootScope'
     function isEmpty(obj) {
         return Object.keys(obj).length === 0;
     }
-    /*Testing capability function*/
-    $scope.testCapability = function(newCapability){
-        $scope.isLoading = true;
-  
-        var filterParamsOn = function(params) {
-            var configParams = {};
-            if (params != null) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if ($scope.configParams[param.idp] != null)
-                        configParams[param.idp] = $scope.configParams[param.idp];
-                    else {
-                        configParams = {};
-                        break;
-                    }
+
+    var filterParamsOn = function(params) {
+        var configParams = {};
+        if (params != null) {
+            for (var i = 0; i < params.length; i++) {
+                var param = params[i];
+                if ($scope.configParams[param.idp] != null)
+                    configParams[param.idp] = $scope.configParams[param.idp];
+                else {
+                    configParams = {};
+                    break;
                 }
             }
-            
-            return configParams;
-        };
-
-        var getKeyValue = function(data) {
-            var keyValueParts = data.split(',');
-            var keyPart = keyValueParts[0];
-            var valuePart = keyValueParts[1];
-            return keyPart + ' : ' + valuePart;
-        };
-        
-        var newCapability = newCapability || {};
-        if (!isEmpty(newCapability)) {
-            var configParams = filterParamsOn(newCapability.params);
-            if ((newCapability.id.indexOf("sensor") >= 0) || (newCapability.id.indexOf("stop") >= 0) || (!isEmpty(configParams) && newCapability.id.indexOf("motor") >= 0)) {
-                var protocol = newCapability.protocol;
-                var protocolName = protocol.protocolName.toLowerCase();
-                //var protocolName = $scope.modeConnection;
-                var host = $scope.uri;
-                var port = ''
-                    ,method = ''
-                    ,pathName = '';
-                
-                for (var i = 0; i < protocol.parameters.length; i++) {
-                    var parameter = protocol.parameters[i];
-                    
-                    switch (parameter.name) {
-                        case 'method':
-                            method = parameter.value;
-                            break;
-                        case 'port':
-                            port = parameter.value;
-                            break;
-                        case 'uri':
-                            pathName = parameter.value;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                
-                var url = protocolName + '://' + host + ':' + port + pathName;
-                var paramInfos = {
-                    'method': method,
-                    'url': url,
-                    'configParams': configParams,
-                    'result': newCapability.result
-                };
-                console.log(configParams);
-                DeviceFactory.testCapability(paramInfos).then(function(data){
-                    $scope.isLoading = false;
-                    ngToast.create("Capability tested.");
-                    console.log(data);
-                    // Intepret the sensor's response here => Hint : delimiter ; differentiates between array and object, delimiter , differentiates between key and value. We have to test with the robot
-                    /**
-                    * Check if the data contains ;. If so, split it by ;, otherwise, we consider it as a key:value (format: key, value received)
-                    */
-                    if (data.indexOf(';') >= 0) {
-                        var keyValuePairs = data.split(';');
-                        for (var i = 0; i < keyValuePairs.length; i++) {
-                            var aKeyValuePair = keyValuePairs[i];
-                            if (aKeyValuePair.indexOf(',') >= 0)
-                                $scope.responseSensors.push(getKeyValue(aKeyValuePair));
-                        }
-                    } else $scope.responseSensors.push(getKeyValue(data));
-                    $scope.isResponseSensor = true;
-                }, function(data){
-                    $scope.isLoading = false;
-                });
-            } else {
-                alert('Entrez tous les champs vides s\'il vous plait !');
-            } 
         }
-    }
+        
+        return configParams;
+    };
 
-    $scope.closeResponseSensorModal = function() {
-        $scope.isRespo = false;
+    var getKeyValue = function(data) {
+        var keyValueParts = data.split(',');
+        var keyPart = keyValueParts[0];
+        var valuePart = keyValueParts[1];
+        return keyPart + ' : ' + valuePart;
+    };
+
+    /*Testing capability function*/
+    $scope.testCapability = function(newCapability){
+        //$scope.isLoading = true;
+        $scope.responsesCapability = [];
+        var configParams = filterParamsOn(newCapability.params);
+        
+        //if (!isEmpty(configParams)) {
+        var protocol = newCapability.protocol;
+        var protocolName = protocol.protocolName.toLowerCase();
+        var host = $scope.uri;
+        var port = ''
+            ,method = ''
+            ,pathName = '';
+        
+        for (var i = 0; i < protocol.parameters.length; i++) {
+            var parameter = protocol.parameters[i];
+            
+            switch (parameter.name) {
+                case 'method':
+                    method = parameter.value;
+                    break;
+                case 'port':
+                    port = parameter.value;
+                    break;
+                case 'uri':
+                    pathName = parameter.value;
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+        var url = protocolName + '://' + host + ':' + port + pathName;
+        var paramInfos = {
+            'method': method,
+            'url': url,
+            'configParams': configParams
+        };
+        console.log(configParams);
+        DeviceFactory.testCapability(paramInfos).then(function(data){
+            $scope.responsesCapability = [];
+            $scope.isLoading = false;
+            ngToast.create("Capability tested.");
+            console.log(data);
+            // Intepret the sensor's response here => Hint : delimiter ; differentiates between array and object, delimiter , differentiates between key and value. We have to test with the robot
+            /**
+            * Check if the data contains ;. If so, split it by ;, otherwise, we consider it as a key:value (format: key, value received)
+            */
+            if (data.indexOf(';') >= 0) {
+                var keyValuePairs = data.split(';');
+                for (var i = 0; i < keyValuePairs.length; i++) {
+                    var aKeyValuePair = keyValuePairs[i];
+                    if (aKeyValuePair.indexOf(',') >= 0)
+                        $scope.responsesCapability.push(getKeyValue(aKeyValuePair));
+                }
+            } else $scope.responsesCapability.push(getKeyValue(data));
+            //$scope.isResponseCapability = true;
+        }, function(data){
+            $scope.isLoading = false;
+
+        });
+        //} else {
+        //    alert('Entrez tous les champs vides s\'il vous plait !');
+        //} 
+       
     };
 
     /*Function for saving a device */
@@ -407,20 +403,6 @@ DeviceController.controller('DeviceController', ['$http', '$scope', '$rootScope'
     //     });
     // }
 
-    var loadCapabilitiesIntoForm = function(index, capability) {
-        $scope.indexOfShowingCapability = index;
-        $scope.editedCapability = JSON.parse(JSON.stringify(capability));
-        //Not to have same reference
-        for (var i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
-            var dataset = $scope.protocolsFromEdited[i];
-            if (dataset.protocolName == capability.protocol.protocolName) {
-                $scope.protocolsFromEdited[i].parameters = capability.protocol.parameters;
-                $scope.editedCapability.protocol = $scope.protocolsFromEdited[i];
-                break;
-            }
-        }
-    };
-
     // var loadCapabilitiesIntoFormFromProfile = function(index, capability) {
     //     $scope.indexOfShowingCapability = index;
     //     $scope.editedCapabilityFromProfile = JSON.parse(JSON.stringify(capability));
@@ -462,6 +444,20 @@ DeviceController.controller('DeviceController', ['$http', '$scope', '$rootScope'
             loadCapabilitiesIntoForm(index, capability);
         } else $scope.ShowIsOpen = false;
         
+    };
+
+    var loadCapabilitiesIntoForm = function(index, capability) {
+        $scope.indexOfShowingCapability = index;
+        $scope.editedCapability = JSON.parse(JSON.stringify(capability));
+        //Not to have same reference
+        for (var i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
+            var dataset = $scope.protocolsFromEdited[i];
+            if (dataset.protocolName == capability.protocol.protocolName) {
+                $scope.protocolsFromEdited[i].parameters = capability.protocol.parameters;
+                $scope.editedCapability.protocol = $scope.protocolsFromEdited[i];
+                break;
+            }
+        }
     };
 
     $scope.showDetailsOfCapability = function(capability) {

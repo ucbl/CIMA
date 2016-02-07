@@ -3,11 +3,19 @@
         "protocolName": "HTTP",
         "parameters": [
             {
-                "name": "URL",
+                "name": "uri",
                 "value": ""
             },
             {
-                "name": "URI",
+                "name": "port",
+                "value": ""
+            },
+            {
+                "name": "body",
+                "value": ""
+            },
+            {
+                "name": "method",
                 "value": ""
             }
         ]

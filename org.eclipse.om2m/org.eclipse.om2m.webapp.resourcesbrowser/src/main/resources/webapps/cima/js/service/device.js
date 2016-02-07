@@ -72,11 +72,12 @@ DeviceController.factory('DeviceFactory', ['$http', '$q', function($http, $q){
             var objHttp = {
                 url: paramInfos['url'],
                 method: paramInfos['method'],
+                data: paramInfos['configParams']
             };
 
             switch (paramInfos['method']) {
                 case "POST":
-                    objHttp.data = paramInfos['configParams'];
+                    //objHttp.data = paramInfos['configParams'];
                     objHttp.headers = {};
                     objHttp.headers['Content-Type'] = 'application/x-www-form-urlencoded';
                     break;
