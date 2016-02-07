@@ -18,8 +18,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.service.log.*;
 import org.osgi.framework.FrameworkUtil;
 
-import fr.liris.cima.nscl.profils.profilsExport.ProfilManagerInterface;
-import fr.liris.cima.nscl.profils.profilsExport.Profil;
+import fr.liris.cima.nscl.profils.profilsExport.*;
 import fr.liris.cima.nscl.users.UsersExport.*;
 
 public class AdministrationServer implements IpuService{
@@ -36,6 +35,23 @@ public class AdministrationServer implements IpuService{
 	public static ProtocolResolver protocolResolver;
 
 	public static final String GSCL_DEVICES_CONTACT = "om2m/gscl/applications/CIMA/devices";
+
+	ProfileMatchingManagerInterface profileMatchingManagerInterface;
+	ProfilManagerInterface profilManagerInterface;
+
+	public AdministrationServer(){
+
+		//initialize ProfileMatchingManagerInterface service
+		ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfileMatchingManagerInterface.class.getName(), null);
+		st.open();
+		profileMatchingManagerInterface = (ProfileMatchingManagerInterface) st.getService();
+
+		//Initialize ProfileManagerInterafce Service
+		st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfilManagerInterface.class.getName(), null);
+		st.open();
+		 profilManagerInterface = (ProfilManagerInterface) st.getService();
+
+	}
 
 	@Override
 	// POST without body
@@ -108,19 +124,23 @@ public class AdministrationServer implements IpuService{
 				resp.setRepresentation(Parser.parseObixToJSONStringCapabilities(resp.getRepresentation()));
 				return resp;
 			case "profile" ://nscl/applications/CIMA/administration/profile
-				ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfilManagerInterface.class.getName(), null);
-				st.open();
-				ProfilManagerInterface pf = (ProfilManagerInterface) st.getService();
-				return new ResponseConfirm(StatusCode.STATUS_OK, pf.getAllProfilsToJson() );
+				return new ResponseConfirm(StatusCode.STATUS_OK, profilManagerInterface.getAllProfilsToJson() );
+			case "profileMatching" :
+				return new ResponseConfirm(StatusCode.STATUS_OK, profileMatchingManagerInterface.getAllProfileMatchingToJson() );
 			}
 
 		} else if(tID.length == 6){
-			// nscl/applications/CIMA/administration/device/<device id>/
-			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/all/" + tID[5]);
-			resp = restClientService.sendRequest(requestIndication);
-			resp.setRepresentation(Parser.parseObixToJSONStringDevice(resp.getRepresentation()));
-			return resp;
+			if("device".equals(tID[4])) {
+				// nscl/applications/CIMA/administration/device/<device id>/
+				requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/all/" + tID[5]);
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(Parser.parseObixToJSONStringDevice(resp.getRepresentation()));
+				return resp;
 //			return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
+			}
+			else if("profileMatching".equals(tID[4])){//nscl/applications/CIMA/administration/profileMatching/<id device>
+				return new ResponseConfirm(StatusCode.STATUS_OK, profileMatchingManagerInterface.getProfileMatchingToJson(tID[5]));
+			}
 		} else if(tID.length == 7){
 			// nscl/applications/CIMA/administration/device/<device id>/capability
 			requestIndication.setTargetID(GSCL_DEVICES_CONTACT + "/all/" + tID[5] + "/capability");
@@ -184,15 +204,21 @@ public class AdministrationServer implements IpuService{
 		}
 		else if(tID.length == 5)
 		{
-			// nscl/applications/CIMA/administration/profile
-			ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfilManagerInterface.class.getName(), null);
-			st.open();
-			ProfilManagerInterface pf = (ProfilManagerInterface) st.getService();
-			boolean b = pf.deleteProfilFromSimpleJson(payload);
-			if(b)
-				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"message\" : \"Profile deleted succesfully.\"}" );
-			else
-				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"error\" : \"Error during profile deleting.\"}" );
+			if("profile".equals(tID[4])) {
+				// nscl/applications/CIMA/administration/profile
+				boolean b = profilManagerInterface.deleteProfilFromSimpleJson(payload);
+				if (b)
+					return new ResponseConfirm(StatusCode.STATUS_OK, "{\"message\" : \"Profile deleted succesfully.\"}");
+				else
+					return new ResponseConfirm(StatusCode.STATUS_OK, "{\"error\" : \"Error during profile deleting.\"}");
+			}
+			else if ("profileMatching".equals(tID[4])){
+				boolean b = profileMatchingManagerInterface.deleteProfileMatchingFromSimpleJson(payload);
+				if (b)
+					return new ResponseConfirm(StatusCode.STATUS_OK, "{\"error\" : 0}");
+				else
+					return new ResponseConfirm(StatusCode.STATUS_OK, "{\"error\" : 1}");
+			}
 
 		}
 		return new ResponseConfirm(new ErrorInfo(StatusCode.STATUS_NOT_FOUND,requestIndication.getMethod()+" ressource not found"));
@@ -234,24 +260,27 @@ public class AdministrationServer implements IpuService{
 			}
 			else if("profile".equals(tID[4]))
 			{//nscl/applications/CIMA/administration/profile
-				ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfilManagerInterface.class.getName(), null);
-				st.open();
-				ProfilManagerInterface pf = (ProfilManagerInterface) st.getService();
 
-				String res = pf.saveNewProfilFromJson(requestIndication.getRepresentation());
+				String res = profilManagerInterface.saveNewProfilFromJson(requestIndication.getRepresentation());
 
 				return new ResponseConfirm(StatusCode.STATUS_OK, res );
+			}
+			else if("profileMatching".equals(tID[4]))
+			{//nscl/applications/CIMA/administration/profileMatching
+
+				boolean res = profileMatchingManagerInterface.addProfileMatchingFromJson(requestIndication.getRepresentation());
+
+				if(res)
+					return new ResponseConfirm(StatusCode.STATUS_OK, "{\"error\" : 0}" );
+				else
+					return new ResponseConfirm(StatusCode.STATUS_OK, "{\"error\" : 1}" );
 			}
 		}
 
 
 		if(tID.length == 6){ //nscl/applications/CIMA/administration/profile/update
 
-			ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfilManagerInterface.class.getName(), null);
-			st.open();
-			ProfilManagerInterface pf = (ProfilManagerInterface) st.getService();
-
-			pf.updateProfilFromJson(requestIndication.getRepresentation());
+			profilManagerInterface.updateProfilFromJson(requestIndication.getRepresentation());
 
 			return new ResponseConfirm(StatusCode.STATUS_OK, "{\"message\" : \"It's probably done.\"}" );
 

@@ -21,4 +21,6 @@ public interface ProfilManagerInterface {
 
     Profil profilFromJson(String json);
     String jsonFromProfil(Profil p);
+
+
 }
