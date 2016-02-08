@@ -1,8 +1,8 @@
 'use strict';
 
-var DeviceController = angular.module('DeviceController', []);
+var DeviceController = angular.module('DeviceController', ['ProfileController', 'CIMA.toast', 'ngStorage']);
 
-DeviceController.controller('DeviceController', ['$http', '$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', 'ProfileService', '$localStorage', function($http, $scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast, ProfileService, $localStorage) {
+DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', 'ProfileService', '$localStorage', function($scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast, ProfileService, $localStorage) {
     
     $rootScope.loading = true;
     //$scope.EditIsOpen = false;
@@ -45,7 +45,7 @@ DeviceController.controller('DeviceController', ['$http', '$scope', '$rootScope'
             console.log($scope.capabilities);
         });
 
-        if(device.configuration == 'automatic'){
+        if (device.configuration == 'automatic') {
             $scope.isDeviceNameEditable = false;
         } else {
             $scope.isDeviceNameEditable = true;
@@ -427,19 +427,11 @@ DeviceController.controller('DeviceController', ['$http', '$scope', '$rootScope'
         } else $scope.EditIsOpen = false;
     };
 
-    // $scope.openAndEditCapabilityFromProfile = function(index, capability){
-    //     $scope.ShowIsOpenFromProfile = false;
-    //     if ($scope.indexOfShowingCapability != index || !$scope.EditIsOpenFromProfile) {
-    //         $scope.EditIsOpenFromProfile = true;
-    //         loadCapabilitiesIntoFormFromProfile(index, capability);
-            
-    //     } else $scope.EditIsOpenFromProfile = false;
-    // }
 
     /*Function for show capability*/
     $scope.openAndShowCapability = function(index, capability){
         $scope.EditIsOpen = false;
-        if ($scope.indexOfShowingCapability != index || !$scope.ShowIsOpen) {
+        if (($scope.indexOfShowingCapability != index || !$scope.ShowIsOpen) && capability) {
             $scope.ShowIsOpen = true;
             loadCapabilitiesIntoForm(index, capability);
         } else $scope.ShowIsOpen = false;
@@ -465,37 +457,12 @@ DeviceController.controller('DeviceController', ['$http', '$scope', '$rootScope'
         $scope.detailsOfCapability = capability;
     };
 
-    /*Function for show capability*/
-    // $scope.openAndShowCapabilityFromProfile = function(index, capability){
-    //     $scope.EditIsOpenFromProfile = false;
-    //     if ($scope.indexOfShowingCapability != index || !$scope.ShowIsOpenFromProfile) {
-    //         $scope.ShowIsOpenFromProfile = true;
-    //         loadCapabilitiesIntoFormFromProfile(index, capability);
-    //     } else $scope.ShowIsOpenFromProfile = false;
-        
-    // };
-
     /*Function for closing the edition div*/
     $scope.CloseEditCapability = function(){
         if($scope.EditIsOpen){
             $scope.EditIsOpen = false;
         }
     }
-
-    /*Auto Indent capabilities searching bloc*/
-    $scope.getCapability = function(val) {
-        console.log(val);
-        return $http.get(URL_CAPABILITIES, {
-            params: {
-                filter: val
-            }
-        }).
-        then(function(response){
-            console.log(response.data);
-            return response.data;
-        });
-        
-    };
 
     /*Function for closing the edition div*/
     $scope.CloseShowCapability = function(){

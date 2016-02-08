@@ -1,6 +1,6 @@
 'use strict';
 /* Application modules */
-var CRYPTOKEY = 'CIMACIMACIMACIMACIMA';
+
 var app = angular.module('CIMA', ['ngRoute', 'googleplus', 'ui.bootstrap', 'ngTagsInput', 'CIMA.toast', 'ngStorage', 'angular-md5', 'HomeController', 'DeviceController', 'AuthController', 'ProfileController']);
 /*routing URLs*/
 app.config(['$routeProvider', '$httpProvider', 'GooglePlusProvider', function($routeProvider, $httpProvider, GooglePlusProvider) {
@@ -30,35 +30,7 @@ app.config(['$routeProvider', '$httpProvider', 'GooglePlusProvider', function($r
     }).otherwise({
         redirectTo: '/'
     });
-    // when using jsonld, add the angularJsld as a DI into the module, add jsonldContextProvider as DI into app.config
-    // jsonldContextProvider.add({
-    //     //'vocab': 'http://localhost:4040/angular-project/api/cima/phonevocabJSONLD/',
-    //     'name': 'vocab:robotEV3/name',
-    //     'description': 'vocab:robotEV3/description',
-    //     'id': 'vocab:robotEV3/id',
-    //     'portforwarding': 'vocab:robotEV3/Portforwarding',
-    //     'connection': 'vocab:Connection',
-    //     'dateConnection': 'vocab:Connection/DateConnection',
-    //     'protocol': 'vocab:Connection/Protocol',
-    //     'address': 'vocab:Connection/Address',
-    //     'configuration': 'vocab:Configuration',
-    //     'automaticConfiguration': 'vocab:Configuration/AutomaticConfiguration',
-    //     'profile': 'vocab:Configuration/Profile',
-    //     'capabilities': 'vocab:robotEV3/capabilities',
-    //     "idCapability": "vocab:id",
-    //     "result": "vocab:result",
-    //     "protocolCapability": "vocab:protocol",
-    //     "protocolName": "vocab:protocolName",
-    //     "parameters": "vocab:parameters",
-    //     "nameParamCapability": "vocab:name",
-    //     "value": "vocab:value",
-    //     "cloudPort": "vocab:cloudPort",
-    //     "params": "vocab:params",
-    //     "desc": "vocab:desc",
-    //     "idp": "vocab:idp",
-    //     "type": "vocab:type",
-    //     "configurationCapability": "vocab:configuration"
-    // });
+    
 }]);
 /* bootstrap UI module */
 //angular.module('CIMA.ui', ['ui.bootstrap']);
