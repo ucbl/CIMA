@@ -55,9 +55,17 @@
                         <li ng-repeat="parameter in detailCapability.protocol.parameters">
                                     {{parameter.name}}:{{parameter.value}}
                         </li>
-                        <br>   
+                        <br>
+
+                        <li ng-repeat="param in detailCapability.params">
+                            {{param.idp}}:{{param.type}}
+                        </li>
+                        <br>
+                        
+                        <strong ng-if="detailCapability.result">Result : {{detailCapability.result}}</strong>
+
                         <li> Keywords </li> 
-                        <tags-input   ng-model="detailCapability.keywords"></tags-input> 
+                        <tags-input ng-model="detailCapability.keywords"></tags-input> 
 
                         <br>
 

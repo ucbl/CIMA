@@ -100,7 +100,7 @@
                 New one
                 <!--Create a new capability-->
                 </accordion-heading>
-                <form ng-submit="addCapability(newCapability)">
+                <form >
                     <strong>ID</strong>
                     <input class="form-control" style="width: 40%" type="text" placeholder="Type an ID... (Required)" ng-model="newCapability.id" required>
                     <strong>Protocol </strong>
@@ -143,9 +143,9 @@
                         </div>
                     </div>-->
 
-                    <div add-param-into-capability></div>
+                    <div add-param-into-capability directive-scope="directiveScope" new-capability="newCapability"></div>
 
-                    <button type="button" class="btn btn-primary" ng-click="addParamIntoCapability()"><span class="glyphicon glyphicon-plus"></span></button>
+                    <button type="button" class="btn btn-primary" ng-click="directiveScope.addParamIntoCapability()"><span class="glyphicon glyphicon-plus"></span></button>
                     <br>        
                     
                     <div class="row form-inline">
@@ -169,7 +169,7 @@
                      <!-- Reset capability button -->
                     <button type="button" class="btn btn-primary pull-left">Reset</button> 
                      <!-- Add capability button -->
-                    <input style="margin-left:5px" class="btn btn-success pull-right" type="submit" value="Add" />
+                    <button type="button" ng-click="addCapability(newCapability)" class="btn btn-success pull-right">Add</button>
                      <!-- Test capability button -->
                     <!-- <button ng-click="testCapability(newCapability)" type="button" class="btn btn-primary pull-right">Test</button> -->
                 </form>

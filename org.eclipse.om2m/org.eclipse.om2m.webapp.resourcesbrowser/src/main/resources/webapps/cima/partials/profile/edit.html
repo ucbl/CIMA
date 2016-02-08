@@ -20,12 +20,13 @@
                 <a href class="list-group-item" ng-click="chooseCapability(capability)" ng-class="{active: capability.isActive}" ng-bind-template="{{capability.id}}"></a>
                 
             </div>
+
             <div class="col-md-1">
                 <a class="btn btn-info" data-toggle="modal" data-target="#editCapabilityModal" ng-click="openAndEditCapability($index,  capability)">Edit</a><br />
             </div>
         </div>
     </div>
-
+    
     <!-- EDIT CAPACBILITY -->
     <div class="modal fade" tabindex="-1" role="dialog" id="editCapabilityModal">
         <div class="modal-dialog">
@@ -45,12 +46,65 @@
                             </select>
                         </li>
                         <li ng-repeat="parameter in editedCapability.protocol.parameters">
-                                    {{parameter.name}}:
-                                    <input class="form-control"  style="width: 40%;" type="text" ng-model="parameter.value">
+                            {{parameter.name}}:
+                            <input ng-if="parameter.name != 'method'" class="form-control"  style="width: 40%;" type="text" ng-model="parameter.value">
+                            <select class="form-control" ng-model="parameter.value" ng-if="parameter.name == 'method'">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                                <option value="DELETE">DELETE</option>
+                                <option value="PUT">PUT</option>
+                                <option value="PATCH">PATCH</option>
+                            </select>
                         </li>
-                        <br>   
-                        <li> Keywords </li> 
-                        <tags-input   ng-model="editedCapability.keywords"></tags-input> 
+                        <br>
+                        
+                        
+                        <!-- <div ng-repeat="param in editedCapability.params" class="form-inline" id="parameter{{$index}}" role="form" style="margin-top: 10px;">
+                            <h4>Parameter</h4>
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input class="form-control" type="text" ng-model="param.idp" />
+                                <div class="form-group">
+                                    <label for="type">Type</label>
+                                    <select class="form-control" ng-model="param.type">
+                                        <option value="int">
+                                            int
+                                        </option>
+                                        <option value="string">
+                                            string
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-danger" type="button"><span class=
+                                    "glyphicon glyphicon-minus" ng-click="directiveScopes.removeParamFromCapability($index)"></span></button>
+                                </div>
+                            </div>
+                        </div> -->
+                        
+                        <div add-param-into-capability directive-scope="directiveScopes" new-capability="editedCapability" current-index="directiveScopes.currentIndex"></div>
+                        
+
+                        <!-- /!\ : Binding with element of an array is not allowed, ex: ng-click="directiveScopes[directiveScopes.currentIndex].addParamIntoCapability()" -->
+                        <button type="button" class="btn btn-primary" ng-click="directiveScopes.addParamIntoCapability()"><span class="glyphicon glyphicon-plus"></span></button>
+                        <br />
+
+                        <div class="row form-inline">
+                            <div class="checkbox checkbox-primary col-md-2">
+                                <input type="checkbox" name="result" ng-click="toggleResultCheckbox()" ng-checked="!isResultCheckboxDisabled" />
+                                <label style="font-weight: bold;">
+                                    Result
+                                </label>
+                            </div>
+                            <div class="col-md-6 col-md-offset-4">
+                                <label for="name">Result</label>
+                                <input type="text" ng-model="editedCapability.result" ng-disabled="isResultCheckboxDisabled" />
+                                
+                            </div>
+                        </div>
+
+                        <li>Keywords </li> 
+                        <tags-input ng-model="editedCapability.keywords"></tags-input> 
 
                         <br>
 

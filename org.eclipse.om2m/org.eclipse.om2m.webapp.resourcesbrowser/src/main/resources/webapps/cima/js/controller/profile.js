@@ -19,13 +19,18 @@ ProfileController.run(['$rootScope', 'ProtocolsFactory', function($rootScope, Pr
 }]);
 
 ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '$rootScope', '$log', 'ProtocolsFactory', 'ngToast', function($scope, ProfileService, $rootScope, $log, ProtocolsFactory, ngToast) {
+    $scope.directiveScope = {
+        counter: 0
+    };
     $scope.newCapability = {};
     $scope.newCapability.params = [];
-    $scope.isResultCheckboxDisabled = true;
     $rootScope.$storage.capabilitiesForProfile = [];
     $rootScope.$storage.addedCapabilities = $rootScope.$storage.addedCapabilities ? $rootScope.$storage.addedCapabilities : [];
+    
+    $scope.isResultCheckboxDisabled = true;
     $scope.toggleResultCheckbox = function() {
         $scope.isResultCheckboxDisabled = !$scope.isResultCheckboxDisabled;
+        $scope.newCapability.result = (!$scope.isResultCheckboxDisabled) ? $scope.newCapibility.result : '';
     };
 
     /*Add the capability to the model and to the view if it's a success*/
@@ -37,9 +42,9 @@ ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '
             console.log(newCapability);
             var cap = {};
             cap.id = newCapability.id;
-            cap.protocol = {};
-            cap.protocol.protocolName = newCapability.protocol.protocolName;
-            cap.protocol.parameters = newCapability.protocol.parameters;
+
+            // /!\ : For object-assignment, we should use angular.copy
+            cap.protocol = angular.copy(newCapability.protocol);
             cap.configuration = 'manual';
             cap.cloudPort = 0;
             cap.params = [];
@@ -51,7 +56,7 @@ ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '
                 cap.params = newCapability.params ? newCapability.params : [];
             }
             
-            cap.result = (!$scope.isResultCheckboxDisabled) ? newCapability.result : null;
+            cap.result = newCapability.result ? newCapability.result : null;
             console.log(cap);
             // cap.isEditable=true;
             // cap.hydra = "http://www.w3.org/ns/hydra/core#";
@@ -93,6 +98,7 @@ ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '
             //     "status": "vs:term_status"
             // };
             $rootScope.$storage.addedCapabilities.push(cap);
+            $rootScope.$storage.capabilitiesForProfile.push(cap);
             // // compact a document according to a particular context
             // // see: http://json-ld.org/spec/latest/json-ld/#compacted-document-form
             // jsonld.compact(doc, context, function(err, compacted) {
@@ -113,9 +119,10 @@ ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '
             //});
             ngToast.create("Capability created.");
             $scope.newCapability = {};
+            $scope.newCapability.protocol = {};
             $scope.newCapability.params = [];
         }
-
+        
     };
 
     
@@ -171,7 +178,7 @@ ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '
             angular.forEach($rootScope.$storage.addedCapabilities, function(addedCapability) {
                 $rootScope.$storage.capabilitiesForProfile.push(addedCapability);
             });
-            console.log($rootScope.$storage.capabilitiesForProfile.length);
+            console.log("Capabilities in profiles : " + $rootScope.$storage.capabilitiesForProfile.length);
         },
         function(errors) {
 
@@ -306,8 +313,18 @@ ProfileController.controller('AddProfileController', ['$scope', '$rootScope', 'P
 ProfileController.controller('EditProfileController', ['$scope', '$rootScope', 'ProfileService', '$location', '$localStorage', '$routeParams', 'ngToast', function($scope, $rootScope, ProfileService, $location, $localStorage, $routeParams, ngToast) {
     // $scope.capabilities = $rootScope.$storage.capabilitiesForProfile;
     // $scope.profiles = $rootScope.$storage.profiles;
+    $scope.directiveScopes = {
+        currentIndex: 0
+    };
     $scope.capabilities = angular.copy($rootScope.$storage.capabilitiesForProfile);
     $scope.profiles = angular.copy($rootScope.$storage.profiles);
+
+    $scope.isResultCheckboxDisabled = true;
+    $scope.toggleResultCheckbox = function() {
+        $scope.isResultCheckboxDisabled = !$scope.isResultCheckboxDisabled;
+        $scope.editedCapability.result = (!$scope.isResultCheckboxDisabled) ? $scope.editedCapability.result : '';
+    };
+
     angular.forEach($scope.capabilities, function(value, key) {
        value.isActive = false;
     });
@@ -320,19 +337,6 @@ ProfileController.controller('EditProfileController', ['$scope', '$rootScope', '
                     $scope.capabilities[j].isActive = true;
                     break;
                 }
-            }
-        }
-    };
-
-    var loadCapabilitiesIntoForm = function(index, capability) {
-        $scope.editedCapability = JSON.parse(JSON.stringify(capability));
-        //Not to have same reference
-        for (var i = $rootScope.protocolsFromEdited.length - 1; i >= 0; i--) {
-            var dataset = $rootScope.protocolsFromEdited[i];
-            if (dataset.protocolName == capability.protocol.protocolName) {
-                $rootScope.protocolsFromEdited[i].parameters = capability.protocol.parameters;
-                $scope.editedCapability.protocol = $rootScope.protocolsFromEdited[i];
-                break;
             }
         }
     };
@@ -369,19 +373,83 @@ ProfileController.controller('EditProfileController', ['$scope', '$rootScope', '
         console.log($scope.profile.capabilities);
     };
 
-    /*Function for setting the capability to modify to the scope and display the edition section*/
-    $scope.openAndEditCapability = function(index, capability){
-        loadCapabilitiesIntoForm(index, capability);
+    var initializeDirectiveScopes = function() {
+        for (var i = 0; i < $scope.capabilities.length; i++) {
+            $scope.directiveScopes[i] = {};
+            if ($scope.capabilities[i].params) {
+                $scope.directiveScopes[i].counter = $scope.capabilities[i].params.length;
+            } else $scope.directiveScopes[i].counter = 0;
+            
+            
+        }
+        $scope.directiveScopes.currentIndex = 0;
+        console.log($scope.directiveScopes);
     };
+    initializeDirectiveScopes();
 
-    $scope.editCapability = function(editedCapability) {
-        for (var i in $scope.profile.capabilities) {
-            if ($scope.profile.capabilities[i].id == editedCapability.id) {
-                $scope.profile.capabilities[i] = editedCapability;
+    var loadCapabilitiesIntoForm = function(index, capability) {
+        
+        $scope.editedCapability = capability;
+        //Not to have same reference
+        for (var i = $rootScope.protocolsFromEdited.length - 1; i >= 0; i--) {
+            var dataset = $rootScope.protocolsFromEdited[i];
+            if (dataset.protocolName == capability.protocol.protocolName) {
+                $rootScope.protocolsFromEdited[i].parameters = capability.protocol.parameters;
+                $scope.editedCapability.protocol = $rootScope.protocolsFromEdited[i];
                 break;
             }
         }
-        console.log($scope.profile);
+    };
+
+    /*Function for setting the capability to modify to the scope and display the edition section*/
+    $scope.openAndEditCapability = function(index, capability){
+        // Clone in the first use (openAndEditCapability), not in the second use of capability (loadCapabilitiesIntoForm)
+        var cloneCapability = angular.copy(capability);
+        loadCapabilitiesIntoForm(index, cloneCapability); // this is to fill up the $scope.editedCapability
+        $scope.isResultCheckboxDisabled = ($scope.editedCapability.result) ? false : true; 
+        $scope.directiveScopes.currentIndex = index;
+        $scope.directiveScopes.loadParams($scope.editedCapability.params); // methode in directive
+        
+    };
+
+    $scope.editCapability = function(editedCapability) {
+        
+        if (editedCapability.protocol.protocolName != null && editedCapability.protocol.parameters!= null) {           
+            console.log(editedCapability);
+
+            // BEGIN /!\ : This code below is to fix directive bug
+            var cap = {};
+            cap.params = [];
+            if (editedCapability.params instanceof Object) {
+                for (var key in editedCapability.params) {
+                    cap.params.push(editedCapability.params[key]);
+                }
+            } else if (editedCapability.params instanceof Array) {
+                cap.params = editedCapability.params ? editedCapability.params : [];
+            }
+            editedCapability.params = cap.params;
+             // END /!\ 
+
+            for (var i in $scope.profile.capabilities) {
+                if ($scope.profile.capabilities[i].id == editedCapability.id) {
+                    $scope.profile.capabilities[i] = angular.copy(editedCapability);
+                    break;
+                }
+            }
+
+            for (var i in $scope.capabilities) {
+                if ($scope.capabilities[i].id == editedCapability.id) {
+                    $scope.capabilities[i] = angular.copy(editedCapability);
+                    break;
+                }
+            }
+            console.log($scope.profile);
+
+        }
+
+
+
+        
     };
 
     $scope.edit = function() {
@@ -392,7 +460,7 @@ ProfileController.controller('EditProfileController', ['$scope', '$rootScope', '
         });
         if (profile.name && profile.description) {
             if (profile.capabilities) {
-                profile.capabilities = JSON.stringify($scope.profile.capabilities);
+                profile.capabilities = JSON.stringify(profile.capabilities);
             }
             console.log(profile);
             //$location.path('/profile');
