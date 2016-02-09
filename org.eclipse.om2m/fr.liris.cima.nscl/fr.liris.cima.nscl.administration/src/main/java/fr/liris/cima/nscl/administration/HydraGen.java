@@ -727,112 +727,291 @@ public class HydraGen {
                 "}";
     }
 
+    public static String sensorS1EV3UltrasonicSensorDistance () {
+        return "{\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/sensor-S1-EV3UltrasonicSensor/Distance\",\n" +
+                "  \"@type\": \"vocab:Capability\",\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/S1/EV3UltrasonicSensor/Distance\"\n" +
+                "  },\n" +
+                "  \"parameters\":   [\n" +
+                "    {\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"sensor-S1-EV3UltrasonicSensor/Distance\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"GET\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/S1/EV3UltrasonicSensor/Distance\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "  ],\n" +
+                "  \"configuration\": \"automatic\"\n" +
+                "}";
+    }
+
+    public static String sensorS1EV3UltrasonicSensorListen () {
+        return "{\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/sensor-S1-EV3UltrasonicSensor/Listen\",\n" +
+                "  \"@type\": \"vocab:Capability\",\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/S1/EV3UltrasonicSensor/Listen\"\n" +
+                "  },\n" +
+                "  \"parameters\":   [\n" +
+                "    {\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"sensor-S1-EV3UltrasonicSensor/Listen\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"GET\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/S1/EV3UltrasonicSensor/Listen\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "  ],\n" +
+                "  \"configuration\": \"automatic\"\n" +
+                "}";
+    }
+
     public static String sensorS1EV3UltrasonicSensor () {
         return "{\n" +
-                "\t\"@context\": \"" + URI_CONTEXT_CAPABILITIES  + "\",\n" +
-                "  \"@id\": \"" + URI_SERVER + "/sensor-S1-EV3UltrasonicSensor\",\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/sensor-S1-EV3UltrasonicSensor\",\n" +
                 "  \"@type\": \"vocab:Capability\",\n" +
-                "  \"id\": \"sensor-S1-EV3UltrasonicSensor\",\n" +
-                "  \"result\": null,\n" +
-                "  \"protocol\": {\n" +
-                "      \"protocolName\": \"HTTP\",\n" +
-                "      \"parameters\": [\n" +
-                "      {\n" +
-                "        \"name\": \"port\",\n" +
-                "        \"value\": \"8080\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"body\",\n" +
-                "        \"value\": \"sensor-S1-EV3UltrasonicSensor\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"method\",\n" +
-                "        \"value\": \"GET\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"uri\",\n" +
-                "        \"value\": \"/S1/EV3UltrasonicSensor\"\n" +
-                "      }\n" +
-                "    ]\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/S1/EV3UltrasonicSensor\"\n" +
                 "  },\n" +
-                "  \"cloudPort\": \"0\",\n" +
+                "  \"parameters\":   [\n" +
+                "    {\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"sensor-S1-EV3UltrasonicSensor\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"GET\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/S1/EV3UltrasonicSensor\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "  ],\n" +
+                "  \"configuration\": \"automatic\"\n" +
+                "}";
+    }
+
+    public static String sensorS4EV3GyroSensorRate () {
+        return "{\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/sensor-S4-EV3GyroSensor/Rate\",\n" +
+                "  \"@type\": \"vocab:Capability\",\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/S4/EV3GyroSensor/Rate\"\n" +
+                "  },\n" +
+                "  \"parameters\":   [\n" +
+                "    {\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"sensor-S4-EV3GyroSensor/Rate\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"GET\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/S4/EV3GyroSensor/Rate\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "  ],\n" +
+                "  \"configuration\": \"automatic\"\n" +
+                "}";
+    }
+
+    public static String sensorS4EV3GyroSensorAngle() {
+        return "{\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/sensor-S4-EV3GyroSensor/Angle\",\n" +
+                "  \"@type\": \"vocab:Capability\",\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/S4/EV3GyroSensor/Angle\"\n" +
+                "  },\n" +
+                "  \"parameters\":   [\n" +
+                "    {\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"sensor-S4-EV3GyroSensor/Angle\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"GET\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/S4/EV3GyroSensor/Angle\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "  ],\n" +
+                "  \"configuration\": \"automatic\"\n" +
+                "}";
+    }
+
+    public static String sensorS4EV3GyroSensorAngleRate() {
+        return "{\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/sensor-S4-EV3GyroSensor/Angle and Rate\",\n" +
+                "  \"@type\": \"vocab:Capability\",\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/S4/EV3GyroSensor/Angle and Rate\"\n" +
+                "  },\n" +
+                "  \"parameters\":   [\n" +
+                "    {\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"sensor-S4-EV3GyroSensor/Angle and Rate\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"GET\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/S4/EV3GyroSensor/Angle and Rate\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "  ],\n" +
                 "  \"configuration\": \"automatic\"\n" +
                 "}";
     }
 
     public static String sensorS4EV3GyroSensor() {
         return "{\n" +
-                "  \"@context\": \"" + URI_CONTEXT_CAPABILITIES + ",\n" +
-                "  \"@id\": \"" + URI_SERVER + "sensor-S4-EV3GyroSensor\",\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/sensor-S4-EV3GyroSensor\",\n" +
                 "  \"@type\": \"vocab:Capability\",\n" +
-                "  \"id\": \"sensor-S4-EV3GyroSensor\",\n" +
-                "  \"result\": null,\n" +
-                "  \"protocol\": {\n" +
-                "      \"protocolName\": \"HTTP\",\n" +
-                "      \"parameters\": [\n" +
-                "      {\n" +
-                "        \"name\": \"port\",\n" +
-                "        \"value\": \"8080\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"body\",\n" +
-                "        \"value\": \"sensor-S4-EV3GyroSensor\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"method\",\n" +
-                "        \"value\": \"GET\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"uri\",\n" +
-                "        \"value\": \"/S4/EV3GyroSensor\"\n" +
-                "      }\n" +
-                "    ]\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/S4/EV3GyroSensor\"\n" +
                 "  },\n" +
-                "  \"cloudPort\": \"0\",\n" +
+                "  \"parameters\":   [\n" +
+                "    {\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"sensor-S4-EV3GyroSensor\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"GET\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/S4/EV3GyroSensor\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "  ],\n" +
                 "  \"configuration\": \"automatic\"\n" +
                 "}";
     }
 
     public static String motorARotate() {
         return "{\n" +
-                "  \"@context\": \"" + URI_CONTEXT_CAPABILITIES + ",\n" +
-                "  \"@id\": \"" + URI_SERVER + "/motor-A-rotate\",\n" +
-                "  \"@type\": \"Capability\",\n" +
-                "  \"id\": \"motor-A-rotate\",\n" +
-                "  \"result\": null,\n" +
-                "  \"protocol\": {\n" +
-                "    \"protocolName\": \"HTTP\",\n" +
-                "    \"parameters\": [\n" +
-                "      {\n" +
-                "        \"name\": \"port\",\n" +
-                "        \"value\": \"8080\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"body\",\n" +
-                "        \"value\": \"motor-A-rotate\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"method\",\n" +
-                "        \"value\": \"POST\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"uri\",\n" +
-                "        \"value\": \"/A/rotate\"\n" +
-                "      }\n" +
-                "    ]\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/motor-A-rotate\",\n" +
+                "  \"@type\": \"vocab:Capability\",\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/A/rotate\"\n" +
                 "  },\n" +
-                "  \"cloudPort\": \"0\",\n" +
-                "  \"params\": [\n" +
+                "  \"parameters\":   [\n" +
                 "    {\n" +
-                "      \"desc\": \"null\",\n" +
-                "      \"idp\": \"speed\",\n" +
-                "      \"type\": \"int\"\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
                 "    },\n" +
                 "    {\n" +
-                "      \"desc\": \"null\",\n" +
-                "      \"idp\": \"angle\",\n" +
-                "      \"type\": \"int\"\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"motor-A-rotate\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"POST\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/A/rotate\"\n" +
                 "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "{\n" +
+                "\"desc\": \"null\",\n" +
+                "\"idp\": \"speed\",\n" +
+                "\"type\": \"int\"\n" +
+                "},\n" +
+                "{\n" +
+                "\"desc\": \"null\",\n" +
+                "\"idp\": \"angle\",\n" +
+                "\"type\": \"int\"\n" +
+                "}\n" +
                 "  ],\n" +
                 "  \"configuration\": \"automatic\"\n" +
                 "}";
@@ -840,39 +1019,39 @@ public class HydraGen {
 
     public static String motorAForward() {
         return "{\n" +
-                "  \"@context\": \"" + URI_CONTEXT_CAPABILITIES + ",\n" +
-                "  \"@id\": \"" + URI_SERVER + "/motor-A-forward\",\n" +
-                "  \"@type\": \"Capability\",\n" +
-                "  \"id\": \"motor-A-forward\",\n" +
-                "  \"result\": null,\n" +
-                "  \"protocol\": {\n" +
-                "    \"protocolName\": \"HTTP\",\n" +
-                "    \"parameters\": [\n" +
-                "      {\n" +
-                "        \"name\": \"port\",\n" +
-                "        \"value\": \"8080\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"body\",\n" +
-                "        \"value\": \"motor-A-forward\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"method\",\n" +
-                "        \"value\": \"POST\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"uri\",\n" +
-                "        \"value\": \"/A/forward\"\n" +
-                "      }\n" +
-                "    ]\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/motor-A-forward\",\n" +
+                "  \"@type\": \"vocab:Capability\",\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/A/forward\"\n" +
                 "  },\n" +
-                "  \"cloudPort\": \"0\",\n" +
-                "  \"params\": [\n" +
+                "  \"parameters\":   [\n" +
                 "    {\n" +
-                "      \"desc\": \"null\",\n" +
-                "      \"idp\": \"speed\",\n" +
-                "      \"type\": \"int\"\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"motor-A-forward\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"POST\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/A/forward\"\n" +
                 "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "{\n" +
+                "\"desc\": \"null\",\n" +
+                "\"idp\": \"speed\",\n" +
+                "\"type\": \"int\"\n" +
+                "}\n" +
                 "  ],\n" +
                 "  \"configuration\": \"automatic\"\n" +
                 "}";
@@ -880,39 +1059,39 @@ public class HydraGen {
 
     public static String motorABackward() {
         return "{\n" +
-                "  \"@context\": \"" + URI_CONTEXT_CAPABILITIES + ",\n" +
-                "  \"@id\": \"" + URI_SERVER + "/motor-A-backward\",\n" +
-                "  \"@type\": \"Capability\",\n" +
-                "  \"id\": \"motor-A-backward\",\n" +
-                "  \"result\": null,\n" +
-                "  \"protocol\": {\n" +
-                "    \"protocolName\": \"HTTP\",\n" +
-                "    \"parameters\": [\n" +
-                "      {\n" +
-                "        \"name\": \"port\",\n" +
-                "        \"value\": \"8080\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"body\",\n" +
-                "        \"value\": \"motor-A-backward\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"method\",\n" +
-                "        \"value\": \"POST\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"uri\",\n" +
-                "        \"value\": \"/A/backward\"\n" +
-                "      }\n" +
-                "    ]\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/motor-A-backward\",\n" +
+                "  \"@type\": \"vocab:Capability\",\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/A/backward\"\n" +
                 "  },\n" +
-                "  \"cloudPort\": \"0\",\n" +
-                "  \"params\": [\n" +
+                "  \"parameters\":   [\n" +
                 "    {\n" +
-                "      \"desc\": \"null\",\n" +
-                "      \"idp\": \"speed\",\n" +
-                "      \"type\": \"int\"\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"motor-A-backward\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"POST\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/A/backward\"\n" +
                 "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "{\n" +
+                "\"desc\": \"null\",\n" +
+                "\"idp\": \"speed\",\n" +
+                "\"type\": \"int\"\n" +
+                "}\n" +
                 "  ],\n" +
                 "  \"configuration\": \"automatic\"\n" +
                 "}";
@@ -920,77 +1099,79 @@ public class HydraGen {
 
     public static String motorAStop() {
         return "{\n" +
-                "  \"@context\": \"" + URI_CONTEXT_CAPABILITIES + ",\n" +
-                "  \"@id\": \"" + URI_SERVER + "/motor-A-stop\",\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/motor-A-stop\",\n" +
                 "  \"@type\": \"vocab:Capability\",\n" +
-                "  \"id\": \"motor-A-stop\",\n" +
-                "  \"result\": null,\n" +
-                "  \"protocol\": {\n" +
-                "    \"protocolName\": \"HTTP\",\n" +
-                "    \"parameters\": [\n" +
-                "      {\n" +
-                "        \"name\": \"port\",\n" +
-                "        \"value\": \"8080\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"body\",\n" +
-                "        \"value\": \"motor-A-stop\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"method\",\n" +
-                "        \"value\": \"POST\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"uri\",\n" +
-                "        \"value\": \"/A/stop\"\n" +
-                "      }\n" +
-                "    ]\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/A/stop\"\n" +
                 "  },\n" +
-                "  \"cloudPort\": \"0\",\n" +
+                "  \"parameters\":   [\n" +
+                "    {\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"motor-A-stop\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"POST\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/A/stop\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "  ],\n" +
                 "  \"configuration\": \"automatic\"\n" +
                 "}";
     }
 
     public static String motorDRotate() {
         return "{\n" +
-                "  \"@context\": \"" + URI_CONTEXT_CAPABILITIES + ",\n" +
-                "  \"@id\": \"" + URI_SERVER + "/motor-D-rotate\",\n" +
-                "  \"@type\": \"Capability\",\n" +
-                "  \"id\": \"motor-D-rotate\",\n" +
-                "  \"result\": null,\n" +
-                "  \"protocol\": {\n" +
-                "    \"protocolName\": \"HTTP\",\n" +
-                "    \"parameters\": [\n" +
-                "      {\n" +
-                "        \"name\": \"port\",\n" +
-                "        \"value\": \"8080\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"body\",\n" +
-                "        \"value\": \"motor-D-rotate\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"method\",\n" +
-                "        \"value\": \"POST\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"uri\",\n" +
-                "        \"value\": \"/D/rotate\"\n" +
-                "      }\n" +
-                "    ]\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/motor-D-rotate\",\n" +
+                "  \"@type\": \"vocab:Capability\",\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/D/rotate\"\n" +
                 "  },\n" +
-                "  \"cloudPort\": \"0\",\n" +
-                "  \"params\": [\n" +
+                "  \"parameters\":   [\n" +
                 "    {\n" +
-                "      \"desc\": \"null\",\n" +
-                "      \"idp\": \"speed\",\n" +
-                "      \"type\": \"int\"\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
                 "    },\n" +
                 "    {\n" +
-                "      \"desc\": \"null\",\n" +
-                "      \"idp\": \"angle\",\n" +
-                "      \"type\": \"int\"\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"motor-D-rotate\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"POST\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/D/rotate\"\n" +
                 "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "{\n" +
+                "\"desc\": \"null\",\n" +
+                "\"idp\": \"speed\",\n" +
+                "\"type\": \"int\"\n" +
+                "},\n" +
+                "{\n" +
+                "\"desc\": \"null\",\n" +
+                "\"idp\": \"angle\",\n" +
+                "\"type\": \"int\"\n" +
+                "}\n" +
                 "  ],\n" +
                 "  \"configuration\": \"automatic\"\n" +
                 "}";
@@ -998,39 +1179,39 @@ public class HydraGen {
 
     public static String motorDForward() {
         return "{\n" +
-                "  \"@context\": \"" + URI_CONTEXT_CAPABILITIES + ",\n" +
-                "  \"@id\": \"" + URI_SERVER + "/motor-D-forward\",\n" +
-                "  \"@type\": \"Capability\",\n" +
-                "  \"id\": \"motor-D-forward\",\n" +
-                "  \"result\": null,\n" +
-                "  \"protocol\": {\n" +
-                "    \"protocolName\": \"HTTP\",\n" +
-                "    \"parameters\": [\n" +
-                "      {\n" +
-                "        \"name\": \"port\",\n" +
-                "        \"value\": \"8080\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"body\",\n" +
-                "        \"value\": \"motor-D-forward\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"method\",\n" +
-                "        \"value\": \"POST\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"uri\",\n" +
-                "        \"value\": \"/D/forward\"\n" +
-                "      }\n" +
-                "    ]\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/motor-D-forward\",\n" +
+                "  \"@type\": \"vocab:Capability\",\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/D/forward\"\n" +
                 "  },\n" +
-                "  \"cloudPort\": \"0\",\n" +
-                "  \"params\": [\n" +
+                "  \"parameters\":   [\n" +
                 "    {\n" +
-                "      \"desc\": \"null\",\n" +
-                "      \"idp\": \"speed\",\n" +
-                "      \"type\": \"int\"\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"motor-D-forward\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"POST\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/D/forward\"\n" +
                 "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "{\n" +
+                "\"desc\": \"null\",\n" +
+                "\"idp\": \"speed\",\n" +
+                "\"type\": \"int\"\n" +
+                "}\n" +
                 "  ],\n" +
                 "  \"configuration\": \"automatic\"\n" +
                 "}";
@@ -1038,39 +1219,39 @@ public class HydraGen {
 
     public static String motorDBackward() {
         return "{\n" +
-                "  \"@context\": \"" + URI_CONTEXT_CAPABILITIES + ",\n" +
-                "  \"@id\": \"" + URI_SERVER + "/motor-D-backward\",\n" +
-                "  \"@type\": \"Capability\",\n" +
-                "  \"id\": \"motor-D-backward\",\n" +
-                "  \"result\": null,\n" +
-                "  \"protocol\": {\n" +
-                "    \"protocolName\": \"HTTP\",\n" +
-                "    \"parameters\": [\n" +
-                "      {\n" +
-                "        \"name\": \"port\",\n" +
-                "        \"value\": \"8080\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"body\",\n" +
-                "        \"value\": \"motor-D-backward\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"method\",\n" +
-                "        \"value\": \"POST\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"uri\",\n" +
-                "        \"value\": \"/D/backward\"\n" +
-                "      }\n" +
-                "    ]\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/motor-D-backward\",\n" +
+                "  \"@type\": \"vocab:Capability\",\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/D/backward\"\n" +
                 "  },\n" +
-                "  \"cloudPort\": \"0\",\n" +
-                "  \"params\": [\n" +
+                "  \"parameters\":   [\n" +
                 "    {\n" +
-                "      \"desc\": \"null\",\n" +
-                "      \"idp\": \"speed\",\n" +
-                "      \"type\": \"int\"\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"motor-D-backward\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"POST\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/D/backward\"\n" +
                 "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "{\n" +
+                "\"desc\": \"null\",\n" +
+                "\"idp\": \"speed\",\n" +
+                "\"type\": \"int\"\n" +
+                "}\n" +
                 "  ],\n" +
                 "  \"configuration\": \"automatic\"\n" +
                 "}";
@@ -1078,33 +1259,35 @@ public class HydraGen {
 
     public static String motorDStop() {
         return "{\n" +
-                "  \"@context\": \"" + URI_CONTEXT_CAPABILITIES + ",\n" +
-                "  \"@id\": \"" + URI_SERVER + "/motor-D-stop\",\n" +
+                "  \"@context\": \"127.0.0.1:8080/om2m/nscl/applications/CIMA/administration/contextCapabilities\",\n" +
+                "  \"@id\": \"127.0.0.1:8080/motor-D-stop\",\n" +
                 "  \"@type\": \"vocab:Capability\",\n" +
-                "  \"id\": \"motor-D-stop\",\n" +
-                "  \"result\": null,\n" +
-                "  \"protocol\": {\n" +
-                "    \"protocolName\": \"HTTP\",\n" +
-                "    \"parameters\": [\n" +
-                "      {\n" +
-                "        \"name\": \"port\",\n" +
-                "        \"value\": \"8080\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"body\",\n" +
-                "        \"value\": \"motor-D-stop\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"method\",\n" +
-                "        \"value\": \"POST\"\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"name\": \"uri\",\n" +
-                "        \"value\": \"/D/stop\"\n" +
-                "      }\n" +
-                "    ]\n" +
+                "  \"protocol\": \"HTTP\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"127.0.0.1:8080/device/1234567\",\n" +
+                "    \"direct\": \"127.0.0.1:null/D/stop\"\n" +
                 "  },\n" +
-                "  \"cloudPort\": \"0\",\n" +
+                "  \"parameters\":   [\n" +
+                "    {\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"8080\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"motor-D-stop\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"POST\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"/D/stop\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" +
+                "  ],\n" +
                 "  \"configuration\": \"automatic\"\n" +
                 "}";
     }

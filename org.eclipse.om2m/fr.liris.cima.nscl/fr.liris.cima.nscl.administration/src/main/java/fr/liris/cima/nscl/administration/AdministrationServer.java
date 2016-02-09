@@ -117,13 +117,38 @@ public class AdministrationServer implements IpuService{
 
 				return resp;
 			case "sensor-S1-EV3UltrasonicSensor" :
-					resp = restClientService.sendRequest(requestIndication);
-					resp.setRepresentation(HydraGen.sensorS1EV3UltrasonicSensor());
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.sensorS1EV3UltrasonicSensor());
 
-					return resp;
+				return resp;
+			case "sensor-S1-EV3UltrasonicSensor/Distance" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.sensorS1EV3UltrasonicSensorDistance());
+
+				return resp;
+			case "sensor-S1-EV3UltrasonicSensor/Listen" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.sensorS1EV3UltrasonicSensorListen());
+
+				return resp;
 			case "sensor-S4-EV3GyroSensor" :
 				resp = restClientService.sendRequest(requestIndication);
 				resp.setRepresentation(HydraGen.sensorS4EV3GyroSensor());
+
+				return resp;
+			case "sensor-S4-EV3GyroSensor/Rate" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.sensorS4EV3GyroSensorRate());
+
+				return resp;
+			case "sensor-S4-EV3GyroSensor/Angle" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.sensorS4EV3GyroSensorAngle());
+
+				return resp;
+			case "sensor-S4-EV3GyroSensor/Angle and Rate" :
+				resp = restClientService.sendRequest(requestIndication);
+				resp.setRepresentation(HydraGen.sensorS4EV3GyroSensorAngleRate());
 
 				return resp;
 			case "motor-A-rotate" :

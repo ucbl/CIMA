@@ -1,6 +1,7 @@
 package fr.liris.cima.gscl.core;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -132,7 +133,8 @@ public class DeviceController implements IpuService{
 
 		LOGGER.info("********* INFO - 2 **** " + infos[infos.length - 2]);
 		logservice.log(LogService.LOG_ERROR, "********* INFO - 2 **** " + infos[infos.length - 2]);
-if(lastInfo.equals(Constants.PATH_CAPABILITIES)){
+		if(lastInfo.equals(Constants.PATH_CAPABILITIES)){
+
 			if(infos[infos.length - 2].equals(Constants.PATH_DEVICES_ALL)){
 				// filter on capabilities
 				Map<String, List <String>> params = requestIndication.getParameters();
@@ -186,7 +188,15 @@ if(lastInfo.equals(Constants.PATH_CAPABILITIES)){
 				logservice.log(LogService.LOG_ERROR, "******** /administration/device/<id d'un device>/capability***********");
 				String deviceId = infos[infos.length - 2];
 			//	List<Capability> capabilities = managerImpl.getUnknownDeviceCapabilities(deviceId);
-				List<Capability> capabilities = managerImpl.getDeviceCapabilities(deviceId);
+				//List<Capability> capabilities = managerImpl.getDeviceCapabilities(deviceId);
+
+				List<Capability> capabilities = new ArrayList<>();
+				if (!deviceId.equals("cima"))
+				{
+					System.out.println("FUCK FUCK FUCK FUCK FUCK FUCK FUCK FUCK FUCK FUCK FUCK FUCK FUCK FUCK FUCK : "+deviceId);
+					managerImpl.getDeviceCapabilities(deviceId);
+				}
+
 				//String representation = managerImpl.capabilitiesToObixFormat(capabilities);
 				String representation = Encoder.encodeCapabilitiesToObix(capabilities);
 

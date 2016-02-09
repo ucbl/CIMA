@@ -1,76 +1,62 @@
 'use strict';
-
-// Hàm khởi tạo HTPP Request
-function create_obj() {
-    var browser = navigator.appName;
-    if (browser == 'Microsoft Internet Explorer') {
-        var obj = new ActiveXObject('Microsoft.XMLHTTP');
-    } else {
-        var obj = new XMLHttpRequest();
-    }
-    return obj;
-}
-
-// Khởi tạo HTTP Request
-var http = create_obj();
-
-// Hàm thiết lập thông số cho HTTP Request
-function getData(speed,angle) {
-    
-    http.open('post', 'http://192.168.2.4:8080/A/rotate', true);
-    http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    http.onreadystatechange = do_process;
-    http.send('speed='+speed);
-    http.send('angle='+angle);
-    return false;
-}
-
-// Hàm xử lý dữ liệu
-function do_process() {
-    if (http.readyState == 4 && http.status == 200) {
-        var kq = http.responseText; // Phân loại dữ liệu
-        document.getElementById('show').innerHTML = kq;
-    }
-}
-
 /*Device Model
 * Defining all methods to request the server*/
-app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
-
+app.factory('DeviceFactory', ['$http', '$q', 'JsonldRest', function($http, $q, JsonldRest){
+    JsonldRest.setBaseUrl(URL_DEVICE);
+    var connectedObjects = JsonldRest.collection('/cima');
     var factory = { 
         /*Return all devices*/
         find : function(options){
-                /* Promesses */
-                var deferred = $q.defer();
-                /* First call to initialise */
-                // $.ajax({
-                //     url : URL_DEVICE,
-                //     type : 'GET',
-                //     dataType : 'json',
-                //     success : function(data, status){   
-                //         factory.devices = data;
-                //         deferred.resolve(factory.devices);
-                //     },
-                //     error : function(result, status, error){
-                //         deferred.reject('status : '+status+', error : '+error+'.');
-                //     },
-                //     beforeSend: function(xhr, settings) { 
-                //         xhr.setRequestHeader('Authorization','Basic YWRtaW46YWRtaW4=');
-                //     }
-                // });
-               
-            $http.get(URL_DEVICE).then(function(response) {
-                factory.devices = response.data;
-                deferred.resolve(factory.devices);
-            }, function(error) {
-                deferred.reject('error : '+error);
-            });
+                /* Promises */
+            var deferred = $q.defer();
                 
+            // $http.get(URL_DEVICE).then(function(response) {
+            //     factory.devices = response.data;
+            //     deferred.resolve(factory.devices);
+            // }, function(error) {
+            //     deferred.reject('error : '+error);
+            // });
+            var data = [];
+            connectedObjects.one('devices').get().then(function(res) {
+                for (var i = 0; i < res['@graph'].length; i++) {
+                    data.push(res['@graph'][i]);
+                }
+                deferred.resolve(data);
+                
+                // for (var key in data) {
+                //     var capabilities = data[key].capabilities;
+                //     delete data[key].capabilities;
+                //     data[key].capabilities = [];
+                //     capabilities.forEach(function(capabilityLink, index) {
+                //         capabilityLink.get().then(function(capability) {
+                //             data[key].capabilities.push(capability);
+                //             console.log(data);
+                //             deferred.resolve(data);
+                //         });
+                //     });
+                // }
+               
+                
+            });
             return deferred.promise;
-        }, 
+        },
+
+        getAllCapabilitiesFromDevice : function(device) {
+            var deferred = $q.defer();
+            var capabilities = [];
+            device.capabilities.forEach(function(capabilityLink, index) {
+                capabilityLink.get().then(function(capability) {
+                    capabilities.push(capability);
+                    deferred.resolve(capabilities);
+                });
+            });
+            return deferred.promise;
+        },
         /*get a device from its id*/
         get : function(id){
             /* Promises */
+            // /!\ : Change later because this will retrieve all devices and get the good one by its id
+            // why don't we create a REST like : .../device/{id} ?
             var deferred = $q.defer();
             var device = {};
             var device = factory.find().then(function(devices){
@@ -80,6 +66,7 @@ app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
                        
                     }
                 });
+                //console.log(device);
                 deferred.resolve(device);
             }, function(msg){
                 deferred.reject(msg);
@@ -124,8 +111,6 @@ app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
                 deferred.resolve(data);
             }).error(function (data, status, headers, config) {
                 deferred.reject('Unable to test capability, status : '+status+', header : '+headers);
-                //$http.defaults.headers.common.Authorization = 'Basic YWRtaW46YWRtaW4=';
-                console.log(data);
             });
             $http.defaults.headers.common.Authorization = 'Basic YWRtaW46YWRtaW4=';
             console.log($http.defaults.headers.common.Authorization);
@@ -156,9 +141,9 @@ app.factory('DeviceFactory', ['$http', '$q', function($http, $q){
                 deferred.resolve();
             }).error(function (data, status, headers, config) {
                 //jsonld.objectify(data,status,headers,config);
-                /*jsonld.compact(capability, capability, function(err, compacted) {
+                jsonld.compact(capability, capability, function(err, compacted) {
                     console.log(JSON.stringify(compacted, null, 2));  
-                });*/
+                });
                 console.log(JSON.stringify(data));
                 deferred.reject('Unable to add capability, status : '+status+', header : '+headers);
             });

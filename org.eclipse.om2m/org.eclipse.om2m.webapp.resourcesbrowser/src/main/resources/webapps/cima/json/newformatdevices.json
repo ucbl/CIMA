@@ -364,7 +364,7 @@
     "configuration": "automatic",
     "name": "CimaRobot",
     "id": "DEVICE_1",
-    "uri": "192.168.2.4"
+    "uri": "192.168.2.3"
   },
   {
     "capabilities": [
@@ -709,7 +709,7 @@
     "configuration": "automatic",
     "name": "CimaRobot",
     "id": "DEVICE_2",
-    "uri": "192.168.2.4"
+    "uri": "192.168.2.3"
   },
   {
     "capabilities": [
@@ -1054,7 +1054,7 @@
     "configuration": "automatic",
     "name": "CimaRobot",
     "id": "DEVICE_3",
-    "uri": "192.168.2.4"
+    "uri": "192.168.2.3"
   },
   {
     "capabilities": [
@@ -1399,7 +1399,7 @@
     "configuration": "automatic",
     "name": "CimaRobot",
     "id": "DEVICE_4",
-    "uri": "192.168.2.4"
+    "uri": "192.168.2.3"
   },
   {
     "capabilities": [
@@ -1744,7 +1744,7 @@
     "configuration": "automatic",
     "name": "CimaRobot",
     "id": "DEVICE_5",
-    "uri": "192.168.2.4"
+    "uri": "192.168.2.3"
   },
   {
     "capabilities": [
@@ -2089,7 +2089,7 @@
     "configuration": "automatic",
     "name": "CimaRobot",
     "id": "DEVICE_6",
-    "uri": "192.168.2.4"
+    "uri": "192.168.2.3"
   },
   {
     "capabilities": [
@@ -2434,7 +2434,7 @@
     "configuration": "automatic",
     "name": "CimaRobot",
     "id": "DEVICE_7",
-    "uri": "192.168.2.4"
+    "uri": "192.168.2.3"
   },
   {
     "capabilities": [
@@ -2779,7 +2779,7 @@
     "configuration": "automatic",
     "name": "CimaRobot",
     "id": "DEVICE_8",
-    "uri": "192.168.2.4"
+    "uri": "192.168.2.3"
   },
   {
     "capabilities": [
@@ -3124,7 +3124,7 @@
     "configuration": "automatic",
     "name": "CimaRobot",
     "id": "DEVICE_9",
-    "uri": "192.168.2.4"
+    "uri": "192.168.2.3"
   },
   {
     "capabilities": [
@@ -3469,7 +3469,7 @@
     "configuration": "automatic",
     "name": "CimaRobot",
     "id": "DEVICE_10",
-    "uri": "192.168.2.4"
+    "uri": "192.168.2.3"
   },
   {
     "capabilities": [
@@ -3814,6 +3814,6 @@
     "configuration": "automatic",
     "name": "CimaRobot",
     "id": "DEVICE_11",
-    "uri": "192.168.2.4"
+    "uri": "192.168.2.3"
   }
 ]

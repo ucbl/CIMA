@@ -183,4 +183,17 @@ public class Device {
 	public void setConfiguration(String configuration) {
 		this.configuration = configuration;
 	}
+
+
+	public String getIp() {
+		return deviceDescription.getIp();
+	}
+
+	public void setIp(String ip) {
+		deviceDescription.setIp(ip);
+	}
+
+	public String getDescription() { return deviceDescription.getDescription(); }
+
+	public void setDescription(String description) { deviceDescription.setDescription(description); }
 }

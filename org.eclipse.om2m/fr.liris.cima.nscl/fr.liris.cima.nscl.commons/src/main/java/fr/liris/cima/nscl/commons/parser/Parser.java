@@ -47,7 +47,11 @@ import fr.liris.cima.nscl.commons.subscriber.ClientSubscriber;
 import java.util.Iterator;
 
 public class Parser {
-    public static String URI_SERVER = System.getProperty("org.eclipse.om2m.sclBaseAddress") + ":" + System.getProperty("org.eclipse.equinox.http.jetty.http.port") + "/om2m/nscl/applications/CIMA/administration/";
+    public static String IP_SERVER = System.getProperty("org.eclipse.om2m.sclBaseAddress");
+    public static String URI_SERVER = IP_SERVER + ":" + System.getProperty("org.eclipse.equinox.http.jetty.http.port") + "/";
+    public static String URI_SERVER_ADM = IP_SERVER + ":" + System.getProperty("org.eclipse.equinox.http.jetty.http.port") + "/om2m/nscl/applications/CIMA/administration/";
+    public static String URI_CONTEXT_CAPABILITIES = URI_SERVER_ADM + "contextCapabilities";
+    public static String URI_CONTEXT_DEVICE = URI_SERVER_ADM + "contextDevice";
 
     /*
     public static String hydrateststring(String obj_info) {
@@ -61,7 +65,9 @@ public class Parser {
             SAXBuilder sxb = new SAXBuilder();
             Document document = sxb.build(new StringReader(obj_info));
             Element racine = document.getRootElement();
-            String context, name = "", description = "", id = "", dateConnection = "",protocol = "", ip = "", capabilities = "\"capabilities\": [", type = "", conf = "", portFowarding = "", uri = "", contextCapa = "";
+            String context, name = "", description = "", id = "", id_dev = "", dateConnection = "",protocol = "", ip = "", capabilities = "\"capabilities\": [", type = "", conf = "", portFowarding = "", uri = "", contextCapa = "";
+
+            String pf = "";
 
             List<Element> list_capabilities;
             List<Element> fils;
@@ -70,153 +76,77 @@ public class Parser {
             Element objCourant = racine, attrCourant;
 
             // Context Robot EV3
-            context = "\"@context\": \"" + URI_SERVER + "contextDevice#\",";
+            context = "\"@context\": \"" + URI_CONTEXT_DEVICE + "#\",";
 
             // Context Capabilities
-            contextCapa = "\"@context\": \"" +URI_SERVER + "contextCapabilities#\",";
+            contextCapa = "\"@context\": \"" +URI_CONTEXT_CAPABILITIES + "#\",";
 
             noeudAttr = objCourant.getChildren().iterator();
             while (noeudAttr.hasNext()) {
                 attrCourant = (Element) noeudAttr.next();
                 if (attrCourant.getAttributeValue("name") != null && attrCourant.getAttributeValue("name").equalsIgnoreCase("uri")) {
 
-                    uri = "\"@id\": \"" + attrCourant.getAttributeValue("val") + "\",";
-
-//                    s = " [{\"@context\": {";
-
-//                    s += "\"hydra\": \"http://www.w3.org/ns/hydra/core#\",";
-//                    s += "\"@vocab\": \"localhost:8080/hydra/vocab/robot_vocab.jsonld\",";
-//                    s += "\"EntryPoint\": \"vocab:EntryPoint\",";
-//                    s += "\"devices\": {";
-//                    s += "\"@id\": \"vocab:EntryPoint/devices\",";
-//                    s += "\"@type\": \"@id\"}},";
-                    //s += "\"@id\": \"" + attrCourant.getAttributeValue("val") + "\",";
-//                    s += "\"@type\": \"vocab:object\",";
+                    uri = attrCourant.getAttributeValue("val");
 
                 } else if (attrCourant.getAttributeValue("name") != null && attrCourant.getAttributeValue("name").equalsIgnoreCase("name")) {
 
                     type = "\"@type\": \"" + attrCourant.getAttributeValue("val") + "\",";
                     name = "\"name\": \"" + attrCourant.getAttributeValue("val") + "\",";
 
-                    //s += "\"name\": \"" + attrCourant.getAttributeValue("val") + "\",";
-
                 } else if (attrCourant.getAttributeValue("name") != null && attrCourant.getAttributeValue("name").equalsIgnoreCase("description")) {
 
                     description = "\"description\": \"" + attrCourant.getAttributeValue("val") + "\",";
 
-                    //s += "\"description\": \"" + attrCourant.getAttributeValue("val") + "\",";
-
                 } else if (attrCourant.getAttributeValue("name") != null && attrCourant.getAttributeValue("name").equalsIgnoreCase("id")) {
 
-                    id += "\"@id\": \"" + URI_SERVER + attrCourant.getAttributeValue("val") + "\",";
-
-                    //s += "\"connection\": {";
+                    id += "\"@id\": \"" + URI_SERVER_ADM + attrCourant.getAttributeValue("val") + "\",";
+                    id_dev = attrCourant.getAttributeValue("val");
 
                 } else if (attrCourant.getAttributeValue("name") != null && attrCourant.getAttributeValue("name").equalsIgnoreCase("dateConnection")) {
 
                     dateConnection = "\"dateConnection\": \"" + attrCourant.getAttributeValue("val") + "\",";
 
-                    //s += "\"dateConnection\": \"" + attrCourant.getAttributeValue("val") + "\",";
-
-                } else if (attrCourant.getAttributeValue("name") != null && attrCourant.getAttributeValue("name").equalsIgnoreCase("protocol")) {
+                }/* else if (attrCourant.getAttributeValue("name") != null && attrCourant.getAttributeValue("name").equalsIgnoreCase("protocol")) {
 
                     protocol = "\"protocol\": \"" + attrCourant.getAttributeValue("val") + "\",";
 
-                    //s += "\"protocol\": \"" + attrCourant.getAttributeValue("val") + "\",";
+                }*/ else if (attrCourant.getAttributeValue("name") != null && attrCourant.getAttributeValue("name").equalsIgnoreCase("ip")) {
 
-                } else if (attrCourant.getAttributeValue("name") != null && attrCourant.getAttributeValue("name").equalsIgnoreCase("ip")) {
-
-                    ip = "\"address\": \"" + attrCourant.getAttributeValue("val") + "\"";
-
-                    //s += "\"address\": \"" + attrCourant.getAttributeValue("val") + "\"},";
+                    ip = attrCourant.getAttributeValue("val");
 
                 } else if (attrCourant.getAttributeValue("name") != null && attrCourant.getAttributeValue("name").equalsIgnoreCase("configuration")) {
 
-                    conf = "\"automaticConfiguration\": \"" + attrCourant.getAttributeValue("val") + "\"";
-
-                    //s += "\"address\": \"" + attrCourant.getAttributeValue("val") + "\"},";
+                    conf = "\"configuration\": \"" + attrCourant.getAttributeValue("val") + "\",";
 
                 } else if (attrCourant.getAttributeValue("name") != null && attrCourant.getAttributeValue("name").equalsIgnoreCase("portforwarding")) {
 
+                    pf = attrCourant.getAttributeValue("val");
+
                     portFowarding = "\"portforwarding\": \"" + attrCourant.getAttributeValue("val") + "\",";
 
-                    //s += "\"address\": \"" + attrCourant.getAttributeValue("val") + "\"},";
-
-                }/* else if (attrCourant.getAttributeValue("name") != null && attrCourant.getAttributeValue("name").equalsIgnoreCase("capabilities")) {
-                    list_capabilities = attrCourant.getChildren();
-                    noeud_capabilities = list_capabilities.iterator();
-
-                    capabilities = "\"capabilities\": [";
-
-//                    s += "\"configuration\": {";
-//                    s += "\"known\": \"true\" | \"configuration\": \"automatic\",";
-//                    s += "\"profile\": \"nom du profil enregistré par l'utilisateur\"},";
-
-//                    s += "\"capabilities\": [";
-
-                    while (noeud_capabilities.hasNext()) {
-                        Element courant_capabilities = (Element) noeud_capabilities.next();
-
-                        if (courant_capabilities.getAttributeValue("name") != null && courant_capabilities.getAttributeValue("name").equalsIgnoreCase("protocol")) {
-
-                            capabilities += "{";
-
-//                            s += "{";
-
-                            fils = courant_capabilities.getChildren();
-                            n_fils = list_capabilities.iterator();
-
-                            while (n_fils.hasNext()) {
-
-                                Element courant_fils = (Element) n_fils.next();
-                                if (courant_fils.getAttributeValue("name") != null && courant_fils.getAttributeValue("name").equalsIgnoreCase("id")) {
-
-                                    capabilities += "\"@id\": \"" + courant_fils.getAttributeValue("val") + "\",";
-                                    capabilities += contextCapa;
-                                    capabilities += "\"@type\" : \"http://www.w3.org/ns/hydra/core#Class\"";
-
-//                                    s += "\"@id\": \"" + courant_fils.getAttributeValue("val") + "\",";
-//                                    s += "\"@context\" : \"__interoperability__context/Capability\",";
-//                                    s += "\"@type\" : \"http://www.w3.org/ns/hydra/core#Class\"";
-
-                                }
-
-                            }
-
-                            capabilities += "},";
-
-//                            s += "},";
-
-                        }
-
-                    }
-//                    s = s.substring(0, s.length() - 1);// supression de la virgule
-//                    s += "]}]";
-
                 }
-                if(capabilities.charAt(capabilities.length()-1) == ',') {
-                    capabilities = capabilities.substring(0, capabilities.length() - 1);
-                }
-
-                if (capabilities.charAt(capabilities.length()-1) != ']') {
-                    capabilities += "]";
-                }*/
             }
 
             // Capabilities
             Obj deviceObj = ObixDecoder.fromString(obj_info);
             obix.List obixCapabilities = (obix.List) deviceObj.get("capabilities");
 
-            capabilities = "\"capabilities\": [";
             if (obixCapabilities != null) {
                 for (Obj objCapability : obixCapabilities.list()) {
-                    capabilities += "{";
+                    Obj objProt = objCapability.get("protocol");
 
-                    capabilities += "\"@id\": \"" + URI_SERVER + objCapability.get("id").getStr() + "\",";
-                    capabilities += contextCapa;
-                    capabilities += "\"@type\" : \"http://www.w3.org/ns/hydra/core#Class\"";
+                    ArrayList<String> params = new ArrayList<>();
 
-                    capabilities += "},";
+                    // generation params
+                    obix.List objParams = (obix.List)objCapability.get("params");
+                    for(Obj objParam : objParams.list()) {
+                        params.add(genParam(objParam.get("desc").getStr(), objParam.get("idp").getStr(), objParam.get("type").getStr()));
+                    }
+
+                    // generation capabilities
+                    String cap = genCapability(id_dev, objCapability.get("id").getStr(), objProt.get("protocolName").getStr(), objProt.get("port").getStr(), objProt.get("uri").getStr(), pf, objProt.get("method").getStr(), params);
+                    capabilities += cap;
+                    capabilities += ",";
                 }
             }
 
@@ -228,20 +158,24 @@ public class Parser {
 
             //generation of json
 
-            s = "{";
+            //s = "{";
             s += context;
-            s += uri;
+            s += id;
             s += type;
             s += name;
             s += description;
-            s += id;
-            s += "\"connection\": {" + dateConnection + protocol + ip + "},";
-            s += "\"configuration\": {" + conf + "},";
-            s += portFowarding;
+            s += "\"id\": \"" + id_dev + "\",";
+            s += "\"connection\": {" + dateConnection + "\"address\": \"";
+            if(ip == "") {
+                s += uri;
+            } else {
+                s += ip;
+            }
+            s += "\"},";
+            s += conf;
+//            s += portFowarding;
             s += capabilities;
-            s += "}";
-
-            //jsonObject.add(s);
+            //s += "}";
 
         } catch (JDOMException e) {
             e.printStackTrace();
@@ -876,6 +810,61 @@ public class Parser {
             System.out.println(message);
         }
 
+    }
+
+    public static String genParam(String desc, String idp, String type) {
+        return "{\n" +
+                "\"desc\": \"" + desc + "\",\n" +
+                "\"idp\": \"" + idp + "\",\n" +
+                "\"type\": \"" + type + "\"\n" +
+                "}";
+    }
+
+    public static String genCapability(String id_dev, String id_cap, String protocol,String port,String uri_capa,String portforwarding, String method, ArrayList<String> params) {
+        String res = "{\n" +
+                "  \"@context\": \"" + URI_CONTEXT_CAPABILITIES + "\",\n" +
+                "  \"@id\": \"" + URI_SERVER + id_cap + "\",\n" +
+                "  \"@type\": \"vocab:Capability\",\n" +
+                "  \"protocol\": \"" + protocol + "\",\n" +
+                "  \"access\": \n" +
+                "  {\n" +
+                "    \"standard\": \"" + URI_SERVER + "device/" + id_dev + "\",\n" +
+                "    \"direct\": \"" + IP_SERVER + ":" + portforwarding + uri_capa + "\"\n" +
+                "  },\n" +
+                "  \"parameters\": " +
+                "  [\n" +
+                "    {\n" +
+                "      \"name\": \"port\",\n" +
+                "      \"value\": \"" + port + "\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"body\",\n" +
+                "      \"value\": \"" + id_cap + "\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"method\",\n" +
+                "      \"value\": \"" + method + "\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"name\": \"uri\",\n" +
+                "      \"value\": \"" + uri_capa + "\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"params\": [\n" ;
+
+        for(int i = 0; i < params.size(); i++) {
+            if (i != params.size()-1) {
+                res += params.get(i) + ",\n";
+            } else {
+                res += params.get(i) + "\n";
+            }
+        }
+
+        res +=  "  ],\n" +
+                "  \"configuration\": \"automatic\"\n" +
+                "}";
+
+        return res;
     }
 }
 

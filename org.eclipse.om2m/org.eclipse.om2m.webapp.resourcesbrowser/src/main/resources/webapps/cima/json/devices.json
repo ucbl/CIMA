@@ -1,5 +1,4 @@
 [
-
     {
         "id" : "0123456789",
         "name" : "EV3",
@@ -37,6 +36,32 @@
             {
                 "id" : "ev3Front",
                 "configuration" : "manual",
+                "protocol": {
+                    "protocolName" : "USB",
+                    "parameters" : [
+                        {
+                            "name" : "method",
+                            "value" : "POST" 
+                        },
+                        {
+                            "name" : "port",
+                            "value" : "8080" 
+                        },
+                       {
+                            "name" : "URI",
+                            "value" : "/capability" 
+                        },
+                        {
+                            "name" : "body",
+                            "value" : "YmFjaw==" 
+                        }
+                    ]
+                },
+                "keywords" : ["ev3","reculer","back","robot","mouvement","left"]
+            },
+            {
+                "id" : "ev3Front1111111111111",
+                "configuration" : "automatic",
                 "protocol": {
                     "protocolName" : "USB",
                     "parameters" : [
