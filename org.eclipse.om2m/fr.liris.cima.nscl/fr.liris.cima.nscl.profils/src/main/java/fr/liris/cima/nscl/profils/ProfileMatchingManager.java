@@ -175,8 +175,6 @@ public class ProfileMatchingManager implements ProfileMatchingManagerInterface {
     @Override
     public boolean deleteProfileMatchingFromSimpleJson(String json) {
 
-        //{"_id":"fghjklmjhgf","_etag":"fygjlkmlklkhjgf"}
-
         boolean r = true;
 
         JsonElement jelement = new JsonParser().parse(json);

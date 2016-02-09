@@ -44,8 +44,13 @@ public class PortForwardingProcessLauncher extends Thread
         String line;
         Process process = null;
 
+        String programName = "PortForwardingTCP";
+        if(this.protocol == PROTOCOL_UDP)
+            programName = "PortForwardingUDP";
+
+
         //Start the program
-        try {process = Runtime.getRuntime().exec("/opt/PortForwarding 127.0.0.1 "+ this.address+" "+this.objectPort);
+        try {process = Runtime.getRuntime().exec("/opt/"+programName+" 127.0.0.1 "+ this.address+" "+this.objectPort);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Could not execute program to create a new port forwarding." + e);
         }

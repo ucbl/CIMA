@@ -19,14 +19,14 @@ public class PortForwardManager implements PortForwardingInterface {
 
 
 
-public void askNewPortForwarding(String address, int port, String deviceID){
-    String message = "{\"type\":\"test\", \"address\" : \""+address+"\", \"port\" : \""+port+"\" , \"id\" : \""+deviceID+"\" }";
-
-   System.out.println("ASK for port forwarding : " + message);
-        //TcpManagerSender.sendMessage(message, this);
-        PortForwardingProcessLauncher portForwardingProcessLauncher = new PortForwardingProcessLauncher(this, port, deviceID, address, PortForwardingProcessLauncher.PROTOCOL_TCP);
+    public void askNewPortForwarding(String address, int port, String deviceID, String tcpOrUdp){
+        PortForwardingProcessLauncher portForwardingProcessLauncher;
+        if("UDP".equals(tcpOrUdp))
+            portForwardingProcessLauncher  = new PortForwardingProcessLauncher(this, port, deviceID, address, PortForwardingProcessLauncher.PROTOCOL_TCP);
+        else
+            portForwardingProcessLauncher = new PortForwardingProcessLauncher(this, port, deviceID, address, PortForwardingProcessLauncher.PROTOCOL_UDP);
         portForwardingProcessLauncher.start();
-}
+    }
 
 
 
@@ -37,7 +37,6 @@ public void askNewPortForwarding(String address, int port, String deviceID){
 
     public  void addPortForwarding(String m, String deviceId){
 
-        System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRv " + m);
         try {
             int port = getPortFromJSon(m);
             int pid = getPIDFromJson(m);
@@ -68,13 +67,13 @@ public void askNewPortForwarding(String address, int port, String deviceID){
         System.out.println("PORT FORWARDING TABLE : ");
         System.out.println("================================");
         while(iter.hasNext()){
-           String key = iter.next();
-           System.out.println("\t"+key+"|\t"+PFmanager.get(key));
+            String key = iter.next();
+            System.out.println("\t"+key+"|\t"+PFmanager.get(key));
         }
         System.out.println("================================");
     }
 
-	//{"port" : "10002" , "pid" : "11338"}
+    //{"port" : "10002" , "pid" : "11338"}
 
 
     private int getPortFromJSon(String m){

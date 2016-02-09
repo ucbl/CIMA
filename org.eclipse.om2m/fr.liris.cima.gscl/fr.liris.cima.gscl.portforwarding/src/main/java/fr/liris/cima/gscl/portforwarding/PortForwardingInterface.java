@@ -7,7 +7,7 @@ package fr.liris.cima.gscl.portforwarding;
 public interface PortForwardingInterface {
 
     //maybe one day there will be comments here //TODO
-    public void askNewPortForwarding(String address, int port, String deviceID);
+    public void askNewPortForwarding(String address, int port, String deviceID, String tctouupd);
 
     public int getPortForwarding(String deviceId);
     public  void addPortForwarding(String m, String deviceId);

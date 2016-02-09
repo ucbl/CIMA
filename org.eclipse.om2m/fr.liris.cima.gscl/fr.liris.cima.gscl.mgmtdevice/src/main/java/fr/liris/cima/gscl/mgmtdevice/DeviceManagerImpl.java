@@ -123,11 +123,12 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		this.askForPortForwarding(device);
 	}
 
-	private void askForPortForwarding(Device device){ //TODO : logique métier cote PF
+	private void askForPortForwarding(Device device){
 		String deviceID = device.getId();
 		int port = 8080; //TODO; //SELON CAPACITE
 		String address = device.getUri();
-		portForwardingService.askNewPortForwarding(address, port, deviceID);
+		portForwardingService.askNewPortForwarding(address, port, deviceID, "TCP");
+		portForwardingService.askNewPortForwarding(address, port, deviceID, "UDP");
 	}
 
 	@Override
