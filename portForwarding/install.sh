@@ -10,4 +10,5 @@ sudo aptitude search boost
 
 make
 
-sudo cp PortForwarding /opt/PortForwarding
+sudo cp PortForwardingTCP /opt/PortForwardingTCP
+sudo cp PortForwardingUDP /opt/PortForwardingUDP
