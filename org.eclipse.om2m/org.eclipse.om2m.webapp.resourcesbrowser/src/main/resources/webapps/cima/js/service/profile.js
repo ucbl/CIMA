@@ -40,11 +40,6 @@ ProfileController.factory('ProfileService', ['$q', '$http', function($q, $http) 
     this.getProfilesMatchingOfDevice = function(id) {
         var deferred = $q.defer();
 
-        // Local test. Remove later
-        // $http.get(URL_PROFILE_MATCHING).then(function(results) {
-        //     deferred.resolve(results.data);
-        // });
-
         $http.get(URL_PROFILE_MATCHING + '/' + id).then(function(results) {
             deferred.resolve(results.data);
         });
