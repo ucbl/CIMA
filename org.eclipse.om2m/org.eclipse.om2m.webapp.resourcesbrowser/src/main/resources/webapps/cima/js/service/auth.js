@@ -17,7 +17,7 @@ AuthController.factory('AuthService', ['$q', '$http', function($q, $http) {
         // var result = {};
         // result.username = 'CIMA';
         // result.userpassword = 'CIMA';
-        // result.errors = 0;
+        // result.error = 0;
         // return result;
     };
 

@@ -10,10 +10,8 @@
         <input type="text" id="inputUsername" class="form-control" placeholder="Username" required="" autofocus="" ng-model="user.username" />
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="" ng-model="user.userpassword" />
-        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="login(user)">Sign in</button>
+        <button class="btn btn-lg btn-primary btn-block" id="login-cima" type="submit" ng-click="login(user)">Sign in</button>
     </form>
 </div>
 
-<a href="javascript:void(0);" ng-click="loginGoogle()">Login with Google Plus</a>
-
-<!-- <google-plus-signin clientid="259163117056-j6sjjs4pm54ujvffo6s247an6ssqg5g1.apps.googleusercontent.com"></google-plus-signin> -->
+<a href="javascript:void(0);" ng-click="loginGoogle()" id="login-google">Login with Google Plus</a>

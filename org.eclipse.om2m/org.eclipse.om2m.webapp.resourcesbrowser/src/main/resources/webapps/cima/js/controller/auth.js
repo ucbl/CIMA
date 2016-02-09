@@ -35,7 +35,7 @@ AuthController.controller('AuthController', ['$scope', '$rootScope', '$localStor
         }, function(errors) {});
         
         // var results = AuthService.login(cryptingUser);
-        // if (!results.errors) {
+        // if (results.error == 0) {
         //     $rootScope.$storage = $localStorage;
         //     $rootScope.$storage.userSession = results && results.username;
         //     $location.path('/');

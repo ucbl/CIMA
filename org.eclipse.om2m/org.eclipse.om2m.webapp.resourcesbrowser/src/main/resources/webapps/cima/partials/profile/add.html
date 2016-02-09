@@ -56,7 +56,8 @@
                                     {{parameter.name}}:{{parameter.value}}
                         </li>
                         <br>
-
+                        
+                        <h4>Parameters</h4>
                         <li ng-repeat="param in detailCapability.params">
                             {{param.idp}}:{{param.type}}
                         </li>
@@ -64,9 +65,11 @@
                         
                         <strong ng-if="detailCapability.result">Result : {{detailCapability.result}}</strong>
 
-                        <li> Keywords </li> 
-                        <tags-input ng-model="detailCapability.keywords"></tags-input> 
-
+                        <li> Keywords </li>
+                        <!-- <tags-input ng-model="detailCapability.keywords"></tags-input>  -->
+                        <li ng-repeat="keyword in detailCapability.keywords">
+                            {{keyword}}
+                        </li>
                         <br>
 
                         <!-- <button class="btn btn-success pull-right" style="margin-left:5px" type="submit">

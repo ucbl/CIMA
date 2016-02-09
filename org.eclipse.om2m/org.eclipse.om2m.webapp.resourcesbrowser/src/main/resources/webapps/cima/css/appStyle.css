@@ -89,3 +89,8 @@ h1 {
 #listProfilesModal > .modal-dialog {
     width: auto; 
 }
+
+table {
+    table-layout: fixed;
+    word-wrap: break-word;
+}

@@ -24,21 +24,26 @@ ProfileController.controller('ProfileController', ['$scope', 'ProfileService', '
     };
     $scope.newCapability = {};
     $scope.newCapability.params = [];
+    $scope.newCapability.result = '';
     $rootScope.$storage.capabilitiesForProfile = [];
     $rootScope.$storage.addedCapabilities = $rootScope.$storage.addedCapabilities ? $rootScope.$storage.addedCapabilities : [];
     
     $scope.isResultCheckboxDisabled = true;
     $scope.toggleResultCheckbox = function() {
+        console.log($scope.newCapability);
         $scope.isResultCheckboxDisabled = !$scope.isResultCheckboxDisabled;
-        $scope.newCapability.result = (!$scope.isResultCheckboxDisabled) ? $scope.newCapibility.result : '';
+        $scope.newCapability.result = ($scope.newCapability.result && !$scope.isResultCheckboxDisabled) ? $scope.newCapibility.result : '';
+        
     };
 
     /*Add the capability to the model and to the view if it's a success*/
     $scope.addCapability = function(newCapability)
     {
-        console.log('I am in addCapability');
+
+        $scope.newCapability = newCapability;
         if (newCapability.id != null && newCapability.protocol.protocolName != null && newCapability.protocol.parameters!= null)
-        {           
+        {   
+            console.log('I am in addCapability');        
             console.log(newCapability);
             var cap = {};
             cap.id = newCapability.id;
@@ -322,7 +327,7 @@ ProfileController.controller('EditProfileController', ['$scope', '$rootScope', '
     $scope.isResultCheckboxDisabled = true;
     $scope.toggleResultCheckbox = function() {
         $scope.isResultCheckboxDisabled = !$scope.isResultCheckboxDisabled;
-        $scope.editedCapability.result = (!$scope.isResultCheckboxDisabled) ? $scope.editedCapability.result : '';
+        $scope.editedCapability.result = ($scope.editedCapability.result && !$scope.isResultCheckboxDisabled) ? $scope.editedCapability.result : '';
     };
 
     angular.forEach($scope.capabilities, function(value, key) {

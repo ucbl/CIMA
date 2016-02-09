@@ -1,6 +1,6 @@
 'use strict';
 
-var DeviceController = angular.module('DeviceController', ['ProfileController', 'CIMA.toast', 'ngStorage']);
+var DeviceController = angular.module('DeviceController', ['CIMA.toast', 'ngStorage']);
 
 DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'DeviceFactory', 'ProtocolsFactory', '$routeParams', 'ngToast', 'ProfileService', '$localStorage', function($scope, $rootScope, DeviceFactory, ProtocolsFactory, $routeParams, ngToast, ProfileService, $localStorage) {
     
