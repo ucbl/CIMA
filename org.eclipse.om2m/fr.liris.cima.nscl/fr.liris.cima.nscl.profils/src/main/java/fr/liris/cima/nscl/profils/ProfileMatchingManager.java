@@ -24,7 +24,23 @@ public class ProfileMatchingManager implements ProfileMatchingManagerInterface {
     public ProfileMatchingManager(MongoDaoInterface mongoDaoInterface) {
         this.mongoDaoInterface = mongoDaoInterface;
         gson = new Gson();
+
+        this.removeAllProfileMatching();
     }
+
+
+    private void removeAllProfileMatching(){
+        List<ProfileMatching> lpm = this.getAllProfileMatching();
+        Iterator<ProfileMatching> it = lpm.iterator();
+        while(it.hasNext())
+        {
+            ProfileMatching p = it.next();
+            p.getPersistableData().set_etag(p.getPersistableData().get_etag().split(":")[1].replace("\"", "").replace("}", ""));
+            this.deleteProfileMatching(p);
+        }
+    }
+
+
 
     public boolean addProfileMatching(ProfileMatching p){
 
@@ -44,8 +60,27 @@ public class ProfileMatchingManager implements ProfileMatchingManagerInterface {
         }
     }
     public boolean addProfileMatchingFromJson(String json){
-        ProfileMatching p = gson.fromJson(json, ProfileMatching.class);
-        return this.addProfileMatching(p);
+
+
+        boolean r = true;
+
+        JsonElement jelement = new JsonParser().parse(json);
+        JsonArray  jArray = jelement.getAsJsonArray();
+        Iterator<JsonElement> it = jArray.iterator();
+        while(it.hasNext())
+        {
+            JsonObject jsonObject = it.next().getAsJsonObject();
+            ProfileMatching p = gson.fromJson(jsonObject, ProfileMatching.class);
+            if(this.addProfileMatching(p) == false)
+                r = false;
+        }
+
+        return r;
+
+
+
+
+
     }
 
     public List<ProfileMatching> getAllProfileMatching(){
@@ -142,22 +177,32 @@ public class ProfileMatchingManager implements ProfileMatchingManagerInterface {
 
         //{"_id":"fghjklmjhgf","_etag":"fygjlkmlklkhjgf"}
 
+        boolean r = true;
+
         JsonElement jelement = new JsonParser().parse(json);
-        JsonObject  jobject = jelement.getAsJsonObject();
-        String id = jobject.get("_id").toString();
-        id = id.replace("\"", "");
-        String etag = jobject.get("_etag").toString();
-        etag = etag.replace("\"", "");
+        JsonArray  jArray = jelement.getAsJsonArray();
+        Iterator<JsonElement> it = jArray.iterator();
+        while(it.hasNext())
+        {
+            JsonObject jsonObject = it.next().getAsJsonObject();
+            String id = jsonObject.get("_id").toString();
+            id = id.replace("\"", "");
+            String etag = jsonObject.get("_etag").toString();
+            etag = etag.replace("\"", "");
 
-        ProfileMatching p = new ProfileMatching();
-        p.setPersistableData(new PersistableData(id, etag));
+            ProfileMatching p = new ProfileMatching();
+            p.setPersistableData(new PersistableData(id, etag));
 
-        try {
-            return mongoDaoInterface.delete(p);
-        }catch(IOException i){
-            i.printStackTrace();
-            return false;
+            try {
+                if(mongoDaoInterface.delete(p) == false)
+                    r = false;
+            }catch(IOException i){
+                i.printStackTrace();
+                return false;
+            }
         }
+
+        return r;
 
     }
 
