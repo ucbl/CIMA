@@ -9,7 +9,7 @@ public interface PortForwardingInterface {
     //maybe one day there will be comments here //TODO
     public void askNewPortForwarding(String address, int port, String deviceID, String tctouupd);
 
-    public int getPortForwarding(String deviceId);
-    public  void addPortForwarding(String m, String deviceId);
+    public int getPortForwarding(String deviceId, String tcoOrUdp);
+    public  void addPortForwarding(String m, String deviceId, int protocol);
 
 }

@@ -14,7 +14,8 @@ import java.util.Set;
 public class PortForwardManager implements PortForwardingInterface {
 
 
-    private Map<String, Integer> PFmanager = new HashMap<String, Integer>();
+    private Map<String, Integer> PFmanagerTCP = new HashMap<String, Integer>();
+    private Map<String, Integer> PFmanagerUDP = new HashMap<String, Integer>();
     private Map<Integer, Integer> pidAndPort = new HashMap<>();
 
 
@@ -30,12 +31,17 @@ public class PortForwardManager implements PortForwardingInterface {
 
 
 
-    public int getPortForwarding(String deviceId){
-        return PFmanager.get(deviceId);
+    public int getPortForwarding(String deviceId, String tcpOrUdp){
+
+        if(tcpOrUdp.equals("UDP"))
+            return PFmanagerUDP.get(deviceId);
+        else
+            return PFmanagerTCP.get(deviceId);
     }
 
 
-    public  void addPortForwarding(String m, String deviceId){
+
+    public  void addPortForwarding(String m, String deviceId, int protocol){
 
         try {
             int port = getPortFromJSon(m);
@@ -43,9 +49,13 @@ public class PortForwardManager implements PortForwardingInterface {
 
             System.out.println("Message port recu :" + port);
             //TODO success or fail ???
-            this.PFmanager.put(deviceId, port);
+            if(protocol == PortForwardingProcessLauncher.PROTOCOL_TCP)
+                this.PFmanagerTCP.put(deviceId, port);
+            else if(protocol == PortForwardingProcessLauncher.PROTOCOL_UDP)
+                this.PFmanagerUDP.put(deviceId, port);
+
             this.pidAndPort.put(pid, port);
-            //TODO : enlever
+            //TODO : remove when jsonld will show ports
             this.printPF();
         }
         catch(Exception e){
@@ -62,13 +72,24 @@ public class PortForwardManager implements PortForwardingInterface {
     }
 
     private void printPF(){
-        Set<String> keys = PFmanager.keySet();
+        Set<String> keys = PFmanagerTCP.keySet();
         Iterator<String> iter = keys.iterator();
-        System.out.println("PORT FORWARDING TABLE : ");
+        System.out.println("PORT FORWARDING TABLE : TCP ");
         System.out.println("================================");
         while(iter.hasNext()){
             String key = iter.next();
-            System.out.println("\t"+key+"|\t"+PFmanager.get(key));
+            System.out.println("\t"+key+"|\t"+PFmanagerTCP.get(key));
+        }
+        System.out.println("================================");
+
+
+        keys = PFmanagerUDP.keySet();
+        iter = keys.iterator();
+        System.out.println("PORT FORWARDING TABLE : UDP ");
+        System.out.println("================================");
+        while(iter.hasNext()){
+            String key = iter.next();
+            System.out.println("\t"+key+"|\t"+PFmanagerUDP.get(key));
         }
         System.out.println("================================");
     }

@@ -87,7 +87,7 @@ public class PortForwardingProcessLauncher extends Thread
             logger.log(Level.INFO, "FROM PORT FORWARDING PROCESS : " + line);
         }
         else
-            portForwardManager.addPortForwarding(line, this.deviceId);
+            portForwardManager.addPortForwarding(line, this.deviceId, protocol);
 
     }
 }
