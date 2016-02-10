@@ -1,16 +1,14 @@
 package fr.liris.cima.nscl.profils;
 
+import com.google.gson.*;
+import fr.liris.cima.nscl.mongodao.persistance.MongoDaoInterface;
+import fr.liris.cima.nscl.mongodao.persistance.PersistableData;
 import fr.liris.cima.nscl.profils.profilsExport.Profil;
 import fr.liris.cima.nscl.profils.profilsExport.ProfilManagerInterface;
-import fr.liris.cima.nscl.mongodao.persistance.PersistableData;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-
-
-import com.google.gson.*;
-
-import fr.liris.cima.nscl.mongodao.persistance.MongoDaoInterface;
 
 
 /**
@@ -32,11 +30,11 @@ public class ProfilManager implements ProfilManagerInterface {
         }catch(ClassNotFoundException c){
             System.out.println("Error : impossible de trouver la classe à rcéupérer dans la base mongo.");
             c.printStackTrace();
-            return null;
+            return new ArrayList<Profil>();
         }catch(Exception c){
             System.out.println("Error : impossible de trouver la classe à rcéupérer dans la base mongo.");
             c.printStackTrace();
-            return null;
+            return new ArrayList<Profil>();
         }
     }
 
@@ -45,6 +43,9 @@ public class ProfilManager implements ProfilManagerInterface {
 
         Gson gson = new Gson();
         List<Profil> lp = this.getAllProfils();
+
+        if(lp.isEmpty())
+            return "[]";
         String res = "[";
         for(Profil p : lp) {
             res += gson.toJson(p);

@@ -39,7 +39,6 @@ public class Parser {
 	//NOT UPDATED after changement of capabilities (which now containts params and result), because it's not used anywhere
 	public static String parseSimpleXmlToObix(String representation, String newElement, String value) {
 		try {
-
 			SAXBuilder sb  = new SAXBuilder();
 			Document doc = sb.build(new StringReader(representation));
 			Element root =  doc.getRootElement();
@@ -89,6 +88,7 @@ public class Parser {
 
 	public static DeviceDescription parseXmlToDeviceDescription(String representation) {
 		DeviceDescription deviceDescription = new DeviceDescription();
+
 
 		try {
 			SAXBuilder sb  = new SAXBuilder();
@@ -148,6 +148,8 @@ public class Parser {
 
 	public static Capability elementToCapability(Element capabilityElement) throws JDOMException, IOException {
 		Capability capability = new Capability();
+
+
 
 		Element idElement = capabilityElement.getChild("id");
 		if(idElement != null) {
@@ -230,7 +232,7 @@ public class Parser {
 			Protocol protocol;
 			List<Element> childrenElement = root.getChildren();
 			for(Element element : childrenElement) {
-				if(element.getName().equals("uri")) {
+				if(element.getName().equals("uri") || element.getName().equals("ip")) {
 					uri = element.getText().trim();
 				}
 				if(element.getName().equals("modeConnection")) {
