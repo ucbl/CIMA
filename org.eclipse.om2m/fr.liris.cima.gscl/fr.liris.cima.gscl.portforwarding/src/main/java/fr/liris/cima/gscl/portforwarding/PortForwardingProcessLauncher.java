@@ -39,7 +39,7 @@ public class PortForwardingProcessLauncher extends Thread
 
 
     public  void run(){
-        System.out.println(Level.SEVER, "RUN RUN RUN " + this.getDescription());
+        System.out.println("RUN RUN RUN " + this.getDescription());
         String line;
         Process process = null;
 
