@@ -39,8 +39,7 @@ public class PortForwardingProcessLauncher extends Thread
 
 
     public  void run(){
-
-
+        System.out.println(Level.SEVER, "RUN RUN RUN " + this.getDescription());
         String line;
         Process process = null;
 
@@ -72,7 +71,7 @@ public class PortForwardingProcessLauncher extends Thread
 
             logger.log(Level.INFO, "Ending listening port forwarding process out on " + this.getDescription());
 
-
+        System.out.println("OUT OF THE RUN IN PORT FORWARDING");
 
     }
 
