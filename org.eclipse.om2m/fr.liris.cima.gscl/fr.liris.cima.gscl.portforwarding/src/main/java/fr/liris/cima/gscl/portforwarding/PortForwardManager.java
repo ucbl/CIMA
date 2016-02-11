@@ -24,9 +24,9 @@ public class PortForwardManager implements PortForwardingInterface {
         System.out.println("INFO: Ask fo a new port forwarding : " + address + " " + port + " " + deviceID + " " +tcpOrUdp);
         PortForwardingProcessLauncher portForwardingProcessLauncher;
         if("UDP".equals(tcpOrUdp))
-            portForwardingProcessLauncher  = new PortForwardingProcessLauncher(this, port, deviceID, address, PortForwardingProcessLauncher.PROTOCOL_TCP);
+            portForwardingProcessLauncher  = new PortForwardingProcessLauncher(this, port, deviceID, address, PortForwardingProcessLauncher.PROTOCOL_UDP);
         else
-            portForwardingProcessLauncher = new PortForwardingProcessLauncher(this, port, deviceID, address, PortForwardingProcessLauncher.PROTOCOL_UDP);
+            portForwardingProcessLauncher = new PortForwardingProcessLauncher(this, port, deviceID, address, PortForwardingProcessLauncher.PROTOCOL_TCP);
         portForwardingProcessLauncher.start();
     }
 
