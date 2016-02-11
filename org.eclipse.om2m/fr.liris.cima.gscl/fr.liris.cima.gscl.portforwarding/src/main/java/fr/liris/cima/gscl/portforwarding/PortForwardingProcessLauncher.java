@@ -62,7 +62,8 @@ public class PortForwardingProcessLauncher extends Thread
             logger.log(Level.INFO, "Strating listenig process out on " + this.getDescription());
             try {
                 while((line = in.readLine()) != null) {
-                    this.analyseAndDoProcessOutLine(line);
+                    if(this.analyseAndDoProcessOutLine(line))
+                        break;
                 }
                 in.close();
             } catch (IOException e) {
@@ -81,12 +82,14 @@ public class PortForwardingProcessLauncher extends Thread
 
 
 
-    private void analyseAndDoProcessOutLine(String line){
+    private boolean analyseAndDoProcessOutLine(String line){
         if('[' == line.charAt(0)){ //just a log
             logger.log(Level.INFO, "FROM PORT FORWARDING PROCESS : " + line);
+            return false;
         }
         else
             portForwardManager.addPortForwarding(line, this.deviceId, protocol);
+        return true;
 
     }
 }
