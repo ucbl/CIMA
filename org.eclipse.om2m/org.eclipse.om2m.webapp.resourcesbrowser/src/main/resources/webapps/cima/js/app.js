@@ -46,7 +46,6 @@ angular.module('CIMA.toast', ['ngToast']).config(['ngToastProvider', function(ng
 /*Auth header for http requests*/
 app.run(['$http', '$rootScope', '$localStorage', '$location', 'GooglePlus', function($http, $rootScope, $localStorage, $location, GooglePlus) {
     // /!\: This command below PREVENT the interface from sending POST data (speed, angle...) to connected object
-    
     $http.defaults.headers.common.Authorization = 'Basic YWRtaW46YWRtaW4=';
     $rootScope.isLogin = false; // Is it in use ? Check it later
     $rootScope.$storage = $localStorage;

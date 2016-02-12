@@ -93,4 +93,5 @@ h1 {
 table {
     table-layout: fixed;
     word-wrap: break-word;
+    border: 1px solid #18BEF5;
 }

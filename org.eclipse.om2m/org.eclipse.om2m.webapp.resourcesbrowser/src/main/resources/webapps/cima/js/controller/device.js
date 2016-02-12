@@ -317,15 +317,16 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
                 case 'port':
                     port = parameter.value;
                     break;
-                case 'uri':
+                case 'body':
                     pathName = parameter.value;
+                    host = (pathName.match('.cgi$')) ? 'admin:cima123@' + host : host;
                     break;
                 default:
                     break;
             }
         }
+        var url = protocolName + '://' + host + ':' + port + '/' + pathName;
         
-        var url = protocolName + '://' + host + ':' + port + pathName;
         var paramInfos = {
             'method': method,
             'url': url,
