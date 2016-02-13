@@ -50,7 +50,7 @@ app.run(['$http', '$rootScope', '$localStorage', '$location', 'GooglePlus', func
     $rootScope.isLogin = false; // Is it in use ? Check it later
     $rootScope.$storage = $localStorage;
     $rootScope.logout = function() {
-        if ($rootScope.$storage.userSession) {
+        if ($rootScope.$storage.userSession != null) {
             console.log(GooglePlus.getToken());
             if (GooglePlus.getToken()) {
                 console.log('logging out');
@@ -62,7 +62,7 @@ app.run(['$http', '$rootScope', '$localStorage', '$location', 'GooglePlus', func
         }
     };
     $rootScope.$on('$routeChangeStart', function(event) {
-        if ($rootScope.$storage.userSession) {
+        if ($rootScope.$storage.userSession != null) {
             if ($location.path() == '/login') {
                 alert('You have already logged in');
                 $location.path('/');

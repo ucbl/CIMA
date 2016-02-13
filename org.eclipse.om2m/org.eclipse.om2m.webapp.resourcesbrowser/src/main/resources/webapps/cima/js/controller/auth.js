@@ -7,10 +7,15 @@ AuthController.controller('AuthController', ['$scope', '$rootScope', '$localStor
         // lib/angular-google-plus.js
         GooglePlus.login().then(function (authResult) {
             GooglePlus.getUser().then(function (user) {
-                $rootScope.$storage = $localStorage;
-                $rootScope.$storage.userSession = user.name;
-                $location.path('/');
                 console.log(user);
+                if (user.id) {
+                    $rootScope.$storage = $localStorage;
+                    $rootScope.$storage.userSession = user.name;
+                    $location.path('/');
+                }
+                
+               
+                
             });
         }, function (err) {
             console.log(err);
