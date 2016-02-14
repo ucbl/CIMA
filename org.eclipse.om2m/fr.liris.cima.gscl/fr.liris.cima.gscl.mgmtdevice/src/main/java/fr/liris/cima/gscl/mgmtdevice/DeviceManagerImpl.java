@@ -127,7 +127,8 @@ public class DeviceManagerImpl implements ManagedDeviceService {
 		String deviceID = device.getId();
 		int port = 8080; //TODO; //SELON CAPACITE
 		String address = device.getUri();
-		portForwardingService.askNewPortForwarding(address, port, deviceID, "TCP");
+		portForwardingService.askNewPortForwarding(address, port, deviceID+"_8080", "TCP");
+		portForwardingService.askNewPortForwarding(address, 80, deviceID+"_80", "TCP"); //TODO : enlever, pour demo
 		//Temporary removed to test
 		//portForwardingService.askNewPortForwarding(address, port, deviceID, "UDP");
 	}
