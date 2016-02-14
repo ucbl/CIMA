@@ -349,11 +349,12 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
                     if (aKeyValuePair.indexOf(',') >= 0)
                         $scope.responsesCapability.push(getKeyValue(aKeyValuePair));
                 }
-            } else $scope.responsesCapability.push(getKeyValue(data));
+            } else if (data.indexOf(',') >= 0) {
+                $scope.responsesCapability.push(getKeyValue(data));
+            } else $scope.responsesCapability.push(data);
             //$scope.isResponseCapability = true;
         }, function(data){
-            $scope.isLoading = false;
-
+            
         });
         //} else {
         //    alert('Entrez tous les champs vides s\'il vous plait !');
