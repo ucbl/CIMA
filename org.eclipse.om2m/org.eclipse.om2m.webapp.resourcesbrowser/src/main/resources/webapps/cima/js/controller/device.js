@@ -317,7 +317,7 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
                 case 'port':
                     port = parameter.value;
                     break;
-                case 'body':
+                case 'uri':
                     pathName = parameter.value;
                     host = (pathName.match('.cgi$')) ? 'admin:cima123@' + host : host;
                     break;
@@ -326,7 +326,7 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
             }
         }
         var url = protocolName + '://' + host + ':' + port + '/' + pathName;
-        
+        console.log(url);
         var paramInfos = {
             'method': method,
             'url': url,

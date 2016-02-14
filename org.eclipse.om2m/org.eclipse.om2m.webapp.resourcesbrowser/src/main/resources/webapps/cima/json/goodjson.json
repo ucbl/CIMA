@@ -1,6 +1,6 @@
 [
   {
-    "dateConnection": "lundi, nov. 30, 2015 12:12:28 PM",
+    "dateConnection": "vendredi, fev. 12, 2016 15:12:35 PM",
     "id": "DEVICE_0",
     "modeConnection": "ip",
     "name": "",
@@ -8,11 +8,11 @@
       
     ],
     "known": "false",
-    "configuration": "automatic",
+    "configuration": "manual",
     "uri": "192.168.2.1"
   },
   {
-    "dateConnection": "lundi, nov. 30, 2015 12:12:28 PM",
+    "dateConnection": "vendredi, fev. 12, 2016 15:12:35 PM",
     "id": "DEVICE_1",
     "modeConnection": "http",
     "name": "CimaRobot",
@@ -38,7 +38,7 @@
             },
             {
               "name": "uri",
-              "value": "\/A\/rotate"
+              "value": "\/A\/rotate.cgi"
             }
           ]
         },
@@ -139,238 +139,6 @@
         "configuration": "automatic"
       },
       {
-        "id": "motor-D-stop",
-        "result": null,
-        "protocol": {
-          "protocolName": "HTTP",
-          "parameters": [
-            {
-              "name": "port",
-              "value": "8080"
-            },
-            {
-              "name": "body",
-              "value": "motor-D-stop"
-            },
-            {
-              "name": "method",
-              "value": "GET"
-            },
-            {
-              "name": "uri",
-              "value": "\/D\/stop"
-            }
-          ]
-        },
-        "cloudPort": "0",
-        "configuration": "automatic"
-      },
-      {
-        "id": "motor-A-forward",
-        "result": null,
-        "protocol": {
-          "protocolName": "HTTP",
-          "parameters": [
-            {
-              "name": "port",
-              "value": "8080"
-            },
-            {
-              "name": "body",
-              "value": "motor-A-forward"
-            },
-            {
-              "name": "method",
-              "value": "POST"
-            },
-            {
-              "name": "uri",
-              "value": "\/A\/forward"
-            }
-          ]
-        },
-        "cloudPort": "0",
-        "params": [
-          {
-            "desc": "null",
-            "idp": "speed",
-            "type": "int"
-          }
-        ],
-        "configuration": "automatic"
-      },
-      {
-        "id": "motor-A-backward",
-        "result": null,
-        "protocol": {
-          "protocolName": "HTTP",
-          "parameters": [
-            {
-              "name": "port",
-              "value": "8080"
-            },
-            {
-              "name": "body",
-              "value": "motor-A-backward"
-            },
-            {
-              "name": "method",
-              "value": "POST"
-            },
-            {
-              "name": "uri",
-              "value": "\/A\/backward"
-            }
-          ]
-        },
-        "cloudPort": "0",
-        "params": [
-          {
-            "desc": "null",
-            "idp": "speed",
-            "type": "int"
-          }
-        ],
-        "configuration": "automatic"
-      },
-      {
-        "id": "motor-D-rotate",
-        "result": null,
-        "protocol": {
-          "protocolName": "HTTP",
-          "parameters": [
-            {
-              "name": "port",
-              "value": "8080"
-            },
-            {
-              "name": "body",
-              "value": "motor-D-rotate"
-            },
-            {
-              "name": "method",
-              "value": "POST"
-            },
-            {
-              "name": "uri",
-              "value": "\/D\/rotate"
-            }
-          ]
-        },
-        "cloudPort": "0",
-        "params": [
-          {
-            "desc": "null",
-            "idp": "speed",
-            "type": "int"
-          },
-          {
-            "desc": "null",
-            "idp": "angle",
-            "type": "int"
-          }
-        ],
-        "configuration": "automatic"
-      },
-      {
-        "id": "motor-D-forward",
-        "result": null,
-        "protocol": {
-          "protocolName": "HTTP",
-          "parameters": [
-            {
-              "name": "port",
-              "value": "8080"
-            },
-            {
-              "name": "body",
-              "value": "motor-D-forward"
-            },
-            {
-              "name": "method",
-              "value": "POST"
-            },
-            {
-              "name": "uri",
-              "value": "\/D\/forward"
-            }
-          ]
-        },
-        "cloudPort": "0",
-        "params": [
-          {
-            "desc": "null",
-            "idp": "speed",
-            "type": "int"
-          }
-        ],
-        "configuration": "automatic"
-      },
-      {
-        "id": "motor-D-backward",
-        "result": null,
-        "protocol": {
-          "protocolName": "HTTP",
-          "parameters": [
-            {
-              "name": "port",
-              "value": "8080"
-            },
-            {
-              "name": "body",
-              "value": "motor-D-backward"
-            },
-            {
-              "name": "method",
-              "value": "POST"
-            },
-            {
-              "name": "uri",
-              "value": "\/D\/backward"
-            }
-          ]
-        },
-        "cloudPort": "0",
-        "params": [
-          {
-            "desc": "null",
-            "idp": "speed",
-            "type": "int"
-          }
-        ],
-        "configuration": "automatic"
-      },
-      {
-        "id": "motor-D-rotate",
-        "result": null,
-        "protocol": {
-          "protocolName": "HTTP",
-          "parameters": [
-            {
-              "name": "port",
-              "value": "8080"
-            },
-            {
-              "name": "body",
-              "value": "motor-D-stop"
-            },
-            {
-              "name": "method",
-              "value": "POST"
-            },
-            {
-              "name": "uri",
-              "value": "\/D\/stop"
-            }
-          ]
-        },
-        "cloudPort": "0",
-        "params": [
-          
-        ],
-        "configuration": "automatic"
-      },
-      {
         "id": "sensor-S4-gyro",
         "result": null,
         "protocol": {
@@ -406,7 +174,7 @@
     "uri": "192.168.2.3"
   },
   {
-    "dateConnection": "lundi, nov. 30, 2015 12:12:35 PM",
+    "dateConnection": "vendredi, fev. 12, 2016 15:12:35 PM",
     "id": "DEVICE_2",
     "modeConnection": "ip",
     "name": "",
@@ -416,5 +184,113 @@
     "known": "false",
     "configuration": "automatic",
     "uri": "192.168.2.4"
+  },
+  {
+    "dateConnection": "vendredi, fev. 12, 2016 15:12:35 PM",
+    "id": "DEVICE_3",
+    "modeConnection": "ip",
+    "name": "",
+    "capabilities": [
+      
+    ],
+    "known": "false",
+    "configuration": "manual",
+    "uri": "192.168.2.5"
+  },
+  {
+    "dateConnection": "vendredi, fev. 12, 2016 15:12:35 PM",
+    "id": "DEVICE_4",
+    "modeConnection": "ip",
+    "name": "",
+    "capabilities": [
+      
+    ],
+    "known": "false",
+    "configuration": "manual",
+    "uri": "192.168.2.6"
+  },
+  {
+    "dateConnection": "vendredi, fev. 12, 2016 15:12:35 PM",
+    "id": "DEVICE_5",
+    "modeConnection": "ip",
+    "name": "",
+    "capabilities": [
+      
+    ],
+    "known": "false",
+    "configuration": "manual",
+    "uri": "192.168.2.7"
+  },
+  {
+    "dateConnection": "vendredi, fev. 12, 2016 15:12:35 PM",
+    "id": "DEVICE_6",
+    "modeConnection": "ip",
+    "name": "",
+    "capabilities": [
+      
+    ],
+    "known": "false",
+    "configuration": "manual",
+    "uri": "192.168.2.8"
+  },
+  {
+    "dateConnection": "vendredi, fev. 12, 2016 15:12:35 PM",
+    "id": "DEVICE_7",
+    "modeConnection": "ip",
+    "name": "",
+    "capabilities": [
+      
+    ],
+    "known": "false",
+    "configuration": "automatic",
+    "uri": "192.168.2.9"
+  },
+  {
+    "dateConnection": "vendredi, fev. 12, 2016 15:12:35 PM",
+    "id": "DEVICE_8",
+    "modeConnection": "ip",
+    "name": "",
+    "capabilities": [
+      
+    ],
+    "known": "false",
+    "configuration": "automatic",
+    "uri": "192.168.2.10"
+  },
+  {
+    "dateConnection": "vendredi, fev. 12, 2016 15:12:35 PM",
+    "id": "DEVICE_9",
+    "modeConnection": "ip",
+    "name": "",
+    "capabilities": [
+      
+    ],
+    "known": "false",
+    "configuration": "automatic",
+    "uri": "192.168.2.11"
+  },
+  {
+    "dateConnection": "vendredi, fev. 12, 2016 15:12:35 PM",
+    "id": "DEVICE_10",
+    "modeConnection": "ip",
+    "name": "",
+    "capabilities": [
+      
+    ],
+    "known": "false",
+    "configuration": "manual",
+    "uri": "192.168.2.12"
+  },
+  {
+    "dateConnection": "vendredi, fev. 12, 2016 15:12:35 PM",
+    "id": "DEVICE_11",
+    "modeConnection": "ip",
+    "name": "",
+    "capabilities": [
+      
+    ],
+    "known": "false",
+    "configuration": "automatic",
+    "uri": "192.168.2.13"
   }
 ]
