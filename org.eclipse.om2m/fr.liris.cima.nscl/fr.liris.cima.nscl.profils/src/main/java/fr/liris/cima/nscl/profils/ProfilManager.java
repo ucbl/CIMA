@@ -130,7 +130,19 @@ public class ProfilManager implements ProfilManagerInterface {
 
     @Override
     public Profil profilFromJson(String json) {
-        return (Profil) new Gson().fromJson(json, Profil.class);
+        Profil p = (Profil) new Gson().fromJson(json, Profil.class);
+        //To correct the proble of added "objectid" or $oid in the json from the interface
+        if(json.contains("$oid")){
+            JsonElement jsonElement = new JsonParser().parse(json);
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            JsonObject etagObject = jsonObject.getAsJsonObject("_etag");
+            JsonObject persistObject = jsonObject.getAsJsonObject("persistibleData");
+            String _etag =  persistObject.get("_etag").toString();
+            _etag = _etag.split(":")[1].replace("}", "").replace("\"", "").replace("\\", "");
+            System.out.println("ETAG : " + _etag);
+            p.getPersistableData().set_etag(_etag);
+        }
+        return p;
     }
 
     @Override
