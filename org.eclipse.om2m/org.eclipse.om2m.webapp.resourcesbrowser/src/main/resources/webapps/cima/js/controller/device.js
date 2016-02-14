@@ -293,6 +293,10 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
         return keyPart + ' : ' + valuePart;
     };
 
+    $scope.removeResponses = function() {
+        $scope.responsesCapability = [];
+    };
+
     /*Testing capability function*/
     $scope.testCapability = function(newCapability){
         //$scope.isLoading = true;
@@ -354,7 +358,9 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
             } else $scope.responsesCapability.push(data);
             //$scope.isResponseCapability = true;
         }, function(data){
-            
+            $scope.isLoading = false;
+            var a = 2.2;
+            $scope.responsesCapability.push(a);
         });
         //} else {
         //    alert('Entrez tous les champs vides s\'il vous plait !');

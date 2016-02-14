@@ -112,7 +112,7 @@
                             <!-- <button ng-click="" type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0 && editedCapability.id.indexOf('stop') < 0" data-toggle="modal" data-target="#configParamsModal">Configure</button> -->
                             
                             <!-- Modal Request -->
-                            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#testCapabilityModal" ng-if="editedCapability.params && editedCapability.params.length > 0">Test</button>
+                            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#testCapabilityModal" ng-if="editedCapability.params && editedCapability.params.length > 0" ng-click="removeResponses()">Test</button>
                             <!-- Modal Response -->
                             <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#testCapabilityModal" ng-if="!editedCapability.params || editedCapability.params.length <= 0" ng-click="testCapability(editedCapability)">Test</button>
                             <br>
@@ -137,7 +137,7 @@
                                       <input type="text" class="form-control" ng-model="configParams[param.idp]" ng-if="param.type == 'string'" aria-describedby="sizing-addon2" />
                                     </div>
                                   </div>
-
+                                    {{responsesCapability}}
                                   <div class="modal-body" ng-if="responsesCapability.length > 0" ng-repeat="responseCapability in responsesCapability">
                                     
 
