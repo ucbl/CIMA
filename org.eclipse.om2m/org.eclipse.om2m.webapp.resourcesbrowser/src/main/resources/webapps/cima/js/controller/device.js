@@ -325,7 +325,7 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
                     break;
             }
         }
-        var url = protocolName + '://' + host + ':' + port + '/' + pathName;
+        var url = protocolName + '://' + host + ':' + port + pathName;
         console.log(url);
         var paramInfos = {
             'method': method,
