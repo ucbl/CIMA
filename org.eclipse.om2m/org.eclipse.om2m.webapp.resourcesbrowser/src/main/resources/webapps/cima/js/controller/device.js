@@ -299,7 +299,6 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
                     break;
                 case 'uri':
                     pathName = parameter.value;
-                    host = (pathName.match('.cgi$')) ? 'admin:cima123@' + host : host;
                     break;
                 default:
                     break;
