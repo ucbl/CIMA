@@ -333,9 +333,7 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
             } else $scope.responsesCapability.push(data);
             //$scope.isResponseCapability = true;
         }, function(data){
-            $scope.isLoading = false;
-            var a = 2.2;
-            $scope.responsesCapability.push(a);
+            
         });
 
        
