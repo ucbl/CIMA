@@ -29,10 +29,8 @@ HomeController.controller('HomeController', ['$scope', '$rootScope', 'DeviceFact
     var initializeOptions = function() {
         /*configGroup contains the list of unique configuration items ['manual','automatic']*/
         $scope.configGroup = uniqueItems($scope.devices, 'configuration');
-        //$scope.configGroup = getAllConfigurationModes($scope.devices);
         /*modeGroup contains the list of unique connection mode items ['USB','HTTP', ...]*/
         $scope.modeGroup = uniqueItems($scope.devices, 'modeConnection');
-        //$scope.modeGroup = getAllConnectionModes($scope.devices);
         /*keyGroup contains the list of unique keywords ['ev3','movement', ...]*/
         $scope.keyGroup = uniqueItemsKeys($scope.devices, 'capabilities');
     };
@@ -51,8 +49,6 @@ HomeController.controller('HomeController', ['$scope', '$rootScope', 'DeviceFact
                         $scope.filters[key1][key2] = $scope.isSelectAll;
                     }
                 }
-
-                //initializeFilters();
                 ngToast.create((devices.length-count)+" new devices detected.");
                 console.log("In if length - count: " + devices.length + "-" + count);
             } else {
@@ -89,43 +85,45 @@ HomeController.controller('HomeController', ['$scope', '$rootScope', 'DeviceFact
 
     };
 
+    // Switch the filters : AND or OR if necessary
     $scope.filterByDevice = function(device) {
-        // var matchesOR = true;
-        // var reached = false;
+        // Filter with the OR condition
+        /*var matchesOR = true;
+        var reached = false;
         
-        // for (var prop in $scope.filters) {
-        //     if (noSubFilter($scope.filters[prop])) continue;
-        //     prop = (prop == 'keywords' ? 'capabilities' : prop);
-        //     if (device[prop] instanceof Array) { // This means prop = 'capabilites' which is an array
-        //         for (var j = 0; j < device[prop].length; j++) {
-        //             for (var i = 0; i < device[prop][j]['keywords'].length; i++) {
+        for (var prop in $scope.filters) {
+            if (noSubFilter($scope.filters[prop])) continue;
+            prop = (prop == 'keywords' ? 'capabilities' : prop);
+            if (device[prop] instanceof Array) { // This means prop = 'capabilites' which is an array
+                for (var j = 0; j < device[prop].length; j++) {
+                    for (var i = 0; i < device[prop][j]['keywords'].length; i++) {
                         
-        //                 if ($scope.filters['keywords'].hasOwnProperty(device[prop][j]['keywords'][i])) {
+                        if ($scope.filters['keywords'].hasOwnProperty(device[prop][j]['keywords'][i])) {
                             
-        //                     if (!$scope.filters['keywords'][device[prop][j]['keywords'][i]]) {
-        //                         matchesOR = false;
-        //                     } else {
-        //                         console.log('reculer here');
-        //                         matchesOR = true;
-        //                         reached = true;
-        //                         break;
-        //                     }
-        //                 }
-        //             }
-        //         }
+                            if (!$scope.filters['keywords'][device[prop][j]['keywords'][i]]) {
+                                matchesOR = false;
+                            } else {
+                                console.log('reculer here');
+                                matchesOR = true;
+                                reached = true;
+                                break;
+                            }
+                        }
+                    }
+                }
                 
-        //         if (reached) break;
-        //     } else {
-        //         if (!$scope.filters[prop][device[prop]]) {
-        //             matchesOR = false;
-        //         } else {
-        //             matchesOR = true;
-        //             break;
-        //         }
-        //     }
-        // }
+                if (reached) break;
+            } else {
+                if (!$scope.filters[prop][device[prop]]) {
+                    matchesOR = false;
+                } else {
+                    matchesOR = true;
+                    break;
+                }
+            }
+        }
         
-        // return matchesOR;
+        return matchesOR;*/
        
         // Filter with the AND condition
         var matchesAND = true;
@@ -158,15 +156,7 @@ HomeController.controller('HomeController', ['$scope', '$rootScope', 'DeviceFact
                 if (reached) break;
             } else {
                 var value = device[prop];
-                // var value = '';
-                // if (prop == 'configuration') {
-                //     // This implementation is based on the received jsonld format
-                //     value = device[prop].automaticConfiguration ? 'automatic' : 'manual';
-                // } else if (prop == 'modeConnection') {
-
-                //     value = device.connection.protocol;
-                // }
-                
+               
                 if (!$scope.filters[prop][value]) {
                     matchesAND = false;
                     break;
@@ -214,32 +204,6 @@ function include(arr,obj) {
     }
     return false;
 }
-
-var getAllConfigurationModes = function(data) {
-    var result = [];
-    for (var i = 0; i < data.length; i++) {
-        var value = data[i]['configuration']['automaticConfiguration'] === true ? 'automatic' : 'manual';
- 
-        if (result.indexOf(value) == -1) {
-            result.push(value);
-        }
-    
-    }
-    return result;
-};
-
-var getAllConnectionModes = function(data) {
-    var result = [];
-    for (var i = 0; i < data.length; i++) {
-        var value = data[i]['connection']['protocol'];
- 
-        if (result.indexOf(value) == -1) {
-            result.push(value);
-        }
-    
-    }
-    return result;
-};
 
 /*return unique items from a data object*/
 var uniqueItems = function(data, key) {

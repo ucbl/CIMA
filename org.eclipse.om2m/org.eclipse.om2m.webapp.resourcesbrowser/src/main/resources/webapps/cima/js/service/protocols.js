@@ -21,14 +21,7 @@ DeviceController.factory('ProtocolsFactory', ['$http' ,'$q', function($http, $q)
                 }).error(function(data, status){
                     deferred.reject('Unable to get protocols');
                 });
-                
-                // $http.get(URL_PROTOCOLS).
-                // then(function(response){
-                //     factory.protocols = response.data;
-                //     deferred.resolve(factory.protocols);
-                // }, function(error) {
-                //     deferred.reject('Unable to get protocols');
-                // });
+              
             }
             
             return deferred.promise;

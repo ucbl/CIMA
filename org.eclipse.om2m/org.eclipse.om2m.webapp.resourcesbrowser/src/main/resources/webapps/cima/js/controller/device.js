@@ -124,6 +124,7 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
 
     };
 
+
     $scope.applyProfile = function() {
         var deletedProfiles = [];
         var found = false;
@@ -160,7 +161,7 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
             }
         });
         
-        // The codes below is for local-test purpose
+        // The codes below is for local-test purpose. Remove it if unused
         // $('#listProfilesModal').modal('hide');
         // $scope.capabilities = angular.copy($scope.activeCapabilities);
         // $scope.selectedProfilesMatching = [];
@@ -214,42 +215,11 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
     $scope.loadCapabilitiesBy = function(profile) {
         $scope.activeProfile = profile;
         $scope.capabilitiesFromProfile = profile.capabilities;
-        // if ($scope.capabilitiesFromProfile){
-        //     // Only capabilities whose configuration is "manual" are editable. Retrieved capability (json) doesn't contain "isEditable key. The following loop is served to add "isEditable" key depending on "configuration" key
-        //     angular.forEach($scope.capabilitiesFromProfile, function(value, key) {
-        //         if(value.configuration == 'automatic'){
-        //             value.isEditable = false;
-        //         } else {
-        //             value.isEditable = true;
-        //         }
-        //     });
-        // } 
+       
     };
 
     
- 
-    /*remove a capability from the model and the view*/
-    // $scope.removeCapability = function (row) {
-        
-    //     var r = confirm("Are you sure to delete ?");
-    //     if (r == true) {
-    //         DeviceFactory.removeCapability($scope.id, row.id).then(function(){
-    //         var index = $scope.capabilities.indexOf(row);
-    //         if (index !== -1) {
-    //             $scope.capabilities.splice(index, 1);
-    //         }
-    //         ngToast.create("Capability removed.");
-    //         $scope.EditIsOpen= false;
-    //         }, function(msg){
-    //             //error
-    //             ngToast.create({
-    //                 content: "Unable to remove capability : "+msg,
-    //                 className: "danger"
-    //             });             
-    //         });
-    //     }
-    // }
-    
+
     /*retrieve the available protocols and add them to the view*/
     ProtocolsFactory.find().then(function(protocols){
         ngToast.create("Protocols loaded.");
@@ -269,6 +239,12 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
         return Object.keys(obj).length === 0;
     }
 
+    // This method is being used for creating the object such as : 
+    // {
+    //      speed: 34,
+    //      angle: 34
+    // }
+    // The value "34" is the user's inputs
     var filterParamsOn = function(params) {
         var configParams = {};
         if (params != null) {
@@ -286,6 +262,7 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
         return configParams;
     };
 
+    // This method is being used for concatenating the server's responses
     var getKeyValue = function(data) {
         var keyValueParts = data.split(',');
         var keyPart = keyValueParts[0];
@@ -302,8 +279,7 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
         //$scope.isLoading = true;
         $scope.responsesCapability = [];
         var configParams = filterParamsOn(newCapability.params);
-        
-        //if (!isEmpty(configParams)) {
+
         var protocol = newCapability.protocol;
         var protocolName = protocol.protocolName.toLowerCase();
         var host = $scope.uri;
@@ -362,68 +338,11 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
             var a = 2.2;
             $scope.responsesCapability.push(a);
         });
-        //} else {
-        //    alert('Entrez tous les champs vides s\'il vous plait !');
-        //} 
+
        
     };
 
-    /*Function for saving a device */
-    $scope.saveDevice = function(){
-        var device = {};
-
-        device.id = $scope.id;
-        device.name = $scope.name;
-        device.connection.dateConnection = $scope.dateConnection;
-        device.connection.modeConnection = $scope.modeConnection;
-        device.uri = $scope.uri;
-        device.capabilities = {};
-        
-        device.capabilities = $scope.capabilities;
-
-        DeviceFactory.saveDevice(device).then(function(){
-            ngToast.create("Device saved.");
-
-        }, function(msg){
-            //error
-            ngToast.create({
-                content: "Unable to save device : "+msg,
-                className: "danger"
-            });
-        });
-    }
-    /*Function for modifing a device */
-    // $scope.modifyCapability = function(capability){
-    //     var cap = {};
-    //     cap.id = capability.id;
-    //     cap.protocol = {};
-    //     cap.protocol.protocolName = capability.protocol.protocolName;
-    //     cap.protocol.parameters = capability.protocol.parameters;
-    //     DeviceFactory.modifyCapability($scope.id, cap).then(function(){
-    //         ngToast.create("Capability modified.");
-
-    //     }, function(msg){
-    //         //error
-    //         ngToast.create({
-    //             content: "Unable to modify capability : "+msg,
-    //             className: "danger"
-    //         });     
-    //     });
-    // }
-
-    // var loadCapabilitiesIntoFormFromProfile = function(index, capability) {
-    //     $scope.indexOfShowingCapability = index;
-    //     $scope.editedCapabilityFromProfile = JSON.parse(JSON.stringify(capability));
-    //     //Not to have same reference
-    //     for (var i = $scope.protocolsFromEdited.length - 1; i >= 0; i--) {
-    //         var dataset = $scope.protocolsFromEdited[i];
-    //         if (dataset.protocolName == capability.protocol.protocolName) {
-    //             $scope.protocolsFromEdited[i].parameters = capability.protocol.parameters;
-    //             $scope.editedCapabilityFromProfile.protocol = $scope.protocolsFromEdited[i];
-    //             break;
-    //         }
-    //     }
-    // };
+  
 
     /*Function for setting the capability to modify to the scope and display the edition section*/
     $scope.openAndEditCapability = function(index, capability){
@@ -465,33 +384,8 @@ DeviceController.controller('DeviceController', ['$scope', '$rootScope', 'Device
         $scope.detailsOfCapability = capability;
     };
 
-    /*Function for closing the edition div*/
-    $scope.CloseEditCapability = function(){
-        if($scope.EditIsOpen){
-            $scope.EditIsOpen = false;
-        }
-    }
 
-    /*Function for closing the edition div*/
-    $scope.CloseShowCapability = function(){
-        if($scope.ShowIsOpen){
-            $scope.ShowIsOpen = false;
-        }
-    };
-
-    /*Fucntion for intercepting the existing capability selection*/
-    $scope.onSelectCapability = function ($item, $model, $label) {
-        $scope.existingCapability = JSON.parse(JSON.stringify($item));
-        $scope.NewFromExistingCapability = $item;
-        for (var i = $scope.protocolsFromExisting.length - 1; i >= 0; i--) {
-            var dataset = $scope.protocolsFromExisting[i];
-            if (dataset.protocolName == $item.protocol.protocolName) {
-                $scope.protocolsFromExisting[i].parameters = $item.protocol.parameters;
-                $scope.NewFromExisting.protocol = $scope.protocolsFromExisting[i];
-                break;
-            }
-        }
-    };
+ 
 
 
 }]);

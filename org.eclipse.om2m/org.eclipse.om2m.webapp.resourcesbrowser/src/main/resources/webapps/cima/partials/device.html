@@ -62,15 +62,7 @@
                                     Show
                                 </button>
                                 
-                                <!-- <button ng-show="capability.isEditable" type="button" ng-click="openAndEditCapability($index, capability)" class="btn btn-sm btn btn-info">
-                                  <i class="glyphicon glyphicon-edit"></i>
-                                  Edit
-                                </button>
-
-                                <button class="btn btn-sm btn-danger" ng-show="capability.isEditable" type="button" ng-click="removeCapability(capability)" class="btn btn-sm btn btn-info">
-                                 <i class="glyphicon glyphicon-remove-circle"></i>
-                                Remove
-                                </button> -->
+                               
                             </td>
                         </tr>
                     </tbody>
@@ -102,14 +94,7 @@
                             <button class="btn btn-danger pull-left" type="button" ng-click="openAndShowCapability(indexOfShowingCapacity)" />
                                 Close
                             </button>
-                            <!-- This only works for the robotEV3 for instance --> 
-                            <!-- Test capability button -->
-                            <!-- <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('sensor') >= 0" ng-click="testCapability(editedCapability)" data-toggle="modal" data-target="#responseSensorModal">Test</button> -->
-                            <!-- Stop capability button -->
-                            <!-- <button type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0 && editedCapability.id.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button> -->
-
-                            
-                            <!-- <button ng-click="" type="button" class="btn btn-primary pull-right" ng-if="editedCapability.id.indexOf('motor') >= 0 && editedCapability.id.indexOf('stop') < 0" data-toggle="modal" data-target="#configParamsModal">Configure</button> -->
+                           
                             
                             <!-- Modal Request -->
                             <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#testCapabilityModal" ng-if="editedCapability.params && editedCapability.params.length > 0" ng-click="removeResponses()">Test</button>
@@ -161,30 +146,7 @@
                               </div>
                             </div>
 
-                            
-                            <!-- <div class="modal fade" id="responseSensorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                              <div class="modal-dialog" role="document" ng-show="isResponseSensor">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title" id="myModalLabel">Response</h4>
-                                  </div>
-                                  
-                                  <div class="modal-body" ng-repeat="responseSensor in responseSensors">
-                                    
-                                    <div class="input-group">
-                                      <div class="input-group-addon" id="sizing-addon2" ng-bind-template="{{responseSensor}}"></div>
-                                      
-                                    </div>
-                                    
-                                    
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="closeResponseSensorModal()">Close</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div> -->
+                
                     </div>
                 </div>
 
@@ -228,10 +190,10 @@
                     <table st-table="devices" class="table table-striped">
                         <thead>
                             <tr>
-                                <th class="text-center col-md-4">Configuration</th>
+                                <th class="text-center col-md-3">Configuration</th>
                                 <th class="text-center col-md-3">ID</th>
                                 <th class="text-center col-md-3">Protocol</th>
-                                <th class="text-center col-md-2">Option</th>
+                                <th class="text-center col-md-3">Option</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -271,155 +233,12 @@
     
             
 
-    
-        
-        
-        <!-- <div class="col-md-6">
-
-                <div class="panel panel-warning col-sm-12 col-md-12 col-lg-12" id="edit" ng-show="ShowIsOpenFromProfile">
-                    <div class="panel-heading col-sm-12 col-md-12 col-lg-12">
-                        <h2 class="panel-title col-sm-12 col-md-12 col-lg-12">Show capability</h2>
-                    </div>
-                    <div class="panel-body col-sm-12 col-md-12 col-lg-12">                
-                            <strong>ID : {{editedCapabilityFromProfile.id}} </strong>
-                            <br><br>
-                            <li>
-                            <strong>Protocol type</strong> :  {{editedCapabilityFromProfile.protocol.protocolName}}
  
-                            </li>
-                            <li ng-repeat="parameter in editedCapabilityFromProfile.protocol.parameters">
-                                <strong>{{parameter.name}}</strong> : {{parameter.value}}
-                            </li>
-                            <br>   
-                            <strong>Keywords :</strong>
-                            <li ng-repeat="word in editedCapabilityFromProfile.keywords">
-                                {{word.text}}
-                            </li>
-                            <br>
-
-                            <button class="btn btn-danger pull-left" type="button" ng-click="openAndShowCapabilityFromProfile(indexOfShowingCapacity)" />
-                                Close
-                            </button>
-                                
-   
-                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapabilityFromProfile.id.indexOf('sensor') >= 0" ng-click="testCapability(editedCapabilityFromProfile)" data-toggle="modal" data-target="#responseSensorModal">Test</button>
-
-                            <button type="button" class="btn btn-primary pull-right" ng-if="editedCapabilityFromProfile.id.indexOf('motor') >= 0 && editedCapabilityFromProfile.id.indexOf('stop') >= 0" ng-click="testCapability(editedCapabilityFromProfile)">Stop</button>
-
-                            
-                            <button ng-click="" type="button" class="btn btn-primary pull-right" ng-if="editedCapabilityFromProfile.id.indexOf('motor') >= 0 && editedCapabilityFromProfile.id.indexOf('stop') < 0" data-toggle="modal" data-target="#configParamsModal">Configure</button>
-                            <br>
-                                
-                            
-
-                
-                            <div class="modal fade" id="configParamsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                              <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title" id="myModalLabel">Configuration Of Parameters Modal</h4>
-                                  </div>
-                                  <div class="modal-body" ng-if="editedCapabilityFromProfile.params.length <= 0">
-                                      Les params ne sont pas disponibles pour cette capabilité
-                                  </div>
-                                  <div class="modal-body" ng-repeat="param in editedCapabilityFromProfile.params">
-         
-                                    <div class="input-group">
-                                      <span class="input-group-addon" id="sizing-addon2">{{param.idp}}</span>
-                                      <input type="number" class="form-control" ng-model="configParams[param.idp]" ng-if="param.type == 'int'" aria-describedby="sizing-addon2" />
-                                      <input type="text" class="form-control" ng-model="configParams[param.idp]" ng-if="param.type == 'string'" aria-describedby="sizing-addon2" />
-                                    </div>
-                                    
-                                    
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" ng-if="editedCapabilityFromProfile.params.length > 0" ng-click="testCapability(editedCapabilityFromProfile)">Test</button>
-                                    
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                           
-                            <div class="modal fade" id="responseSensorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                              <div class="modal-dialog" role="document" ng-show="isResponseSensor">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title" id="myModalLabel">Response</h4>
-                                  </div>
-                                  
-                                  <div class="modal-body" ng-repeat="responseSensor in responseSensors">
-                                 
-                                    <div class="input-group">
-                                      <div class="input-group-addon" id="sizing-addon2" ng-bind-template="{{responseSensor}}"></div>
-                                      
-                                    </div>
-                                    
-                                    
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="closeResponseSensorModal()">Close</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                    </div>
-                </div>
-
-
-   
-                <div class="panel panel-warning col-sm-12 col-md-12 col-lg-12" id="edit" ng-show="EditIsOpen">
-                    <div class="panel-heading col-sm-12 col-md-12 col-lg-12">
-                        <h2 class="panel-title col-sm-12 col-md-12 col-lg-12">Edit capability</h2>
-                    </div>
-                    <div class="panel-body col-sm-12 col-md-12 col-lg-12">                
-                        <form ng-submit="modifyCapability(editedCapabilityFromProfile)">
-                            <strong>ID : {{editedCapabilityFromProfile.id}} </strong>
-                            <br><br>
-                            <li>
-                                Protocol type :  {{editedCapabilityFromProfile.protocol.protocolName}}
-                               
-
-                                <select class="form-control" ng-model="editedCapabilityFromProfile.protocol"
-                                                ng-options="protocol.protocolName for protocol in protocolsFromEdited" ng-required="true">
-                                </select>
-                            </li>
-                            <li ng-repeat="parameter in editedCapabilityFromProfile.protocol.parameters">
-                                        {{parameter.name}}:
-                                        <input class="form-control"  style="width: 40%;" type="text" ng-model="parameter.value">
-                            </li>
-                            <br>   
-                            <li> Keywords </li> 
-                            <tags-input   ng-model="editedCapabilityFromProfile.keywords"></tags-input> 
-
-                            <br>
-
-                            <button class="btn btn-success pull-right" style="margin-left:5px" type="submit">
-                                <i class="glyphicon glyphicon-ok"></i>
-                                Apply 
-                            </button>
-                            <button class="btn btn-danger pull-left" type="button" ng-click="CloseEditCapability()" />
-                                Undo
-                            </button>
-                           
-                            <button ng-click="testCapability(editedCapabilityFromProfile)" type="button" class="btn btn-primary pull-right">Test</button>
-                            <br>
-                        </form>
-                    </div>
-                    </div>
-                </div>
-            </div> -->
-            <!-- </div> -->
-        
       </div>
       <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             <button type="button" class="btn btn-primary" ng-click="applyProfile()" data-dismiss="modal">Apply</button>
-            <!-- <button type="button" class="btn btn-primary" ng-if="editedCapability.params.length > 0" ng-click="testCapability(editedCapability)">Test</button> -->
-            <!-- <button type="button" class="btn btn-primary" ng-if="editedCapability.idCapability.indexOf('stop') >= 0" ng-click="testCapability(editedCapability)">Stop</button> -->
+            
         </div>
     </div>
   </div>

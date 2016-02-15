@@ -33,8 +33,7 @@ app.config(['$routeProvider', '$httpProvider', 'GooglePlusProvider', function($r
     
 }]);
 /* bootstrap UI module */
-//angular.module('CIMA.ui', ['ui.bootstrap']);
-//angular.module('CIMA.tags', ['ngTagsInput']);
+
 angular.module('CIMA.toast', ['ngToast']).config(['ngToastProvider', function(ngToast) {
     ngToast.configure({
         verticalPosition: 'bottom',
