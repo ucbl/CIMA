@@ -263,7 +263,8 @@ public class AdministrationServer implements IpuService{
 
 				String res = profilManagerInterface.saveNewProfilFromJson(requestIndication.getRepresentation());
 
-				return new ResponseConfirm(StatusCode.STATUS_OK, res );
+				//return new ResponseConfirm(StatusCode.STATUS_OK, res );
+				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"message\" : \"Profile is created.\"}" );
 			}
 			else if("profileMatching".equals(tID[4]))
 			{//nscl/applications/CIMA/administration/profileMatching
