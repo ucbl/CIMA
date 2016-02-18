@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ * The mongoDB interface
  * Created by Maxime on 02/02/2016.
  */
 public interface MongoDaoInterface {

@@ -8,7 +8,7 @@ import obix.Str;
 import obix.io.ObixEncoder;
 
 /**
- * Create Avatar instance by giving an id, a protocol and an uri.
+ * Create Avatar instance by giving an device id, a protocol and an uri.
  */
 public class Avatar {
 

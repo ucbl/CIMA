@@ -5,6 +5,7 @@ import fr.liris.cima.nscl.mongodao.persistance.Persistable;
 import fr.liris.cima.nscl.mongodao.persistance.PersistableData;
 
 /**
+ * This class is responsible for matching profiles and devices
  * Created by Maxime on 06/02/2016.
  */
 public class ProfileMatching implements Persistable {

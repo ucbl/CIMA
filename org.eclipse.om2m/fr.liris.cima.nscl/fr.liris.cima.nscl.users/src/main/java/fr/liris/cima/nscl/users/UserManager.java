@@ -12,6 +12,7 @@ import java.util.List;
 import com.google.gson.*;
 
 /**
+ * Implements UserManagerInterface in order to manage CIMA user.
  * Created by Maxime on 04/02/2016.
  */
 public class UserManager implements UserManagerInterface{

@@ -62,7 +62,7 @@ public class HTTP extends AbstractProtocol {
 
 	/**
 	 * Test method
-	 * @param args
+	 * @param args a Simple args for main method
 	 */
 	public static void main(String [] args){
 		Protocol httpProtocol = new HTTP();

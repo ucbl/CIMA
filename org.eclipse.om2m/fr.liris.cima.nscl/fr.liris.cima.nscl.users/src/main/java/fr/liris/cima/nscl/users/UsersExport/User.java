@@ -3,6 +3,7 @@ package fr.liris.cima.nscl.users.UsersExport;
 import fr.liris.cima.nscl.mongodao.persistance.*;
 
 /**
+ * Define an user of CIMA as a persistable object so it can be save in mongo data base
  * Created by Maxime on 04/02/2016.
  */
 public class User implements Persistable{
@@ -12,6 +13,11 @@ public class User implements Persistable{
     PersistableData persistableData;
 
 
+    /**
+     * Create a new user
+     * @param username  the user name
+     * @param userpassword the user password
+     */
     public User(String username, String userpassword) {
         this.username = username;
         this.userpassword = userpassword;
@@ -47,6 +53,10 @@ public class User implements Persistable{
 
     }
 
+    /**
+     * Hash user data
+     * @return an hashcode
+     */
     @Override
     public int hashCode() {
         int result = username.hashCode();

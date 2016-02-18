@@ -7,7 +7,7 @@ import fr.liris.cima.nscl.avatarbuilder.Avatar;
 import fr.liris.cima.nscl.avatarbuilder.Capability;
 
 /**
- * An interface service to create avatar
+ * An interface service to create a device avatar
  */
 public interface AvatarService {
 

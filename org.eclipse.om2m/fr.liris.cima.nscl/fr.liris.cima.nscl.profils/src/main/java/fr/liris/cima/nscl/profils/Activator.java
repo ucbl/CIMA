@@ -14,6 +14,9 @@ import fr.liris.cima.nscl.profils.profilsExport.Profil;
 import fr.liris.cima.nscl.profils.profilsExport.ProfilManagerInterface;
 import fr.liris.cima.nscl.profils.profilsExport.ProfileMatchingManagerInterface;
 
+/**
+ * Manages the starting and stopping nscl.profils bundle.
+ */
 public class Activator implements BundleActivator {
 
     /** SCL service tracker */

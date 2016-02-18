@@ -19,7 +19,7 @@ import java.util.logging.SimpleFormatter;
 import java.io.*;
 
 /**
- *
+ * An avatar controller to handle request
  */
 public class AvatarController implements IpuService{
 

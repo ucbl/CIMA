@@ -4,6 +4,7 @@ package fr.liris.cima.nscl.mongodao.persistance;
 import java.util.UUID;
 
 /**
+ * A persistable data
  * Created by Maxime on 07/01/2016.
  */
 public class PersistableData {

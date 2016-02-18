@@ -6,6 +6,10 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
+/**
+ *  Manages the starting and stopping nscl.mongodao bundle.
+ *
+ */
 public class Activator implements BundleActivator {
 
     /** SCL service tracker */

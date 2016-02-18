@@ -12,6 +12,7 @@ import java.util.List;
 
 
 /**
+ * Profile manager implements ProfilManagerInterface
  * Created by Maxime on 02/02/2016.
  */
 public class ProfilManager implements ProfilManagerInterface {

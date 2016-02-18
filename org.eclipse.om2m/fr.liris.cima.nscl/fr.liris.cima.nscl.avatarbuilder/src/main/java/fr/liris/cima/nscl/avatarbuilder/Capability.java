@@ -8,7 +8,7 @@ import obix.Uri;
 import obix.io.ObixEncoder;
 
 /**
- *  Capability class avalaible for avatar
+ *  Capability class available for avatar
  */
 public class Capability {
 
