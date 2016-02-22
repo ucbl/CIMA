@@ -14,26 +14,7 @@
                 }
                 ]      
             },
-        "keywords" : ["ev3","reculer","back","robot","mouvement"],
-        "params": {
-            "param" : [
-                {
-                    "idp": "rotationHBFV",
-                    "desc": "fvvvv",
-                    "type": "integer"
-                },
-                {
-                    "idp": "vitesseHBFV",
-                    "desc": "fvvvv",
-                    "type": "integer"
-                },
-                {
-                    "idp": "nouveauRotationHBFV",
-                    "desc": "fvvvv",
-                    "type": "integer"
-                }
-            ]
-        }
+        "keywords" : ["ev3","reculer","back","robot","mouvement"]
     },
     {
         "id" : "ev3Back",
@@ -49,26 +30,8 @@
                     }
                     ]      
         },
-        "keywords" : ["ev3","reculer","back","robot","mouvement"],
-        "params": {
-            "param" : [
-                {
-                    "idp": "rotationev3Back",
-                    "desc": "fvvvv",
-                    "type": "integer"
-                },
-                {
-                    "idp": "vitesseev3Back",
-                    "desc": "fvvvv",
-                    "type": "integer"
-                },
-                {
-                    "idp": "nouveauRotationev3Back",
-                    "desc": "fvvvv",
-                    "type": "integer"
-                }
-            ]
-        }
+        "keywords" : ["ev3","reculer","back","robot","mouvement"]
+
     },
     {
         "id": "HORUS",
@@ -81,29 +44,10 @@
                 }
                 ]      
             },
-        "keywords" : ["ev3","reculer","back","robot","mouvement"],
-        "params": {
-            "param" : [
-                {
-                    "idp": "rotationHORUS",
-                    "desc": "fvvvv",
-                    "type": "integer"
-                },
-                {
-                    "idp": "vitesseHORUS",
-                    "desc": "fvvvv",
-                    "type": "integer"
-                },
-                {
-                    "idp": "nouveauRotationHORUS",
-                    "desc": "fvvvv",
-                    "type": "integer"
-                }
-            ]
-        }
+        "keywords" : ["ev3","reculer","back","robot","mouvement"]
     },
     {
-        "id": "shoot",
+        "id": "HORUS",
         "protocol": 
             {
                 "protocolName":"USB",
@@ -113,26 +57,7 @@
                 }
                 ]      
             },
-        "keywords" : ["ev3","reculer","back","robot","mouvement"],
-        "params": {
-            "param" : [
-                {
-                    "idp": "rotationShoot",
-                    "desc": "fvvvv",
-                    "type": "integer"
-                },
-                {
-                    "idp": "vitesseShoot",
-                    "desc": "fvvvv",
-                    "type": "integer"
-                },
-                {
-                    "idp": "nouveauRotationShoot",
-                    "desc": "fvvvv",
-                    "type": "integer"
-                }
-            ]
-        }
+        "keywords" : ["ev3","reculer","back","robot","mouvement"]
     }
 ]
     

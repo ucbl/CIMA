@@ -29,11 +29,9 @@ app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$int
     // $scope.useConfig = {}; $scope.useMode = {}; $scope.useKeys = {};  
     var initializeOptions = function() {
         /*configGroup contains the list of unique configuration items ['manual','automatic']*/
-        //$scope.configGroup = uniqueItems($scope.devices, 'configuration');
-        $scope.configGroup = getAllConfigurationModes($scope.devices);
+        $scope.configGroup = uniqueItems($scope.devices, 'configuration');
         /*modeGroup contains the list of unique connection mode items ['USB','HTTP', ...]*/
-        //$scope.modeGroup = uniqueItems($scope.devices, 'modeConnection');
-        $scope.modeGroup = getAllConnectionModes($scope.devices);
+        $scope.modeGroup = uniqueItems($scope.devices, 'modeConnection');
         /*keyGroup contains the list of unique keywords ['ev3','movement', ...]*/
         $scope.keyGroup = uniqueItemsKeys($scope.devices, 'capabilities');
     };
@@ -53,7 +51,6 @@ app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$int
                         $scope.filters[key1][key2] = $scope.isSelectAll;
                     }
                 }
-
                 //initializeFilters();
                 ngToast.create((devices.length-count)+" new devices detected.");
                 console.log("In if length - count: " + devices.length + "-" + count);
@@ -131,12 +128,8 @@ app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$int
         // Filter with the AND condition
         var matchesAND = true;
         var reached = false;
-        // Example of filters of configuration and connection mode : 
-        // $scope.filters['configuration']['automatic'] = true , $scope.filters['modeConnection']['http'] = true
-        // So each iteration : prop = configuration or prop = modeConnection
-        for (var prop in $scope.filters) {
 
-            // For actual server of CIMA, the client hasn't received "keywords" yet
+        for (var prop in $scope.filters) {
             if (noSubFilter($scope.filters[prop])) continue;
             prop = (prop == 'keywords' ? 'capabilities' : prop);
             if (device[prop] instanceof Array) { // This means prop = 'capabilites' which is an array
@@ -158,22 +151,13 @@ app.controller('HomeController', ['$scope', '$rootScope', 'DeviceFactory', '$int
                 
                 if (reached) break;
             } else {
-                var value = '';
-                if (prop == 'configuration') {
-                    // This implementation is based on the received jsonld format
-                    value = device[prop].automaticConfiguration ? 'automatic' : 'manual';
-                } else if (prop == 'modeConnection') {
-
-                    value = device.connection.protocol;
-                }
-                
-                if (!$scope.filters[prop][value]) {
+                if (!$scope.filters[prop][device[prop]]) {
                     matchesAND = false;
                     break;
                 }
             }
         }
-
+        
         return matchesAND;
      };
 
@@ -215,46 +199,19 @@ function include(arr,obj) {
     }
     return false;
 }
-
-var getAllConfigurationModes = function(data) {
-    var result = [];
-    for (var i = 0; i < data.length; i++) {
-        var value = data[i]['configuration']['automaticConfiguration'] === true ? 'automatic' : 'manual';
- 
-        if (result.indexOf(value) == -1) {
-            result.push(value);
-        }
-    
-    }
-    return result;
-};
-
-var getAllConnectionModes = function(data) {
-    var result = [];
-    for (var i = 0; i < data.length; i++) {
-        var value = data[i]['connection']['protocol'];
- 
-        if (result.indexOf(value) == -1) {
-            result.push(value);
-        }
-    
-    }
-    return result;
-};
-
 /*return unique items from a data object*/
-// var uniqueItems = function(data, key) {
-//     var result = [];
-//     for (var i = 0; i < data.length; i++) {
-//         var value = data[i][key];
+var uniqueItems = function(data, key) {
+    var result = [];
+    for (var i = 0; i < data.length; i++) {
+        var value = data[i][key];
  
-//         if (result.indexOf(value) == -1) {
-//             result.push(value);
-//         }
+        if (result.indexOf(value) == -1) {
+            result.push(value);
+        }
     
-//     }
-//     return result;
-// };  
+    }
+    return result;
+};  
 /*return unique keywords*/
 var uniqueItemsKeys = function(data, key){
 
@@ -297,4 +254,5 @@ var unique = function(origArr) {
         }
     }
     return newArr;
-};
+}; 
+     

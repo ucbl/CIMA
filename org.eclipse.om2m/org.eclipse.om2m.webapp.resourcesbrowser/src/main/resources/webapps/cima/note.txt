@@ -43,7 +43,3 @@ saveDevice() doesn't work !!!
 Line 10: what are options used for ?
 
 
-
-
-Changed index.html, device.html, device controller, device service
-Added loading image, added loading.css

@@ -1,4 +1,4 @@
-<!--home page-->
+<!--home oage-->
 <!doctype html>
 <html ng-app='CIMA'>
     <head>
@@ -8,15 +8,13 @@
     <link rel="stylesheet" href="css/ngToast.min.css">
     <link rel="stylesheet" type="text/css" href="css/appStyle.css">
     <link rel="stylesheet" href="css/ng-tags-input.min.css" />
-    <link rel="stylesheet" href="css/loading.css" />
+
     <title>CIMA Configuration</title>
     </head>
     
-    <body>
-        <div class="pull pull-left" ng-show="$storage.userSession">
-            <a href="" title="" ng-click="logout()" ng-bind-template="Logout ({{$storage.userSession}})"></a> 
-        </div>
-        <br />
+
+    <body >
+
         <toast></toast>
 
         <div ng-show='loading'>Loading...</div>
@@ -26,45 +24,32 @@
         <script src="lib/angular1312-route.min.js"></script>       
         <script src="lib/angular1312-animate.min.js"></script>
         <script src="lib/angular1312-sanitize.min.js"></script>
-        <script src="lib/jquery-1.11.1.js"></script>
         <script src="lib/ngToast.min.js"></script>
-        <script src="lib/ngstorage.js"></script>
-        <script src="lib/angular-google-plus.js"></script>
-        <script src="lib/angular-md5.js"></script>
         <!-- <script src="lib/angular.min.js"></script>
         <script src="lib/angular-route.min.js"></script>       
         <script src="lib/angular-animate.min.js"></script>
         <script src="lib/angular-sanitize.min.js"></script> -->
         <!-- <script src="lib/jasmine.js"></script> -->
-        <!-- <script src="lib/jsonld.js"></script> -->
-
-
-        <!-- Begin : Libs for jsonld -->
-        <script src="lib/restangular.js"></script>
-        <script src="lib/lodash-compat.min.js"></script>
-        <script src="lib/jsonld.js"></script>
-        <script src="lib/angular-jsonld.js"></script>
-        <!-- End : Libs for jsonld -->
+        <!-- <script src="lib/jsonld.js"></script> --> <!-- Uncomment this when occuring weird errors-->
+        
+        
 
         <!-- <script src="lib/ui-bootstrap-tpls-0.14.1.min.js"></script> -->
-
-       
         <script src="lib/ui-bootstrap-tpls-0.11.2.min.js"></script>
-        <script src="lib/bootstrap.min.js"></script>
+        <script src="lib/jquery-1.11.1.js"></script>  
+        <script src="lib/bootstrap.min.js"></script> 
         <script src="lib/ng-tags-input.min.js"></script>
-
         <!-- <script src="js/filter/toArrayFilter.js"></script> -->
         <script src="js/app.js"></script>
         <script src="js/url/url.js"></script>
         <script src="js/service/device.js"></script>
         <script src="js/service/protocols.js"></script>
-        <script src="js/service/auth.js"></script>
-        <script src="js/service/profile.js"></script>
+        <script src="js/service/modal.js"></script>
         <!-- <script src="js/directive/search.js"></script> -->
         <script src="js/controller/device.js"></script>
         <script src="js/controller/home.js"></script> 
-        <script src="js/controller/auth.js"></script> 
-        <script src="js/controller/profile.js"></script>
+        
+        
 
     </body>
 </html>

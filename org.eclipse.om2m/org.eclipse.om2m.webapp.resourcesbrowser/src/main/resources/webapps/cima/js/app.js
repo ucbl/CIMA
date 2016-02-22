@@ -1,54 +1,19 @@
 'use strict';
 /* Application modules */
-
-var app = angular.module('CIMA', ['ngRoute', 'googleplus', 'ui.bootstrap', 'ngTagsInput', 'CIMA.toast', 'angularJsonld', 'ngStorage', 'ProfileController', 'angular-md5']);
+//var app = angular.module('CIMA', ['CIMA.HomeController', 'CIMA.DeviceController', 'ngRoute', 'CIMA.ui', 'CIMA.tags', 'CIMA.toast'])
+var app = angular.module('CIMA', ['ngRoute', 'ui.bootstrap', 'ngTagsInput', 'ngToast']);
 /*routing URLs*/
-app.config(['$routeProvider', '$httpProvider', 'jsonldContextProvider', 'GooglePlusProvider', function($routeProvider, $httpProvider, jsonldContextProvider, GooglePlusProvider){
-
-  GooglePlusProvider.init({
-      clientId: '259163117056-j6sjjs4pm54ujvffo6s247an6ssqg5g1.apps.googleusercontent.com',
-      apiKey: 'AIzaSyCYZbWdunI_87_XOa9v0GO6W6fwZ7mSIPY'
-  });
+app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider){
 
   $routeProvider
   .when('/', {templateUrl: 'partials/home.html', controller: 'HomeController'})
   .when('/device/:id', {templateUrl: 'partials/device.html', controller: 'DeviceController'})
-  .when('/login', {templateUrl: 'partials/login.html', controller: 'AuthController'})
-  .when('/profile', {templateUrl: 'partials/profile/list.html', controller: 'ProfileController'})
-  .when('/profile/add', {templateUrl: 'partials/profile/add.html', controller: 'AddProfileController'})
-  .when('/profile/:id', {templateUrl: 'partials/profile/edit.html', controller: 'EditProfileController'})
   .otherwise({redirectTo : '/'});
 
-  
-
-  jsonldContextProvider.add({
-    //'vocab': 'http://localhost:4040/angular-project/api/cima/phonevocabJSONLD/',
-    'name': 'vocab:robotEV3/name',
-    'description': 'vocab:robotEV3/description',
-    'id': 'vocab:robotEV3/id',
-    'portforwarding': 'vocab:robotEV3/Portforwarding',
-    'connection': 'vocab:Connection',
-    'dateConnection': 'vocab:Connection/DateConnection',
-    'protocol': 'vocab:Connection/Protocol',
-    'address': 'vocab:Connection/Address',
-    'configuration': 'vocab:Configuration',
-    'automaticConfiguration': 'vocab:Configuration/AutomaticConfiguration',
-    'profile': 'vocab:Configuration/Profile',
-    'capabilities': 'vocab:robotEV3/capabilities',
-    "idCapability": "vocab:id",
-    "result": "vocab:result",
-    "protocolCapability": "vocab:protocol",
-    "protocolName": "vocab:protocolName",
-    "parameters": "vocab:parameters",
-    "nameParamCapability": "vocab:name",
-    "value": "vocab:value",
-    "cloudPort": "vocab:cloudPort",
-    "params": "vocab:params",
-    "desc": "vocab:desc",
-    "idp": "vocab:idp",
-    "type": "vocab:type",
-    "configurationCapability": "vocab:configuration"
-  });
+  // $httpProvider.defaults.headers.common = {};
+  // $httpProvider.defaults.headers.post = {};
+  // $httpProvider.defaults.headers.put = {};
+  // $httpProvider.defaults.headers.patch = {};
 }]);
 
 /* bootstrap UI module */
@@ -57,7 +22,7 @@ app.config(['$routeProvider', '$httpProvider', 'jsonldContextProvider', 'GoogleP
 angular.module('CIMA.toast', ['ngToast'])
   .config(['ngToastProvider', function(ngToast) {
     ngToast.configure({
-      verticalPosition: 'bottom',
+      verticalPosition: 'top',
       horizontalPosition: 'right',
       dismissButton: true,
       maxNumber: 3,
@@ -65,36 +30,11 @@ angular.module('CIMA.toast', ['ngToast'])
   }]);
 
 /*Auth header for http requests*/
-app.run(['$http', '$rootScope', '$localStorage', '$location', 'GooglePlus', function($http, $rootScope, $localStorage, $location, GooglePlus) {
-    // /!\: This command below PREVENT the interface from sending POST data (speed, angle...) to connected object
-    
-    $http.defaults.headers.common.Authorization = 'Basic YWRtaW46YWRtaW4=';
-    $rootScope.isLogin = false; // Is it in use ? Check it later
-    $rootScope.$storage = $localStorage;
-    $rootScope.logout = function() {
-        if ($rootScope.$storage.userSession) {
-            console.log(GooglePlus.getToken());
-            if (GooglePlus.getToken()) {
-                console.log('logging out');
-                GooglePlus.logout();
-                console.log(GooglePlus.getToken());
-            }
-            $localStorage.$reset();
-            $location.path('/login');
-        }
-    };
-    $rootScope.$on('$routeChangeStart', function(event) {
-        if ($rootScope.$storage.userSession) {
-            if ($location.path() == '/login') {
-                alert('You have already logged in');
-                $location.path('/');
-            }
-        } else {
-            if ($location.path() != '/login') {
-                //alert('You need to login to access this area');
-                $location.path('/login');
-            }
-        }
-    });
+app.run(['$http',  function($http){
+  // /!\: This command below PREVENT the interface from sending POST data (speed, angle...) to connected object
+  $http.defaults.headers.common.Authorization = 'Basic YWRtaW46YWRtaW4=';
 }]);
 
+// angular.module('test', []).controller('testcontroller', ['$scope', function($scope) {
+//   $scope.num = 0;
+// }]);
