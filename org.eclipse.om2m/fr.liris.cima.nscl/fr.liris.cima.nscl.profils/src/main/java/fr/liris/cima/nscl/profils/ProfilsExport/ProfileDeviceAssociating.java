@@ -8,7 +8,7 @@ import fr.liris.cima.nscl.mongodao.persistance.PersistableData;
  * This class is responsible for matching profiles and devices
  * Created by Maxime on 06/02/2016.
  */
-public class ProfileMatching implements Persistable {
+public class ProfileDeviceAssociating implements Persistable {
 
     String profileId, deviceId;
 
@@ -16,10 +16,10 @@ public class ProfileMatching implements Persistable {
     PersistableData persistibleData;
 
 
-    public ProfileMatching() {
+    public ProfileDeviceAssociating() {
     }
 
-    public ProfileMatching(String profileId, String deviceId) {
+    public ProfileDeviceAssociating(String profileId, String deviceId) {
         this.profileId = profileId;
         this.deviceId = deviceId;
         this.persistibleData = new PersistableData();
@@ -46,7 +46,7 @@ public class ProfileMatching implements Persistable {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
 
-        ProfileMatching that = (ProfileMatching) object;
+        ProfileDeviceAssociating that = (ProfileDeviceAssociating) object;
 
         if (!profileId.equals(that.profileId)) return false;
         return deviceId.equals(that.deviceId);

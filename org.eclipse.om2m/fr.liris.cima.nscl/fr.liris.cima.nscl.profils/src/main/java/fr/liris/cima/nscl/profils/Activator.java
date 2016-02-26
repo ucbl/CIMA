@@ -12,7 +12,7 @@ import fr.liris.cima.nscl.mongodao.persistance.MongoDaoInterface;
 import fr.liris.cima.nscl.profils.profilsExport.Profil;
 
 import fr.liris.cima.nscl.profils.profilsExport.ProfilManagerInterface;
-import fr.liris.cima.nscl.profils.profilsExport.ProfileMatchingManagerInterface;
+import fr.liris.cima.nscl.profils.profilsExport.ProfileDeviceAssociatingManagerInterface;
 
 /**
  * Manages the starting and stopping nscl.profils bundle.
@@ -38,8 +38,8 @@ public class Activator implements BundleActivator {
         System.out.println("ProfilManager service rehgisterd succesfully.");
 
 
-        //Register ProfileMatchingManager
-        serviceRegistration2 = bundlecontext.registerService(ProfileMatchingManagerInterface.class.getName(), new ProfileMatchingManager(mongoDaoInterface), null);
+        //Register ProfileDeviceAssociatingManager
+        serviceRegistration2 = bundlecontext.registerService(ProfileDeviceAssociatingManagerInterface.class.getName(), new ProfileDeviceAssociatingManager(mongoDaoInterface), null);
         System.out.println("ProfilManager service rehgisterd succesfully.");
 
     }

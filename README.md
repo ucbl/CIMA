@@ -12,7 +12,7 @@ This part collects all the objects which are accessible by the platform.
 - Device detection code :
 This part is added on device if you want your device can be automatically detected.
 
-NOTE : For now CIMA is only Mac and Linux compatible
+NOTE : For now CIMA is only Linux compatible
 
 ##Vocabulary
 We need to define some words :
@@ -21,6 +21,11 @@ We need to define some words :
 - Capability : a capability is a device basic action, which can not be splitted.
 
 ##Install
+You need to install first mongodb and restheart api :
+``bash
+$ ./INSTALL/install_mongodb.sh
+$ ./INSTALL/install_restheart.sh
+```
 To install CIMA simply use the script `launchCima.sh` with install option:
 ```bash
 $ ./launchCima.sh -i
@@ -32,60 +37,40 @@ $ chmod +x launchCima.sh
 ```
 
 ##Use
-You may launch launchCima.sh tow times to execute CIMA :
+First you have to launch mongodb and restheart api :
+ - Mongodb : just execute the script :
+```bash
+$ ./START/start_mongodb.sh
+```
+NOTE : You just have to launch mongodb one time. MongoDB has not just one way to start, if it not work, you can try
+```bash
+$ sudo service mongodb start
+or
+$ sudo mongod --fork --syslog
+```
+It depends of you exploitation system.
+ - RestHeart API : just execute the script :
+```bash
+$ ./START/start_resthart.sh
+```
+NOTE : Resheart need java 8.
+
+Then you can launch CIMA :
+
 
  - First to launch nscl component :
 ```bash
-$ ./launchCima.sh -n
+$ sudo ./launchCima.sh -n
 ```
  - Then to launch gscl component :
 ```bash
-$ ./launchCima.sh -g
+$ sudo ./launchCima.sh -g
 ```
-NOTE : the script launch GSCL with sudo because he have to access to the `arp-scan` command.
 
-Now you can connect on administration interface with url http://localhost:8080/cima.
+Now you can connect on administration interface with url http://localhost:8080/.
 
 ##Make an object compatible with the CIMA platform
-To make an object compatible with the CIMA platform in HTTP, you must create a /infos REST resource that responds to GET requests.
-Response format pattern :
-```xml
-<device>
-  <!-- object's name -->
-  <name></name>
-  <!-- object's connection's mode (ex : IP) -->
-  <modeConnection></modeConnection>
-  <!-- object's base uri (http://192.168.0.1:8080/) -->
-  <uri></uri>
-  <!-- a list of capabilities -->
-  <capabilities>
-    <!-- a capability -->
-    <capability>
-      <!-- a capability id /!\ Must be unique -->
-      <id></id>
-      <!-- the protocol to contact the capability -->
-      <protocol>
-        <!-- the protocol name (ex : HTTP)-->
-        <protocolName></protocolName>
-        <!-- some protocol's attributes -->
-        <!-- /!\ Attributes can change according to the protocol -->
-        <!-- used -->
-        <!-- here we have an example with HTTP protocol -->
-        <!-- HTTP method (ex : GET, POST, PUT, DELETE...) -->
-        <method></method>
-        <!-- HTTP contact port (ex : 80, 8080...) -->
-        <port></port>
-        <!-- The capability uri (ex : /mycapability) -->
-        <uri></uri>
-      </protocol>
-      <!-- some keywords which can class the capability -->
-      <keywords>
-      <keyword></keyword>
-      </keywords>
-    </capability>
-  </capabilities>
-</device>
-```
+Please read the CIMA robot documentation.
 
 ##License
 See LICENSE.md

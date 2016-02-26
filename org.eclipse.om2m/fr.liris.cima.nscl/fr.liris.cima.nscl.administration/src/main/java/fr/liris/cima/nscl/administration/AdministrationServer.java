@@ -36,15 +36,15 @@ public class AdministrationServer implements IpuService{
 
 	public static final String GSCL_DEVICES_CONTACT = "om2m/gscl/applications/CIMA/devices";
 
-	ProfileMatchingManagerInterface profileMatchingManagerInterface;
+	ProfileDeviceAssociatingManagerInterface ProfileDeviceAssociatingManagerInterface;
 	ProfilManagerInterface profilManagerInterface;
 
 	public AdministrationServer(){
 
-		//initialize ProfileMatchingManagerInterface service
-		ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfileMatchingManagerInterface.class.getName(), null);
+		//initialize ProfileDeviceAssociatingManagerInterface service
+		ServiceTracker st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfileDeviceAssociatingManagerInterface.class.getName(), null);
 		st.open();
-		profileMatchingManagerInterface = (ProfileMatchingManagerInterface) st.getService();
+		ProfileDeviceAssociatingManagerInterface = (ProfileDeviceAssociatingManagerInterface) st.getService();
 
 		//Initialize ProfileManagerInterafce Service
 		st = new ServiceTracker(FrameworkUtil.getBundle(AdministrationServer.class).getBundleContext(), ProfilManagerInterface.class.getName(), null);
@@ -125,8 +125,8 @@ public class AdministrationServer implements IpuService{
 				return resp;
 			case "profile" ://nscl/applications/CIMA/administration/profile
 				return new ResponseConfirm(StatusCode.STATUS_OK, profilManagerInterface.getAllProfilsToJson() );
-			case "profileMatching" :
-				return new ResponseConfirm(StatusCode.STATUS_OK, profileMatchingManagerInterface.getAllProfileMatchingToJson() );
+			case "ProfileDeviceAssociating" :
+				return new ResponseConfirm(StatusCode.STATUS_OK, ProfileDeviceAssociatingManagerInterface.getAllProfileDeviceAssociatingToJson() );
 			}
 
 		} else if(tID.length == 6){
@@ -138,8 +138,8 @@ public class AdministrationServer implements IpuService{
 				return resp;
 //			return new ResponseConfirm(StatusCode.STATUS_OK, "[{\"id\" : \"0123456789\",\"name\" : \"monObjet\",\"uri\" : \"http://192.168.0.2\",\"dateConnection\" : \"10/10/14\",\"modeConnection\" : \"http\"}]");
 			}
-			else if("profileMatching".equals(tID[4])){//nscl/applications/CIMA/administration/profileMatching/<id device>
-				return new ResponseConfirm(StatusCode.STATUS_OK, profileMatchingManagerInterface.getProfileMatchingToJson(tID[5]));
+			else if("ProfileDeviceAssociating".equals(tID[4])){//nscl/applications/CIMA/administration/ProfileDeviceAssociating/<id device>
+				return new ResponseConfirm(StatusCode.STATUS_OK, ProfileDeviceAssociatingManagerInterface.getProfileDeviceAssociatingToJson(tID[5]));
 			}
 		} else if(tID.length == 7){
 			// nscl/applications/CIMA/administration/device/<device id>/capability
@@ -212,8 +212,8 @@ public class AdministrationServer implements IpuService{
 				else
 					return new ResponseConfirm(StatusCode.STATUS_OK, "{\"error\" : \"Error during profile deleting.\"}");
 			}
-			else if ("profileMatching".equals(tID[4])){
-				boolean b = profileMatchingManagerInterface.deleteProfileMatchingFromSimpleJson(payload);
+			else if ("ProfileDeviceAssociating".equals(tID[4])){
+				boolean b = ProfileDeviceAssociatingManagerInterface.deleteProfileDeviceAssociatingFromSimpleJson(payload);
 				if (b)
 					return new ResponseConfirm(StatusCode.STATUS_OK, "{\"error\" : 0}");
 				else
@@ -266,10 +266,10 @@ public class AdministrationServer implements IpuService{
 				//return new ResponseConfirm(StatusCode.STATUS_OK, res );
 				return new ResponseConfirm(StatusCode.STATUS_OK, "{\"message\" : \"Profile is created.\"}" );
 			}
-			else if("profileMatching".equals(tID[4]))
-			{//nscl/applications/CIMA/administration/profileMatching
+			else if("ProfileDeviceAssociating".equals(tID[4]))
+			{//nscl/applications/CIMA/administration/ProfileDeviceAssociating
 
-				boolean res = profileMatchingManagerInterface.addProfileMatchingFromJson(requestIndication.getRepresentation());
+				boolean res = ProfileDeviceAssociatingManagerInterface.addProfileDeviceAssociatingFromJson(requestIndication.getRepresentation());
 
 				if(res)
 					return new ResponseConfirm(StatusCode.STATUS_OK, "{\"error\" : 0}" );

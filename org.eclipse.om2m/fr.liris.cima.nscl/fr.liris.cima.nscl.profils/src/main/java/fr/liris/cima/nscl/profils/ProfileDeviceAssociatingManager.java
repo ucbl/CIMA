@@ -4,8 +4,8 @@ package fr.liris.cima.nscl.profils;
 import com.google.gson.*;
 import fr.liris.cima.nscl.mongodao.persistance.MongoDaoInterface;
 import fr.liris.cima.nscl.mongodao.persistance.PersistableData;
-import fr.liris.cima.nscl.profils.profilsExport.ProfileMatching;
-import fr.liris.cima.nscl.profils.profilsExport.ProfileMatchingManagerInterface;
+import fr.liris.cima.nscl.profils.profilsExport.ProfileDeviceAssociating;
+import fr.liris.cima.nscl.profils.profilsExport.ProfileDeviceAssociatingManagerInterface;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,33 +16,33 @@ import java.util.stream.Collectors;
 /**
  * Created by Maxime on 06/02/2016.
  */
-public class ProfileMatchingManager implements ProfileMatchingManagerInterface {
+public class ProfileDeviceAssociatingManager implements ProfileDeviceAssociatingManagerInterface {
 
     MongoDaoInterface mongoDaoInterface;
     Gson gson;
 
-    public ProfileMatchingManager(MongoDaoInterface mongoDaoInterface) {
+    public ProfileDeviceAssociatingManager(MongoDaoInterface mongoDaoInterface) {
         this.mongoDaoInterface = mongoDaoInterface;
         gson = new Gson();
 
-        this.removeAllProfileMatching();
+        this.removeAllProfileDeviceAssociating();
     }
 
 
-    private void removeAllProfileMatching(){
-        List<ProfileMatching> lpm = this.getAllProfileMatching();
-        Iterator<ProfileMatching> it = lpm.iterator();
+    private void removeAllProfileDeviceAssociating(){
+        List<ProfileDeviceAssociating> lpm = this.getAllProfileDeviceAssociating();
+        Iterator<ProfileDeviceAssociating> it = lpm.iterator();
         while(it.hasNext())
         {
-            ProfileMatching p = it.next();
+            ProfileDeviceAssociating p = it.next();
             p.getPersistableData().set_etag(p.getPersistableData().get_etag().split(":")[1].replace("\"", "").replace("}", ""));
-            this.deleteProfileMatching(p);
+            this.deleteProfileDeviceAssociating(p);
         }
     }
 
 
 
-    public boolean addProfileMatching(ProfileMatching p){
+    public boolean addProfileDeviceAssociating(ProfileDeviceAssociating p){
 
         try {
             //added to make persistable profiles from the interface that have not PersistableData from constructor
@@ -59,7 +59,7 @@ public class ProfileMatchingManager implements ProfileMatchingManagerInterface {
             return false;
         }
     }
-    public boolean addProfileMatchingFromJson(String json){
+    public boolean addProfileDeviceAssociatingFromJson(String json){
 
 
         boolean r = true;
@@ -70,8 +70,8 @@ public class ProfileMatchingManager implements ProfileMatchingManagerInterface {
         while(it.hasNext())
         {
             JsonObject jsonObject = it.next().getAsJsonObject();
-            ProfileMatching p = gson.fromJson(jsonObject, ProfileMatching.class);
-            if(this.addProfileMatching(p) == false)
+            ProfileDeviceAssociating p = gson.fromJson(jsonObject, ProfileDeviceAssociating.class);
+            if(this.addProfileDeviceAssociating(p) == false)
                 r = false;
         }
 
@@ -83,28 +83,28 @@ public class ProfileMatchingManager implements ProfileMatchingManagerInterface {
 
     }
 
-    public List<ProfileMatching> getAllProfileMatching(){
+    public List<ProfileDeviceAssociating> getAllProfileDeviceAssociating(){
 
         try {
-            return mongoDaoInterface.getAll(ProfileMatching.class);
+            return mongoDaoInterface.getAll(ProfileDeviceAssociating.class);
         }catch(ClassNotFoundException c){
             System.out.println("Error : impossible de trouver la classe à rcéupérer dans la base mongo.");
             c.printStackTrace();
-            return new ArrayList<ProfileMatching>();
+            return new ArrayList<ProfileDeviceAssociating>();
         }catch(Exception c){
             System.out.println("Error : impossible de trouver la classe à rcéupérer dans la base mongo.");
             c.printStackTrace();
-            return new ArrayList<ProfileMatching>();
+            return new ArrayList<ProfileDeviceAssociating>();
         }
 
 
     }
 
-    public String getAllProfileMatchingToJson(){
+    public String getAllProfileDeviceAssociatingToJson(){
         try {
-            List<ProfileMatching> lp = this.getAllProfileMatching();
+            List<ProfileDeviceAssociating> lp = this.getAllProfileDeviceAssociating();
             String res = "[";
-            for (ProfileMatching p : lp) {
+            for (ProfileDeviceAssociating p : lp) {
                 res += gson.toJson(p);
                 res += ", ";
             }
@@ -117,15 +117,15 @@ public class ProfileMatchingManager implements ProfileMatchingManagerInterface {
         }
     }
 
-    public List<ProfileMatching> getProfileMatching(String deviceId){
-        List<ProfileMatching> lp = this.getAllProfileMatching();
+    public List<ProfileDeviceAssociating> getProfileDeviceAssociating(String deviceId){
+        List<ProfileDeviceAssociating> lp = this.getAllProfileDeviceAssociating();
         //Java 8
         //return lp.stream().filter(p -> p.getDeviceId().equals(deviceId)).collect(Collectors.toList());
         //Java 7
-        List<ProfileMatching> res = new ArrayList<>();
-        Iterator<ProfileMatching> it = lp.iterator();
+        List<ProfileDeviceAssociating> res = new ArrayList<>();
+        Iterator<ProfileDeviceAssociating> it = lp.iterator();
         while(it.hasNext()){
-            ProfileMatching pm = it.next();
+            ProfileDeviceAssociating pm = it.next();
             if(deviceId.equals(pm.getDeviceId()))
                 res.add(pm);
         }
@@ -133,11 +133,11 @@ public class ProfileMatchingManager implements ProfileMatchingManagerInterface {
     }
 
 
-    public String getProfileMatchingToJson(String deviceId){
+    public String getProfileDeviceAssociatingToJson(String deviceId){
         try {
-            List<ProfileMatching> lp = this.getProfileMatching(deviceId);
+            List<ProfileDeviceAssociating> lp = this.getProfileDeviceAssociating(deviceId);
             String res = "[";
-            for (ProfileMatching p : lp) {
+            for (ProfileDeviceAssociating p : lp) {
                 res += gson.toJson(p);
                 res += ", ";
             }
@@ -151,19 +151,19 @@ public class ProfileMatchingManager implements ProfileMatchingManagerInterface {
     }
 
     //unused
-    public List<ProfileMatching> getProfileMatchingFromJson(String json){
+    public List<ProfileDeviceAssociating> getProfileDeviceAssociatingFromJson(String json){
 
         JsonElement jelement = new JsonParser().parse(json);
         JsonObject  jobject = jelement.getAsJsonObject();
         String id = jobject.get("deviceId").toString();
         id = id.replace("\"", "");
-        return this.getProfileMatching(id);
+        return this.getProfileDeviceAssociating(id);
     }
 
 
 
     @Override
-    public boolean deleteProfileMatching(ProfileMatching p) {
+    public boolean deleteProfileDeviceAssociating(ProfileDeviceAssociating p) {
         try {
             return mongoDaoInterface.delete(p);
         }catch(IOException e){
@@ -173,7 +173,7 @@ public class ProfileMatchingManager implements ProfileMatchingManagerInterface {
     }
 
     @Override
-    public boolean deleteProfileMatchingFromSimpleJson(String json) {
+    public boolean deleteProfileDeviceAssociatingFromSimpleJson(String json) {
 
         boolean r = true;
 
@@ -188,7 +188,7 @@ public class ProfileMatchingManager implements ProfileMatchingManagerInterface {
             String etag = jsonObject.get("_etag").toString();
             etag = etag.replace("\"", "");
 
-            ProfileMatching p = new ProfileMatching();
+            ProfileDeviceAssociating p = new ProfileDeviceAssociating();
             p.setPersistableData(new PersistableData(id, etag));
 
             try {
