@@ -1,7 +1,8 @@
  # C.I.M.A. : "Couche d'Interopérabilité Matériels-Applications"
 
 ## About CIMA
-CIMA is a platform project developed by the [LIRIS laboratory](http://liris.cnrs.fr/) and students from [Claude Bernard university](www.univ-lyon1.fr/).
+CIMA is a platform project developed at the [LIRIS laboratory](http://liris.cnrs.fr/) and students from [Claude Bernard university](www.univ-lyon1.fr/).
+
 This project aims to create an interoperability layer for the [ASAWoO](http://liris.cnrs.fr/asawoo/) project. This means that CIMA is the platform on top of which the ASAWoO platform will be built. It aims to discover and access connected objects and provide its clients with Web-standard access to those.
 
 ## Architecture
